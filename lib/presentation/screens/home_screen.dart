@@ -76,8 +76,8 @@ class HomeScreen extends ConsumerWidget {
         controller: pageController,
         onPageChanged: onPageChanged,
         physics: const NeverScrollableScrollPhysics(),
-        children: [
-          const MyFeedNavigator(),
+        children: const [
+          MyFeedNavigator(),
           // const MessagesScreenNavigator(),
           // const NotificationScreen(),
           ProfileScreen(),

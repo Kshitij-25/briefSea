@@ -10,6 +10,7 @@ import '../../../common/screen_size.dart';
 import '../../providers/auth_provider.dart';
 import '../../providers/user_profile_provider.dart';
 import '../../state_providers/image_picker_provider.dart';
+import '../../state_providers/verify_profile_industry_provider.dart';
 import '../../widgets/custom_text_form_field.dart';
 import '../home_screen.dart';
 
@@ -26,6 +27,7 @@ class VerifyProfileScreen extends ConsumerWidget {
   final TextEditingController jobTitleCont = TextEditingController();
   final TextEditingController industryCont = TextEditingController();
   final TextEditingController locationCont = TextEditingController();
+  final TextEditingController expertiseCont = TextEditingController();
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -42,8 +44,9 @@ class VerifyProfileScreen extends ConsumerWidget {
         actions: [
           TextButton(
             onPressed: () async {
-              final uploadedAvatarKey = ref.read(uploadedAvatarKeyProvider.notifier).state;
-              final uploadedBannerKey = ref.read(uploadedBannerKeyProvider.notifier).state;
+              final uploadedAvatarKey = ref.watch(uploadedAvatarKeyProvider.notifier).state;
+              final uploadedBannerKey = ref.watch(uploadedBannerKeyProvider.notifier).state;
+              final selectedIndustry = ref.watch(selectedIndustryProvider.notifier).state;
               if (companyCont.text.isNotEmpty &&
                   phoneNumberCont.text.isNotEmpty &&
                   companyCont.text.isNotEmpty &&
@@ -57,12 +60,12 @@ class VerifyProfileScreen extends ConsumerWidget {
                         contact: int.tryParse(phoneNumberCont.text),
                         company: companyCont.text,
                         jobTitle: jobTitleCont.text,
-                        industry: industryCont.text,
+                        industry: selectedIndustry,
                         location: locationCont.text,
                         avatarSrc: uploadedAvatarKey ?? '',
                         bannerSrc: uploadedBannerKey ?? '',
                         jwtToken: userDetails['jwtToken'],
-                        expertise: "")
+                        expertise: expertiseCont.text)
                     .future);
                 if (verifyMessage == "Profile added cuccessfully") {
                   AppUtility(context).message(verifyMessage);
@@ -242,11 +245,9 @@ class VerifyProfileScreen extends ConsumerWidget {
               child: DropdownButton<String>(
                 hint: const Text('Select an industry'),
                 menuMaxHeight: 300,
-                // value: selectedValue,
+                value: ref.watch(selectedIndustryProvider.notifier).state,
                 onChanged: (String? newValue) {
-                  // setState(() {
-                  //   selectedValue = newValue;
-                  // });
+                  ref.read(selectedIndustryProvider.notifier).state = newValue;
                 },
                 items: industries.map<DropdownMenuItem<String>>((Map<String, String> item) {
                   return DropdownMenuItem<String>(
@@ -262,8 +263,9 @@ class VerifyProfileScreen extends ConsumerWidget {
           customFields(
             context,
             'Expertise',
-            const CustomTextFormField(
+            CustomTextFormField(
               hintText: "Enter your Expertise",
+              controller: expertiseCont,
             ),
             CupertinoIcons.clock_fill,
             () {},

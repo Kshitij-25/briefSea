@@ -196,7 +196,7 @@ class ProfileScreen extends ConsumerWidget {
 }
 
 class _BannerWidget extends ConsumerWidget {
-  _BannerWidget({super.key, this.userDetails, this.userProfileData});
+  _BannerWidget({this.userDetails, this.userProfileData});
 
   final ImagePicker _picker = ImagePicker();
 
@@ -296,7 +296,7 @@ class _BannerWidget extends ConsumerWidget {
 }
 
 class _AvatarWidget extends ConsumerWidget {
-  _AvatarWidget({super.key, this.userDetails, this.userProfileData});
+  _AvatarWidget({this.userDetails, this.userProfileData});
 
   final ImagePicker _picker = ImagePicker();
 

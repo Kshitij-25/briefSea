@@ -245,7 +245,6 @@ class _BriefLikeButton extends StatelessWidget {
 
 class _BriefCard extends StatelessWidget {
   const _BriefCard({
-    super.key,
     required this.child,
     this.isCardVisible = true,
   });

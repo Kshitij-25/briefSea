@@ -239,7 +239,6 @@ Future<void> customPostBriefModalSheet(
 
 class _CategorySelector extends StatelessWidget {
   const _CategorySelector({
-    super.key,
     required this.categoryName,
     required this.selectedCategory,
     required this.onTap,
