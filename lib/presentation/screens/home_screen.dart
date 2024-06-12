@@ -4,7 +4,9 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../common/screen_size.dart';
 import '../state_providers/bottom_nav_bar_state_provider.dart';
+import 'messages/messages_screen_navigator.dart';
 import 'my_feed/my_feed_navigator.dart';
+import 'notification_screen.dart';
 import 'profile_screen.dart';
 
 class HomeScreen extends ConsumerWidget {
@@ -32,11 +34,11 @@ class HomeScreen extends ConsumerWidget {
         title: Text(
           currentIndex == 0
               ? "Briefsea"
-              // : currentIndex == 1
-              //     ? "Messages"
-              //     : currentIndex == 2
-              //         ? "Notifications"
-              : "Profile",
+              : currentIndex == 1
+                  ? "Messages"
+                  : currentIndex == 2
+                      ? "Notifications"
+                      : "Profile",
           style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
         ),
         centerTitle: true,
@@ -78,8 +80,8 @@ class HomeScreen extends ConsumerWidget {
         physics: const NeverScrollableScrollPhysics(),
         children: const [
           MyFeedNavigator(),
-          // const MessagesScreenNavigator(),
-          // const NotificationScreen(),
+          MessagesScreenNavigator(),
+          NotificationScreen(),
           ProfileScreen(),
         ],
       ),
@@ -97,10 +99,10 @@ class HomeScreen extends ConsumerWidget {
             icon: Icon(CupertinoIcons.square_list_fill),
             label: "My Feed",
           ),
-          // BottomNavigationBarItem(
-          //   icon: Icon(CupertinoIcons.envelope_open_fill),
-          //   label: "Messages",
-          // ),
+          BottomNavigationBarItem(
+            icon: Icon(CupertinoIcons.envelope_open_fill),
+            label: "Messages",
+          ),
           // BottomNavigationBarItem(
           //   icon: Icon(CupertinoIcons.person_3_fill),
           //   label: "Bowls",
@@ -109,10 +111,10 @@ class HomeScreen extends ConsumerWidget {
           //   icon: Icon(CupertinoIcons.bag_fill),
           //   label: "My Company",
           // ),
-          // BottomNavigationBarItem(
-          //   icon: Icon(CupertinoIcons.bell),
-          //   label: "Notifications",
-          // ),
+          BottomNavigationBarItem(
+            icon: Icon(CupertinoIcons.bell),
+            label: "Notifications",
+          ),
           BottomNavigationBarItem(
             icon: Icon(CupertinoIcons.person_alt_circle),
             label: "Me",

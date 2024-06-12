@@ -5,9 +5,12 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 final selectedAvatarImageProvider = StateProvider<String?>((ref) => null);
 
+final verifyAvatarImageProvider = StateProvider<File?>((ref) => null);
+
 final selectedBannerImageProvider = StateProvider<String?>((ref) => null);
 
-// Define the provider for the selected image
+final verifyBannerImageProvider = StateProvider<File?>((ref) => null);
+
 final selectedPostImageProvider = StateProvider<File?>((ref) => null);
 
 final uploadedAvatarKeyProvider = StateProvider<String?>((ref) => null);

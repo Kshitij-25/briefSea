@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -86,8 +88,8 @@ class VerifyProfileScreen extends ConsumerWidget {
   }
 
   bodyWidget(context, WidgetRef ref, Map<String, String> userDetails) {
-    final selectedProfile = ref.watch(selectedAvatarImageProvider);
-    final selectedBanner = ref.watch(selectedBannerImageProvider);
+    final verifyAvatar = ref.watch(verifyAvatarImageProvider);
+    final verifyBanner = ref.watch(verifyBannerImageProvider);
     return SingleChildScrollView(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -95,118 +97,15 @@ class VerifyProfileScreen extends ConsumerWidget {
         children: [
           Stack(
             children: [
-              Container(
-                width: ScreenSize.width(context),
-                height: ScreenSize.height(context) * 0.15,
-                color: Colors.white,
-                child: selectedBanner != null
-                    ? Stack(
-                        children: [
-                          // Image(
-                          //   width: ScreenSize.width(context),
-                          //   image: FileImage(selectedBanner),
-                          //   fit: BoxFit.fill,
-                          // ),
-                          Align(
-                            alignment: Alignment.topRight,
-                            child: IconButton(
-                              onPressed: () async {
-                                final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
-                                // if (pickedFile != null) {
-                                //   var uploadedBanner = await ref.read(uploadBannerProvider(
-                                //     fileName: pickedFile.name,
-                                //     fileType: AppUtility(context).getMediaType(pickedFile.path),
-                                //     userId: userDetails['user_id'],
-                                //     userType: userDetails['type'],
-                                //   ).future);
-                                //   ref.read(uploadToAWSProvider(
-                                //     url: uploadedBanner.url,
-                                //     fileName: pickedFile.name,
-                                //     file: File(pickedFile.path),
-                                //     fileType: AppUtility(context).getMediaType(pickedFile.path),
-                                //   ));
-                                //   // Update the avatar URL provider
-                                //   ref.read(uploadedBannerKeyProvider.notifier).state = uploadedBanner.key;
-
-                                //   ref.read(selectedBannerImageProvider.notifier).state = File(pickedFile.path);
-                                // }
-                              },
-                              icon: const Icon(
-                                CupertinoIcons.camera_fill,
-                                color: Colors.white,
-                              ),
-                            ),
-                          ),
-                        ],
-                      )
-                    : Align(
-                        alignment: Alignment.topRight,
-                        child: IconButton(
-                          onPressed: () async {
-                            final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
-                            // if (pickedFile != null) {
-                            //   var uploadedBanner = await ref.read(uploadBannerProvider(
-                            //     fileName: pickedFile.name,
-                            //     fileType: AppUtility(context).getMediaType(pickedFile.path),
-                            //     userId: userDetails['user_id'],
-                            //     userType: userDetails['type'],
-                            //   ).future);
-                            //   ref.read(uploadToAWSProvider(
-                            //     url: uploadedBanner.url,
-                            //     fileName: pickedFile.name,
-                            //     file: File(pickedFile.path),
-                            //     fileType: AppUtility(context).getMediaType(pickedFile.path),
-                            //   ));
-                            //   ref.read(uploadedBannerKeyProvider.notifier).state = uploadedBanner.key;
-
-                            //   ref.read(selectedBannerImageProvider.notifier).state = File(pickedFile.path);
-                            // }
-                          },
-                          icon: const Icon(CupertinoIcons.camera_fill),
-                        ),
-                      ),
+              _BannerWidget(
+                verifyBanner: verifyBanner,
+                picker: _picker,
+                userDetails: userDetails,
               ),
-              Align(
-                alignment: Alignment.center,
-                child: Padding(
-                  padding: const EdgeInsets.all(15.0),
-                  child: GestureDetector(
-                    onTap: () async {
-                      final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
-                      // if (pickedFile != null) {
-                      //   var uploadedAvatar = await ref.read(uploadAvatarProvider(
-                      //     fileName: pickedFile.name,
-                      //     fileType: AppUtility(context).getMediaType(pickedFile.path),
-                      //     userId: userDetails['user_id'],
-                      //     userType: userDetails['type'],
-                      //   ).future);
-                      //   await ref.read(uploadToAWSProvider(
-                      //     url: uploadedAvatar.url,
-                      //     fileName: pickedFile.name,
-                      //     file: File(pickedFile.path),
-                      //     fileType: AppUtility(context).getMediaType(pickedFile.path),
-                      //   ).future);
-                      //   ref.read(uploadedAvatarKeyProvider.notifier).state = uploadedAvatar.key;
-
-                      //   ref.read(selectedProfileImageProvider.notifier).state = File(pickedFile.path);
-                      // }
-                    },
-                    child: CircleAvatar(
-                      backgroundColor: const Color(0xFF1B0C6B),
-                      radius: 70,
-                      // backgroundImage: selectedProfile != null ? FileImage(selectedProfile) : null,
-                      child: selectedProfile == null
-                          ? const Center(
-                              child: Icon(
-                                CupertinoIcons.camera_fill,
-                                color: Colors.white,
-                                size: 30,
-                              ),
-                            )
-                          : null,
-                    ),
-                  ),
-                ),
+              _AvatarWidget(
+                picker: _picker,
+                verifyAvatar: verifyAvatar,
+                userDetails: userDetails,
               ),
             ],
           ),
@@ -346,6 +245,151 @@ class VerifyProfileScreen extends ConsumerWidget {
       title: Text(title),
       subtitle: subtitle,
       onTap: onTap!,
+    );
+  }
+}
+
+class _AvatarWidget extends ConsumerWidget {
+  const _AvatarWidget({
+    required this.userDetails,
+    required ImagePicker picker,
+    required this.verifyAvatar,
+  }) : _picker = picker;
+
+  final ImagePicker _picker;
+  final File? verifyAvatar;
+  final Map<String, String> userDetails;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return Align(
+      alignment: Alignment.center,
+      child: Padding(
+        padding: const EdgeInsets.all(15.0),
+        child: GestureDetector(
+          onTap: () async {
+            final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
+            if (pickedFile != null) {
+              var uploadedAvatar = await ref.read(uploadAvatarProvider(
+                fileName: pickedFile.name,
+                fileType: AppUtility(context).getMediaType(pickedFile.path),
+                userId: userDetails['user_id'],
+                userType: userDetails['type'],
+              ).future);
+              await ref.read(uploadToAWSProvider(
+                url: uploadedAvatar.url,
+                fileName: pickedFile.name,
+                file: File(pickedFile.path),
+                fileType: AppUtility(context).getMediaType(pickedFile.path),
+              ).future);
+              ref.read(uploadedAvatarKeyProvider.notifier).state = uploadedAvatar.key;
+
+              ref.read(verifyAvatarImageProvider.notifier).state = File(pickedFile.path);
+            }
+          },
+          child: CircleAvatar(
+            backgroundColor: const Color(0xFF1B0C6B),
+            radius: 70,
+            backgroundImage: verifyAvatar != null ? FileImage(verifyAvatar!) : null,
+            child: verifyAvatar == null
+                ? const Center(
+                    child: Icon(
+                      CupertinoIcons.camera_fill,
+                      color: Colors.white,
+                      size: 30,
+                    ),
+                  )
+                : null,
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _BannerWidget extends ConsumerWidget {
+  const _BannerWidget({
+    required this.userDetails,
+    required this.verifyBanner,
+    required ImagePicker picker,
+  }) : _picker = picker;
+
+  final File? verifyBanner;
+  final ImagePicker _picker;
+  final Map<String, String> userDetails;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return Container(
+      width: ScreenSize.width(context),
+      height: ScreenSize.height(context) * 0.15,
+      color: Colors.white,
+      child: verifyBanner != null
+          ? Stack(
+              children: [
+                Image(
+                  width: ScreenSize.width(context),
+                  image: FileImage(verifyBanner!),
+                  fit: BoxFit.fill,
+                ),
+                Align(
+                  alignment: Alignment.topRight,
+                  child: IconButton(
+                    onPressed: () async {
+                      final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
+                      if (pickedFile != null) {
+                        var uploadedBanner = await ref.read(uploadBannerProvider(
+                          fileName: pickedFile.name,
+                          fileType: AppUtility(context).getMediaType(pickedFile.path),
+                          userId: userDetails['user_id'],
+                          userType: userDetails['type'],
+                        ).future);
+                        ref.read(uploadToAWSProvider(
+                          url: uploadedBanner.url,
+                          fileName: pickedFile.name,
+                          file: File(pickedFile.path),
+                          fileType: AppUtility(context).getMediaType(pickedFile.path),
+                        ));
+                        // Update the avatar URL provider
+                        ref.read(uploadedBannerKeyProvider.notifier).state = uploadedBanner.key;
+
+                        ref.read(verifyBannerImageProvider.notifier).state = File(pickedFile.path);
+                      }
+                    },
+                    icon: const Icon(
+                      CupertinoIcons.camera_fill,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+              ],
+            )
+          : Align(
+              alignment: Alignment.topRight,
+              child: IconButton(
+                onPressed: () async {
+                  final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
+                  if (pickedFile != null) {
+                    var uploadedBanner = await ref.read(uploadBannerProvider(
+                      fileName: pickedFile.name,
+                      fileType: AppUtility(context).getMediaType(pickedFile.path),
+                      userId: userDetails['user_id'],
+                      userType: userDetails['type'],
+                    ).future);
+                    ref.read(uploadToAWSProvider(
+                      url: uploadedBanner.url,
+                      fileName: pickedFile.name,
+                      file: File(pickedFile.path),
+                      fileType: AppUtility(context).getMediaType(pickedFile.path),
+                    ));
+                    ref.read(uploadedBannerKeyProvider.notifier).state = uploadedBanner.key;
+
+                    ref.read(verifyBannerImageProvider.notifier).state = File(pickedFile.path);
+                  }
+                },
+                icon: const Icon(CupertinoIcons.camera_fill),
+              ),
+            ),
     );
   }
 }
