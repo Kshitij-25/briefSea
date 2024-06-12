@@ -4,6 +4,7 @@ import 'package:dartz/dartz.dart';
 
 import '../core/app_error.dart';
 import '../data_sources/chat_remote_data_source.dart';
+import '../models/chat_message_model.dart';
 import '../models/chat_user_model.dart';
 
 class ChatRepository {
@@ -33,10 +34,10 @@ class ChatRepository {
     }
   }
 
-  Future<Either<AppError, void>> getChatMessages(String? conversationId) async {
+  Future<Either<AppError, List<ChatMessageModel>>> getChatMessages(String? conversationId) async {
     try {
-      final newChat = await _chatRemoteDataSource.getChatMessages(conversationId);
-      return Right(newChat);
+      final chatMessages = await _chatRemoteDataSource.getChatMessages(conversationId);
+      return Right(chatMessages);
     } on SocketException {
       return const Left(AppError(AppErrorType.network));
     } on Exception {
@@ -47,14 +48,14 @@ class ChatRepository {
   Future<Either<AppError, bool>> sendChatMessage(
       {String? senderId, String? receiverId, String? conversationId, String? messageText, String? typedAt}) async {
     try {
-      final newChat = await _chatRemoteDataSource.sendChatMessage(
+      final sendMessage = await _chatRemoteDataSource.sendChatMessage(
         senderId: senderId,
         receiverId: receiverId,
         conversationId: conversationId,
         messageText: messageText,
         typedAt: typedAt,
       );
-      return Right(newChat);
+      return Right(sendMessage);
     } on SocketException {
       return const Left(AppError(AppErrorType.network));
     } on Exception {

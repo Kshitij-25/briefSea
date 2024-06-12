@@ -22,7 +22,10 @@ class InboxScreen extends ConsumerWidget {
           itemBuilder: (context, index) {
             return CustomChatCards(
               onTap: () {
-                context.push(ChatScreen.routeName);
+                context.push(
+                  ChatScreen.routeName,
+                  extra: users[index],
+                );
               },
               chatName: users[index].name,
               chatMessage: users[index].type,

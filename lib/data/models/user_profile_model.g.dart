@@ -17,8 +17,12 @@ _$UserProfileModelImpl _$$UserProfileModelImplFromJson(
       contact: (json['contact'] as num?)?.toInt(),
       post: json['post'] as String?,
       worksAt: json['worksAt'] as String?,
-      industry: json['industry'] as String?,
-      expertise: json['expertise'] as String?,
+      industry: (json['industry'] as List<dynamic>?)
+          ?.map((e) => e as String)
+          .toList(),
+      expertise: (json['expertise'] as List<dynamic>?)
+          ?.map((e) => e as String)
+          .toList(),
       location: json['location'] as String?,
       avatarSrc: json['avatarSrc'] as String?,
       bannerSrc: json['bannerSrc'] as String?,

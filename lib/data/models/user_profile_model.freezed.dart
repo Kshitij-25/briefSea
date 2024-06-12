@@ -37,9 +37,9 @@ mixin _$UserProfileModel {
   @JsonKey(name: 'worksAt')
   String? get worksAt => throw _privateConstructorUsedError;
   @JsonKey(name: 'industry')
-  String? get industry => throw _privateConstructorUsedError;
+  List<String>? get industry => throw _privateConstructorUsedError;
   @JsonKey(name: 'expertise')
-  String? get expertise => throw _privateConstructorUsedError;
+  List<String>? get expertise => throw _privateConstructorUsedError;
   @JsonKey(name: 'location')
   String? get location => throw _privateConstructorUsedError;
   @JsonKey(name: 'avatarSrc')
@@ -72,8 +72,8 @@ abstract class $UserProfileModelCopyWith<$Res> {
       @JsonKey(name: 'contact') int? contact,
       @JsonKey(name: 'post') String? post,
       @JsonKey(name: 'worksAt') String? worksAt,
-      @JsonKey(name: 'industry') String? industry,
-      @JsonKey(name: 'expertise') String? expertise,
+      @JsonKey(name: 'industry') List<String>? industry,
+      @JsonKey(name: 'expertise') List<String>? expertise,
       @JsonKey(name: 'location') String? location,
       @JsonKey(name: 'avatarSrc') String? avatarSrc,
       @JsonKey(name: 'bannerSrc') String? bannerSrc,
@@ -146,11 +146,11 @@ class _$UserProfileModelCopyWithImpl<$Res, $Val extends UserProfileModel>
       industry: freezed == industry
           ? _value.industry
           : industry // ignore: cast_nullable_to_non_nullable
-              as String?,
+              as List<String>?,
       expertise: freezed == expertise
           ? _value.expertise
           : expertise // ignore: cast_nullable_to_non_nullable
-              as String?,
+              as List<String>?,
       location: freezed == location
           ? _value.location
           : location // ignore: cast_nullable_to_non_nullable
@@ -192,8 +192,8 @@ abstract class _$$UserProfileModelImplCopyWith<$Res>
       @JsonKey(name: 'contact') int? contact,
       @JsonKey(name: 'post') String? post,
       @JsonKey(name: 'worksAt') String? worksAt,
-      @JsonKey(name: 'industry') String? industry,
-      @JsonKey(name: 'expertise') String? expertise,
+      @JsonKey(name: 'industry') List<String>? industry,
+      @JsonKey(name: 'expertise') List<String>? expertise,
       @JsonKey(name: 'location') String? location,
       @JsonKey(name: 'avatarSrc') String? avatarSrc,
       @JsonKey(name: 'bannerSrc') String? bannerSrc,
@@ -262,13 +262,13 @@ class __$$UserProfileModelImplCopyWithImpl<$Res>
           : worksAt // ignore: cast_nullable_to_non_nullable
               as String?,
       industry: freezed == industry
-          ? _value.industry
+          ? _value._industry
           : industry // ignore: cast_nullable_to_non_nullable
-              as String?,
+              as List<String>?,
       expertise: freezed == expertise
-          ? _value.expertise
+          ? _value._expertise
           : expertise // ignore: cast_nullable_to_non_nullable
-              as String?,
+              as List<String>?,
       location: freezed == location
           ? _value.location
           : location // ignore: cast_nullable_to_non_nullable
@@ -305,13 +305,15 @@ class _$UserProfileModelImpl implements _UserProfileModel {
       @JsonKey(name: 'contact') this.contact,
       @JsonKey(name: 'post') this.post,
       @JsonKey(name: 'worksAt') this.worksAt,
-      @JsonKey(name: 'industry') this.industry,
-      @JsonKey(name: 'expertise') this.expertise,
+      @JsonKey(name: 'industry') final List<String>? industry,
+      @JsonKey(name: 'expertise') final List<String>? expertise,
       @JsonKey(name: 'location') this.location,
       @JsonKey(name: 'avatarSrc') this.avatarSrc,
       @JsonKey(name: 'bannerSrc') this.bannerSrc,
       @JsonKey(name: 'createdAt') this.createdAt,
-      @JsonKey(name: 'updatedAt') this.updatedAt});
+      @JsonKey(name: 'updatedAt') this.updatedAt})
+      : _industry = industry,
+        _expertise = expertise;
 
   factory _$UserProfileModelImpl.fromJson(Map<String, dynamic> json) =>
       _$$UserProfileModelImplFromJson(json);
@@ -340,12 +342,28 @@ class _$UserProfileModelImpl implements _UserProfileModel {
   @override
   @JsonKey(name: 'worksAt')
   final String? worksAt;
+  final List<String>? _industry;
   @override
   @JsonKey(name: 'industry')
-  final String? industry;
+  List<String>? get industry {
+    final value = _industry;
+    if (value == null) return null;
+    if (_industry is EqualUnmodifiableListView) return _industry;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(value);
+  }
+
+  final List<String>? _expertise;
   @override
   @JsonKey(name: 'expertise')
-  final String? expertise;
+  List<String>? get expertise {
+    final value = _expertise;
+    if (value == null) return null;
+    if (_expertise is EqualUnmodifiableListView) return _expertise;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(value);
+  }
+
   @override
   @JsonKey(name: 'location')
   final String? location;
@@ -382,10 +400,9 @@ class _$UserProfileModelImpl implements _UserProfileModel {
             (identical(other.contact, contact) || other.contact == contact) &&
             (identical(other.post, post) || other.post == post) &&
             (identical(other.worksAt, worksAt) || other.worksAt == worksAt) &&
-            (identical(other.industry, industry) ||
-                other.industry == industry) &&
-            (identical(other.expertise, expertise) ||
-                other.expertise == expertise) &&
+            const DeepCollectionEquality().equals(other._industry, _industry) &&
+            const DeepCollectionEquality()
+                .equals(other._expertise, _expertise) &&
             (identical(other.location, location) ||
                 other.location == location) &&
             (identical(other.avatarSrc, avatarSrc) ||
@@ -410,8 +427,8 @@ class _$UserProfileModelImpl implements _UserProfileModel {
       contact,
       post,
       worksAt,
-      industry,
-      expertise,
+      const DeepCollectionEquality().hash(_industry),
+      const DeepCollectionEquality().hash(_expertise),
       location,
       avatarSrc,
       bannerSrc,
@@ -443,8 +460,8 @@ abstract class _UserProfileModel implements UserProfileModel {
           @JsonKey(name: 'contact') final int? contact,
           @JsonKey(name: 'post') final String? post,
           @JsonKey(name: 'worksAt') final String? worksAt,
-          @JsonKey(name: 'industry') final String? industry,
-          @JsonKey(name: 'expertise') final String? expertise,
+          @JsonKey(name: 'industry') final List<String>? industry,
+          @JsonKey(name: 'expertise') final List<String>? expertise,
           @JsonKey(name: 'location') final String? location,
           @JsonKey(name: 'avatarSrc') final String? avatarSrc,
           @JsonKey(name: 'bannerSrc') final String? bannerSrc,
@@ -481,10 +498,10 @@ abstract class _UserProfileModel implements UserProfileModel {
   String? get worksAt;
   @override
   @JsonKey(name: 'industry')
-  String? get industry;
+  List<String>? get industry;
   @override
   @JsonKey(name: 'expertise')
-  String? get expertise;
+  List<String>? get expertise;
   @override
   @JsonKey(name: 'location')
   String? get location;

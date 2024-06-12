@@ -1,9 +1,11 @@
 import 'dart:developer';
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:briefsea/main.dart';
 import 'package:dio/dio.dart';
 import 'package:http_parser/http_parser.dart';
+import 'package:mime/mime.dart';
 
 import '../core/api_client.dart';
 import '../core/api_constants.dart';
@@ -236,18 +238,13 @@ class UserProfileRemoteDataSourceImpl implements UserProfileRemoteDataSource {
   @override
   Future<bool> uploadToAWS(String? url, String? fileName, File file, MediaType fileType) async {
     try {
-      FormData formData = FormData.fromMap({
-        "file": await MultipartFile.fromFile(
-          file.path,
-          filename: fileName,
-          contentType: fileType,
-        ),
-      });
+      Uint8List image = File(file.path).readAsBytesSync();
 
       Response? response = await _apiClient.putReq(
         url: url,
-        body: formData,
-        contentType: file.lengthSync(),
+        body: image,
+        contentType: image.length,
+        mimeType: lookupMimeType(file.path),
         jwtToken: null,
       );
 

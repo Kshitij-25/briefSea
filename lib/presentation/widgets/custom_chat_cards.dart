@@ -18,8 +18,14 @@ class CustomChatCards extends StatelessWidget {
       color: Colors.white,
       child: ListTile(
         onTap: onTap,
-        leading: const CircleAvatar(
-          backgroundColor: Color(0xFF1B0C6B),
+        leading: CircleAvatar(
+          backgroundColor: const Color(0xFF1B0C6B),
+          child: Text(
+            chatName?[0].toUpperCase() ?? "",
+            style: const TextStyle(
+              color: Colors.white,
+            ),
+          ),
         ),
         title: Text(
           chatName!,

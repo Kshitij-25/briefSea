@@ -98,7 +98,7 @@ class MyFeedNavigator extends ConsumerWidget {
                       onTap: () {
                         customPostBriefModalSheet(
                           context,
-                          selectedImage: selectedImage,
+                          selectedImage: selectedImage!,
                           postTextCont: postTextCont,
                           postingAs: userData['type'],
                           // influencerOnTap: () {
@@ -130,14 +130,16 @@ class MyFeedNavigator extends ConsumerWidget {
                           },
                           postOnTap: (postText, selectedCategory) async {
                             if (postTextCont.text.isNotEmpty) {
-                              var status = await ref.watch(postBriefProvider(
-                                userId: userData['user_id'],
-                                uName: userData['user_name'],
-                                type: userData['type'],
-                                postText: postText,
-                                imgSrc: ref.read(uploadedThreadImageKeyProvider.notifier).state,
-                                category: selectedCategory,
-                              ).future);
+                              var status = await ref.watch(
+                                postBriefProvider(
+                                  userId: userData['user_id'],
+                                  uName: userData['user_name'],
+                                  type: userData['type'],
+                                  postText: postText,
+                                  imgSrc: ref.read(uploadedThreadImageKeyProvider.notifier).state,
+                                  category: selectedCategory,
+                                ).future,
+                              );
 
                               if (status == true) {
                                 postTextCont.clear();

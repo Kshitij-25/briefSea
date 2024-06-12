@@ -2,6 +2,7 @@ import 'package:briefsea/main.dart';
 import 'package:go_router/go_router.dart';
 
 import '../data/models/briefs_model.dart';
+import '../data/models/chat_user_model.dart';
 import '../presentation/screens/auth_screens/agency_register_screen.dart';
 import '../presentation/screens/auth_screens/existing_login_screen.dart';
 import '../presentation/screens/auth_screens/freelancer_register_screen.dart';
@@ -64,7 +65,9 @@ final router = GoRouter(
     ),
     GoRoute(
       path: ChatScreen.routeName,
-      builder: (context, state) => const ChatScreen(),
+      builder: (context, state) => ChatScreen(
+        chatUser: state.extra as ChatUserModel,
+      ),
     ),
     GoRoute(
       path: FeedScreen.routeName,

@@ -71,12 +71,12 @@ Future<String> uploadImage(
     contact: userProfileData.contact,
     company: userProfileData.worksAt,
     jobTitle: userProfileData.post,
-    industry: userProfileData.industry,
+    industry: userProfileData.industry![0],
     location: userProfileData.location,
     avatarSrc: avatarKey ?? '',
     bannerSrc: bannerKey ?? '',
     jwtToken: userDetails['jwtToken'],
-    expertise: userProfileData.expertise,
+    expertise: userProfileData.expertise![0],
   ).future);
   log("IMAGE_PROVIDER ===> $verifyMessage");
 

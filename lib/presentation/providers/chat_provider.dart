@@ -4,6 +4,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../data/core/api_client.dart';
 import '../../data/di/get_it.dart';
+import '../../data/models/chat_message_model.dart';
 import '../../data/models/chat_user_model.dart';
 
 part 'chat_provider.g.dart';
@@ -45,10 +46,10 @@ Future<bool> createNewChat(CreateNewChatRef ref, {required String senderId, requ
 }
 
 @riverpod
-Future<void> getChatMessages(GetChatMessagesRef ref, {required String conversationId}) async {
+Future<List<ChatMessageModel>> getChatMessages(GetChatMessagesRef ref, {required String conversationId}) async {
   final chatRepository = ref.watch(chatRepositoryProvider);
-  final eitherNewChatOrError = await chatRepository.getChatMessages(conversationId);
-  return eitherNewChatOrError.fold(
+  final eitherGetMessagesOrError = await chatRepository.getChatMessages(conversationId);
+  return eitherGetMessagesOrError.fold(
     (error) {
       throw error; // Throw the error for Riverpod to handle
     },
@@ -64,14 +65,14 @@ Future<bool> sendChatMessages(SendChatMessagesRef ref,
     required String messageText,
     required String typedAt}) async {
   final chatRepository = ref.watch(chatRepositoryProvider);
-  final eitherNewChatOrError = await chatRepository.sendChatMessage(
+  final eitherSendMessageOrError = await chatRepository.sendChatMessage(
     senderId: senderId,
     receiverId: receiverId,
     conversationId: conversationId,
     messageText: messageText,
     typedAt: typedAt,
   );
-  return eitherNewChatOrError.fold(
+  return eitherSendMessageOrError.fold(
     (error) {
       throw error; // Throw the error for Riverpod to handle
     },

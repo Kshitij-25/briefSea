@@ -69,23 +69,19 @@ class ApiClient {
     return null;
   }
 
-  Future<Response<dynamic>?> putReq({url, body, jwtToken, contentType}) async {
+  Future<Response<dynamic>?> putReq({url, body, jwtToken, contentType, mimeType}) async {
     try {
-      var headers = jwtToken != null
-          ? {
-              'Accept': 'application/json, text/plain, */*',
-              'Content-Type': contentType ?? 'application/json',
-              'Authorization': 'Bearer $jwtToken',
-            }
-          : {
-              'Accept': 'application/json, text/plain, */*',
-              'Content-Type': 'application/json',
-            };
+      var headers = {
+        'Accept': 'application/json, text/plain, */*',
+        'Content-Type': contentType ?? 'application/json',
+        if (jwtToken != null) 'Authorization': 'Bearer $jwtToken',
+      };
+
       final response = await _dio.put(
         url,
         data: body,
         options: Options(
-          contentType: "application/octet-stream",
+          contentType: mimeType,
           headers: headers,
         ),
       );

@@ -138,7 +138,7 @@ class ProfileScreen extends ConsumerWidget {
                                         textScaler: const TextScaler.linear(1),
                                       ),
                                       Text(
-                                        userDetails.industry ?? "",
+                                        userDetails.industry?[0] ?? "",
                                         style: const TextStyle(
                                           fontWeight: FontWeight.bold,
                                           color: Colors.black,
@@ -146,7 +146,7 @@ class ProfileScreen extends ConsumerWidget {
                                         textScaler: const TextScaler.linear(1),
                                       ),
                                       Text(
-                                        userDetails.expertise ?? "",
+                                        userDetails.expertise?[0] ?? "",
                                         style: const TextStyle(
                                           fontWeight: FontWeight.bold,
                                           color: Colors.black,
@@ -224,19 +224,20 @@ class _BannerWidget extends ConsumerWidget {
                     topLeft: Radius.circular(40),
                     topRight: Radius.circular(40),
                   ),
-                  child: Image.network(
-                    selectedBanner,
-                    errorBuilder: (context, error, stackTrace) {
-                      return const Center(
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceAround,
-                          children: [
-                            Icon(Icons.error),
-                            Icon(Icons.error),
-                          ],
-                        ),
-                      );
-                    },
+                  child: SizedBox(
+                    width: ScreenSize.width(context),
+                    child: CachedNetworkImage(
+                      imageUrl: selectedBanner,
+                      fit: BoxFit.cover,
+                      useOldImageOnUrlChange: true,
+                      placeholder: (context, url) => const Center(
+                        child: CircularProgressIndicator(),
+                      ),
+                      errorWidget: (context, url, error) => const Icon(
+                        Icons.error,
+                        color: Colors.white,
+                      ),
+                    ),
                   ),
                 ),
                 Align(
@@ -328,22 +329,27 @@ class _AvatarWidget extends ConsumerWidget {
             log("PROFILE_SCREEN AVATARURL=====> $imageUrl");
           },
           child: CircleAvatar(
-            backgroundColor: const Color(0xFF1B0C6B),
-            radius: 70,
-            child: selectedAvatar != "" && selectedAvatar != null
-                ? CachedNetworkImage(
-                    imageUrl: selectedAvatar,
-                    placeholder: (context, url) => const CircularProgressIndicator(),
-                    errorWidget: (context, url, error) => const Icon(
-                      Icons.error,
+              backgroundColor: const Color(0xFF1B0C6B),
+              radius: 70,
+              backgroundImage: selectedAvatar != "" && selectedAvatar != null ? CachedNetworkImageProvider(selectedAvatar) : null,
+              child: selectedAvatar == "" && selectedAvatar == null
+                  // ? ClipRRect(
+                  //     borderRadius: BorderRadius.circular(70),
+                  //     child: CachedNetworkImage(
+                  //       imageUrl: selectedAvatar,
+                  //       placeholder: (context, url) => const CircularProgressIndicator(),
+                  //       errorWidget: (context, url, error) => const Icon(
+                  //         Icons.error,
+                  //         color: Colors.white,
+                  //       ),
+                  //     ),
+                  //   )
+                  // :
+                  ? const Icon(
+                      CupertinoIcons.camera_fill,
                       color: Colors.white,
-                    ),
-                  )
-                : const Icon(
-                    CupertinoIcons.camera_fill,
-                    color: Colors.white,
-                  ),
-          ),
+                    )
+                  : const SizedBox.shrink()),
         ),
       ),
     );

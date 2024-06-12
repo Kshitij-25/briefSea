@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:briefsea/data/models/chat_message_model.dart';
 import 'package:dio/dio.dart';
 
 import '../../main.dart';
@@ -10,7 +11,7 @@ import '../models/chat_user_model.dart';
 abstract class ChatRemoteDataSource {
   Future<List<ChatUserModel>> getChatUsersList(String? userId);
   Future<bool> createNewChat(String? senderId, String? receiverId);
-  Future<void> getChatMessages(String? conversationId);
+  Future<List<ChatMessageModel>> getChatMessages(String? conversationId);
   Future<bool> sendChatMessage({String? senderId, String? receiverId, String? conversationId, String? messageText, String? typedAt});
 }
 
@@ -85,7 +86,7 @@ class ChatRemoteDataSourceImpl implements ChatRemoteDataSource {
   }
 
   @override
-  Future<void> getChatMessages(String? conversationId) async {
+  Future<List<ChatMessageModel>> getChatMessages(String? conversationId) async {
     var jwtToken = await getJwtToken();
 
     try {
@@ -94,24 +95,26 @@ class ChatRemoteDataSourceImpl implements ChatRemoteDataSource {
         jwtToken: jwtToken,
       );
 
-      var responseJson = response!.data;
-      if (responseJson != null) {
-        // var responseMsg = responseJson['message'];
-        print(responseJson);
-        // if (responseMsg == "Conversation created successfully") {
-        //   // return true;
-        // } else if (responseMsg == "Conversation already exists") {
-        //   // return true;
-        // } else {
-        //   // return false;
-        // }
-      } else {
-        throw Exception(response.statusMessage);
+      if (response!.statusCode == 200) {
+        var responseJson = response.data;
+        if (responseJson != null) {
+          var responseJson = response.data;
+          if (responseJson != null) {
+            List<dynamic> jsonList = responseJson;
+            List<ChatMessageModel> chatMessages = jsonList.map((json) => ChatMessageModel.fromJson(json)).toList();
+            return chatMessages;
+          } else {
+            throw Exception(response.statusMessage);
+          }
+        } else {
+          throw Exception(response.statusMessage);
+        }
       }
     } catch (e) {
       log("getChatUsersList Error", error: e);
-      // return false;
+      return [];
     }
+    return [];
   }
 
   @override
@@ -139,15 +142,12 @@ class ChatRemoteDataSourceImpl implements ChatRemoteDataSource {
 
       var responseJson = response!.data;
       if (responseJson != null) {
-        // var responseMsg = responseJson['message'];
-        print(responseJson);
-        // if (responseMsg == "Conversation created successfully") {
-        return true;
-        // } else if (responseMsg == "Conversation already exists") {
-        //   // return true;
-        // } else {
-        //   // return false;
-        // }
+        var responseMsg = responseJson['message'];
+        if (responseMsg == "Message sent successfully") {
+          return true;
+        } else {
+          return false;
+        }
       } else {
         throw Exception(response.statusMessage);
       }

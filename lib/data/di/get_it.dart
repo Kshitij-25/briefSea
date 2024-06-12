@@ -25,7 +25,7 @@ Future init() async {
       request: false,
       responseBody: false,
       responseHeader: false,
-      error: true,
+      error: false,
     )));
 
   getItInstance.registerLazySingleton<ApiClient>(() => ApiClient(getItInstance()));
