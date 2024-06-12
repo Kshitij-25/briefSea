@@ -50,11 +50,7 @@ class MyBriefsScreen extends ConsumerWidget {
                       } else {
                         await ref.read(deleteLikeProvider(
                           likeId: brief.postLikeId,
-                          type: brief.type,
-                          uName: userDetails['user_name'],
-                          userId: userDetails['user_id'],
                           threadId: brief.id,
-                          replyId: null,
                         ).future);
                       }
                       ref.invalidate(getAllBriefsProvider);

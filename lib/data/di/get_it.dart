@@ -18,7 +18,15 @@ import '../repositories/auth_repository.dart';
 final getItInstance = GetIt.I;
 
 Future init() async {
-  getItInstance.registerLazySingleton<Dio>(() => Dio()..interceptors.add(LogInterceptor(requestHeader: false, requestBody: false)));
+  getItInstance.registerLazySingleton<Dio>(() => Dio()
+    ..interceptors.add(LogInterceptor(
+      requestHeader: false,
+      requestBody: false,
+      request: false,
+      responseBody: false,
+      responseHeader: false,
+      error: true,
+    )));
 
   getItInstance.registerLazySingleton<ApiClient>(() => ApiClient(getItInstance()));
 

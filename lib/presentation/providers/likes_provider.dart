@@ -3,7 +3,6 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import '../../data/core/api_client.dart';
 import '../../data/data_sources/like_remote_data_source.dart';
 import '../../data/di/get_it.dart';
-import '../../data/models/briefs_model.dart';
 import '../../data/models/like_model.dart';
 import '../../data/repositories/like_repository.dart';
 
@@ -27,8 +26,8 @@ Future<bool> postLike(
   required String? userId,
   required String? uName,
   String? replyId,
-  required threadId,
-  required type,
+  required String? threadId,
+  required String? type,
 }) async {
   final likeRepository = ref.watch(likeRepositoryProvider);
   final eitherLikenOrError = await likeRepository.postLike(
@@ -47,7 +46,7 @@ Future<bool> postLike(
 }
 
 @riverpod
-Future<LikeModel> getALike(GetALikeRef ref, {threadId}) async {
+Future<LikeModel> getALike(GetALikeRef ref, {String? threadId}) async {
   final likeRepository = ref.watch(likeRepositoryProvider);
   final eitherLikenOrError = await likeRepository.getALike(threadId);
   return eitherLikenOrError!.fold(
@@ -59,9 +58,9 @@ Future<LikeModel> getALike(GetALikeRef ref, {threadId}) async {
 }
 
 @riverpod
-Future<bool> deleteLike(DeleteLikeRef ref, {required userId, required uName, required type, threadId, replyId, required likeId}) async {
+Future<bool> deleteLike(DeleteLikeRef ref, {required String? threadId, required String? likeId}) async {
   final likeRepository = ref.watch(likeRepositoryProvider);
-  final eitherLikenOrError = await likeRepository.deleteLike(userId, uName, type, threadId, replyId, likeId);
+  final eitherLikenOrError = await likeRepository.deleteLike(threadId, likeId);
   return eitherLikenOrError!.fold(
     (error) {
       throw error; // Throw the error for Riverpod to handle

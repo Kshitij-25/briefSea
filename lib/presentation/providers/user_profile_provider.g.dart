@@ -58,7 +58,7 @@ final getUserProfileProvider =
 );
 
 typedef GetUserProfileRef = AutoDisposeFutureProviderRef<UserProfileModel>;
-String _$verifyProfileHash() => r'daf8ca7a73c952af838cdadcdcc9a8de5aae6216';
+String _$verifyProfileHash() => r'2604c1af6f02b80c12909ac4e88fb6a30e2c6415';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -92,18 +92,18 @@ class VerifyProfileFamily extends Family<AsyncValue<String>> {
 
   /// See also [verifyProfile].
   VerifyProfileProvider call({
-    required dynamic userId,
-    required dynamic uName,
-    required dynamic countryCode,
-    required dynamic contact,
-    required dynamic jobTitle,
-    required dynamic company,
-    required dynamic industry,
-    required dynamic expertise,
-    required dynamic location,
-    required dynamic avatarSrc,
-    required dynamic bannerSrc,
-    required dynamic jwtToken,
+    required String? userId,
+    required String? uName,
+    required int? countryCode,
+    required int? contact,
+    required String? jobTitle,
+    required String? company,
+    required String? industry,
+    required String? expertise,
+    required String? location,
+    required String? avatarSrc,
+    required String? bannerSrc,
+    required String? jwtToken,
   }) {
     return VerifyProfileProvider(
       userId: userId,
@@ -160,18 +160,18 @@ class VerifyProfileFamily extends Family<AsyncValue<String>> {
 class VerifyProfileProvider extends AutoDisposeFutureProvider<String> {
   /// See also [verifyProfile].
   VerifyProfileProvider({
-    required dynamic userId,
-    required dynamic uName,
-    required dynamic countryCode,
-    required dynamic contact,
-    required dynamic jobTitle,
-    required dynamic company,
-    required dynamic industry,
-    required dynamic expertise,
-    required dynamic location,
-    required dynamic avatarSrc,
-    required dynamic bannerSrc,
-    required dynamic jwtToken,
+    required String? userId,
+    required String? uName,
+    required int? countryCode,
+    required int? contact,
+    required String? jobTitle,
+    required String? company,
+    required String? industry,
+    required String? expertise,
+    required String? location,
+    required String? avatarSrc,
+    required String? bannerSrc,
+    required String? jwtToken,
   }) : this._internal(
           (ref) => verifyProfile(
             ref as VerifyProfileRef,
@@ -232,18 +232,18 @@ class VerifyProfileProvider extends AutoDisposeFutureProvider<String> {
     required this.jwtToken,
   }) : super.internal();
 
-  final dynamic userId;
-  final dynamic uName;
-  final dynamic countryCode;
-  final dynamic contact;
-  final dynamic jobTitle;
-  final dynamic company;
-  final dynamic industry;
-  final dynamic expertise;
-  final dynamic location;
-  final dynamic avatarSrc;
-  final dynamic bannerSrc;
-  final dynamic jwtToken;
+  final String? userId;
+  final String? uName;
+  final int? countryCode;
+  final int? contact;
+  final String? jobTitle;
+  final String? company;
+  final String? industry;
+  final String? expertise;
+  final String? location;
+  final String? avatarSrc;
+  final String? bannerSrc;
+  final String? jwtToken;
 
   @override
   Override overrideWith(
@@ -318,40 +318,40 @@ class VerifyProfileProvider extends AutoDisposeFutureProvider<String> {
 
 mixin VerifyProfileRef on AutoDisposeFutureProviderRef<String> {
   /// The parameter `userId` of this provider.
-  dynamic get userId;
+  String? get userId;
 
   /// The parameter `uName` of this provider.
-  dynamic get uName;
+  String? get uName;
 
   /// The parameter `countryCode` of this provider.
-  dynamic get countryCode;
+  int? get countryCode;
 
   /// The parameter `contact` of this provider.
-  dynamic get contact;
+  int? get contact;
 
   /// The parameter `jobTitle` of this provider.
-  dynamic get jobTitle;
+  String? get jobTitle;
 
   /// The parameter `company` of this provider.
-  dynamic get company;
+  String? get company;
 
   /// The parameter `industry` of this provider.
-  dynamic get industry;
+  String? get industry;
 
   /// The parameter `expertise` of this provider.
-  dynamic get expertise;
+  String? get expertise;
 
   /// The parameter `location` of this provider.
-  dynamic get location;
+  String? get location;
 
   /// The parameter `avatarSrc` of this provider.
-  dynamic get avatarSrc;
+  String? get avatarSrc;
 
   /// The parameter `bannerSrc` of this provider.
-  dynamic get bannerSrc;
+  String? get bannerSrc;
 
   /// The parameter `jwtToken` of this provider.
-  dynamic get jwtToken;
+  String? get jwtToken;
 }
 
 class _VerifyProfileProviderElement
@@ -359,32 +359,337 @@ class _VerifyProfileProviderElement
   _VerifyProfileProviderElement(super.provider);
 
   @override
-  dynamic get userId => (origin as VerifyProfileProvider).userId;
+  String? get userId => (origin as VerifyProfileProvider).userId;
   @override
-  dynamic get uName => (origin as VerifyProfileProvider).uName;
+  String? get uName => (origin as VerifyProfileProvider).uName;
   @override
-  dynamic get countryCode => (origin as VerifyProfileProvider).countryCode;
+  int? get countryCode => (origin as VerifyProfileProvider).countryCode;
   @override
-  dynamic get contact => (origin as VerifyProfileProvider).contact;
+  int? get contact => (origin as VerifyProfileProvider).contact;
   @override
-  dynamic get jobTitle => (origin as VerifyProfileProvider).jobTitle;
+  String? get jobTitle => (origin as VerifyProfileProvider).jobTitle;
   @override
-  dynamic get company => (origin as VerifyProfileProvider).company;
+  String? get company => (origin as VerifyProfileProvider).company;
   @override
-  dynamic get industry => (origin as VerifyProfileProvider).industry;
+  String? get industry => (origin as VerifyProfileProvider).industry;
   @override
-  dynamic get expertise => (origin as VerifyProfileProvider).expertise;
+  String? get expertise => (origin as VerifyProfileProvider).expertise;
   @override
-  dynamic get location => (origin as VerifyProfileProvider).location;
+  String? get location => (origin as VerifyProfileProvider).location;
   @override
-  dynamic get avatarSrc => (origin as VerifyProfileProvider).avatarSrc;
+  String? get avatarSrc => (origin as VerifyProfileProvider).avatarSrc;
   @override
-  dynamic get bannerSrc => (origin as VerifyProfileProvider).bannerSrc;
+  String? get bannerSrc => (origin as VerifyProfileProvider).bannerSrc;
   @override
-  dynamic get jwtToken => (origin as VerifyProfileProvider).jwtToken;
+  String? get jwtToken => (origin as VerifyProfileProvider).jwtToken;
 }
 
-String _$uploadAvatarHash() => r'6c6d1683f3024278dbbda977ae32ca18189afc9c';
+String _$editProfileHash() => r'05e7b2baf5f5a147b795e06afb9baa619f0d7165';
+
+/// See also [editProfile].
+@ProviderFor(editProfile)
+const editProfileProvider = EditProfileFamily();
+
+/// See also [editProfile].
+class EditProfileFamily extends Family<AsyncValue<String>> {
+  /// See also [editProfile].
+  const EditProfileFamily();
+
+  /// See also [editProfile].
+  EditProfileProvider call({
+    required String? userId,
+    required String? uName,
+    required int? countryCode,
+    required int? contact,
+    required String? jobTitle,
+    required String? company,
+    required String? industry,
+    required String? expertise,
+    required String? location,
+    required String? avatarSrc,
+    required String? bannerSrc,
+    required String? jwtToken,
+  }) {
+    return EditProfileProvider(
+      userId: userId,
+      uName: uName,
+      countryCode: countryCode,
+      contact: contact,
+      jobTitle: jobTitle,
+      company: company,
+      industry: industry,
+      expertise: expertise,
+      location: location,
+      avatarSrc: avatarSrc,
+      bannerSrc: bannerSrc,
+      jwtToken: jwtToken,
+    );
+  }
+
+  @override
+  EditProfileProvider getProviderOverride(
+    covariant EditProfileProvider provider,
+  ) {
+    return call(
+      userId: provider.userId,
+      uName: provider.uName,
+      countryCode: provider.countryCode,
+      contact: provider.contact,
+      jobTitle: provider.jobTitle,
+      company: provider.company,
+      industry: provider.industry,
+      expertise: provider.expertise,
+      location: provider.location,
+      avatarSrc: provider.avatarSrc,
+      bannerSrc: provider.bannerSrc,
+      jwtToken: provider.jwtToken,
+    );
+  }
+
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'editProfileProvider';
+}
+
+/// See also [editProfile].
+class EditProfileProvider extends AutoDisposeFutureProvider<String> {
+  /// See also [editProfile].
+  EditProfileProvider({
+    required String? userId,
+    required String? uName,
+    required int? countryCode,
+    required int? contact,
+    required String? jobTitle,
+    required String? company,
+    required String? industry,
+    required String? expertise,
+    required String? location,
+    required String? avatarSrc,
+    required String? bannerSrc,
+    required String? jwtToken,
+  }) : this._internal(
+          (ref) => editProfile(
+            ref as EditProfileRef,
+            userId: userId,
+            uName: uName,
+            countryCode: countryCode,
+            contact: contact,
+            jobTitle: jobTitle,
+            company: company,
+            industry: industry,
+            expertise: expertise,
+            location: location,
+            avatarSrc: avatarSrc,
+            bannerSrc: bannerSrc,
+            jwtToken: jwtToken,
+          ),
+          from: editProfileProvider,
+          name: r'editProfileProvider',
+          debugGetCreateSourceHash:
+              const bool.fromEnvironment('dart.vm.product')
+                  ? null
+                  : _$editProfileHash,
+          dependencies: EditProfileFamily._dependencies,
+          allTransitiveDependencies:
+              EditProfileFamily._allTransitiveDependencies,
+          userId: userId,
+          uName: uName,
+          countryCode: countryCode,
+          contact: contact,
+          jobTitle: jobTitle,
+          company: company,
+          industry: industry,
+          expertise: expertise,
+          location: location,
+          avatarSrc: avatarSrc,
+          bannerSrc: bannerSrc,
+          jwtToken: jwtToken,
+        );
+
+  EditProfileProvider._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.userId,
+    required this.uName,
+    required this.countryCode,
+    required this.contact,
+    required this.jobTitle,
+    required this.company,
+    required this.industry,
+    required this.expertise,
+    required this.location,
+    required this.avatarSrc,
+    required this.bannerSrc,
+    required this.jwtToken,
+  }) : super.internal();
+
+  final String? userId;
+  final String? uName;
+  final int? countryCode;
+  final int? contact;
+  final String? jobTitle;
+  final String? company;
+  final String? industry;
+  final String? expertise;
+  final String? location;
+  final String? avatarSrc;
+  final String? bannerSrc;
+  final String? jwtToken;
+
+  @override
+  Override overrideWith(
+    FutureOr<String> Function(EditProfileRef provider) create,
+  ) {
+    return ProviderOverride(
+      origin: this,
+      override: EditProfileProvider._internal(
+        (ref) => create(ref as EditProfileRef),
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        userId: userId,
+        uName: uName,
+        countryCode: countryCode,
+        contact: contact,
+        jobTitle: jobTitle,
+        company: company,
+        industry: industry,
+        expertise: expertise,
+        location: location,
+        avatarSrc: avatarSrc,
+        bannerSrc: bannerSrc,
+        jwtToken: jwtToken,
+      ),
+    );
+  }
+
+  @override
+  AutoDisposeFutureProviderElement<String> createElement() {
+    return _EditProfileProviderElement(this);
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is EditProfileProvider &&
+        other.userId == userId &&
+        other.uName == uName &&
+        other.countryCode == countryCode &&
+        other.contact == contact &&
+        other.jobTitle == jobTitle &&
+        other.company == company &&
+        other.industry == industry &&
+        other.expertise == expertise &&
+        other.location == location &&
+        other.avatarSrc == avatarSrc &&
+        other.bannerSrc == bannerSrc &&
+        other.jwtToken == jwtToken;
+  }
+
+  @override
+  int get hashCode {
+    var hash = _SystemHash.combine(0, runtimeType.hashCode);
+    hash = _SystemHash.combine(hash, userId.hashCode);
+    hash = _SystemHash.combine(hash, uName.hashCode);
+    hash = _SystemHash.combine(hash, countryCode.hashCode);
+    hash = _SystemHash.combine(hash, contact.hashCode);
+    hash = _SystemHash.combine(hash, jobTitle.hashCode);
+    hash = _SystemHash.combine(hash, company.hashCode);
+    hash = _SystemHash.combine(hash, industry.hashCode);
+    hash = _SystemHash.combine(hash, expertise.hashCode);
+    hash = _SystemHash.combine(hash, location.hashCode);
+    hash = _SystemHash.combine(hash, avatarSrc.hashCode);
+    hash = _SystemHash.combine(hash, bannerSrc.hashCode);
+    hash = _SystemHash.combine(hash, jwtToken.hashCode);
+
+    return _SystemHash.finish(hash);
+  }
+}
+
+mixin EditProfileRef on AutoDisposeFutureProviderRef<String> {
+  /// The parameter `userId` of this provider.
+  String? get userId;
+
+  /// The parameter `uName` of this provider.
+  String? get uName;
+
+  /// The parameter `countryCode` of this provider.
+  int? get countryCode;
+
+  /// The parameter `contact` of this provider.
+  int? get contact;
+
+  /// The parameter `jobTitle` of this provider.
+  String? get jobTitle;
+
+  /// The parameter `company` of this provider.
+  String? get company;
+
+  /// The parameter `industry` of this provider.
+  String? get industry;
+
+  /// The parameter `expertise` of this provider.
+  String? get expertise;
+
+  /// The parameter `location` of this provider.
+  String? get location;
+
+  /// The parameter `avatarSrc` of this provider.
+  String? get avatarSrc;
+
+  /// The parameter `bannerSrc` of this provider.
+  String? get bannerSrc;
+
+  /// The parameter `jwtToken` of this provider.
+  String? get jwtToken;
+}
+
+class _EditProfileProviderElement
+    extends AutoDisposeFutureProviderElement<String> with EditProfileRef {
+  _EditProfileProviderElement(super.provider);
+
+  @override
+  String? get userId => (origin as EditProfileProvider).userId;
+  @override
+  String? get uName => (origin as EditProfileProvider).uName;
+  @override
+  int? get countryCode => (origin as EditProfileProvider).countryCode;
+  @override
+  int? get contact => (origin as EditProfileProvider).contact;
+  @override
+  String? get jobTitle => (origin as EditProfileProvider).jobTitle;
+  @override
+  String? get company => (origin as EditProfileProvider).company;
+  @override
+  String? get industry => (origin as EditProfileProvider).industry;
+  @override
+  String? get expertise => (origin as EditProfileProvider).expertise;
+  @override
+  String? get location => (origin as EditProfileProvider).location;
+  @override
+  String? get avatarSrc => (origin as EditProfileProvider).avatarSrc;
+  @override
+  String? get bannerSrc => (origin as EditProfileProvider).bannerSrc;
+  @override
+  String? get jwtToken => (origin as EditProfileProvider).jwtToken;
+}
+
+String _$uploadAvatarHash() => r'61fe86ad290922040445493c16a074927d96ad22';
 
 /// See also [uploadAvatar].
 @ProviderFor(uploadAvatar)
@@ -397,10 +702,10 @@ class UploadAvatarFamily extends Family<AsyncValue<AvatarModel>> {
 
   /// See also [uploadAvatar].
   UploadAvatarProvider call({
-    required dynamic fileName,
-    required dynamic fileType,
-    required dynamic userId,
-    required dynamic userType,
+    required String? fileName,
+    required MediaType fileType,
+    required String? userId,
+    required String? userType,
   }) {
     return UploadAvatarProvider(
       fileName: fileName,
@@ -441,10 +746,10 @@ class UploadAvatarFamily extends Family<AsyncValue<AvatarModel>> {
 class UploadAvatarProvider extends AutoDisposeFutureProvider<AvatarModel> {
   /// See also [uploadAvatar].
   UploadAvatarProvider({
-    required dynamic fileName,
-    required dynamic fileType,
-    required dynamic userId,
-    required dynamic userType,
+    required String? fileName,
+    required MediaType fileType,
+    required String? userId,
+    required String? userType,
   }) : this._internal(
           (ref) => uploadAvatar(
             ref as UploadAvatarRef,
@@ -481,10 +786,10 @@ class UploadAvatarProvider extends AutoDisposeFutureProvider<AvatarModel> {
     required this.userType,
   }) : super.internal();
 
-  final dynamic fileName;
-  final dynamic fileType;
-  final dynamic userId;
-  final dynamic userType;
+  final String? fileName;
+  final MediaType fileType;
+  final String? userId;
+  final String? userType;
 
   @override
   Override overrideWith(
@@ -535,16 +840,16 @@ class UploadAvatarProvider extends AutoDisposeFutureProvider<AvatarModel> {
 
 mixin UploadAvatarRef on AutoDisposeFutureProviderRef<AvatarModel> {
   /// The parameter `fileName` of this provider.
-  dynamic get fileName;
+  String? get fileName;
 
   /// The parameter `fileType` of this provider.
-  dynamic get fileType;
+  MediaType get fileType;
 
   /// The parameter `userId` of this provider.
-  dynamic get userId;
+  String? get userId;
 
   /// The parameter `userType` of this provider.
-  dynamic get userType;
+  String? get userType;
 }
 
 class _UploadAvatarProviderElement
@@ -552,16 +857,16 @@ class _UploadAvatarProviderElement
   _UploadAvatarProviderElement(super.provider);
 
   @override
-  dynamic get fileName => (origin as UploadAvatarProvider).fileName;
+  String? get fileName => (origin as UploadAvatarProvider).fileName;
   @override
-  dynamic get fileType => (origin as UploadAvatarProvider).fileType;
+  MediaType get fileType => (origin as UploadAvatarProvider).fileType;
   @override
-  dynamic get userId => (origin as UploadAvatarProvider).userId;
+  String? get userId => (origin as UploadAvatarProvider).userId;
   @override
-  dynamic get userType => (origin as UploadAvatarProvider).userType;
+  String? get userType => (origin as UploadAvatarProvider).userType;
 }
 
-String _$uploadBannerHash() => r'516cac4d475dc79f810ae3db489e2810c17c37b8';
+String _$uploadBannerHash() => r'8b8b3b50ae4ca8f2d06dda3270e7a42fecb4ea51';
 
 /// See also [uploadBanner].
 @ProviderFor(uploadBanner)
@@ -574,10 +879,10 @@ class UploadBannerFamily extends Family<AsyncValue<BannerModel>> {
 
   /// See also [uploadBanner].
   UploadBannerProvider call({
-    required dynamic fileName,
-    required dynamic fileType,
-    required dynamic userId,
-    required dynamic userType,
+    required String? fileName,
+    required MediaType fileType,
+    required String? userId,
+    required String? userType,
   }) {
     return UploadBannerProvider(
       fileName: fileName,
@@ -618,10 +923,10 @@ class UploadBannerFamily extends Family<AsyncValue<BannerModel>> {
 class UploadBannerProvider extends AutoDisposeFutureProvider<BannerModel> {
   /// See also [uploadBanner].
   UploadBannerProvider({
-    required dynamic fileName,
-    required dynamic fileType,
-    required dynamic userId,
-    required dynamic userType,
+    required String? fileName,
+    required MediaType fileType,
+    required String? userId,
+    required String? userType,
   }) : this._internal(
           (ref) => uploadBanner(
             ref as UploadBannerRef,
@@ -658,10 +963,10 @@ class UploadBannerProvider extends AutoDisposeFutureProvider<BannerModel> {
     required this.userType,
   }) : super.internal();
 
-  final dynamic fileName;
-  final dynamic fileType;
-  final dynamic userId;
-  final dynamic userType;
+  final String? fileName;
+  final MediaType fileType;
+  final String? userId;
+  final String? userType;
 
   @override
   Override overrideWith(
@@ -712,16 +1017,16 @@ class UploadBannerProvider extends AutoDisposeFutureProvider<BannerModel> {
 
 mixin UploadBannerRef on AutoDisposeFutureProviderRef<BannerModel> {
   /// The parameter `fileName` of this provider.
-  dynamic get fileName;
+  String? get fileName;
 
   /// The parameter `fileType` of this provider.
-  dynamic get fileType;
+  MediaType get fileType;
 
   /// The parameter `userId` of this provider.
-  dynamic get userId;
+  String? get userId;
 
   /// The parameter `userType` of this provider.
-  dynamic get userType;
+  String? get userType;
 }
 
 class _UploadBannerProviderElement
@@ -729,16 +1034,16 @@ class _UploadBannerProviderElement
   _UploadBannerProviderElement(super.provider);
 
   @override
-  dynamic get fileName => (origin as UploadBannerProvider).fileName;
+  String? get fileName => (origin as UploadBannerProvider).fileName;
   @override
-  dynamic get fileType => (origin as UploadBannerProvider).fileType;
+  MediaType get fileType => (origin as UploadBannerProvider).fileType;
   @override
-  dynamic get userId => (origin as UploadBannerProvider).userId;
+  String? get userId => (origin as UploadBannerProvider).userId;
   @override
-  dynamic get userType => (origin as UploadBannerProvider).userType;
+  String? get userType => (origin as UploadBannerProvider).userType;
 }
 
-String _$uploadToAWSHash() => r'b6ef84a9abc39f898e7ee19bbfc9300312ce22ba';
+String _$uploadToAWSHash() => r'7bcc951f4db9033e828445857c56123dff26b07f';
 
 /// See also [uploadToAWS].
 @ProviderFor(uploadToAWS)
@@ -751,8 +1056,8 @@ class UploadToAWSFamily extends Family<AsyncValue<bool>> {
 
   /// See also [uploadToAWS].
   UploadToAWSProvider call({
-    required dynamic url,
-    required dynamic fileName,
+    required String? url,
+    required String? fileName,
     required File file,
     required MediaType fileType,
   }) {
@@ -795,8 +1100,8 @@ class UploadToAWSFamily extends Family<AsyncValue<bool>> {
 class UploadToAWSProvider extends AutoDisposeFutureProvider<bool> {
   /// See also [uploadToAWS].
   UploadToAWSProvider({
-    required dynamic url,
-    required dynamic fileName,
+    required String? url,
+    required String? fileName,
     required File file,
     required MediaType fileType,
   }) : this._internal(
@@ -835,8 +1140,8 @@ class UploadToAWSProvider extends AutoDisposeFutureProvider<bool> {
     required this.fileType,
   }) : super.internal();
 
-  final dynamic url;
-  final dynamic fileName;
+  final String? url;
+  final String? fileName;
   final File file;
   final MediaType fileType;
 
@@ -889,10 +1194,10 @@ class UploadToAWSProvider extends AutoDisposeFutureProvider<bool> {
 
 mixin UploadToAWSRef on AutoDisposeFutureProviderRef<bool> {
   /// The parameter `url` of this provider.
-  dynamic get url;
+  String? get url;
 
   /// The parameter `fileName` of this provider.
-  dynamic get fileName;
+  String? get fileName;
 
   /// The parameter `file` of this provider.
   File get file;
@@ -906,9 +1211,9 @@ class _UploadToAWSProviderElement extends AutoDisposeFutureProviderElement<bool>
   _UploadToAWSProviderElement(super.provider);
 
   @override
-  dynamic get url => (origin as UploadToAWSProvider).url;
+  String? get url => (origin as UploadToAWSProvider).url;
   @override
-  dynamic get fileName => (origin as UploadToAWSProvider).fileName;
+  String? get fileName => (origin as UploadToAWSProvider).fileName;
   @override
   File get file => (origin as UploadToAWSProvider).file;
   @override

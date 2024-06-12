@@ -165,8 +165,15 @@ class ProfessionalRegisterScreen extends ConsumerWidget {
                           //   AppUtility(context).message("Registered Successfully. Check email to Verify Profile and Login.");
                           //   GoRouter.of(context).pop();
                           // }
-                          await ref.read(registerNotifierProvider.notifier).registerUser(professionalUserName.text, professionalEmail.text,
-                              professionalPass.text, "professional", selectedSubType, ref, context);
+                          await ref.read(registerNotifierProvider.notifier).registerUser(
+                                professionalUserName.text,
+                                professionalEmail.text,
+                                professionalPass.text,
+                                selectedSubType == "Working" ? "professional" : "owner",
+                                selectedSubType,
+                                ref,
+                                context,
+                              );
                         }
                       },
                     ),

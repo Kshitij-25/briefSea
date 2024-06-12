@@ -69,12 +69,12 @@ class ApiClient {
     return null;
   }
 
-  Future<Response<dynamic>?> putReq({url, body, jwtToken}) async {
+  Future<Response<dynamic>?> putReq({url, body, jwtToken, contentType}) async {
     try {
       var headers = jwtToken != null
           ? {
               'Accept': 'application/json, text/plain, */*',
-              'Content-Type': 'application/json',
+              'Content-Type': contentType ?? 'application/json',
               'Authorization': 'Bearer $jwtToken',
             }
           : {
@@ -85,6 +85,7 @@ class ApiClient {
         url,
         data: body,
         options: Options(
+          contentType: "application/octet-stream",
           headers: headers,
         ),
       );
@@ -108,6 +109,32 @@ class ApiClient {
         'Authorization': 'Bearer $jwtToken',
       };
       final response = await _dio.delete(
+        url,
+        data: body,
+        options: Options(
+          headers: headers,
+        ),
+      );
+
+      if (response.statusCode == 200) {
+        return response;
+      } else {
+        throw DioRequestException("HTTP error: ${response.statusCode}");
+      }
+    } catch (e) {
+      handleDioError(e);
+    }
+    return null;
+  }
+
+  Future<Response<dynamic>?> patchReq({url, body, jwtToken}) async {
+    try {
+      var headers = {
+        'Accept': 'application/json, text/plain, */*',
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $jwtToken',
+      };
+      final response = await _dio.patch(
         url,
         data: body,
         options: Options(

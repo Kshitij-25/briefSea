@@ -1,4 +1,3 @@
-import 'package:briefsea/data/models/login_model.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -8,6 +7,7 @@ import '../../common/enums/login_register_enum.dart';
 import '../../data/core/api_client.dart';
 import '../../data/data_sources/auth_remote_data_source.dart';
 import '../../data/di/get_it.dart';
+import '../../data/models/login_model.dart';
 import '../../data/repositories/auth_repository.dart';
 import '../../main.dart';
 import '../screens/auth_screens/verify_profile_screen.dart';
@@ -87,16 +87,18 @@ Future<bool> registerUser(RegisterUserRef ref,
 class RegisterNotifier extends StateNotifier<RegisterState> {
   RegisterNotifier() : super(RegisterState.idle);
 
-  Future<void> registerUser(userName, email, password, type, subType, WidgetRef ref, context) async {
+  Future<void> registerUser(String? userName, String? email, String? password, String? type, String? subType, WidgetRef ref, context) async {
     state = RegisterState.loading;
     try {
-      final isRegistered = await ref.read(registerUserProvider(
-        userName: userName,
-        email: email,
-        password: password,
-        type: type,
-        subType: subType,
-      ).future);
+      final isRegistered = await ref.read(
+        registerUserProvider(
+          userName: userName!,
+          email: email!,
+          password: password!,
+          type: type!,
+          subType: subType!,
+        ).future,
+      );
 
       if (isRegistered == true) {
         AppUtility(context).message("Registered Successfully. Check email to Verify Profile and Login.");

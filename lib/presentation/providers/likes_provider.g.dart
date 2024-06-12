@@ -38,7 +38,7 @@ final likeRepositoryProvider = AutoDisposeProvider<LikeRepository>.internal(
 );
 
 typedef LikeRepositoryRef = AutoDisposeProviderRef<LikeRepository>;
-String _$postLikeHash() => r'c960e43d2789899b9d1792afd619ca36a93e384d';
+String _$postLikeHash() => r'bceace2fa739d23d975dffb5a48daf30ce6e25ad';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -75,8 +75,8 @@ class PostLikeFamily extends Family<AsyncValue<bool>> {
     required String? userId,
     required String? uName,
     String? replyId,
-    required dynamic threadId,
-    required dynamic type,
+    required String? threadId,
+    required String? type,
   }) {
     return PostLikeProvider(
       userId: userId,
@@ -122,8 +122,8 @@ class PostLikeProvider extends AutoDisposeFutureProvider<bool> {
     required String? userId,
     required String? uName,
     String? replyId,
-    required dynamic threadId,
-    required dynamic type,
+    required String? threadId,
+    required String? type,
   }) : this._internal(
           (ref) => postLike(
             ref as PostLikeRef,
@@ -165,8 +165,8 @@ class PostLikeProvider extends AutoDisposeFutureProvider<bool> {
   final String? userId;
   final String? uName;
   final String? replyId;
-  final dynamic threadId;
-  final dynamic type;
+  final String? threadId;
+  final String? type;
 
   @override
   Override overrideWith(
@@ -229,10 +229,10 @@ mixin PostLikeRef on AutoDisposeFutureProviderRef<bool> {
   String? get replyId;
 
   /// The parameter `threadId` of this provider.
-  dynamic get threadId;
+  String? get threadId;
 
   /// The parameter `type` of this provider.
-  dynamic get type;
+  String? get type;
 }
 
 class _PostLikeProviderElement extends AutoDisposeFutureProviderElement<bool>
@@ -246,12 +246,12 @@ class _PostLikeProviderElement extends AutoDisposeFutureProviderElement<bool>
   @override
   String? get replyId => (origin as PostLikeProvider).replyId;
   @override
-  dynamic get threadId => (origin as PostLikeProvider).threadId;
+  String? get threadId => (origin as PostLikeProvider).threadId;
   @override
-  dynamic get type => (origin as PostLikeProvider).type;
+  String? get type => (origin as PostLikeProvider).type;
 }
 
-String _$getALikeHash() => r'6899fd586019c7ff99a8e76d4a416ad9b4413cc3';
+String _$getALikeHash() => r'f7bc2a5bc95fde7bb1c2cac73903127a797a7eb7';
 
 /// See also [getALike].
 @ProviderFor(getALike)
@@ -264,7 +264,7 @@ class GetALikeFamily extends Family<AsyncValue<LikeModel>> {
 
   /// See also [getALike].
   GetALikeProvider call({
-    dynamic threadId,
+    String? threadId,
   }) {
     return GetALikeProvider(
       threadId: threadId,
@@ -299,7 +299,7 @@ class GetALikeFamily extends Family<AsyncValue<LikeModel>> {
 class GetALikeProvider extends AutoDisposeFutureProvider<LikeModel> {
   /// See also [getALike].
   GetALikeProvider({
-    dynamic threadId,
+    String? threadId,
   }) : this._internal(
           (ref) => getALike(
             ref as GetALikeRef,
@@ -326,7 +326,7 @@ class GetALikeProvider extends AutoDisposeFutureProvider<LikeModel> {
     required this.threadId,
   }) : super.internal();
 
-  final dynamic threadId;
+  final String? threadId;
 
   @override
   Override overrideWith(
@@ -367,7 +367,7 @@ class GetALikeProvider extends AutoDisposeFutureProvider<LikeModel> {
 
 mixin GetALikeRef on AutoDisposeFutureProviderRef<LikeModel> {
   /// The parameter `threadId` of this provider.
-  dynamic get threadId;
+  String? get threadId;
 }
 
 class _GetALikeProviderElement
@@ -375,10 +375,10 @@ class _GetALikeProviderElement
   _GetALikeProviderElement(super.provider);
 
   @override
-  dynamic get threadId => (origin as GetALikeProvider).threadId;
+  String? get threadId => (origin as GetALikeProvider).threadId;
 }
 
-String _$deleteLikeHash() => r'2a646e42903c9353609689dc0050baf5e99b3388';
+String _$deleteLikeHash() => r'231e4dc6847a56c7fcfacbd016544556763be3de';
 
 /// See also [deleteLike].
 @ProviderFor(deleteLike)
@@ -391,19 +391,11 @@ class DeleteLikeFamily extends Family<AsyncValue<bool>> {
 
   /// See also [deleteLike].
   DeleteLikeProvider call({
-    required dynamic userId,
-    required dynamic uName,
-    required dynamic type,
-    dynamic threadId,
-    dynamic replyId,
-    required dynamic likeId,
+    required String? threadId,
+    required String? likeId,
   }) {
     return DeleteLikeProvider(
-      userId: userId,
-      uName: uName,
-      type: type,
       threadId: threadId,
-      replyId: replyId,
       likeId: likeId,
     );
   }
@@ -413,11 +405,7 @@ class DeleteLikeFamily extends Family<AsyncValue<bool>> {
     covariant DeleteLikeProvider provider,
   ) {
     return call(
-      userId: provider.userId,
-      uName: provider.uName,
-      type: provider.type,
       threadId: provider.threadId,
-      replyId: provider.replyId,
       likeId: provider.likeId,
     );
   }
@@ -441,20 +429,12 @@ class DeleteLikeFamily extends Family<AsyncValue<bool>> {
 class DeleteLikeProvider extends AutoDisposeFutureProvider<bool> {
   /// See also [deleteLike].
   DeleteLikeProvider({
-    required dynamic userId,
-    required dynamic uName,
-    required dynamic type,
-    dynamic threadId,
-    dynamic replyId,
-    required dynamic likeId,
+    required String? threadId,
+    required String? likeId,
   }) : this._internal(
           (ref) => deleteLike(
             ref as DeleteLikeRef,
-            userId: userId,
-            uName: uName,
-            type: type,
             threadId: threadId,
-            replyId: replyId,
             likeId: likeId,
           ),
           from: deleteLikeProvider,
@@ -466,11 +446,7 @@ class DeleteLikeProvider extends AutoDisposeFutureProvider<bool> {
           dependencies: DeleteLikeFamily._dependencies,
           allTransitiveDependencies:
               DeleteLikeFamily._allTransitiveDependencies,
-          userId: userId,
-          uName: uName,
-          type: type,
           threadId: threadId,
-          replyId: replyId,
           likeId: likeId,
         );
 
@@ -481,20 +457,12 @@ class DeleteLikeProvider extends AutoDisposeFutureProvider<bool> {
     required super.allTransitiveDependencies,
     required super.debugGetCreateSourceHash,
     required super.from,
-    required this.userId,
-    required this.uName,
-    required this.type,
     required this.threadId,
-    required this.replyId,
     required this.likeId,
   }) : super.internal();
 
-  final dynamic userId;
-  final dynamic uName;
-  final dynamic type;
-  final dynamic threadId;
-  final dynamic replyId;
-  final dynamic likeId;
+  final String? threadId;
+  final String? likeId;
 
   @override
   Override overrideWith(
@@ -509,11 +477,7 @@ class DeleteLikeProvider extends AutoDisposeFutureProvider<bool> {
         dependencies: null,
         allTransitiveDependencies: null,
         debugGetCreateSourceHash: null,
-        userId: userId,
-        uName: uName,
-        type: type,
         threadId: threadId,
-        replyId: replyId,
         likeId: likeId,
       ),
     );
@@ -527,22 +491,14 @@ class DeleteLikeProvider extends AutoDisposeFutureProvider<bool> {
   @override
   bool operator ==(Object other) {
     return other is DeleteLikeProvider &&
-        other.userId == userId &&
-        other.uName == uName &&
-        other.type == type &&
         other.threadId == threadId &&
-        other.replyId == replyId &&
         other.likeId == likeId;
   }
 
   @override
   int get hashCode {
     var hash = _SystemHash.combine(0, runtimeType.hashCode);
-    hash = _SystemHash.combine(hash, userId.hashCode);
-    hash = _SystemHash.combine(hash, uName.hashCode);
-    hash = _SystemHash.combine(hash, type.hashCode);
     hash = _SystemHash.combine(hash, threadId.hashCode);
-    hash = _SystemHash.combine(hash, replyId.hashCode);
     hash = _SystemHash.combine(hash, likeId.hashCode);
 
     return _SystemHash.finish(hash);
@@ -550,23 +506,11 @@ class DeleteLikeProvider extends AutoDisposeFutureProvider<bool> {
 }
 
 mixin DeleteLikeRef on AutoDisposeFutureProviderRef<bool> {
-  /// The parameter `userId` of this provider.
-  dynamic get userId;
-
-  /// The parameter `uName` of this provider.
-  dynamic get uName;
-
-  /// The parameter `type` of this provider.
-  dynamic get type;
-
   /// The parameter `threadId` of this provider.
-  dynamic get threadId;
-
-  /// The parameter `replyId` of this provider.
-  dynamic get replyId;
+  String? get threadId;
 
   /// The parameter `likeId` of this provider.
-  dynamic get likeId;
+  String? get likeId;
 }
 
 class _DeleteLikeProviderElement extends AutoDisposeFutureProviderElement<bool>
@@ -574,17 +518,9 @@ class _DeleteLikeProviderElement extends AutoDisposeFutureProviderElement<bool>
   _DeleteLikeProviderElement(super.provider);
 
   @override
-  dynamic get userId => (origin as DeleteLikeProvider).userId;
+  String? get threadId => (origin as DeleteLikeProvider).threadId;
   @override
-  dynamic get uName => (origin as DeleteLikeProvider).uName;
-  @override
-  dynamic get type => (origin as DeleteLikeProvider).type;
-  @override
-  dynamic get threadId => (origin as DeleteLikeProvider).threadId;
-  @override
-  dynamic get replyId => (origin as DeleteLikeProvider).replyId;
-  @override
-  dynamic get likeId => (origin as DeleteLikeProvider).likeId;
+  String? get likeId => (origin as DeleteLikeProvider).likeId;
 }
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member

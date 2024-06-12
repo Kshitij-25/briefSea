@@ -8,8 +8,10 @@ import '../core/api_constants.dart';
 import '../models/chat_user_model.dart';
 
 abstract class ChatRemoteDataSource {
-  Future<List<ChatUserModel>> getChatUsersList(userId);
-  Future<bool> createNewChat(senderId, receiverId);
+  Future<List<ChatUserModel>> getChatUsersList(String? userId);
+  Future<bool> createNewChat(String? senderId, String? receiverId);
+  Future<void> getChatMessages(String? conversationId);
+  Future<bool> sendChatMessage({String? senderId, String? receiverId, String? conversationId, String? messageText, String? typedAt});
 }
 
 class ChatRemoteDataSourceImpl implements ChatRemoteDataSource {
@@ -23,7 +25,7 @@ class ChatRemoteDataSourceImpl implements ChatRemoteDataSource {
   }
 
   @override
-  Future<List<ChatUserModel>> getChatUsersList(userId) async {
+  Future<List<ChatUserModel>> getChatUsersList(String? userId) async {
     var jwtToken = await getJwtToken();
 
     try {
@@ -50,7 +52,7 @@ class ChatRemoteDataSourceImpl implements ChatRemoteDataSource {
   }
 
   @override
-  Future<bool> createNewChat(senderId, receiverId) async {
+  Future<bool> createNewChat(String? senderId, String? receiverId) async {
     var jwtToken = await getJwtToken();
 
     try {
@@ -68,9 +70,84 @@ class ChatRemoteDataSourceImpl implements ChatRemoteDataSource {
         var responseMsg = responseJson['message'];
         if (responseMsg == "Conversation created successfully") {
           return true;
+        } else if (responseMsg == "Conversation already exists") {
+          return true;
         } else {
           return false;
         }
+      } else {
+        throw Exception(response.statusMessage);
+      }
+    } catch (e) {
+      log("getChatUsersList Error", error: e);
+      return false;
+    }
+  }
+
+  @override
+  Future<void> getChatMessages(String? conversationId) async {
+    var jwtToken = await getJwtToken();
+
+    try {
+      Response? response = await _apiClient.getReq(
+        url: "${ApiConstants.getChatMessages}/$conversationId",
+        jwtToken: jwtToken,
+      );
+
+      var responseJson = response!.data;
+      if (responseJson != null) {
+        // var responseMsg = responseJson['message'];
+        print(responseJson);
+        // if (responseMsg == "Conversation created successfully") {
+        //   // return true;
+        // } else if (responseMsg == "Conversation already exists") {
+        //   // return true;
+        // } else {
+        //   // return false;
+        // }
+      } else {
+        throw Exception(response.statusMessage);
+      }
+    } catch (e) {
+      log("getChatUsersList Error", error: e);
+      // return false;
+    }
+  }
+
+  @override
+  Future<bool> sendChatMessage({
+    String? senderId,
+    String? receiverId,
+    String? conversationId,
+    String? messageText,
+    String? typedAt,
+  }) async {
+    var jwtToken = await getJwtToken();
+
+    try {
+      Response? response = await _apiClient.postReq(
+        url: ApiConstants.sendChatMessage,
+        body: {
+          "conversation_id": conversationId,
+          "sender_id": senderId,
+          "receiver_id": receiverId,
+          "message": messageText,
+          "typedAt": typedAt,
+        },
+        jwtToken: jwtToken,
+      );
+
+      var responseJson = response!.data;
+      if (responseJson != null) {
+        // var responseMsg = responseJson['message'];
+        print(responseJson);
+        // if (responseMsg == "Conversation created successfully") {
+        return true;
+        // } else if (responseMsg == "Conversation already exists") {
+        //   // return true;
+        // } else {
+        //   // return false;
+        // }
       } else {
         throw Exception(response.statusMessage);
       }

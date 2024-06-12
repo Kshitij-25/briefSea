@@ -1,16 +1,16 @@
 import 'dart:developer';
 
-import 'package:briefsea/data/models/like_model.dart';
 import 'package:dio/dio.dart';
 
 import '../../main.dart';
 import '../core/api_client.dart';
 import '../core/api_constants.dart';
+import '../models/like_model.dart';
 
 abstract class LikeRemoteDataSource {
-  Future<bool>? postLike(userId, name, type, threadId, replyId);
-  Future<LikeModel?>? getALike(threadId);
-  Future<bool>? deleteLike(userId, name, type, threadId, replyId, likeId);
+  Future<bool>? postLike({String? userId, String? name, String? type, String? threadId, String? replyId});
+  Future<LikeModel?>? getALike(String? threadId);
+  Future<bool>? deleteLike(String? threadId, String? likeId);
 }
 
 class LikeRemoteDataSourceImpl implements LikeRemoteDataSource {
@@ -24,7 +24,7 @@ class LikeRemoteDataSourceImpl implements LikeRemoteDataSource {
   }
 
   @override
-  Future<bool>? postLike(userId, name, type, threadId, replyId) async {
+  Future<bool>? postLike({String? userId, String? name, String? type, String? threadId, String? replyId}) async {
     var jwtToken = await getJwtToken();
     try {
       var body = {
@@ -56,7 +56,7 @@ class LikeRemoteDataSourceImpl implements LikeRemoteDataSource {
   }
 
   @override
-  Future<LikeModel?>? getALike(threadId) async {
+  Future<LikeModel?>? getALike(String? threadId) async {
     var jwtToken = await getJwtToken();
     try {
       Response? response = await _apiClient.getReq(
@@ -80,18 +80,14 @@ class LikeRemoteDataSourceImpl implements LikeRemoteDataSource {
   }
 
   @override
-  Future<bool>? deleteLike(userId, name, type, threadId, replyId, likeId) async {
+  Future<bool>? deleteLike(String? threadId, String? likeId) async {
     var jwtToken = await getJwtToken();
     try {
       var body = {
-        'user_id': userId,
-        'name': name,
-        'type': type,
-        if (threadId != null) 'thread_id': threadId,
-        if (replyId != null) 'reply_id': replyId,
+        'thread_id': threadId,
       };
 
-      Response? response = await _apiClient.postReq(
+      Response? response = await _apiClient.patchReq(
         url: "${ApiConstants.removelike}/$likeId",
         body: body,
         jwtToken: jwtToken,

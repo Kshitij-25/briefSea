@@ -1,11 +1,13 @@
 import 'dart:developer';
 
+import 'package:briefsea/data/models/briefs_model.dart';
 import 'package:briefsea/data/models/image_model.dart';
 import 'package:briefsea/presentation/providers/chat_provider.dart';
 import 'package:briefsea/presentation/providers/likes_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:share_plus/share_plus.dart';
 
 import '../../providers/auth_provider.dart';
 import '../../providers/breifs_provider.dart';
@@ -51,6 +53,7 @@ class AllBriefsScreen extends ConsumerWidget {
 
                       if (isChatCreated == true) {
                         context.push(ChatScreen.routeName);
+                        isChatCreated = false;
                       }
                     }
                   },
@@ -73,11 +76,7 @@ class AllBriefsScreen extends ConsumerWidget {
                       } else {
                         await ref.read(deleteLikeProvider(
                           likeId: brief.postLikeId,
-                          type: userDetails['type'],
-                          uName: userDetails['user_name'],
-                          userId: userDetails['user_id'],
                           threadId: brief.id,
-                          replyId: null,
                         ).future);
                       }
                       ref.invalidate(getAllBriefsProvider);
@@ -85,7 +84,9 @@ class AllBriefsScreen extends ConsumerWidget {
                       log(e.toString());
                     }
                   },
-                  onShareTap: (brief) {},
+                  onShareTap: (brief) {
+                    shareBrief(brief!);
+                  },
                   onTap: () {
                     context.push(
                       FeedScreen.routeName,
@@ -93,7 +94,6 @@ class AllBriefsScreen extends ConsumerWidget {
                     );
                   },
                 );
-                return null;
               },
             );
           },
@@ -104,5 +104,12 @@ class AllBriefsScreen extends ConsumerWidget {
             child: CircularProgressIndicator.adaptive(),
           ),
         );
+  }
+
+  void shareBrief(BriefsModel brief) {
+    Share.share(
+      'Check out this brief by: ${brief.name![0].toUpperCase()}${brief.name!.substring(1)}\n${brief.postText}',
+      subject: 'Check out this brief!',
+    );
   }
 }

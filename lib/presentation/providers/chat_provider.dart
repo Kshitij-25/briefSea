@@ -43,3 +43,38 @@ Future<bool> createNewChat(CreateNewChatRef ref, {required String senderId, requ
     (newChat) => newChat,
   );
 }
+
+@riverpod
+Future<void> getChatMessages(GetChatMessagesRef ref, {required String conversationId}) async {
+  final chatRepository = ref.watch(chatRepositoryProvider);
+  final eitherNewChatOrError = await chatRepository.getChatMessages(conversationId);
+  return eitherNewChatOrError.fold(
+    (error) {
+      throw error; // Throw the error for Riverpod to handle
+    },
+    (newChat) => newChat,
+  );
+}
+
+@riverpod
+Future<bool> sendChatMessages(SendChatMessagesRef ref,
+    {required String senderId,
+    required String receiverId,
+    required String conversationId,
+    required String messageText,
+    required String typedAt}) async {
+  final chatRepository = ref.watch(chatRepositoryProvider);
+  final eitherNewChatOrError = await chatRepository.sendChatMessage(
+    senderId: senderId,
+    receiverId: receiverId,
+    conversationId: conversationId,
+    messageText: messageText,
+    typedAt: typedAt,
+  );
+  return eitherNewChatOrError.fold(
+    (error) {
+      throw error; // Throw the error for Riverpod to handle
+    },
+    (newChat) => newChat,
+  );
+}

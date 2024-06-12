@@ -1,7 +1,5 @@
 import 'dart:developer';
 
-import 'package:briefsea/data/core/api_constants.dart';
-import 'package:briefsea/data/models/register_model.dart';
 import 'package:dio/dio.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -9,12 +7,14 @@ import 'package:jwt_decoder/jwt_decoder.dart';
 
 import '../../main.dart';
 import '../core/api_client.dart';
+import '../core/api_constants.dart';
 import '../models/login_model.dart';
+import '../models/register_model.dart';
 
 abstract class AuthRemoteDataSource {
-  Future<LoginModel?>? loginUser(email, password);
+  Future<LoginModel?>? loginUser(String? email, String? password);
   Future<dynamic> loginWithGoogle();
-  Future<bool> registerUser(userName, email, password, type, subType);
+  Future<bool> registerUser(String? userName, String? email, String? password, String? type, String? subType);
   Future<void> logout();
 }
 
@@ -24,7 +24,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   AuthRemoteDataSourceImpl(this._apiClient);
 
   @override
-  Future<LoginModel?>? loginUser(email, password) async {
+  Future<LoginModel?>? loginUser(String? email, String? password) async {
     try {
       var body = {
         'email': email,
@@ -93,7 +93,13 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   }
 
   @override
-  Future<bool> registerUser(userName, email, password, type, subType) async {
+  Future<bool> registerUser(
+    String? userName,
+    String? email,
+    String? password,
+    String? type,
+    String? subType,
+  ) async {
     try {
       var body = {
         'user_name': userName,

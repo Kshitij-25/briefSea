@@ -1,6 +1,5 @@
 import 'dart:developer';
 
-import 'package:briefsea/data/models/thread_image_model.dart';
 import 'package:briefsea/main.dart';
 import 'package:dio/dio.dart';
 import 'package:http_parser/http_parser.dart';
@@ -8,12 +7,13 @@ import 'package:http_parser/http_parser.dart';
 import '../core/api_client.dart';
 import '../core/api_constants.dart';
 import '../models/briefs_model.dart';
+import '../models/thread_image_model.dart';
 
 abstract class BriefsRemoteDataSource {
   Future<List<BriefsModel?>?> getAllBriefs();
   Future<List<BriefsModel?>?> getUserBriefs();
-  Future<bool> postBrief(userId, name, type, category, postText, imgSrc);
-  Future<ThreadImageModel?>? uploadThreadImage(fileName, MediaType fileType, userId, userType);
+  Future<bool> postBrief({String? userId, String? name, String? type, String? category, String? postText, String? imgSrc});
+  Future<ThreadImageModel?>? uploadThreadImage(String? fileName, MediaType fileType, String? userId, String? userType);
 }
 
 class BriefsRemoteDataSourceImpl implements BriefsRemoteDataSource {
@@ -79,7 +79,14 @@ class BriefsRemoteDataSourceImpl implements BriefsRemoteDataSource {
   }
 
   @override
-  Future<bool> postBrief(userId, name, type, category, postText, imgSrc) async {
+  Future<bool> postBrief({
+    String? userId,
+    String? name,
+    String? type,
+    String? category,
+    String? postText,
+    String? imgSrc,
+  }) async {
     var jwtToken = await getJwtToken();
 
     try {
@@ -112,7 +119,12 @@ class BriefsRemoteDataSourceImpl implements BriefsRemoteDataSource {
   }
 
   @override
-  Future<ThreadImageModel?>? uploadThreadImage(fileName, MediaType fileType, userId, userType) async {
+  Future<ThreadImageModel?>? uploadThreadImage(
+    String? fileName,
+    MediaType fileType,
+    String? userId,
+    String? userType,
+  ) async {
     var jwtToken = await getJwtToken();
     try {
       var body = {

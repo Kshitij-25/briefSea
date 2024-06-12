@@ -11,7 +11,7 @@ class AuthRepository {
 
   AuthRepository(this._authRemoteDataSource);
 
-  Future<Either<AppError, LoginModel>>? loginUser(email, password) async {
+  Future<Either<AppError, LoginModel>>? loginUser(String? email, String? password) async {
     try {
       final loginModel = await _authRemoteDataSource.loginUser(email, password);
       return Right(loginModel!);
@@ -22,7 +22,7 @@ class AuthRepository {
     }
   }
 
-  Future<Either<AppError, bool>>? registerUser(userName, email, password, type, subType) async {
+  Future<Either<AppError, bool>>? registerUser(String? userName, String? email, String? password, String? type, String? subType) async {
     try {
       final isUserRegistered = await _authRemoteDataSource.registerUser(userName, email, password, type, subType);
       return Right(isUserRegistered);

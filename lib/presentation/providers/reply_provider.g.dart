@@ -39,7 +39,7 @@ final replyRepositoryProvider = AutoDisposeProvider<ReplyRepository>.internal(
 );
 
 typedef ReplyRepositoryRef = AutoDisposeProviderRef<ReplyRepository>;
-String _$postReplyHash() => r'08b40da5bcfccf73458bdf88c869f104fc118ac3';
+String _$postReplyHash() => r'78dab2f9184fb56f2bb7f05b358c5e10326f39b3';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -73,14 +73,16 @@ class PostReplyFamily extends Family<AsyncValue<bool>> {
 
   /// See also [postReply].
   PostReplyProvider call({
-    required dynamic userId,
-    required dynamic threadId,
-    required dynamic commentText,
+    required String? userId,
+    required String? threadId,
+    required String? commentText,
+    String? replyId,
   }) {
     return PostReplyProvider(
       userId: userId,
       threadId: threadId,
       commentText: commentText,
+      replyId: replyId,
     );
   }
 
@@ -92,6 +94,7 @@ class PostReplyFamily extends Family<AsyncValue<bool>> {
       userId: provider.userId,
       threadId: provider.threadId,
       commentText: provider.commentText,
+      replyId: provider.replyId,
     );
   }
 
@@ -114,15 +117,17 @@ class PostReplyFamily extends Family<AsyncValue<bool>> {
 class PostReplyProvider extends AutoDisposeFutureProvider<bool> {
   /// See also [postReply].
   PostReplyProvider({
-    required dynamic userId,
-    required dynamic threadId,
-    required dynamic commentText,
+    required String? userId,
+    required String? threadId,
+    required String? commentText,
+    String? replyId,
   }) : this._internal(
           (ref) => postReply(
             ref as PostReplyRef,
             userId: userId,
             threadId: threadId,
             commentText: commentText,
+            replyId: replyId,
           ),
           from: postReplyProvider,
           name: r'postReplyProvider',
@@ -135,6 +140,7 @@ class PostReplyProvider extends AutoDisposeFutureProvider<bool> {
           userId: userId,
           threadId: threadId,
           commentText: commentText,
+          replyId: replyId,
         );
 
   PostReplyProvider._internal(
@@ -147,11 +153,13 @@ class PostReplyProvider extends AutoDisposeFutureProvider<bool> {
     required this.userId,
     required this.threadId,
     required this.commentText,
+    required this.replyId,
   }) : super.internal();
 
-  final dynamic userId;
-  final dynamic threadId;
-  final dynamic commentText;
+  final String? userId;
+  final String? threadId;
+  final String? commentText;
+  final String? replyId;
 
   @override
   Override overrideWith(
@@ -169,6 +177,7 @@ class PostReplyProvider extends AutoDisposeFutureProvider<bool> {
         userId: userId,
         threadId: threadId,
         commentText: commentText,
+        replyId: replyId,
       ),
     );
   }
@@ -183,7 +192,8 @@ class PostReplyProvider extends AutoDisposeFutureProvider<bool> {
     return other is PostReplyProvider &&
         other.userId == userId &&
         other.threadId == threadId &&
-        other.commentText == commentText;
+        other.commentText == commentText &&
+        other.replyId == replyId;
   }
 
   @override
@@ -192,6 +202,7 @@ class PostReplyProvider extends AutoDisposeFutureProvider<bool> {
     hash = _SystemHash.combine(hash, userId.hashCode);
     hash = _SystemHash.combine(hash, threadId.hashCode);
     hash = _SystemHash.combine(hash, commentText.hashCode);
+    hash = _SystemHash.combine(hash, replyId.hashCode);
 
     return _SystemHash.finish(hash);
   }
@@ -199,13 +210,16 @@ class PostReplyProvider extends AutoDisposeFutureProvider<bool> {
 
 mixin PostReplyRef on AutoDisposeFutureProviderRef<bool> {
   /// The parameter `userId` of this provider.
-  dynamic get userId;
+  String? get userId;
 
   /// The parameter `threadId` of this provider.
-  dynamic get threadId;
+  String? get threadId;
 
   /// The parameter `commentText` of this provider.
-  dynamic get commentText;
+  String? get commentText;
+
+  /// The parameter `replyId` of this provider.
+  String? get replyId;
 }
 
 class _PostReplyProviderElement extends AutoDisposeFutureProviderElement<bool>
@@ -213,14 +227,16 @@ class _PostReplyProviderElement extends AutoDisposeFutureProviderElement<bool>
   _PostReplyProviderElement(super.provider);
 
   @override
-  dynamic get userId => (origin as PostReplyProvider).userId;
+  String? get userId => (origin as PostReplyProvider).userId;
   @override
-  dynamic get threadId => (origin as PostReplyProvider).threadId;
+  String? get threadId => (origin as PostReplyProvider).threadId;
   @override
-  dynamic get commentText => (origin as PostReplyProvider).commentText;
+  String? get commentText => (origin as PostReplyProvider).commentText;
+  @override
+  String? get replyId => (origin as PostReplyProvider).replyId;
 }
 
-String _$getCommentLikeHash() => r'1c64f6aa9f73a12c35a3e5874ac069a7cdf6d763';
+String _$getCommentLikeHash() => r'38d6880cfcd8e0b85338a1096db00505f5aa4e6f';
 
 /// See also [getCommentLike].
 @ProviderFor(getCommentLike)
@@ -233,7 +249,7 @@ class GetCommentLikeFamily extends Family<AsyncValue<LikeModel>> {
 
   /// See also [getCommentLike].
   GetCommentLikeProvider call({
-    dynamic replyId,
+    required String? replyId,
   }) {
     return GetCommentLikeProvider(
       replyId: replyId,
@@ -268,7 +284,7 @@ class GetCommentLikeFamily extends Family<AsyncValue<LikeModel>> {
 class GetCommentLikeProvider extends AutoDisposeFutureProvider<LikeModel> {
   /// See also [getCommentLike].
   GetCommentLikeProvider({
-    dynamic replyId,
+    required String? replyId,
   }) : this._internal(
           (ref) => getCommentLike(
             ref as GetCommentLikeRef,
@@ -296,7 +312,7 @@ class GetCommentLikeProvider extends AutoDisposeFutureProvider<LikeModel> {
     required this.replyId,
   }) : super.internal();
 
-  final dynamic replyId;
+  final String? replyId;
 
   @override
   Override overrideWith(
@@ -337,7 +353,7 @@ class GetCommentLikeProvider extends AutoDisposeFutureProvider<LikeModel> {
 
 mixin GetCommentLikeRef on AutoDisposeFutureProviderRef<LikeModel> {
   /// The parameter `replyId` of this provider.
-  dynamic get replyId;
+  String? get replyId;
 }
 
 class _GetCommentLikeProviderElement
@@ -345,10 +361,10 @@ class _GetCommentLikeProviderElement
   _GetCommentLikeProviderElement(super.provider);
 
   @override
-  dynamic get replyId => (origin as GetCommentLikeProvider).replyId;
+  String? get replyId => (origin as GetCommentLikeProvider).replyId;
 }
 
-String _$getAllCommentsHash() => r'd269b2e80c42c36c9f0fb1b5d6634bceb774f461';
+String _$getAllCommentsHash() => r'ee789afbff77f5f3b03c93a75d95cbff6520602b';
 
 /// See also [getAllComments].
 @ProviderFor(getAllComments)
@@ -361,7 +377,7 @@ class GetAllCommentsFamily extends Family<AsyncValue<List<CommentModel>>> {
 
   /// See also [getAllComments].
   GetAllCommentsProvider call({
-    required dynamic threadId,
+    required String? threadId,
   }) {
     return GetAllCommentsProvider(
       threadId: threadId,
@@ -397,7 +413,7 @@ class GetAllCommentsProvider
     extends AutoDisposeFutureProvider<List<CommentModel>> {
   /// See also [getAllComments].
   GetAllCommentsProvider({
-    required dynamic threadId,
+    required String? threadId,
   }) : this._internal(
           (ref) => getAllComments(
             ref as GetAllCommentsRef,
@@ -425,7 +441,7 @@ class GetAllCommentsProvider
     required this.threadId,
   }) : super.internal();
 
-  final dynamic threadId;
+  final String? threadId;
 
   @override
   Override overrideWith(
@@ -466,7 +482,7 @@ class GetAllCommentsProvider
 
 mixin GetAllCommentsRef on AutoDisposeFutureProviderRef<List<CommentModel>> {
   /// The parameter `threadId` of this provider.
-  dynamic get threadId;
+  String? get threadId;
 }
 
 class _GetAllCommentsProviderElement
@@ -475,7 +491,142 @@ class _GetAllCommentsProviderElement
   _GetAllCommentsProviderElement(super.provider);
 
   @override
-  dynamic get threadId => (origin as GetAllCommentsProvider).threadId;
+  String? get threadId => (origin as GetAllCommentsProvider).threadId;
+}
+
+String _$getAllReplyOnCommentHash() =>
+    r'059cb31e324821881213447524baf09fc6ad780a';
+
+/// See also [getAllReplyOnComment].
+@ProviderFor(getAllReplyOnComment)
+const getAllReplyOnCommentProvider = GetAllReplyOnCommentFamily();
+
+/// See also [getAllReplyOnComment].
+class GetAllReplyOnCommentFamily
+    extends Family<AsyncValue<List<CommentModel>>> {
+  /// See also [getAllReplyOnComment].
+  const GetAllReplyOnCommentFamily();
+
+  /// See also [getAllReplyOnComment].
+  GetAllReplyOnCommentProvider call({
+    required String? commentId,
+  }) {
+    return GetAllReplyOnCommentProvider(
+      commentId: commentId,
+    );
+  }
+
+  @override
+  GetAllReplyOnCommentProvider getProviderOverride(
+    covariant GetAllReplyOnCommentProvider provider,
+  ) {
+    return call(
+      commentId: provider.commentId,
+    );
+  }
+
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'getAllReplyOnCommentProvider';
+}
+
+/// See also [getAllReplyOnComment].
+class GetAllReplyOnCommentProvider
+    extends AutoDisposeFutureProvider<List<CommentModel>> {
+  /// See also [getAllReplyOnComment].
+  GetAllReplyOnCommentProvider({
+    required String? commentId,
+  }) : this._internal(
+          (ref) => getAllReplyOnComment(
+            ref as GetAllReplyOnCommentRef,
+            commentId: commentId,
+          ),
+          from: getAllReplyOnCommentProvider,
+          name: r'getAllReplyOnCommentProvider',
+          debugGetCreateSourceHash:
+              const bool.fromEnvironment('dart.vm.product')
+                  ? null
+                  : _$getAllReplyOnCommentHash,
+          dependencies: GetAllReplyOnCommentFamily._dependencies,
+          allTransitiveDependencies:
+              GetAllReplyOnCommentFamily._allTransitiveDependencies,
+          commentId: commentId,
+        );
+
+  GetAllReplyOnCommentProvider._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.commentId,
+  }) : super.internal();
+
+  final String? commentId;
+
+  @override
+  Override overrideWith(
+    FutureOr<List<CommentModel>> Function(GetAllReplyOnCommentRef provider)
+        create,
+  ) {
+    return ProviderOverride(
+      origin: this,
+      override: GetAllReplyOnCommentProvider._internal(
+        (ref) => create(ref as GetAllReplyOnCommentRef),
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        commentId: commentId,
+      ),
+    );
+  }
+
+  @override
+  AutoDisposeFutureProviderElement<List<CommentModel>> createElement() {
+    return _GetAllReplyOnCommentProviderElement(this);
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is GetAllReplyOnCommentProvider &&
+        other.commentId == commentId;
+  }
+
+  @override
+  int get hashCode {
+    var hash = _SystemHash.combine(0, runtimeType.hashCode);
+    hash = _SystemHash.combine(hash, commentId.hashCode);
+
+    return _SystemHash.finish(hash);
+  }
+}
+
+mixin GetAllReplyOnCommentRef
+    on AutoDisposeFutureProviderRef<List<CommentModel>> {
+  /// The parameter `commentId` of this provider.
+  String? get commentId;
+}
+
+class _GetAllReplyOnCommentProviderElement
+    extends AutoDisposeFutureProviderElement<List<CommentModel>>
+    with GetAllReplyOnCommentRef {
+  _GetAllReplyOnCommentProviderElement(super.provider);
+
+  @override
+  String? get commentId => (origin as GetAllReplyOnCommentProvider).commentId;
 }
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member

@@ -1,9 +1,12 @@
 import 'dart:developer';
 
 import 'package:briefsea/presentation/providers/reply_provider.dart';
+import 'package:briefsea/presentation/state_providers/reply_state_provider.dart';
 import 'package:briefsea/presentation/widgets/custom_comment_card.dart';
+import 'package:briefsea/presentation/widgets/reply_modal_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:share_plus/share_plus.dart';
 
 import '../../../common/screen_size.dart';
 import '../../../data/models/briefs_model.dart';
@@ -25,6 +28,7 @@ class FeedScreen extends ConsumerWidget {
   final BriefsModel? userBrief;
 
   final TextEditingController commentCont = TextEditingController();
+  final TextEditingController replyCont = TextEditingController();
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -102,11 +106,7 @@ class FeedScreen extends ConsumerWidget {
                       } else {
                         await ref.read(deleteLikeProvider(
                           likeId: brief.postLikeId,
-                          type: brief.type,
-                          uName: userDetails['user_name'],
-                          userId: userDetails['user_id'],
                           threadId: brief.id,
-                          replyId: null,
                         ).future);
                       }
                       ref.invalidate(getAllBriefsProvider);
@@ -114,7 +114,9 @@ class FeedScreen extends ConsumerWidget {
                       log(e.toString());
                     }
                   },
-                  onShareTap: (p0) {},
+                  onShareTap: (brief) {
+                    shareBrief(brief!);
+                  },
                 ),
                 Expanded(
                   child: getComments.when(
@@ -123,8 +125,38 @@ class FeedScreen extends ConsumerWidget {
                         itemCount: comments.length,
                         itemBuilder: (context, index) {
                           return CustomCommentCard(
-                            onCommentTap: (p0) {},
-                            onLikeTap: (p0) {},
+                            isReplies: false,
+                            onCommentTap: (p0) {
+                              ref.watch(isReplyStateProvider.notifier).state = true;
+                              customReplyModalSheet(
+                                context,
+                                comments: comments[index],
+                                replyCont: replyCont,
+                                threadId: allBrief!.id ?? userBrief!.id,
+                                userDetails: userDetails,
+                              );
+                            },
+                            onLikeTap: (p0) async {
+                              try {
+                                if (!comments[index].isCommentLiked) {
+                                  await ref.read(postLikeProvider(
+                                    threadId: comments[index].threadId,
+                                    type: userDetails['type'],
+                                    uName: userDetails['user_name'],
+                                    userId: userDetails['user_id'],
+                                    replyId: comments[index].id,
+                                  ).future);
+                                } else {
+                                  await ref.read(deleteLikeProvider(
+                                    likeId: comments[index].commentLikeId,
+                                    threadId: comments[index].threadId,
+                                  ).future);
+                                }
+                                ref.invalidate(getAllCommentsProvider(threadId: allBrief!.id ?? userBrief!.id));
+                              } catch (e) {
+                                log(e.toString());
+                              }
+                            },
                             onShareTap: (p0) {},
                             commentModel: comments[index],
                             loggedInUserId: userDetails['user_id'],
@@ -201,6 +233,13 @@ class FeedScreen extends ConsumerWidget {
           ),
         ],
       ),
+    );
+  }
+
+  void shareBrief(BriefsModel brief) {
+    Share.share(
+      'Check out this brief by: ${brief.name![0].toUpperCase()}${brief.name!.substring(1)}\n${brief.postText}',
+      subject: 'Check out this brief!',
     );
   }
 }

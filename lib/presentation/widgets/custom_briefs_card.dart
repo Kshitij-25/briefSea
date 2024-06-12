@@ -47,8 +47,16 @@ class CustomBriefsCard extends StatelessWidget {
             children: [
               Row(
                 children: [
-                  const CircleAvatar(
-                    backgroundColor: Color(0xFF1B0C6B),
+                  CircleAvatar(
+                    backgroundColor: const Color(0xFF1B0C6B),
+                    radius: 25,
+                    child: Text(
+                      brief?.name?[0] ?? "",
+                      style: const TextStyle(
+                        color: Colors.white,
+                      ),
+                      textScaler: const TextScaler.linear(1.3),
+                    ),
                     // backgroundImage: avatarUrl?.url != "" ? NetworkImage(avatarUrl!.url!) : null,
                   ),
                   // FutureBuilder(
@@ -81,11 +89,20 @@ class CustomBriefsCard extends StatelessWidget {
                         ),
                       ),
                       Text(
-                        "Posting as ${brief?.type ?? ""}",
+                        "Posting as a ${brief?.type ?? ""}",
                         style: const TextStyle(
                           color: Colors.black,
                         ),
                       ),
+                      cardVisible == false
+                          ? Text(
+                              ">> ${brief?.category ?? ""}",
+                              style: const TextStyle(
+                                color: Colors.black,
+                                fontSize: 12,
+                              ),
+                            )
+                          : const SizedBox.shrink(),
                     ],
                   ),
                   const Spacer(),
@@ -127,6 +144,12 @@ class CustomBriefsCard extends StatelessWidget {
                   overflow: TextOverflow.ellipsis,
                 ),
               ),
+              // if (cardVisible == false && brief?.imgSrc != null && (brief!.imgSrc != ""))
+              //   Container(
+              //     height: 300,
+              //     width: 300,
+              //     color: const Color(0xFF1B0C6B),
+              //   ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [

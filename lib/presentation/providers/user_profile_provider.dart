@@ -39,22 +39,36 @@ Future<UserProfileModel> getUserProfile(GetUserProfileRef ref) async {
 }
 
 @riverpod
-Future<String> verifyProfile(VerifyProfileRef ref,
-    {required userId,
-    required uName,
-    required countryCode,
-    required contact,
-    required jobTitle,
-    required company,
-    required industry,
-    required expertise,
-    required location,
-    required avatarSrc,
-    required bannerSrc,
-    required jwtToken}) async {
+Future<String> verifyProfile(
+  VerifyProfileRef ref, {
+  required String? userId,
+  required String? uName,
+  required int? countryCode,
+  required int? contact,
+  required String? jobTitle,
+  required String? company,
+  required String? industry,
+  required String? expertise,
+  required String? location,
+  required String? avatarSrc,
+  required String? bannerSrc,
+  required String? jwtToken,
+}) async {
   final userProfileRepository = ref.read(userProfileRepositoryProvider);
   final eitherVerifyProfilenOrError = await userProfileRepository.verifyProfile(
-      userId, uName, countryCode, contact, jobTitle, company, industry, expertise, location, avatarSrc, bannerSrc, jwtToken);
+    userId: userId,
+    name: uName,
+    countryCode: countryCode,
+    contact: contact,
+    jobTitle: jobTitle,
+    company: company,
+    industry: industry,
+    expertise: expertise,
+    location: location,
+    avatarSrc: avatarSrc,
+    bannerSrc: bannerSrc,
+    jwtToken: jwtToken,
+  );
   return eitherVerifyProfilenOrError!.fold(
     (error) {
       throw error; // Throw the error for Riverpod to handle
@@ -64,7 +78,52 @@ Future<String> verifyProfile(VerifyProfileRef ref,
 }
 
 @riverpod
-Future<AvatarModel> uploadAvatar(UploadAvatarRef ref, {required fileName, required fileType, required userId, required userType}) async {
+Future<String> editProfile(
+  EditProfileRef ref, {
+  required String? userId,
+  required String? uName,
+  required int? countryCode,
+  required int? contact,
+  required String? jobTitle,
+  required String? company,
+  required String? industry,
+  required String? expertise,
+  required String? location,
+  required String? avatarSrc,
+  required String? bannerSrc,
+  required String? jwtToken,
+}) async {
+  final userProfileRepository = ref.read(userProfileRepositoryProvider);
+  final eitherEditProfileOrError = await userProfileRepository.editProfile(
+    userId: userId,
+    name: uName,
+    countryCode: countryCode,
+    contact: contact,
+    jobTitle: jobTitle,
+    company: company,
+    industry: industry,
+    expertise: expertise,
+    location: location,
+    avatarSrc: avatarSrc,
+    bannerSrc: bannerSrc,
+    jwtToken: jwtToken,
+  );
+  return eitherEditProfileOrError!.fold(
+    (error) {
+      throw error; // Throw the error for Riverpod to handle
+    },
+    (editProfile) => editProfile,
+  );
+}
+
+@riverpod
+Future<AvatarModel> uploadAvatar(
+  UploadAvatarRef ref, {
+  required String? fileName,
+  required MediaType fileType,
+  required String? userId,
+  required String? userType,
+}) async {
   final userProfileRepository = ref.read(userProfileRepositoryProvider);
   final eitherAvatarModelnOrError = await userProfileRepository.uploadAvatar(fileName, fileType, userId, userType);
   return eitherAvatarModelnOrError!.fold(
@@ -76,7 +135,13 @@ Future<AvatarModel> uploadAvatar(UploadAvatarRef ref, {required fileName, requir
 }
 
 @riverpod
-Future<BannerModel> uploadBanner(UploadBannerRef ref, {required fileName, required fileType, required userId, required userType}) async {
+Future<BannerModel> uploadBanner(
+  UploadBannerRef ref, {
+  required String? fileName,
+  required MediaType fileType,
+  required String? userId,
+  required String? userType,
+}) async {
   final userProfileRepository = ref.read(userProfileRepositoryProvider);
   final eitherBannerModelnOrError = await userProfileRepository.uploadBanner(fileName, fileType, userId, userType);
   return eitherBannerModelnOrError!.fold(
@@ -88,7 +153,8 @@ Future<BannerModel> uploadBanner(UploadBannerRef ref, {required fileName, requir
 }
 
 @riverpod
-Future<bool> uploadToAWS(UploadToAWSRef ref, {required url, required fileName, required File file, required MediaType fileType}) async {
+Future<bool> uploadToAWS(UploadToAWSRef ref,
+    {required String? url, required String? fileName, required File file, required MediaType fileType}) async {
   final userProfileRepository = ref.read(userProfileRepositoryProvider);
   final eitherUploadednOrError = await userProfileRepository.uploadToAWS(url, fileName, file, fileType);
   return eitherUploadednOrError.fold(

@@ -1,17 +1,18 @@
 import 'dart:developer';
 
-import 'package:briefsea/data/models/comment_model.dart';
 import 'package:dio/dio.dart';
 
 import '../../main.dart';
 import '../core/api_client.dart';
 import '../core/api_constants.dart';
+import '../models/comment_model.dart';
 import '../models/like_model.dart';
 
 abstract class ReplyRemoteDataSource {
-  Future<bool> postReply(userId, threadId, commentText);
-  Future<List<CommentModel>> getAllComments(threadId);
-  Future<LikeModel?>? getCommentLike(threadId);
+  Future<bool> postReply(String? userId, String? threadId, String? commentText, String? replyId);
+  Future<List<CommentModel>> getAllComments(String? threadId);
+  Future<LikeModel?>? getCommentLike(String? threadId);
+  Future<List<CommentModel>> getAllReplyOnComment(String? commentId);
 }
 
 class ReplyRemoteDataSourceImpl implements ReplyRemoteDataSource {
@@ -25,14 +26,15 @@ class ReplyRemoteDataSourceImpl implements ReplyRemoteDataSource {
   }
 
   @override
-  Future<bool> postReply(userId, threadId, commentText) async {
+  Future<bool> postReply(String? userId, String? threadId, String? commentText, String? replyId) async {
     var jwtToken = await getJwtToken();
     print(jwtToken);
     try {
       var body = {
         'user_id': userId,
-        'thread_id': threadId,
+        if (threadId != null) 'thread_id': threadId,
         'comment': commentText,
+        if (replyId != null) 'reply_id': replyId,
       };
       Response? response = await _apiClient.postReq(
         url: ApiConstants.postReply,
@@ -51,7 +53,7 @@ class ReplyRemoteDataSourceImpl implements ReplyRemoteDataSource {
   }
 
   @override
-  Future<List<CommentModel>> getAllComments(threadId) async {
+  Future<List<CommentModel>> getAllComments(String? threadId) async {
     var jwtToken = await getJwtToken();
 
     try {
@@ -76,7 +78,7 @@ class ReplyRemoteDataSourceImpl implements ReplyRemoteDataSource {
   }
 
   @override
-  Future<LikeModel?>? getCommentLike(replyId) async {
+  Future<LikeModel?>? getCommentLike(String? replyId) async {
     var jwtToken = await getJwtToken();
     try {
       Response? response = await _apiClient.getReq(
@@ -97,5 +99,30 @@ class ReplyRemoteDataSourceImpl implements ReplyRemoteDataSource {
       return null;
     }
     return null;
+  }
+
+  @override
+  Future<List<CommentModel>> getAllReplyOnComment(String? commentId) async {
+    var jwtToken = await getJwtToken();
+
+    try {
+      Response? response = await _apiClient.getReq(
+        url: "${ApiConstants.getAllReplyOnComment}/$commentId",
+        jwtToken: jwtToken,
+      );
+
+      if (response!.statusCode == 200) {
+        var responseJson = response.data;
+        if (responseJson != null) {
+          List<dynamic> jsonList = responseJson;
+          List<CommentModel> repliesOnComment = jsonList.map((json) => CommentModel.fromJson(json)).toList();
+          return repliesOnComment;
+        }
+      }
+    } catch (e) {
+      log("getAllReplyOnComment Error", error: e);
+      return [];
+    }
+    return [];
   }
 }

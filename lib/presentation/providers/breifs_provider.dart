@@ -1,10 +1,11 @@
-import 'package:briefsea/data/models/thread_image_model.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../data/core/api_client.dart';
 import '../../data/data_sources/briefs_remote_data_source.dart';
 import '../../data/di/get_it.dart';
 import '../../data/models/briefs_model.dart';
+import '../../data/models/thread_image_model.dart';
 import '../../data/repositories/breifs_repository.dart';
 import 'likes_provider.dart';
 
@@ -46,14 +47,38 @@ Future<List<BriefsModel?>?> getUserBriefs(GetUserBriefsRef ref) async {
     (error) {
       throw error; // Throw the error for Riverpod to handle
     },
-    (briefs) => briefs!,
+    (briefs) async {
+      final updatedBriefs = await Future.wait(briefs!.map((brief) async {
+        final likedModel = await ref.watch(getALikeProvider(threadId: brief!.id).future);
+        return brief.copyWith(
+          isPostLiked: likedModel.likeId != null,
+          postLikeId: likedModel.likeId,
+        );
+      }).toList());
+      return updatedBriefs;
+    },
   );
 }
 
 @riverpod
-Future<bool> postBrief(PostBriefRef ref, {userId, uName, type, category, postText, imgSrc}) async {
+Future<bool> postBrief(
+  PostBriefRef ref, {
+  String? userId,
+  String? uName,
+  String? type,
+  String? category,
+  String? postText,
+  String? imgSrc,
+}) async {
   final breifsRepository = ref.watch(briefsRepositoryProvider);
-  final eitherBriefsOrError = await breifsRepository.postBrief(userId, uName, type, category, postText, imgSrc);
+  final eitherBriefsOrError = await breifsRepository.postBrief(
+    userId: userId,
+    name: uName,
+    type: type,
+    category: category,
+    postText: postText,
+    imgSrc: imgSrc,
+  );
   return eitherBriefsOrError!.fold(
     (error) {
       throw error; // Throw the error for Riverpod to handle
@@ -74,3 +99,5 @@ Future<ThreadImageModel> uploadThreadImage(UploadThreadImageRef ref,
     (briefs) => briefs,
   );
 }
+
+final selectedAvatarProvider = StateProvider<String?>((ref) => null);

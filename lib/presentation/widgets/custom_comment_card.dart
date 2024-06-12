@@ -13,6 +13,7 @@ class CustomCommentCard extends StatelessWidget {
     required this.onShareTap,
     this.commentModel,
     this.loggedInUserId,
+    this.isReplies,
   });
 
   final Function(CommentModel?) onCommentTap;
@@ -20,6 +21,7 @@ class CustomCommentCard extends StatelessWidget {
   final Function(CommentModel?) onShareTap;
   final CommentModel? commentModel;
   final String? loggedInUserId;
+  final bool? isReplies;
 
   @override
   Widget build(BuildContext context) {
@@ -35,11 +37,18 @@ class CustomCommentCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               commentModel!.userId != loggedInUserId
-                  ? const Padding(
-                      padding: EdgeInsets.only(right: 10.0),
+                  ? Padding(
+                      padding: const EdgeInsets.only(right: 10.0),
                       child: CircleAvatar(
-                        backgroundColor: Color(0xFF1B0C6B),
+                        backgroundColor: const Color(0xFF1B0C6B),
                         radius: 15,
+                        child: Text(
+                          commentModel?.name?[0] ?? "",
+                          style: const TextStyle(
+                            color: Colors.white,
+                          ),
+                          textScaler: const TextScaler.linear(0.8),
+                        ),
                         // backgroundImage: NetworkImage('${ApiConstants.BASE_URL}/$imgSrc'),
                       ),
                     )
@@ -96,38 +105,47 @@ class CustomCommentCard extends StatelessWidget {
                 ),
               ),
               commentModel!.userId == loggedInUserId
-                  ? const Padding(
-                      padding: EdgeInsets.only(left: 10.0),
+                  ? Padding(
+                      padding: const EdgeInsets.only(left: 10.0),
                       child: CircleAvatar(
-                        backgroundColor: Color(0xFF1B0C6B),
+                        backgroundColor: const Color(0xFF1B0C6B),
                         radius: 15,
+                        child: Text(
+                          commentModel?.name?[0] ?? "",
+                          style: const TextStyle(
+                            color: Colors.white,
+                          ),
+                          textScaler: const TextScaler.linear(0.8),
+                        ),
                         // backgroundImage: NetworkImage('${ApiConstants.BASE_URL}/$imgSrc'),
                       ),
                     )
                   : const SizedBox.shrink(),
             ],
           ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              _BriefLikeButton(
-                isLiked: commentModel!.isCommentLiked,
-                iconLabel: (commentModel?.likesCount != null) ? (commentModel!.likesCount == 0 ? 'Like' : "${commentModel!.likesCount} Likes") : '-',
-                onPressed: () => onLikeTap(commentModel),
-              ),
-              _BriefInputButton(
-                iconData: CupertinoIcons.chat_bubble,
-                iconLabel:
-                    (commentModel!.replyCount != null) ? (commentModel!.replyCount == 0 ? 'Comment' : "${commentModel!.replyCount} Comments") : '-',
-                onPressed: () => onCommentTap(commentModel),
-              ),
-              _BriefInputButton(
-                iconData: CupertinoIcons.arrowshape_turn_up_right,
-                iconLabel: "Share",
-                onPressed: () => onShareTap(commentModel),
-              ),
-            ],
-          ),
+          if (isReplies != true)
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                _BriefLikeButton(
+                  isLiked: commentModel!.isCommentLiked,
+                  iconLabel:
+                      (commentModel?.likesCount != null) ? (commentModel!.likesCount == 0 ? 'Like' : "${commentModel!.likesCount} Likes") : '-',
+                  onPressed: () => onLikeTap(commentModel),
+                ),
+                _BriefInputButton(
+                  iconData: CupertinoIcons.chat_bubble,
+                  iconLabel:
+                      (commentModel!.replyCount != null) ? (commentModel!.replyCount == 0 ? 'Comment' : "${commentModel!.replyCount} Comments") : '-',
+                  onPressed: () => onCommentTap(commentModel),
+                ),
+                // _BriefInputButton(
+                //   iconData: CupertinoIcons.arrowshape_turn_up_right,
+                //   iconLabel: "Share",
+                //   onPressed: () => onShareTap(commentModel),
+                // ),
+              ],
+            ),
         ],
       ),
     );

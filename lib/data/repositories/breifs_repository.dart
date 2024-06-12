@@ -1,10 +1,12 @@
 import 'dart:io';
 
-import 'package:briefsea/data/core/app_error.dart';
-import 'package:briefsea/data/data_sources/briefs_remote_data_source.dart';
-import 'package:briefsea/data/models/briefs_model.dart';
-import 'package:briefsea/data/models/thread_image_model.dart';
 import 'package:dartz/dartz.dart';
+import 'package:http_parser/http_parser.dart';
+
+import '../core/app_error.dart';
+import '../data_sources/briefs_remote_data_source.dart';
+import '../models/briefs_model.dart';
+import '../models/thread_image_model.dart';
 
 class BreifsRepository {
   final BriefsRemoteDataSource _briefsRemoteDataSource;
@@ -33,9 +35,23 @@ class BreifsRepository {
     }
   }
 
-  Future<Either<AppError, bool>>? postBrief(userId, name, type, category, postText, imgSrc) async {
+  Future<Either<AppError, bool>>? postBrief({
+    String? userId,
+    String? name,
+    String? type,
+    String? category,
+    String? postText,
+    String? imgSrc,
+  }) async {
     try {
-      final userBriefs = await _briefsRemoteDataSource.postBrief(userId, name, type, category, postText, imgSrc);
+      final userBriefs = await _briefsRemoteDataSource.postBrief(
+        userId: userId,
+        name: name,
+        type: type,
+        category: category,
+        postText: postText,
+        imgSrc: imgSrc,
+      );
       return Right(userBriefs);
     } on SocketException {
       return const Left(AppError(AppErrorType.network));
@@ -44,7 +60,7 @@ class BreifsRepository {
     }
   }
 
-  Future<Either<AppError, ThreadImageModel>>? uploadThreadImage(fileName, fileType, userId, userType) async {
+  Future<Either<AppError, ThreadImageModel>>? uploadThreadImage(String? fileName, MediaType fileType, String? userId, String? userType) async {
     try {
       final avatarModel = await _briefsRemoteDataSource.uploadThreadImage(fileName, fileType, userId, userType);
       return Right(avatarModel!);

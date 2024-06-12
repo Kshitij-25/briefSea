@@ -56,7 +56,7 @@ class FreelancerRegisterScreen extends ConsumerWidget {
                 children: [
                   SizedBox(height: ScreenSize.height(context) * .15),
                   const Text(
-                    "Login as a Freelancer",
+                    "Login as \nworking Freelancer",
                     style: TextStyle(color: Colors.white),
                     textScaler: TextScaler.linear(2),
                   ),

@@ -2,11 +2,7 @@
 
 import 'package:flutter/material.dart';
 
-enum DeviceType {
-  Mobile,
-  Tablet,
-  Desktop,
-}
+import 'enums/device_type_enum.dart';
 
 DeviceType getDeviceType(BuildContext context) {
   double screenWidth = MediaQuery.of(context).size.width;

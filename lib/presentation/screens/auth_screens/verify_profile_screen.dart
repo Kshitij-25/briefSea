@@ -1,6 +1,3 @@
-import 'dart:io';
-
-import 'package:briefsea/common/screen_size.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -8,6 +5,8 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../../../common/app_utility.dart';
+import '../../../common/industry_data.dart';
+import '../../../common/screen_size.dart';
 import '../../providers/auth_provider.dart';
 import '../../providers/user_profile_provider.dart';
 import '../../state_providers/image_picker_provider.dart';
@@ -37,7 +36,7 @@ class VerifyProfileScreen extends ConsumerWidget {
         backgroundColor: const Color(0xFF4C27FF),
         centerTitle: true,
         title: const Text(
-          "Verify Profile",
+          "Complete Profile",
           style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
         ),
         actions: [
@@ -54,8 +53,8 @@ class VerifyProfileScreen extends ConsumerWidget {
                 var verifyMessage = await ref.read(verifyProfileProvider(
                         userId: userDetails['user_id']!,
                         uName: userDetails['user_name']!,
-                        countryCode: countryCodeCont.text,
-                        contact: phoneNumberCont.text,
+                        countryCode: int.tryParse(countryCodeCont.text),
+                        contact: int.tryParse(phoneNumberCont.text),
                         company: companyCont.text,
                         jobTitle: jobTitleCont.text,
                         industry: industryCont.text,
@@ -84,7 +83,7 @@ class VerifyProfileScreen extends ConsumerWidget {
   }
 
   bodyWidget(context, WidgetRef ref, Map<String, String> userDetails) {
-    final selectedProfile = ref.watch(selectedProfileImageProvider);
+    final selectedProfile = ref.watch(selectedAvatarImageProvider);
     final selectedBanner = ref.watch(selectedBannerImageProvider);
     return SingleChildScrollView(
       child: Column(
@@ -100,34 +99,34 @@ class VerifyProfileScreen extends ConsumerWidget {
                 child: selectedBanner != null
                     ? Stack(
                         children: [
-                          Image(
-                            width: ScreenSize.width(context),
-                            image: FileImage(selectedBanner),
-                            fit: BoxFit.fill,
-                          ),
+                          // Image(
+                          //   width: ScreenSize.width(context),
+                          //   image: FileImage(selectedBanner),
+                          //   fit: BoxFit.fill,
+                          // ),
                           Align(
                             alignment: Alignment.topRight,
                             child: IconButton(
                               onPressed: () async {
                                 final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
-                                if (pickedFile != null) {
-                                  var uploadedBanner = await ref.read(uploadBannerProvider(
-                                    fileName: pickedFile.name,
-                                    fileType: AppUtility(context).getMediaType(pickedFile.path),
-                                    userId: userDetails['user_id'],
-                                    userType: userDetails['type'],
-                                  ).future);
-                                  ref.read(uploadToAWSProvider(
-                                    url: uploadedBanner.url,
-                                    fileName: pickedFile.name,
-                                    file: File(pickedFile.path),
-                                    fileType: AppUtility(context).getMediaType(pickedFile.path),
-                                  ));
-                                  // Update the avatar URL provider
-                                  ref.read(uploadedBannerKeyProvider.notifier).state = uploadedBanner.key;
+                                // if (pickedFile != null) {
+                                //   var uploadedBanner = await ref.read(uploadBannerProvider(
+                                //     fileName: pickedFile.name,
+                                //     fileType: AppUtility(context).getMediaType(pickedFile.path),
+                                //     userId: userDetails['user_id'],
+                                //     userType: userDetails['type'],
+                                //   ).future);
+                                //   ref.read(uploadToAWSProvider(
+                                //     url: uploadedBanner.url,
+                                //     fileName: pickedFile.name,
+                                //     file: File(pickedFile.path),
+                                //     fileType: AppUtility(context).getMediaType(pickedFile.path),
+                                //   ));
+                                //   // Update the avatar URL provider
+                                //   ref.read(uploadedBannerKeyProvider.notifier).state = uploadedBanner.key;
 
-                                  ref.read(selectedBannerImageProvider.notifier).state = File(pickedFile.path);
-                                }
+                                //   ref.read(selectedBannerImageProvider.notifier).state = File(pickedFile.path);
+                                // }
                               },
                               icon: const Icon(
                                 CupertinoIcons.camera_fill,
@@ -142,23 +141,23 @@ class VerifyProfileScreen extends ConsumerWidget {
                         child: IconButton(
                           onPressed: () async {
                             final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
-                            if (pickedFile != null) {
-                              var uploadedBanner = await ref.read(uploadBannerProvider(
-                                fileName: pickedFile.name,
-                                fileType: AppUtility(context).getMediaType(pickedFile.path),
-                                userId: userDetails['user_id'],
-                                userType: userDetails['type'],
-                              ).future);
-                              ref.read(uploadToAWSProvider(
-                                url: uploadedBanner.url,
-                                fileName: pickedFile.name,
-                                file: File(pickedFile.path),
-                                fileType: AppUtility(context).getMediaType(pickedFile.path),
-                              ));
-                              ref.read(uploadedBannerKeyProvider.notifier).state = uploadedBanner.key;
+                            // if (pickedFile != null) {
+                            //   var uploadedBanner = await ref.read(uploadBannerProvider(
+                            //     fileName: pickedFile.name,
+                            //     fileType: AppUtility(context).getMediaType(pickedFile.path),
+                            //     userId: userDetails['user_id'],
+                            //     userType: userDetails['type'],
+                            //   ).future);
+                            //   ref.read(uploadToAWSProvider(
+                            //     url: uploadedBanner.url,
+                            //     fileName: pickedFile.name,
+                            //     file: File(pickedFile.path),
+                            //     fileType: AppUtility(context).getMediaType(pickedFile.path),
+                            //   ));
+                            //   ref.read(uploadedBannerKeyProvider.notifier).state = uploadedBanner.key;
 
-                              ref.read(selectedBannerImageProvider.notifier).state = File(pickedFile.path);
-                            }
+                            //   ref.read(selectedBannerImageProvider.notifier).state = File(pickedFile.path);
+                            // }
                           },
                           icon: const Icon(CupertinoIcons.camera_fill),
                         ),
@@ -171,28 +170,28 @@ class VerifyProfileScreen extends ConsumerWidget {
                   child: GestureDetector(
                     onTap: () async {
                       final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
-                      if (pickedFile != null) {
-                        var uploadedAvatar = await ref.read(uploadAvatarProvider(
-                          fileName: pickedFile.name,
-                          fileType: AppUtility(context).getMediaType(pickedFile.path),
-                          userId: userDetails['user_id'],
-                          userType: userDetails['type'],
-                        ).future);
-                        ref.read(uploadToAWSProvider(
-                          url: uploadedAvatar.url,
-                          fileName: pickedFile.name,
-                          file: File(pickedFile.path),
-                          fileType: AppUtility(context).getMediaType(pickedFile.path),
-                        ));
-                        ref.read(uploadedAvatarKeyProvider.notifier).state = uploadedAvatar.key;
+                      // if (pickedFile != null) {
+                      //   var uploadedAvatar = await ref.read(uploadAvatarProvider(
+                      //     fileName: pickedFile.name,
+                      //     fileType: AppUtility(context).getMediaType(pickedFile.path),
+                      //     userId: userDetails['user_id'],
+                      //     userType: userDetails['type'],
+                      //   ).future);
+                      //   await ref.read(uploadToAWSProvider(
+                      //     url: uploadedAvatar.url,
+                      //     fileName: pickedFile.name,
+                      //     file: File(pickedFile.path),
+                      //     fileType: AppUtility(context).getMediaType(pickedFile.path),
+                      //   ).future);
+                      //   ref.read(uploadedAvatarKeyProvider.notifier).state = uploadedAvatar.key;
 
-                        ref.read(selectedProfileImageProvider.notifier).state = File(pickedFile.path);
-                      }
+                      //   ref.read(selectedProfileImageProvider.notifier).state = File(pickedFile.path);
+                      // }
                     },
                     child: CircleAvatar(
                       backgroundColor: const Color(0xFF1B0C6B),
                       radius: 70,
-                      backgroundImage: selectedProfile != null ? FileImage(selectedProfile) : null,
+                      // backgroundImage: selectedProfile != null ? FileImage(selectedProfile) : null,
                       child: selectedProfile == null
                           ? const Center(
                               child: Icon(
@@ -217,9 +216,9 @@ class VerifyProfileScreen extends ConsumerWidget {
           customFields(
             context,
             'Name',
-            CustomTextFormField(
+            const CustomTextFormField(
               readOnly: true,
-              hintText: "${userDetails['user_name']![0].toUpperCase()}${userDetails['user_name']!.substring(1)}",
+              // hintText: "${userDetails['user_name']![0].toUpperCase()}${userDetails['user_name']!.substring(1)}",
               hintColor: Colors.black,
             ),
             CupertinoIcons.person,
@@ -227,28 +226,82 @@ class VerifyProfileScreen extends ConsumerWidget {
           ),
           customFields(
             context,
-            'Contact',
-            Row(
-              children: [
-                Expanded(
-                  flex: 1,
-                  child: CustomTextFormField(
-                    border: const OutlineInputBorder(),
-                    controller: countryCodeCont,
-                  ),
-                ),
-                const SizedBox(width: 10),
-                Expanded(
-                  flex: 3,
-                  child: CustomTextFormField(
-                    hintText: "Phone Number",
-                    controller: phoneNumberCont,
-                    border: const OutlineInputBorder(),
-                  ),
-                ),
-              ],
+            'Posting as',
+            const CustomTextFormField(
+              readOnly: true,
+              // hintText: "${userDetails['type']![0].toUpperCase()}${userDetails['type']!.substring(1)}",
+              hintColor: Colors.black,
             ),
-            CupertinoIcons.phone_fill,
+            CupertinoIcons.person_2,
+            () {},
+          ),
+          customFields(
+            context,
+            'Industry',
+            DropdownButtonHideUnderline(
+              child: DropdownButton<String>(
+                hint: const Text('Select an industry'),
+                menuMaxHeight: 300,
+                // value: selectedValue,
+                onChanged: (String? newValue) {
+                  // setState(() {
+                  //   selectedValue = newValue;
+                  // });
+                },
+                items: industries.map<DropdownMenuItem<String>>((Map<String, String> item) {
+                  return DropdownMenuItem<String>(
+                    value: item['value'],
+                    child: Text(item['label']!),
+                  );
+                }).toList(),
+              ),
+            ),
+            CupertinoIcons.square_list_fill,
+            () {},
+          ),
+          customFields(
+            context,
+            'Expertise',
+            const CustomTextFormField(
+              hintText: "Enter your Expertise",
+            ),
+            CupertinoIcons.clock_fill,
+            () {},
+          ),
+          // customFields(
+          //   context,
+          //   'Contact',
+          //   Row(
+          //     children: [
+          //       Expanded(
+          //         flex: 1,
+          //         child: CustomTextFormField(
+          //           border: const OutlineInputBorder(),
+          //           controller: countryCodeCont,
+          //         ),
+          //       ),
+          //       const SizedBox(width: 10),
+          //       Expanded(
+          //         flex: 3,
+          //         child: CustomTextFormField(
+          //           hintText: "Phone Number",
+          //           controller: phoneNumberCont,
+          //           border: const OutlineInputBorder(),
+          //         ),
+          //       ),
+          //     ],
+          //   ),
+          //   CupertinoIcons.phone_fill,
+          //   () {},
+          // ),
+          customFields(
+            context,
+            'Designation',
+            CustomTextFormField(
+              hintText: "Enter your Designation",
+              controller: jobTitleCont,
+            ),
+            Icons.work_outline_rounded,
             () {},
           ),
           customFields(
@@ -261,37 +314,7 @@ class VerifyProfileScreen extends ConsumerWidget {
             CupertinoIcons.building_2_fill,
             () {},
           ),
-          customFields(
-            context,
-            'Job Title',
-            CustomTextFormField(
-              hintText: "Enter Job Title",
-              controller: jobTitleCont,
-            ),
-            Icons.work_outline_rounded,
-            () {},
-          ),
-          customFields(
-            context,
-            'Industry',
-            CustomTextFormField(
-              hintText: "Select Industry",
-              controller: industryCont,
-            ),
-            CupertinoIcons.square_list_fill,
-            () {},
-          ),
-          customFields(
-            context,
-            'Posting as',
-            CustomTextFormField(
-              readOnly: true,
-              hintText: "${userDetails['type']![0].toUpperCase()}${userDetails['type']!.substring(1)}",
-              hintColor: Colors.black,
-            ),
-            CupertinoIcons.person_2,
-            () {},
-          ),
+
           customFields(
             context,
             'Location',

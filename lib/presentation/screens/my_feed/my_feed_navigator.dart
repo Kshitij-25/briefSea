@@ -1,10 +1,21 @@
-import 'package:flutter/material.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'dart:io';
 
+import 'package:briefsea/presentation/widgets/post_brief_modal_sheet.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:image_picker/image_picker.dart';
+
+import '../../../common/app_utility.dart';
 import '../../../common/screen_size.dart';
+import '../../providers/auth_provider.dart';
+import '../../providers/breifs_provider.dart';
+import '../../providers/user_profile_provider.dart';
 import '../../state_providers/briefs_state_provider.dart';
+import '../../state_providers/category_state_provider.dart';
+import '../../state_providers/image_picker_provider.dart';
 import '../../widgets/custom_tab_bar.dart';
-import '../../widgets/post_brief_modal_sheet.dart';
 import 'all_briefs_screen.dart';
 import 'my_briefs_screen.dart';
 
@@ -15,6 +26,13 @@ class MyFeedNavigator extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final currentIndex = ref.watch(briefsTabIndexProvider);
     final pageController = PageController(initialPage: currentIndex);
+
+    final selectedImage = ref.watch(selectedPostImageProvider);
+    final userData = ref.watch(userDetailsProvider);
+    final selectedAvatar = ref.watch(selectedAvatarProvider.notifier).state;
+    final isCategoryVisible = ref.watch(isCategoryVisibleProvider.notifier).state;
+
+    final TextEditingController postTextCont = TextEditingController();
 
     // final allBriefs = ref.watch(getAllBriefsProvider);
     // final userBriefs = ref.watch(getUserBriefsProvider);
@@ -76,7 +94,107 @@ class MyFeedNavigator extends ConsumerWidget {
                         },
                       ),
                     ),
-                    PostBriefModalSheet(),
+                    GestureDetector(
+                      onTap: () {
+                        customPostBriefModalSheet(
+                          context,
+                          selectedImage: selectedImage,
+                          postTextCont: postTextCont,
+                          postingAs: userData['type'],
+                          // influencerOnTap: () {
+                          //   ref.read(selectedCategoryProvider.notifier).state = "Influencer Marketing";
+                          // },
+                          // technologyOnTap: () {
+                          //   ref.read(selectedCategoryProvider.notifier).state = "Technology";
+                          // },
+                          photoOnTap: () async {
+                            final ImagePicker picker = ImagePicker();
+                            final XFile? image = await picker.pickImage(source: ImageSource.gallery);
+                            if (image != null) {
+                              var uploadedThreadImage = await ref.read(uploadThreadImageProvider(
+                                fileName: image.name,
+                                fileType: AppUtility(context).getMediaType(image.path),
+                                userId: userData['user_id'],
+                                userType: userData['type'],
+                              ).future);
+                              ref.read(uploadToAWSProvider(
+                                url: uploadedThreadImage.url,
+                                fileName: image.name,
+                                file: File(image.path),
+                                fileType: AppUtility(context).getMediaType(image.path),
+                              ).future);
+                              ref.read(uploadedThreadImageKeyProvider.notifier).state = uploadedThreadImage.key;
+
+                              ref.read(selectedPostImageProvider.notifier).state = File(image.path);
+                            }
+                          },
+                          postOnTap: (postText, selectedCategory) async {
+                            if (postTextCont.text.isNotEmpty) {
+                              var status = await ref.watch(postBriefProvider(
+                                userId: userData['user_id'],
+                                uName: userData['user_name'],
+                                type: userData['type'],
+                                postText: postText,
+                                imgSrc: ref.read(uploadedThreadImageKeyProvider.notifier).state,
+                                category: selectedCategory,
+                              ).future);
+
+                              if (status == true) {
+                                postTextCont.clear();
+                                GoRouter.of(context).pop();
+                              }
+                              ref.invalidate(getAllBriefsProvider);
+                              ref.invalidate(getUserBriefsProvider);
+                            }
+                          },
+                        );
+                      },
+                      child: Container(
+                        height: 50,
+                        width: ScreenSize.width(context),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: const BorderRadius.all(Radius.circular(50)),
+                          boxShadow: [
+                            BoxShadow(
+                              // color: Color(0xFF030305),
+                              color: Colors.grey[300]!,
+                              blurRadius: 5,
+                              offset: const Offset(2.50, 2.50),
+                            ),
+                            BoxShadow(
+                              // color: Color(0xFF141122),
+                              color: Colors.grey[300]!,
+                              blurRadius: 5,
+                              offset: const Offset(-2.50, -2.50),
+                            )
+                          ],
+                        ),
+                        child: const Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Padding(
+                              padding: EdgeInsets.only(left: 15.0),
+                              child: Icon(
+                                CupertinoIcons.add_circled_solid,
+                                color: Colors.grey,
+                                size: 35,
+                              ),
+                            ),
+                            Expanded(
+                              child: Center(
+                                child: Text(
+                                  "Post a brief...",
+                                  style: TextStyle(
+                                    color: Colors.grey,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
                   ],
                 ),
               ),

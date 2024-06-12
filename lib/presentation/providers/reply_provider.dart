@@ -27,9 +27,14 @@ ReplyRepository replyRepository(ReplyRepositoryRef ref) {
 }
 
 @riverpod
-Future<bool> postReply(PostReplyRef ref, {required userId, required threadId, required commentText}) async {
+Future<bool> postReply(PostReplyRef ref, {required String? userId, required String? threadId, required String? commentText, String? replyId}) async {
   final replyRepository = ref.read(replyRepositoryProvider);
-  final eitherReplynOrError = await replyRepository.postReply(userId, threadId, commentText);
+  final eitherReplynOrError = await replyRepository.postReply(
+    userId,
+    threadId,
+    commentText,
+    replyId,
+  );
   return eitherReplynOrError!.fold(
     (error) {
       throw error; // Throw the error for Riverpod to handle
@@ -39,7 +44,7 @@ Future<bool> postReply(PostReplyRef ref, {required userId, required threadId, re
 }
 
 @riverpod
-Future<LikeModel> getCommentLike(GetCommentLikeRef ref, {replyId}) async {
+Future<LikeModel> getCommentLike(GetCommentLikeRef ref, {required String? replyId}) async {
   final replyRepository = ref.watch(replyRepositoryProvider);
   final eitherLikenOrError = await replyRepository.getCommentLike(replyId);
   return eitherLikenOrError!.fold(
@@ -51,7 +56,7 @@ Future<LikeModel> getCommentLike(GetCommentLikeRef ref, {replyId}) async {
 }
 
 @riverpod
-Future<List<CommentModel>> getAllComments(GetAllCommentsRef ref, {required threadId}) async {
+Future<List<CommentModel>> getAllComments(GetAllCommentsRef ref, {required String? threadId}) async {
   final replyRepository = ref.read(replyRepositoryProvider);
   final eitherReplyLikenOrError = await replyRepository.getAllComments(threadId);
   return eitherReplyLikenOrError!.fold((error) => throw error, (replyLike) async {
@@ -66,20 +71,18 @@ Future<List<CommentModel>> getAllComments(GetAllCommentsRef ref, {required threa
   });
 }
 
-
-
-// @riverpod
-// Future<List<BriefsModel?>?> getAllBriefs(GetAllBriefsRef ref) async {
-//   final breifsRepository = ref.watch(briefsRepositoryProvider);
-//   final eitherBriefsOrError = await breifsRepository.getAllBriefs();
-//   return eitherBriefsOrError!.fold((error) => throw error, (briefs) async {
-//     final updatedBriefs = await Future.wait(briefs!.map((brief) async {
-//       final likedModel = await ref.watch(getALikeProvider(threadId: brief!.id).future);
-//       return brief.copyWith(
-//         isPostLiked: likedModel.likeId != null,
-//         postLikeId: likedModel.likeId,
-//       );
-//     }).toList());
-//     return updatedBriefs;
-//   });
-// }
+@riverpod
+Future<List<CommentModel>> getAllReplyOnComment(GetAllReplyOnCommentRef ref, {required String? commentId}) async {
+  final replyRepository = ref.read(replyRepositoryProvider);
+  final eitherReplyLikenOrError = await replyRepository.getAllReplyOnComment(commentId);
+  return eitherReplyLikenOrError!.fold((error) => throw error, (replyLike) async {
+    final updatedcomment = await Future.wait(replyLike.map((comment) async {
+      final likedModel = await ref.watch(getCommentLikeProvider(replyId: comment.id).future);
+      return comment.copyWith(
+        isCommentLiked: likedModel.likeId != null,
+        commentLikeId: likedModel.likeId,
+      );
+    }).toList());
+    return updatedcomment;
+  });
+}

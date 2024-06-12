@@ -1,12 +1,5 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:http_parser/http_parser.dart';
-import 'package:image_picker/image_picker.dart';
-
-import '../presentation/providers/user_profile_provider.dart';
-import '../presentation/state_providers/image_picker_provider.dart';
 
 class AppUtility {
   final BuildContext context;
@@ -66,52 +59,50 @@ class AppUtility {
     return MediaType.parse(contentType);
   }
 
-  // Function to upload image and update the provider
-  // Function to upload image and update the provider
-  Future<void> uploadImage({
-    required WidgetRef ref,
-    required String userId,
-    required String userType,
-    required ImagePicker picker,
-    required bool isBanner,
-  }) async {
-    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
-    if (pickedFile != null) {
-      if (isBanner) {
-        final uploadedBannerResponse = await ref.read(uploadBannerProvider(
-          fileName: pickedFile.name,
-          fileType: getMediaType(pickedFile.path),
-          userId: userId,
-          userType: userType,
-        ).future);
-        // Assuming uploadedBannerResponse is of type BannerModel
-        await ref.read(uploadToAWSProvider(
-          url: uploadedBannerResponse.url,
-          fileName: pickedFile.name,
-          file: File(pickedFile.path),
-          fileType: getMediaType(pickedFile.path),
-        ).future);
-        ref.read(selectedBannerImageProvider.notifier).state = File(pickedFile.path);
-        ref.read(uploadedBannerUrlProvider.notifier).state = uploadedBannerResponse.url;
-      } else {
-        final uploadedAvatarResponse = await ref.read(uploadAvatarProvider(
-          fileName: pickedFile.name,
-          fileType: getMediaType(pickedFile.path),
-          userId: userId,
-          userType: userType,
-        ).future);
-        // Assuming uploadedAvatarResponse is of type AvatarModel
-        await ref.read(uploadToAWSProvider(
-          url: uploadedAvatarResponse.url,
-          fileName: pickedFile.name,
-          file: File(pickedFile.path),
-          fileType: getMediaType(pickedFile.path),
-        ).future);
-        ref.read(selectedProfileImageProvider.notifier).state = File(pickedFile.path);
-        ref.read(uploadedAvatarUrlProvider.notifier).state = uploadedAvatarResponse.url;
-      }
-    }
-  }
+  // Future<void> uploadImage({
+  //   required WidgetRef ref,
+  //   required String userId,
+  //   required String userType,
+  //   required ImagePicker picker,
+  //   required bool isBanner,
+  // }) async {
+  //   final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+  //   if (pickedFile != null) {
+  //     if (isBanner) {
+  //       final uploadedBannerResponse = await ref.read(uploadBannerProvider(
+  //         fileName: pickedFile.name,
+  //         fileType: getMediaType(pickedFile.path),
+  //         userId: userId,
+  //         userType: userType,
+  //       ).future);
+  //       // Assuming uploadedBannerResponse is of type BannerModel
+  //       await ref.read(uploadToAWSProvider(
+  //         url: uploadedBannerResponse.url,
+  //         fileName: pickedFile.name,
+  //         file: File(pickedFile.path),
+  //         fileType: getMediaType(pickedFile.path),
+  //       ).future);
+  //       ref.read(selectedBannerImageProvider.notifier).state = File(pickedFile.path);
+  //       ref.read(uploadedBannerUrlProvider.notifier).state = uploadedBannerResponse.url;
+  //     } else {
+  //       final uploadedAvatarResponse = await ref.read(uploadAvatarProvider(
+  //         fileName: pickedFile.name,
+  //         fileType: getMediaType(pickedFile.path),
+  //         userId: userId,
+  //         userType: userType,
+  //       ).future);
+  //       // Assuming uploadedAvatarResponse is of type AvatarModel
+  //       await ref.read(uploadToAWSProvider(
+  //         url: uploadedAvatarResponse.url,
+  //         fileName: pickedFile.name,
+  //         file: File(pickedFile.path),
+  //         fileType: getMediaType(pickedFile.path),
+  //       ).future);
+  //       ref.read(selectedProfileImageProvider.notifier).state = File(pickedFile.path);
+  //       ref.read(uploadedAvatarUrlProvider.notifier).state = uploadedAvatarResponse.url;
+  //     }
+  //   }
+  // }
 
   void error(Object e) {
     ScaffoldMessenger.of(context).showSnackBar(

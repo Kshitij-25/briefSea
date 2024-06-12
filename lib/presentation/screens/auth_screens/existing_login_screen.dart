@@ -56,11 +56,11 @@ class ExistingLoginScreen extends ConsumerWidget {
                   SizedBox(height: ScreenSize.height(context) * .2),
                   GestureDetector(
                     onTap: () {
-                      emailCont.text = "jopete7146@avastu.com";
+                      emailCont.text = "kshitij@briefsea.com";
                       passCont.text = '1234567890';
                     },
                     child: const Text(
-                      "Login as Existing User",
+                      "Login as\nExisting User",
                       style: TextStyle(color: Colors.white),
                       textScaler: TextScaler.linear(2),
                     ),

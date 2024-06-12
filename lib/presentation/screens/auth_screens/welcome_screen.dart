@@ -48,9 +48,9 @@ class WelcomeScreen extends StatelessWidget {
                   // ),
                   // const SizedBox(height: 20),
                   const Text(
-                    "Quickest way to discover\nAgencies, Vendors and Freelancers",
+                    "Quickly connect with\nFreelancers, Vendors and Agencies\nof your industry",
                     style: TextStyle(color: Colors.white),
-                    textScaler: TextScaler.linear(1.5),
+                    textScaler: TextScaler.linear(1.38),
                     textAlign: TextAlign.center,
                   ),
                   SizedBox(height: ScreenSize.height(context) * .05),

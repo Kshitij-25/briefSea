@@ -54,7 +54,7 @@ final getAllBriefsProvider =
 );
 
 typedef GetAllBriefsRef = AutoDisposeFutureProviderRef<List<BriefsModel?>?>;
-String _$getUserBriefsHash() => r'b421872a57d5c5a9b07c11ad54f881efddafd2ed';
+String _$getUserBriefsHash() => r'c9657254a2401374f2465563184ad38d4b1b6e6b';
 
 /// See also [getUserBriefs].
 @ProviderFor(getUserBriefs)
@@ -70,7 +70,7 @@ final getUserBriefsProvider =
 );
 
 typedef GetUserBriefsRef = AutoDisposeFutureProviderRef<List<BriefsModel?>?>;
-String _$postBriefHash() => r'1f8b510541164c810b40cfbb61583a36be67c74e';
+String _$postBriefHash() => r'5e285840e5174397201a04f1262705b96a61d96a';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -104,12 +104,12 @@ class PostBriefFamily extends Family<AsyncValue<bool>> {
 
   /// See also [postBrief].
   PostBriefProvider call({
-    dynamic userId,
-    dynamic uName,
-    dynamic type,
-    dynamic category,
-    dynamic postText,
-    dynamic imgSrc,
+    String? userId,
+    String? uName,
+    String? type,
+    String? category,
+    String? postText,
+    String? imgSrc,
   }) {
     return PostBriefProvider(
       userId: userId,
@@ -154,12 +154,12 @@ class PostBriefFamily extends Family<AsyncValue<bool>> {
 class PostBriefProvider extends AutoDisposeFutureProvider<bool> {
   /// See also [postBrief].
   PostBriefProvider({
-    dynamic userId,
-    dynamic uName,
-    dynamic type,
-    dynamic category,
-    dynamic postText,
-    dynamic imgSrc,
+    String? userId,
+    String? uName,
+    String? type,
+    String? category,
+    String? postText,
+    String? imgSrc,
   }) : this._internal(
           (ref) => postBrief(
             ref as PostBriefRef,
@@ -201,12 +201,12 @@ class PostBriefProvider extends AutoDisposeFutureProvider<bool> {
     required this.imgSrc,
   }) : super.internal();
 
-  final dynamic userId;
-  final dynamic uName;
-  final dynamic type;
-  final dynamic category;
-  final dynamic postText;
-  final dynamic imgSrc;
+  final String? userId;
+  final String? uName;
+  final String? type;
+  final String? category;
+  final String? postText;
+  final String? imgSrc;
 
   @override
   Override overrideWith(
@@ -263,22 +263,22 @@ class PostBriefProvider extends AutoDisposeFutureProvider<bool> {
 
 mixin PostBriefRef on AutoDisposeFutureProviderRef<bool> {
   /// The parameter `userId` of this provider.
-  dynamic get userId;
+  String? get userId;
 
   /// The parameter `uName` of this provider.
-  dynamic get uName;
+  String? get uName;
 
   /// The parameter `type` of this provider.
-  dynamic get type;
+  String? get type;
 
   /// The parameter `category` of this provider.
-  dynamic get category;
+  String? get category;
 
   /// The parameter `postText` of this provider.
-  dynamic get postText;
+  String? get postText;
 
   /// The parameter `imgSrc` of this provider.
-  dynamic get imgSrc;
+  String? get imgSrc;
 }
 
 class _PostBriefProviderElement extends AutoDisposeFutureProviderElement<bool>
@@ -286,17 +286,17 @@ class _PostBriefProviderElement extends AutoDisposeFutureProviderElement<bool>
   _PostBriefProviderElement(super.provider);
 
   @override
-  dynamic get userId => (origin as PostBriefProvider).userId;
+  String? get userId => (origin as PostBriefProvider).userId;
   @override
-  dynamic get uName => (origin as PostBriefProvider).uName;
+  String? get uName => (origin as PostBriefProvider).uName;
   @override
-  dynamic get type => (origin as PostBriefProvider).type;
+  String? get type => (origin as PostBriefProvider).type;
   @override
-  dynamic get category => (origin as PostBriefProvider).category;
+  String? get category => (origin as PostBriefProvider).category;
   @override
-  dynamic get postText => (origin as PostBriefProvider).postText;
+  String? get postText => (origin as PostBriefProvider).postText;
   @override
-  dynamic get imgSrc => (origin as PostBriefProvider).imgSrc;
+  String? get imgSrc => (origin as PostBriefProvider).imgSrc;
 }
 
 String _$uploadThreadImageHash() => r'e93d537f39cf32f3017d5538ad054e11bcf83302';
