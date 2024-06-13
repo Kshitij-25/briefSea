@@ -1,19 +1,19 @@
 import 'dart:developer';
 import 'dart:io';
 
-import 'package:briefsea/presentation/providers/image_provider.dart';
-import 'package:briefsea/presentation/providers/user_profile_provider.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:mime/mime.dart';
 
-import '../../common/app_utility.dart';
 import '../../common/screen_size.dart';
 import '../../data/models/image_model.dart';
 import '../../data/models/user_profile_model.dart';
 import '../providers/auth_provider.dart';
+import '../providers/image_provider.dart';
+import '../providers/user_profile_provider.dart';
 import '../state_providers/image_picker_provider.dart';
 
 class ProfileScreen extends ConsumerWidget {
@@ -231,11 +231,14 @@ class _BannerWidget extends ConsumerWidget {
                       fit: BoxFit.cover,
                       useOldImageOnUrlChange: true,
                       placeholder: (context, url) => const Center(
-                        child: CircularProgressIndicator(),
+                        child: CircularProgressIndicator.adaptive(),
                       ),
-                      errorWidget: (context, url, error) => const Icon(
-                        Icons.error,
-                        color: Colors.white,
+                      errorWidget: (context, url, error) => const Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: [
+                          Icon(Icons.error),
+                          Icon(Icons.error),
+                        ],
                       ),
                     ),
                   ),
@@ -244,20 +247,24 @@ class _BannerWidget extends ConsumerWidget {
                   alignment: Alignment.topRight,
                   child: IconButton(
                     onPressed: () async {
-                      final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
-                      final imageUrl = await ref.read(
-                        uploadImageProvider(
-                          fileName: pickedFile!.name,
-                          fileType: AppUtility(context).getMediaType(pickedFile.path),
-                          userDetails: userDetails!,
-                          userProfileData: userProfileData,
-                          file: File(pickedFile.path),
-                          isBanner: true,
-                          isAvatar: false,
-                        ).future,
-                      );
-                      ref.read(selectedBannerImageProvider.notifier).state = imageUrl;
-                      log("PROFILE_SCREEN BANNERURL =====> $imageUrl");
+                      try {
+                        final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
+                        final imageUrl = await ref.read(
+                          uploadImageProvider(
+                            fileName: pickedFile!.name,
+                            fileType: lookupMimeType(pickedFile.path),
+                            userDetails: userDetails!,
+                            userProfileData: userProfileData,
+                            file: File(pickedFile.path),
+                            isBanner: true,
+                            isAvatar: false,
+                          ).future,
+                        );
+                        ref.read(selectedBannerImageProvider.notifier).state = imageUrl;
+                        log("PROFILE_SCREEN BANNERURL =====> $imageUrl");
+                      } catch (e) {
+                        log("Banner Not Uploaded", error: e);
+                      }
                     },
                     icon: const Icon(
                       CupertinoIcons.camera_fill,
@@ -271,20 +278,24 @@ class _BannerWidget extends ConsumerWidget {
               alignment: Alignment.topRight,
               child: IconButton(
                 onPressed: () async {
-                  final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
-                  final imageUrl = await ref.read(
-                    uploadImageProvider(
-                      fileName: pickedFile!.name,
-                      fileType: AppUtility(context).getMediaType(pickedFile.path),
-                      userDetails: userDetails!,
-                      userProfileData: userProfileData,
-                      file: File(pickedFile.path),
-                      isBanner: true,
-                      isAvatar: false,
-                    ).future,
-                  );
-                  ref.read(selectedBannerImageProvider.notifier).state = imageUrl;
-                  log("PROFILE_SCREEN BANNERURL =====> $imageUrl");
+                  try {
+                    final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
+                    final imageUrl = await ref.read(
+                      uploadImageProvider(
+                        fileName: pickedFile!.name,
+                        fileType: lookupMimeType(pickedFile.path),
+                        userDetails: userDetails!,
+                        userProfileData: userProfileData,
+                        file: File(pickedFile.path),
+                        isBanner: true,
+                        isAvatar: false,
+                      ).future,
+                    );
+                    ref.read(selectedBannerImageProvider.notifier).state = imageUrl;
+                    log("PROFILE_SCREEN BANNERURL =====> $imageUrl");
+                  } catch (e) {
+                    log("Banner Not Uploaded", error: e);
+                  }
                 },
                 icon: const Icon(
                   CupertinoIcons.camera_fill,
@@ -313,20 +324,24 @@ class _AvatarWidget extends ConsumerWidget {
         padding: const EdgeInsets.all(15.0),
         child: GestureDetector(
           onTap: () async {
-            final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
-            final imageUrl = await ref.read(
-              uploadImageProvider(
-                fileName: pickedFile!.name,
-                fileType: AppUtility(context).getMediaType(pickedFile.path),
-                userDetails: userDetails!,
-                userProfileData: userProfileData,
-                file: File(pickedFile.path),
-                isBanner: false,
-                isAvatar: true,
-              ).future,
-            );
-            ref.read(selectedAvatarImageProvider.notifier).state = imageUrl;
-            log("PROFILE_SCREEN AVATARURL=====> $imageUrl");
+            try {
+              final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
+              final imageUrl = await ref.read(
+                uploadImageProvider(
+                  fileName: pickedFile!.name,
+                  fileType: lookupMimeType(pickedFile.path),
+                  userDetails: userDetails!,
+                  userProfileData: userProfileData,
+                  file: File(pickedFile.path),
+                  isBanner: false,
+                  isAvatar: true,
+                ).future,
+              );
+              ref.read(selectedAvatarImageProvider.notifier).state = imageUrl;
+              log("PROFILE_SCREEN AVATARURL=====> $imageUrl");
+            } catch (e) {
+              log("Avatar Not Uploaded", error: e);
+            }
           },
           child: CircleAvatar(
               backgroundColor: const Color(0xFF1B0C6B),
@@ -344,7 +359,7 @@ class _AvatarWidget extends ConsumerWidget {
                   //       ),
                   //     ),
                   //   )
-                  // :
+                  // :x
                   ? const Icon(
                       CupertinoIcons.camera_fill,
                       color: Colors.white,

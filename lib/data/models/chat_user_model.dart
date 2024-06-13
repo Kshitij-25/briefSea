@@ -10,6 +10,7 @@ class ChatUserModel with _$ChatUserModel {
     String? name,
     String? type,
     @JsonKey(name: "conversation_id") String? conversationId,
+    @Default(false) bool isUserOnline,
   }) = _ChatUserModel;
 
   factory ChatUserModel.fromJson(Map<String, dynamic> json) => _$ChatUserModelFromJson(json);

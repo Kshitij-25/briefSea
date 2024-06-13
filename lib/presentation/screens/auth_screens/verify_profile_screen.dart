@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:mime/mime.dart';
 
 import '../../../common/app_utility.dart';
 import '../../../common/industry_data.dart';
@@ -272,7 +273,7 @@ class _AvatarWidget extends ConsumerWidget {
             if (pickedFile != null) {
               var uploadedAvatar = await ref.read(uploadAvatarProvider(
                 fileName: pickedFile.name,
-                fileType: AppUtility(context).getMediaType(pickedFile.path),
+                fileType: lookupMimeType(pickedFile.path),
                 userId: userDetails['user_id'],
                 userType: userDetails['type'],
               ).future);
@@ -280,7 +281,7 @@ class _AvatarWidget extends ConsumerWidget {
                 url: uploadedAvatar.url,
                 fileName: pickedFile.name,
                 file: File(pickedFile.path),
-                fileType: AppUtility(context).getMediaType(pickedFile.path),
+                fileType: lookupMimeType(pickedFile.path),
               ).future);
               ref.read(uploadedAvatarKeyProvider.notifier).state = uploadedAvatar.key;
 
@@ -340,7 +341,7 @@ class _BannerWidget extends ConsumerWidget {
                       if (pickedFile != null) {
                         var uploadedBanner = await ref.read(uploadBannerProvider(
                           fileName: pickedFile.name,
-                          fileType: AppUtility(context).getMediaType(pickedFile.path),
+                          fileType: lookupMimeType(pickedFile.path),
                           userId: userDetails['user_id'],
                           userType: userDetails['type'],
                         ).future);
@@ -348,7 +349,7 @@ class _BannerWidget extends ConsumerWidget {
                           url: uploadedBanner.url,
                           fileName: pickedFile.name,
                           file: File(pickedFile.path),
-                          fileType: AppUtility(context).getMediaType(pickedFile.path),
+                          fileType: lookupMimeType(pickedFile.path),
                         ));
                         // Update the avatar URL provider
                         ref.read(uploadedBannerKeyProvider.notifier).state = uploadedBanner.key;
@@ -372,7 +373,7 @@ class _BannerWidget extends ConsumerWidget {
                   if (pickedFile != null) {
                     var uploadedBanner = await ref.read(uploadBannerProvider(
                       fileName: pickedFile.name,
-                      fileType: AppUtility(context).getMediaType(pickedFile.path),
+                      fileType: lookupMimeType(pickedFile.path),
                       userId: userDetails['user_id'],
                       userType: userDetails['type'],
                     ).future);
@@ -380,7 +381,7 @@ class _BannerWidget extends ConsumerWidget {
                       url: uploadedBanner.url,
                       fileName: pickedFile.name,
                       file: File(pickedFile.path),
-                      fileType: AppUtility(context).getMediaType(pickedFile.path),
+                      fileType: lookupMimeType(pickedFile.path),
                     ));
                     ref.read(uploadedBannerKeyProvider.notifier).state = uploadedBanner.key;
 

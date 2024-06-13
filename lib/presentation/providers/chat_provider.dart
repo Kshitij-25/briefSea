@@ -1,11 +1,11 @@
-import 'package:briefsea/data/data_sources/chat_remote_data_source.dart';
-import 'package:briefsea/data/repositories/chat_repository.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../data/core/api_client.dart';
+import '../../data/data_sources/chat_remote_data_source.dart';
 import '../../data/di/get_it.dart';
-import '../../data/models/chat_message_model.dart';
 import '../../data/models/chat_user_model.dart';
+import '../../data/repositories/chat_repository.dart';
+import 'messages_list_provider.dart';
 
 part 'chat_provider.g.dart';
 
@@ -46,14 +46,14 @@ Future<bool> createNewChat(CreateNewChatRef ref, {required String senderId, requ
 }
 
 @riverpod
-Future<List<ChatMessageModel>> getChatMessages(GetChatMessagesRef ref, {required String conversationId}) async {
+Future<void> getChatMessages(GetChatMessagesRef ref, {required String conversationId}) async {
   final chatRepository = ref.watch(chatRepositoryProvider);
   final eitherGetMessagesOrError = await chatRepository.getChatMessages(conversationId);
   return eitherGetMessagesOrError.fold(
     (error) {
       throw error; // Throw the error for Riverpod to handle
     },
-    (newChat) => newChat,
+    (newChat) => ref.read(chatMessagesProvider.notifier).setMessages(newChat),
   );
 }
 

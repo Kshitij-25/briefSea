@@ -1,13 +1,13 @@
-import 'package:briefsea/presentation/screens/auth_screens/agency_register_screen.dart';
-import 'package:briefsea/presentation/screens/auth_screens/existing_login_screen.dart';
-import 'package:briefsea/presentation/screens/auth_screens/freelancer_register_screen.dart';
-import 'package:briefsea/presentation/screens/auth_screens/professional_register_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../common/screen_size.dart';
 import '../../widgets/custom_elevated_button.dart';
 import '../../widgets/custom_shape_widget.dart';
+import 'agency_register_screen.dart';
+import 'existing_login_screen.dart';
+import 'freelancer_register_screen.dart';
+import 'professional_register_screen.dart';
 
 class WelcomeScreen extends StatelessWidget {
   const WelcomeScreen({super.key});

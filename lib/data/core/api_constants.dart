@@ -2,7 +2,7 @@ class ApiConstants {
   ApiConstants._();
 
   static const BASE_URL = 'https://briefsea-backend.onrender.com/forum'; //Test Url
-  // static const BASE_URL = 'https://www.api.briefsea.com//forum'; //Prod Url
+  // static const BASE_URL = 'https://www.api.briefsea.com/forum'; //Prod Url
   static const loginUrl = '$BASE_URL/discussion/login/one';
   static const registerUrl = '$BASE_URL/discussion/register/new';
   static const getUserProfile = '$BASE_URL/discussion/profile/single';

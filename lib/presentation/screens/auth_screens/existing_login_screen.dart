@@ -1,4 +1,3 @@
-import 'package:briefsea/presentation/providers/auth_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
@@ -6,6 +5,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../common/enums/login_register_enum.dart';
 import '../../../common/screen_size.dart';
+import '../../providers/auth_provider.dart';
 import '../../widgets/custom_back_button.dart';
 import '../../widgets/custom_elevated_button.dart';
 import '../../widgets/custom_shape_widget.dart';

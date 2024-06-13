@@ -1,13 +1,13 @@
-import 'package:briefsea/presentation/providers/chat_provider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:intl/intl.dart';
 
 import '../../../common/screen_size.dart';
-import '../../../data/models/chat_message_model.dart';
 import '../../../data/models/chat_user_model.dart';
 import '../../providers/auth_provider.dart';
+import '../../providers/chat_provider.dart';
+import '../../providers/messages_list_provider.dart';
 import '../../providers/socket_provider.dart';
 
 class ChatScreen extends ConsumerWidget {
@@ -24,21 +24,20 @@ class ChatScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final chatMessage = ref.watch(getChatMessagesProvider(conversationId: chatUser.conversationId!));
+    final chatMessages = ref.watch(chatMessagesProvider);
     final userData = ref.watch(userDetailsProvider);
-    final socket = ref.watch(socketProvider);
+    final sendMsg = ref.read(sendMessageProvider);
+    final socketService = ref.read(socketServiceProvider);
+    // final socket = ref.watch(socketProvider);
 
     // Listen to incoming messages via Socket.IO
-    socket.on('message', (data) {
-      // Convert data to the message model (if needed)
-      ChatMessageModel message = ChatMessageModel.fromJson(data);
+    // socket.on('receive-message', (data) {
+    //   // Convert data to the message model
+    //   ChatMessageModel message = ChatMessageModel.fromJson(data);
 
-      // Update UI with new message
-      // You can update the UI by adding the new message to the list of messages
-      // Assuming you have a list of messages and a method to add messages to that list
-      // You can use ref.read to get the message list provider and update it accordingly
-      // ref.read(chatMessagesListProvider).addMessage(message);
-    });
+    //   // Append the new message to the list of messages
+    //   ref.read(chatMessagesProvider.notifier).addMessage(message);
+    // });
 
     return Scaffold(
       appBar: AppBar(
@@ -76,30 +75,20 @@ class ChatScreen extends ConsumerWidget {
               child: Column(
                 children: [
                   Expanded(
-                    child: chatMessage.when(
-                      data: (messages) {
-                        return ListView.builder(
-                          shrinkWrap: true,
-                          itemCount: messages.length,
-                          itemBuilder: (context, index) {
-                            if (messages[index].senderId == userData['user_id']) {
-                              return _SentMessage(
-                                message: messages[index].messageText ?? "",
-                              );
-                            } else {
-                              return _ReceivedMessage(
-                                message: messages[index].messageText ?? "",
-                              );
-                            }
-                          },
-                        );
+                    child: ListView.builder(
+                      shrinkWrap: true,
+                      itemCount: chatMessages.length,
+                      itemBuilder: (context, index) {
+                        if (chatMessages[index].senderId == userData['user_id']) {
+                          return _SentMessage(
+                            message: chatMessages[index].messageText ?? "",
+                          );
+                        } else {
+                          return _ReceivedMessage(
+                            message: chatMessages[index].messageText ?? "",
+                          );
+                        }
                       },
-                      error: (error, stackTrace) {
-                        return Center(child: Text('Error: $error'));
-                      },
-                      loading: () => const Center(
-                        child: CircularProgressIndicator.adaptive(),
-                      ),
                     ),
                   ),
                   SafeArea(
@@ -134,13 +123,20 @@ class ChatScreen extends ConsumerWidget {
                               String formattedTime = DateFormat('MM/d/yyyy, hh:mm:ss a').format(now);
                               if (sendMessage.text.isNotEmpty) {
                                 // Emit message through Socket.IO
-                                // socket.emit('message', {
+                                // socket.emit('send-message', {
                                 //   'conversation_id': chatUser.conversationId!,
                                 //   'message': sendMessage.text,
                                 //   'receiver_d': chatUser.id!,
                                 //   'sender_id': userData['user_id']!,
                                 //   'typedAt': formattedTime,
                                 // });
+                                sendMsg(
+                                  chatUser.conversationId!,
+                                  sendMessage.text,
+                                  chatUser.id!,
+                                  userData['user_id']!,
+                                  formattedTime,
+                                );
                                 var isMessageSend = await ref.read(
                                   sendChatMessagesProvider(
                                     conversationId: chatUser.conversationId!,
@@ -152,7 +148,7 @@ class ChatScreen extends ConsumerWidget {
                                 );
                                 if (isMessageSend == true) {
                                   sendMessage.clear();
-                                  ref.invalidate(getChatMessagesProvider(conversationId: chatUser.conversationId!));
+                                  // ref.invalidate(getChatMessagesProvider(conversationId: chatUser.conversationId!));
                                 }
                               }
                             },

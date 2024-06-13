@@ -1,11 +1,11 @@
 import 'dart:developer';
 
-import 'package:briefsea/data/models/chat_message_model.dart';
 import 'package:dio/dio.dart';
 
 import '../../main.dart';
 import '../core/api_client.dart';
 import '../core/api_constants.dart';
+import '../models/chat_message_model.dart';
 import '../models/chat_user_model.dart';
 
 abstract class ChatRemoteDataSource {

@@ -1,13 +1,13 @@
 import 'dart:io';
 
-import 'package:briefsea/data/models/avatar_model.dart';
-import 'package:briefsea/data/models/banner_model.dart';
 import 'package:http_parser/http_parser.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../data/core/api_client.dart';
 import '../../data/data_sources/user_profile_remote_data_source.dart';
 import '../../data/di/get_it.dart';
+import '../../data/models/avatar_model.dart';
+import '../../data/models/banner_model.dart';
 import '../../data/models/image_model.dart';
 import '../../data/models/user_profile_model.dart';
 import '../../data/repositories/user_profile_repository.dart';
@@ -120,7 +120,7 @@ Future<String> editProfile(
 Future<AvatarModel> uploadAvatar(
   UploadAvatarRef ref, {
   required String? fileName,
-  required MediaType fileType,
+  required String? fileType,
   required String? userId,
   required String? userType,
 }) async {
@@ -138,7 +138,7 @@ Future<AvatarModel> uploadAvatar(
 Future<BannerModel> uploadBanner(
   UploadBannerRef ref, {
   required String? fileName,
-  required MediaType fileType,
+  required String? fileType,
   required String? userId,
   required String? userType,
 }) async {
@@ -153,8 +153,7 @@ Future<BannerModel> uploadBanner(
 }
 
 @riverpod
-Future<bool> uploadToAWS(UploadToAWSRef ref,
-    {required String? url, required String? fileName, required File file, required MediaType fileType}) async {
+Future<bool> uploadToAWS(UploadToAWSRef ref, {required String? url, required String? fileName, required File file, required String? fileType}) async {
   final userProfileRepository = ref.read(userProfileRepositoryProvider);
   final eitherUploadednOrError = await userProfileRepository.uploadToAWS(url, fileName, file, fileType);
   return eitherUploadednOrError.fold(

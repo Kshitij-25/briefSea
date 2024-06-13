@@ -1,10 +1,10 @@
-import 'package:briefsea/presentation/widgets/custom_comment_card.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../data/models/comment_model.dart';
 import '../providers/reply_provider.dart';
 import '../state_providers/reply_state_provider.dart';
+import 'custom_comment_card.dart';
 
 Future<void> customReplyModalSheet(
   BuildContext context, {

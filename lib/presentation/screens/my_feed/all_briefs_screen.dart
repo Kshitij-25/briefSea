@@ -1,16 +1,16 @@
 import 'dart:developer';
 
-import 'package:briefsea/data/models/briefs_model.dart';
-import 'package:briefsea/data/models/image_model.dart';
-import 'package:briefsea/presentation/providers/chat_provider.dart';
-import 'package:briefsea/presentation/providers/likes_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:share_plus/share_plus.dart';
 
+import '../../../data/models/briefs_model.dart';
+import '../../../data/models/image_model.dart';
 import '../../providers/auth_provider.dart';
 import '../../providers/breifs_provider.dart';
+import '../../providers/chat_provider.dart';
+import '../../providers/likes_provider.dart';
 import '../../providers/user_profile_provider.dart';
 import '../../widgets/custom_briefs_card.dart';
 import '../messages/chat_screen.dart';
@@ -33,17 +33,17 @@ class AllBriefsScreen extends ConsumerWidget {
               shrinkWrap: true,
               itemCount: briefs.length,
               itemBuilder: (context, index) {
-                Future<ImageModel>? avatarUrl;
+                Future<ImageModel>? postImage;
 
                 // Check if imgSrc is not null before fetching the avatarUrl
                 if (briefs[index]!.imgSrc != null) {
-                  avatarUrl = ref.watch(getImageProvider(src: briefs[index]!.imgSrc!).future);
+                  postImage = ref.watch(getImageProvider(src: briefs[index]!.imgSrc!).future);
                 }
 
                 return CustomBriefsCard(
                   isUserTrue: briefs[index]!.userId != userDetails['user_id'] ? false : true,
                   brief: briefs[index],
-                  avatarUrl: avatarUrl,
+                  postImage: postImage,
                   onSelected: (value) async {
                     if (value == "message") {
                       var isChatCreated = await ref.watch(createNewChatProvider(

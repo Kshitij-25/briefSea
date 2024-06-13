@@ -1,16 +1,19 @@
-// import 'package:briefsea/data/models/chat_message_model.dart';
-// import 'package:briefsea/presentation/providers/chat_provider.dart';
-// import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-// final chatMessagesListProvider = StateNotifierProvider<ChatMessagesListNotifier, List<ChatMessageModel>>((ref) {
-//   final initialMessages = ref.watch(getChatMessagesProvider(...)); // Fetch initial messages from the API
-//   return ChatMessagesListNotifier(initialMessages);
-// });
+import '../../data/models/chat_message_model.dart';
 
-// class ChatMessagesListNotifier extends StateNotifier<List<ChatMessageModel>> {
-//   ChatMessagesListNotifier(super.initialMessages);
+class ChatMessagesNotifier extends StateNotifier<List<ChatMessageModel>> {
+  ChatMessagesNotifier() : super([]);
 
-//   void addMessage(ChatMessageModel message) {
-//     state = [...state, message];
-//   }
-// }
+  void setMessages(List<ChatMessageModel> messages) {
+    state = messages;
+  }
+
+  void addMessage(ChatMessageModel message) {
+    state = [...state, message];
+  }
+}
+
+final chatMessagesProvider = StateNotifierProvider<ChatMessagesNotifier, List<ChatMessageModel>>((ref) {
+  return ChatMessagesNotifier();
+});

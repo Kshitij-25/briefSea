@@ -1,9 +1,9 @@
 import 'dart:developer';
 
-import 'package:briefsea/main.dart';
 import 'package:dio/dio.dart';
 import 'package:http_parser/http_parser.dart';
 
+import '../../main.dart';
 import '../core/api_client.dart';
 import '../core/api_constants.dart';
 import '../models/briefs_model.dart';

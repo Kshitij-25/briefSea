@@ -2,11 +2,9 @@ import 'dart:developer';
 import 'dart:io';
 import 'dart:typed_data';
 
-import 'package:briefsea/main.dart';
 import 'package:dio/dio.dart';
-import 'package:http_parser/http_parser.dart';
-import 'package:mime/mime.dart';
 
+import '../../main.dart';
 import '../core/api_client.dart';
 import '../core/api_constants.dart';
 import '../models/avatar_model.dart';
@@ -42,9 +40,9 @@ abstract class UserProfileRemoteDataSource {
       String? avatarSrc,
       String? bannerSrc,
       String? jwtToken});
-  Future<AvatarModel?>? uploadAvatar(String? fileName, MediaType fileType, String? userId, String? userType);
-  Future<BannerModel?>? uploadBanner(String? fileName, MediaType fileType, String? userId, String? userType);
-  Future<bool> uploadToAWS(String? url, String? fileName, File file, MediaType fileType);
+  Future<AvatarModel?>? uploadAvatar(String? fileName, String? fileType, String? userId, String? userType);
+  Future<BannerModel?>? uploadBanner(String? fileName, String? fileType, String? userId, String? userType);
+  Future<bool> uploadToAWS(String? url, String? fileName, File file, String? fileType);
   Future<ImageModel> getImage(String? src);
 }
 
@@ -176,12 +174,12 @@ class UserProfileRemoteDataSourceImpl implements UserProfileRemoteDataSource {
   }
 
   @override
-  Future<AvatarModel?>? uploadAvatar(String? fileName, MediaType fileType, String? userId, String? userType) async {
+  Future<AvatarModel?>? uploadAvatar(String? fileName, String? fileType, String? userId, String? userType) async {
     var jwtToken = await getJwtToken();
     try {
       var body = {
         'name': fileName,
-        'type': fileType.mimeType,
+        'type': fileType,
         'id': userId,
         'utype': userType,
       };
@@ -206,12 +204,12 @@ class UserProfileRemoteDataSourceImpl implements UserProfileRemoteDataSource {
   }
 
   @override
-  Future<BannerModel?>? uploadBanner(String? fileName, MediaType fileType, String? userId, String? userType) async {
+  Future<BannerModel?>? uploadBanner(String? fileName, String? fileType, String? userId, String? userType) async {
     var jwtToken = await getJwtToken();
     try {
       var body = {
         'name': fileName,
-        'type': fileType.mimeType,
+        'type': fileType,
         'id': userId,
         'utype': userType,
       };
@@ -236,7 +234,7 @@ class UserProfileRemoteDataSourceImpl implements UserProfileRemoteDataSource {
   }
 
   @override
-  Future<bool> uploadToAWS(String? url, String? fileName, File file, MediaType fileType) async {
+  Future<bool> uploadToAWS(String? url, String? fileName, File file, String? fileType) async {
     try {
       Uint8List image = File(file.path).readAsBytesSync();
 
@@ -244,7 +242,7 @@ class UserProfileRemoteDataSourceImpl implements UserProfileRemoteDataSource {
         url: url,
         body: image,
         contentType: image.length,
-        mimeType: lookupMimeType(file.path),
+        mimeType: fileType,
         jwtToken: null,
       );
 

@@ -41,6 +41,7 @@ class _CustomTabBarState extends ConsumerState<CustomTabBar> with AutomaticKeepA
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     final List<Offset> positions = [
       Offset(ScreenSize.width(context) * 0.015, 0), // Index 0
       Offset(ScreenSize.width(context) * 0.33, 0), // Index 1

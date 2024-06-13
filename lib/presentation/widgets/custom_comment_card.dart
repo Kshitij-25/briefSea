@@ -1,8 +1,8 @@
-import 'package:briefsea/common/screen_size.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
+import '../../common/screen_size.dart';
 import '../../data/models/comment_model.dart';
 
 class CustomCommentCard extends StatelessWidget {
@@ -134,9 +134,9 @@ class CustomCommentCard extends StatelessWidget {
                   onPressed: () => onLikeTap(commentModel),
                 ),
                 _BriefInputButton(
-                  iconData: CupertinoIcons.chat_bubble,
+                  iconData: CupertinoIcons.arrowshape_turn_up_left,
                   iconLabel:
-                      (commentModel!.replyCount != null) ? (commentModel!.replyCount == 0 ? 'Comment' : "${commentModel!.replyCount} Comments") : '-',
+                      (commentModel!.replyCount != null) ? (commentModel!.replyCount == 0 ? 'Reply' : "${commentModel!.replyCount} Reply") : '-',
                   onPressed: () => onCommentTap(commentModel),
                 ),
                 // _BriefInputButton(

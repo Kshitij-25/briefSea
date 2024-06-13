@@ -1,8 +1,12 @@
+import 'dart:developer';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../common/screen_size.dart';
+import '../providers/auth_provider.dart';
+import '../providers/socket_provider.dart';
 import '../state_providers/bottom_nav_bar_state_provider.dart';
 import 'messages/messages_screen_navigator.dart';
 import 'my_feed/my_feed_navigator.dart';
@@ -18,6 +22,22 @@ class HomeScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final currentIndex = ref.watch(currentIndexProvider);
     final pageController = PageController(initialPage: currentIndex);
+
+    final userData = ref.watch(userDetailsProvider);
+
+    final socketService = ref.read(socketServiceProvider);
+    socketService.connectSocket();
+
+    socketService.socket.emit('welcome', {'room_id': socketService.socket.id});
+
+    socketService.socket.on('welcome', (data) {
+      log("SOCKET SERVICE WELCOME $data");
+      // Extract room_id from data received in 'welcome' event
+      String? roomId = data['room_id'];
+      log("WELCOME ===> $roomId");
+      // Emit 'add-user' event with user_id and room_id
+      socketService.socket.emit('add-user', {'user_id': userData['user_id'], 'room_id': roomId});
+    });
 
     void onPageChanged(int index) {
       ref.read(currentIndexProvider.notifier).state = index;

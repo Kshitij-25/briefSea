@@ -1,7 +1,15 @@
 import 'package:flutter/material.dart';
 
 class CustomTextFormField extends StatelessWidget {
-  const CustomTextFormField({super.key, this.hintText, this.controller, this.readOnly, this.hintColor, this.border, this.obscureText});
+  const CustomTextFormField({
+    super.key,
+    this.hintText,
+    this.controller,
+    this.readOnly,
+    this.hintColor,
+    this.border,
+    this.obscureText,
+  });
 
   final String? hintText;
   final bool? readOnly;

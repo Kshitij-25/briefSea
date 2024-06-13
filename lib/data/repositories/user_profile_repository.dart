@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:dartz/dartz.dart';
-import 'package:http_parser/http_parser.dart';
 
 import '../core/app_error.dart';
 import '../data_sources/user_profile_remote_data_source.dart';
@@ -102,7 +101,7 @@ class UserProfileRepository {
 
   Future<Either<AppError, AvatarModel>>? uploadAvatar(
     String? fileName,
-    MediaType fileType,
+    String? fileType,
     String? userId,
     String? userType,
   ) async {
@@ -118,7 +117,7 @@ class UserProfileRepository {
 
   Future<Either<AppError, BannerModel>>? uploadBanner(
     String? fileName,
-    MediaType fileType,
+    String? fileType,
     String? userId,
     String? userType,
   ) async {
@@ -132,7 +131,7 @@ class UserProfileRepository {
     }
   }
 
-  Future<Either<AppError, bool>> uploadToAWS(String? url, String? fileName, File file, MediaType fileType) async {
+  Future<Either<AppError, bool>> uploadToAWS(String? url, String? fileName, File file, String? fileType) async {
     try {
       final isUploaded = await _userProfileRemoteDataSource.uploadToAWS(url, fileName, file, fileType);
       return Right(isUploaded);

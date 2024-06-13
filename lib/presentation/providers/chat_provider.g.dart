@@ -334,14 +334,14 @@ class _CreateNewChatProviderElement
   String get receiverId => (origin as CreateNewChatProvider).receiverId;
 }
 
-String _$getChatMessagesHash() => r'86f7a9faa1a93b7ac89f6f8f46758b65981f7a73';
+String _$getChatMessagesHash() => r'21d816807dcd4381061350a5a4096d25d9324d5b';
 
 /// See also [getChatMessages].
 @ProviderFor(getChatMessages)
 const getChatMessagesProvider = GetChatMessagesFamily();
 
 /// See also [getChatMessages].
-class GetChatMessagesFamily extends Family<AsyncValue<List<ChatMessageModel>>> {
+class GetChatMessagesFamily extends Family<AsyncValue<void>> {
   /// See also [getChatMessages].
   const GetChatMessagesFamily();
 
@@ -379,8 +379,7 @@ class GetChatMessagesFamily extends Family<AsyncValue<List<ChatMessageModel>>> {
 }
 
 /// See also [getChatMessages].
-class GetChatMessagesProvider
-    extends AutoDisposeFutureProvider<List<ChatMessageModel>> {
+class GetChatMessagesProvider extends AutoDisposeFutureProvider<void> {
   /// See also [getChatMessages].
   GetChatMessagesProvider({
     required String conversationId,
@@ -415,8 +414,7 @@ class GetChatMessagesProvider
 
   @override
   Override overrideWith(
-    FutureOr<List<ChatMessageModel>> Function(GetChatMessagesRef provider)
-        create,
+    FutureOr<void> Function(GetChatMessagesRef provider) create,
   ) {
     return ProviderOverride(
       origin: this,
@@ -433,7 +431,7 @@ class GetChatMessagesProvider
   }
 
   @override
-  AutoDisposeFutureProviderElement<List<ChatMessageModel>> createElement() {
+  AutoDisposeFutureProviderElement<void> createElement() {
     return _GetChatMessagesProviderElement(this);
   }
 
@@ -452,15 +450,13 @@ class GetChatMessagesProvider
   }
 }
 
-mixin GetChatMessagesRef
-    on AutoDisposeFutureProviderRef<List<ChatMessageModel>> {
+mixin GetChatMessagesRef on AutoDisposeFutureProviderRef<void> {
   /// The parameter `conversationId` of this provider.
   String get conversationId;
 }
 
 class _GetChatMessagesProviderElement
-    extends AutoDisposeFutureProviderElement<List<ChatMessageModel>>
-    with GetChatMessagesRef {
+    extends AutoDisposeFutureProviderElement<void> with GetChatMessagesRef {
   _GetChatMessagesProviderElement(super.provider);
 
   @override

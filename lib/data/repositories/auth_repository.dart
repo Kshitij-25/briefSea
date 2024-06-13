@@ -1,10 +1,10 @@
 import 'dart:io';
 
-import 'package:briefsea/data/data_sources/auth_remote_data_source.dart';
-import 'package:briefsea/data/models/login_model.dart';
 import 'package:dartz/dartz.dart';
 
 import '../core/app_error.dart';
+import '../data_sources/auth_remote_data_source.dart';
+import '../models/login_model.dart';
 
 class AuthRepository {
   final AuthRemoteDataSource _authRemoteDataSource;

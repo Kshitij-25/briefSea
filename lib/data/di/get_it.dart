@@ -1,19 +1,19 @@
-import 'package:briefsea/data/data_sources/briefs_remote_data_source.dart';
-import 'package:briefsea/data/data_sources/chat_remote_data_source.dart';
-import 'package:briefsea/data/data_sources/like_remote_data_source.dart';
-import 'package:briefsea/data/data_sources/reply_remote_data_source.dart';
-import 'package:briefsea/data/data_sources/user_profile_remote_data_source.dart';
-import 'package:briefsea/data/repositories/breifs_repository.dart';
-import 'package:briefsea/data/repositories/chat_repository.dart';
-import 'package:briefsea/data/repositories/like_repository.dart';
-import 'package:briefsea/data/repositories/reply_repository.dart';
-import 'package:briefsea/data/repositories/user_profile_repository.dart';
 import 'package:dio/dio.dart';
 import 'package:get_it/get_it.dart';
 
 import '../core/api_client.dart';
 import '../data_sources/auth_remote_data_source.dart';
+import '../data_sources/briefs_remote_data_source.dart';
+import '../data_sources/chat_remote_data_source.dart';
+import '../data_sources/like_remote_data_source.dart';
+import '../data_sources/reply_remote_data_source.dart';
+import '../data_sources/user_profile_remote_data_source.dart';
 import '../repositories/auth_repository.dart';
+import '../repositories/breifs_repository.dart';
+import '../repositories/chat_repository.dart';
+import '../repositories/like_repository.dart';
+import '../repositories/reply_repository.dart';
+import '../repositories/user_profile_repository.dart';
 
 final getItInstance = GetIt.I;
 

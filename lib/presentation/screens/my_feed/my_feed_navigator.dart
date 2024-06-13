@@ -1,21 +1,20 @@
 import 'dart:io';
 
-import 'package:briefsea/presentation/widgets/post_brief_modal_sheet.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:mime/mime.dart';
 
-import '../../../common/app_utility.dart';
 import '../../../common/screen_size.dart';
 import '../../providers/auth_provider.dart';
 import '../../providers/breifs_provider.dart';
 import '../../providers/user_profile_provider.dart';
 import '../../state_providers/briefs_state_provider.dart';
-import '../../state_providers/category_state_provider.dart';
 import '../../state_providers/image_picker_provider.dart';
 import '../../widgets/custom_tab_bar.dart';
+import '../../widgets/post_brief_modal_sheet.dart';
 import 'all_briefs_screen.dart';
 import 'my_briefs_screen.dart';
 
@@ -29,13 +28,8 @@ class MyFeedNavigator extends ConsumerWidget {
 
     final selectedImage = ref.watch(selectedPostImageProvider);
     final userData = ref.watch(userDetailsProvider);
-    final selectedAvatar = ref.watch(selectedAvatarProvider.notifier).state;
-    final isCategoryVisible = ref.watch(isCategoryVisibleProvider.notifier).state;
 
     final TextEditingController postTextCont = TextEditingController();
-
-    // final allBriefs = ref.watch(getAllBriefsProvider);
-    // final userBriefs = ref.watch(getUserBriefsProvider);
 
     void onPageChanged(int index) {
       ref.read(briefsTabIndexProvider.notifier).state = index;
@@ -98,22 +92,16 @@ class MyFeedNavigator extends ConsumerWidget {
                       onTap: () {
                         customPostBriefModalSheet(
                           context,
-                          selectedImage: selectedImage!,
+                          selectedImage: selectedImage,
                           postTextCont: postTextCont,
                           postingAs: userData['type'],
-                          // influencerOnTap: () {
-                          //   ref.read(selectedCategoryProvider.notifier).state = "Influencer Marketing";
-                          // },
-                          // technologyOnTap: () {
-                          //   ref.read(selectedCategoryProvider.notifier).state = "Technology";
-                          // },
                           photoOnTap: () async {
                             final ImagePicker picker = ImagePicker();
                             final XFile? image = await picker.pickImage(source: ImageSource.gallery);
                             if (image != null) {
                               var uploadedThreadImage = await ref.read(uploadThreadImageProvider(
                                 fileName: image.name,
-                                fileType: AppUtility(context).getMediaType(image.path),
+                                fileType: lookupMimeType(image.path),
                                 userId: userData['user_id'],
                                 userType: userData['type'],
                               ).future);
@@ -121,7 +109,7 @@ class MyFeedNavigator extends ConsumerWidget {
                                 url: uploadedThreadImage.url,
                                 fileName: image.name,
                                 file: File(image.path),
-                                fileType: AppUtility(context).getMediaType(image.path),
+                                fileType: lookupMimeType(image.path),
                               ).future);
                               ref.read(uploadedThreadImageKeyProvider.notifier).state = uploadedThreadImage.key;
 

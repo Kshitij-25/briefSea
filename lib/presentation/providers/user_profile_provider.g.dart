@@ -689,7 +689,7 @@ class _EditProfileProviderElement
   String? get jwtToken => (origin as EditProfileProvider).jwtToken;
 }
 
-String _$uploadAvatarHash() => r'61fe86ad290922040445493c16a074927d96ad22';
+String _$uploadAvatarHash() => r'77d74af3c84698c8b1a0895e9a8230d3db34a264';
 
 /// See also [uploadAvatar].
 @ProviderFor(uploadAvatar)
@@ -703,7 +703,7 @@ class UploadAvatarFamily extends Family<AsyncValue<AvatarModel>> {
   /// See also [uploadAvatar].
   UploadAvatarProvider call({
     required String? fileName,
-    required MediaType fileType,
+    required String? fileType,
     required String? userId,
     required String? userType,
   }) {
@@ -747,7 +747,7 @@ class UploadAvatarProvider extends AutoDisposeFutureProvider<AvatarModel> {
   /// See also [uploadAvatar].
   UploadAvatarProvider({
     required String? fileName,
-    required MediaType fileType,
+    required String? fileType,
     required String? userId,
     required String? userType,
   }) : this._internal(
@@ -787,7 +787,7 @@ class UploadAvatarProvider extends AutoDisposeFutureProvider<AvatarModel> {
   }) : super.internal();
 
   final String? fileName;
-  final MediaType fileType;
+  final String? fileType;
   final String? userId;
   final String? userType;
 
@@ -843,7 +843,7 @@ mixin UploadAvatarRef on AutoDisposeFutureProviderRef<AvatarModel> {
   String? get fileName;
 
   /// The parameter `fileType` of this provider.
-  MediaType get fileType;
+  String? get fileType;
 
   /// The parameter `userId` of this provider.
   String? get userId;
@@ -859,14 +859,14 @@ class _UploadAvatarProviderElement
   @override
   String? get fileName => (origin as UploadAvatarProvider).fileName;
   @override
-  MediaType get fileType => (origin as UploadAvatarProvider).fileType;
+  String? get fileType => (origin as UploadAvatarProvider).fileType;
   @override
   String? get userId => (origin as UploadAvatarProvider).userId;
   @override
   String? get userType => (origin as UploadAvatarProvider).userType;
 }
 
-String _$uploadBannerHash() => r'8b8b3b50ae4ca8f2d06dda3270e7a42fecb4ea51';
+String _$uploadBannerHash() => r'f0b453082b79d8f4bdb087e47c7cc698c77c6166';
 
 /// See also [uploadBanner].
 @ProviderFor(uploadBanner)
@@ -880,7 +880,7 @@ class UploadBannerFamily extends Family<AsyncValue<BannerModel>> {
   /// See also [uploadBanner].
   UploadBannerProvider call({
     required String? fileName,
-    required MediaType fileType,
+    required String? fileType,
     required String? userId,
     required String? userType,
   }) {
@@ -924,7 +924,7 @@ class UploadBannerProvider extends AutoDisposeFutureProvider<BannerModel> {
   /// See also [uploadBanner].
   UploadBannerProvider({
     required String? fileName,
-    required MediaType fileType,
+    required String? fileType,
     required String? userId,
     required String? userType,
   }) : this._internal(
@@ -964,7 +964,7 @@ class UploadBannerProvider extends AutoDisposeFutureProvider<BannerModel> {
   }) : super.internal();
 
   final String? fileName;
-  final MediaType fileType;
+  final String? fileType;
   final String? userId;
   final String? userType;
 
@@ -1020,7 +1020,7 @@ mixin UploadBannerRef on AutoDisposeFutureProviderRef<BannerModel> {
   String? get fileName;
 
   /// The parameter `fileType` of this provider.
-  MediaType get fileType;
+  String? get fileType;
 
   /// The parameter `userId` of this provider.
   String? get userId;
@@ -1036,14 +1036,14 @@ class _UploadBannerProviderElement
   @override
   String? get fileName => (origin as UploadBannerProvider).fileName;
   @override
-  MediaType get fileType => (origin as UploadBannerProvider).fileType;
+  String? get fileType => (origin as UploadBannerProvider).fileType;
   @override
   String? get userId => (origin as UploadBannerProvider).userId;
   @override
   String? get userType => (origin as UploadBannerProvider).userType;
 }
 
-String _$uploadToAWSHash() => r'7bcc951f4db9033e828445857c56123dff26b07f';
+String _$uploadToAWSHash() => r'f0aa5e84388cc4e962bdcde68cf0cf19e853dd61';
 
 /// See also [uploadToAWS].
 @ProviderFor(uploadToAWS)
@@ -1059,7 +1059,7 @@ class UploadToAWSFamily extends Family<AsyncValue<bool>> {
     required String? url,
     required String? fileName,
     required File file,
-    required MediaType fileType,
+    required String? fileType,
   }) {
     return UploadToAWSProvider(
       url: url,
@@ -1103,7 +1103,7 @@ class UploadToAWSProvider extends AutoDisposeFutureProvider<bool> {
     required String? url,
     required String? fileName,
     required File file,
-    required MediaType fileType,
+    required String? fileType,
   }) : this._internal(
           (ref) => uploadToAWS(
             ref as UploadToAWSRef,
@@ -1143,7 +1143,7 @@ class UploadToAWSProvider extends AutoDisposeFutureProvider<bool> {
   final String? url;
   final String? fileName;
   final File file;
-  final MediaType fileType;
+  final String? fileType;
 
   @override
   Override overrideWith(
@@ -1203,7 +1203,7 @@ mixin UploadToAWSRef on AutoDisposeFutureProviderRef<bool> {
   File get file;
 
   /// The parameter `fileType` of this provider.
-  MediaType get fileType;
+  String? get fileType;
 }
 
 class _UploadToAWSProviderElement extends AutoDisposeFutureProviderElement<bool>
@@ -1217,7 +1217,7 @@ class _UploadToAWSProviderElement extends AutoDisposeFutureProviderElement<bool>
   @override
   File get file => (origin as UploadToAWSProvider).file;
   @override
-  MediaType get fileType => (origin as UploadToAWSProvider).fileType;
+  String? get fileType => (origin as UploadToAWSProvider).fileType;
 }
 
 String _$getImageHash() => r'71708f180c20f69eacab5b4dae2b6a4f1927e391';

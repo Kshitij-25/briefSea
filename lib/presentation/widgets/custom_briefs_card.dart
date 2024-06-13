@@ -15,7 +15,7 @@ class CustomBriefsCard extends StatelessWidget {
     this.onTap,
     this.cardVisible = true,
     this.maxLine,
-    this.avatarUrl,
+    this.postImage,
     required this.isUserTrue,
     this.onSelected,
   });
@@ -28,7 +28,7 @@ class CustomBriefsCard extends StatelessWidget {
   final BriefsModel? brief;
   final bool cardVisible;
   final int? maxLine;
-  Future<ImageModel>? avatarUrl;
+  Future<ImageModel>? postImage;
   final bool isUserTrue;
 
   @override

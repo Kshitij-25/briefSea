@@ -1,10 +1,10 @@
 import 'dart:developer';
 import 'dart:io';
 
-import 'package:briefsea/data/models/image_model.dart';
 import 'package:http_parser/http_parser.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
+import '../../data/models/image_model.dart';
 import '../../data/models/user_profile_model.dart';
 import 'user_profile_provider.dart';
 
@@ -14,7 +14,7 @@ part 'image_provider.g.dart';
 Future<String> uploadImage(
   UploadImageRef ref, {
   required String? fileName,
-  required MediaType fileType,
+  required String? fileType,
   required Map<String, String> userDetails,
   required UserProfileModel? userProfileData,
   required File file,

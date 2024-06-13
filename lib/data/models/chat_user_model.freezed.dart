@@ -25,6 +25,7 @@ mixin _$ChatUserModel {
   String? get type => throw _privateConstructorUsedError;
   @JsonKey(name: "conversation_id")
   String? get conversationId => throw _privateConstructorUsedError;
+  bool get isUserOnline => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -42,7 +43,8 @@ abstract class $ChatUserModelCopyWith<$Res> {
       {String? id,
       String? name,
       String? type,
-      @JsonKey(name: "conversation_id") String? conversationId});
+      @JsonKey(name: "conversation_id") String? conversationId,
+      bool isUserOnline});
 }
 
 /// @nodoc
@@ -62,6 +64,7 @@ class _$ChatUserModelCopyWithImpl<$Res, $Val extends ChatUserModel>
     Object? name = freezed,
     Object? type = freezed,
     Object? conversationId = freezed,
+    Object? isUserOnline = null,
   }) {
     return _then(_value.copyWith(
       id: freezed == id
@@ -80,6 +83,10 @@ class _$ChatUserModelCopyWithImpl<$Res, $Val extends ChatUserModel>
           ? _value.conversationId
           : conversationId // ignore: cast_nullable_to_non_nullable
               as String?,
+      isUserOnline: null == isUserOnline
+          ? _value.isUserOnline
+          : isUserOnline // ignore: cast_nullable_to_non_nullable
+              as bool,
     ) as $Val);
   }
 }
@@ -96,7 +103,8 @@ abstract class _$$ChatUserModelImplCopyWith<$Res>
       {String? id,
       String? name,
       String? type,
-      @JsonKey(name: "conversation_id") String? conversationId});
+      @JsonKey(name: "conversation_id") String? conversationId,
+      bool isUserOnline});
 }
 
 /// @nodoc
@@ -114,6 +122,7 @@ class __$$ChatUserModelImplCopyWithImpl<$Res>
     Object? name = freezed,
     Object? type = freezed,
     Object? conversationId = freezed,
+    Object? isUserOnline = null,
   }) {
     return _then(_$ChatUserModelImpl(
       id: freezed == id
@@ -132,6 +141,10 @@ class __$$ChatUserModelImplCopyWithImpl<$Res>
           ? _value.conversationId
           : conversationId // ignore: cast_nullable_to_non_nullable
               as String?,
+      isUserOnline: null == isUserOnline
+          ? _value.isUserOnline
+          : isUserOnline // ignore: cast_nullable_to_non_nullable
+              as bool,
     ));
   }
 }
@@ -143,7 +156,8 @@ class _$ChatUserModelImpl implements _ChatUserModel {
       {this.id,
       this.name,
       this.type,
-      @JsonKey(name: "conversation_id") this.conversationId});
+      @JsonKey(name: "conversation_id") this.conversationId,
+      this.isUserOnline = false});
 
   factory _$ChatUserModelImpl.fromJson(Map<String, dynamic> json) =>
       _$$ChatUserModelImplFromJson(json);
@@ -157,10 +171,13 @@ class _$ChatUserModelImpl implements _ChatUserModel {
   @override
   @JsonKey(name: "conversation_id")
   final String? conversationId;
+  @override
+  @JsonKey()
+  final bool isUserOnline;
 
   @override
   String toString() {
-    return 'ChatUserModel(id: $id, name: $name, type: $type, conversationId: $conversationId)';
+    return 'ChatUserModel(id: $id, name: $name, type: $type, conversationId: $conversationId, isUserOnline: $isUserOnline)';
   }
 
   @override
@@ -172,12 +189,15 @@ class _$ChatUserModelImpl implements _ChatUserModel {
             (identical(other.name, name) || other.name == name) &&
             (identical(other.type, type) || other.type == type) &&
             (identical(other.conversationId, conversationId) ||
-                other.conversationId == conversationId));
+                other.conversationId == conversationId) &&
+            (identical(other.isUserOnline, isUserOnline) ||
+                other.isUserOnline == isUserOnline));
   }
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode => Object.hash(runtimeType, id, name, type, conversationId);
+  int get hashCode =>
+      Object.hash(runtimeType, id, name, type, conversationId, isUserOnline);
 
   @JsonKey(ignore: true)
   @override
@@ -195,11 +215,11 @@ class _$ChatUserModelImpl implements _ChatUserModel {
 
 abstract class _ChatUserModel implements ChatUserModel {
   factory _ChatUserModel(
-          {final String? id,
-          final String? name,
-          final String? type,
-          @JsonKey(name: "conversation_id") final String? conversationId}) =
-      _$ChatUserModelImpl;
+      {final String? id,
+      final String? name,
+      final String? type,
+      @JsonKey(name: "conversation_id") final String? conversationId,
+      final bool isUserOnline}) = _$ChatUserModelImpl;
 
   factory _ChatUserModel.fromJson(Map<String, dynamic> json) =
       _$ChatUserModelImpl.fromJson;
@@ -213,6 +233,8 @@ abstract class _ChatUserModel implements ChatUserModel {
   @override
   @JsonKey(name: "conversation_id")
   String? get conversationId;
+  @override
+  bool get isUserOnline;
   @override
   @JsonKey(ignore: true)
   _$$ChatUserModelImplCopyWith<_$ChatUserModelImpl> get copyWith =>

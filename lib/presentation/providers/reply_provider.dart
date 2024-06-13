@@ -1,12 +1,12 @@
-import 'package:briefsea/data/data_sources/reply_remote_data_source.dart';
-import 'package:briefsea/data/models/comment_model.dart';
-import 'package:briefsea/data/repositories/reply_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../data/core/api_client.dart';
+import '../../data/data_sources/reply_remote_data_source.dart';
 import '../../data/di/get_it.dart';
+import '../../data/models/comment_model.dart';
 import '../../data/models/like_model.dart';
+import '../../data/repositories/reply_repository.dart';
 
 part 'reply_provider.g.dart';
 

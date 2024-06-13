@@ -6,11 +6,13 @@ class CustomChatCards extends StatelessWidget {
     this.onTap,
     this.chatName,
     this.chatMessage,
+    this.isUserOnline,
   });
 
   final void Function()? onTap;
   final String? chatName;
   final String? chatMessage;
+  final bool? isUserOnline;
 
   @override
   Widget build(BuildContext context) {
@@ -18,15 +20,45 @@ class CustomChatCards extends StatelessWidget {
       color: Colors.white,
       child: ListTile(
         onTap: onTap,
-        leading: CircleAvatar(
-          backgroundColor: const Color(0xFF1B0C6B),
-          child: Text(
-            chatName?[0].toUpperCase() ?? "",
-            style: const TextStyle(
-              color: Colors.white,
+        leading: Stack(
+          children: [
+            CircleAvatar(
+              radius: 25,
+              backgroundColor: const Color(0xFF1B0C6B),
+              child: Text(
+                chatName?[0].toUpperCase() ?? "",
+                style: const TextStyle(
+                  color: Colors.white,
+                ),
+              ),
             ),
-          ),
+            if (isUserOnline ?? false)
+              Positioned(
+                right: 0,
+                bottom: 0,
+                child: Container(
+                  width: 15,
+                  height: 15,
+                  decoration: BoxDecoration(
+                      color: Colors.green,
+                      shape: BoxShape.circle,
+                      border: Border.all(
+                        color: Theme.of(context).scaffoldBackgroundColor,
+                        width: 3,
+                      )),
+                ),
+              )
+          ],
         ),
+        // leading: CircleAvatar(
+        //   backgroundColor: const Color(0xFF1B0C6B),
+        //   child: Text(
+        //     chatName?[0].toUpperCase() ?? "",
+        //     style: const TextStyle(
+        //       color: Colors.white,
+        //     ),
+        //   ),
+        // ),
         title: Text(
           chatName!,
           style: const TextStyle(

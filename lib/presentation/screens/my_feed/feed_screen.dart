@@ -1,9 +1,5 @@
 import 'dart:developer';
 
-import 'package:briefsea/presentation/providers/reply_provider.dart';
-import 'package:briefsea/presentation/state_providers/reply_state_provider.dart';
-import 'package:briefsea/presentation/widgets/custom_comment_card.dart';
-import 'package:briefsea/presentation/widgets/reply_modal_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:share_plus/share_plus.dart';
@@ -13,7 +9,11 @@ import '../../../data/models/briefs_model.dart';
 import '../../providers/auth_provider.dart';
 import '../../providers/breifs_provider.dart';
 import '../../providers/likes_provider.dart';
+import '../../providers/reply_provider.dart';
+import '../../state_providers/reply_state_provider.dart';
 import '../../widgets/custom_briefs_card.dart';
+import '../../widgets/custom_comment_card.dart';
+import '../../widgets/reply_modal_sheet.dart';
 
 class FeedScreen extends ConsumerWidget {
   FeedScreen({
