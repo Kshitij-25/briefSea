@@ -23,7 +23,7 @@ class BriefsRemoteDataSourceImpl implements BriefsRemoteDataSource {
 
   Future<String> getJwtToken() async {
     String? jwtToken = prefs!.getString('jwtToken');
-    return jwtToken!;
+    return jwtToken ?? "";
   }
 
   @override

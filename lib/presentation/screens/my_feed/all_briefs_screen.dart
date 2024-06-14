@@ -11,6 +11,7 @@ import '../../providers/auth_provider.dart';
 import '../../providers/breifs_provider.dart';
 import '../../providers/chat_provider.dart';
 import '../../providers/likes_provider.dart';
+import '../../providers/notification_provider.dart';
 import '../../providers/user_profile_provider.dart';
 import '../../widgets/custom_briefs_card.dart';
 import '../messages/chat_screen.dart';
@@ -72,6 +73,16 @@ class AllBriefsScreen extends ConsumerWidget {
                           uName: userDetails['user_name'],
                           userId: userDetails['user_id'],
                           replyId: null,
+                        ).future);
+                        await ref.read(postNewNotificationProvider(
+                          requestBody: {
+                            "type": 'brief liked',
+                            "sender_id": userDetails['user_id'],
+                            "sender_name": userDetails['user_name'],
+                            "receiver_id": brief.userId,
+                            "notification": "${userDetails['user_name']} liked your brief.",
+                            "thread_id": brief.id,
+                          },
                         ).future);
                       } else {
                         await ref.read(deleteLikeProvider(

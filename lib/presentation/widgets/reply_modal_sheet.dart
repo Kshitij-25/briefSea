@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../data/models/comment_model.dart';
+import '../providers/notification_provider.dart';
 import '../providers/reply_provider.dart';
 import '../state_providers/reply_state_provider.dart';
 import 'custom_comment_card.dart';
@@ -96,9 +97,21 @@ Future<void> customReplyModalSheet(
                                       ).future,
                                     );
                                     if (replyPosted == true) {
+                                      await ref.read(postNewNotificationProvider(
+                                        requestBody: {
+                                          "type": 'comment reply',
+                                          "sender_id": userDetails['user_id'],
+                                          "sender_name": userDetails['user_name'],
+                                          "receiver_id": comments.userId,
+                                          "notification": "${userDetails['user_name']} replied on your comment.",
+                                          "thread_id": threadId,
+                                          "reply_id": comments.id,
+                                        },
+                                      ).future);
                                       replyCont.clear();
                                     }
                                     ref.invalidate(getAllReplyOnCommentProvider(commentId: comments.id));
+                                    ref.invalidate(getAllCommentsProvider(threadId: threadId));
                                   },
                                   child: const Text(
                                     "Reply",

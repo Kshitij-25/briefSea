@@ -1,0 +1,22 @@
+import 'package:freezed_annotation/freezed_annotation.dart';
+
+part 'notification_model.freezed.dart';
+part 'notification_model.g.dart';
+
+@freezed
+class NotificationModel with _$NotificationModel {
+  factory NotificationModel({
+    @JsonKey(name: "_id") String? notificationId,
+    String? type,
+    @JsonKey(name: "sender_id") String? senderId,
+    @JsonKey(name: "sender_name") String? senderName,
+    @JsonKey(name: "receiver_id") String? receiverId,
+    @JsonKey(name: "thread_id") String? threadId,
+    @JsonKey(name: "conversation_id") String? conversationId,
+    String? notification,
+    String? createdAt,
+    String? updatedAt,
+  }) = _NotificationModel;
+
+  factory NotificationModel.fromJson(Map<String, dynamic> json) => _$NotificationModelFromJson(json);
+}

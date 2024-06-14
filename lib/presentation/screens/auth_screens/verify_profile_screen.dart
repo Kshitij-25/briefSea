@@ -1,5 +1,7 @@
+import 'dart:developer';
 import 'dart:io';
 
+import 'package:briefsea/common/expertise_data.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -30,7 +32,6 @@ class VerifyProfileScreen extends ConsumerWidget {
   final TextEditingController jobTitleCont = TextEditingController();
   final TextEditingController industryCont = TextEditingController();
   final TextEditingController locationCont = TextEditingController();
-  final TextEditingController expertiseCont = TextEditingController();
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -50,6 +51,7 @@ class VerifyProfileScreen extends ConsumerWidget {
               final uploadedAvatarKey = ref.watch(uploadedAvatarKeyProvider.notifier).state;
               final uploadedBannerKey = ref.watch(uploadedBannerKeyProvider.notifier).state;
               final selectedIndustry = ref.watch(selectedIndustryProvider.notifier).state;
+              final selectedExpertise = ref.watch(selectedExpertiseProvider.notifier).state;
               if (companyCont.text.isNotEmpty &&
                   phoneNumberCont.text.isNotEmpty &&
                   companyCont.text.isNotEmpty &&
@@ -68,12 +70,14 @@ class VerifyProfileScreen extends ConsumerWidget {
                         avatarSrc: uploadedAvatarKey ?? '',
                         bannerSrc: uploadedBannerKey ?? '',
                         jwtToken: userDetails['jwtToken'],
-                        expertise: expertiseCont.text)
+                        expertise: selectedExpertise)
                     .future);
                 if (verifyMessage == "Profile added cuccessfully") {
                   AppUtility(context).message(verifyMessage);
                   context.go(HomeScreen.routeName);
                 }
+              } else {
+                AppUtility(context).message("Please complete the profile first.");
               }
             },
             child: const Text(
@@ -91,6 +95,7 @@ class VerifyProfileScreen extends ConsumerWidget {
   bodyWidget(context, WidgetRef ref, Map<String, String> userDetails) {
     final verifyAvatar = ref.watch(verifyAvatarImageProvider);
     final verifyBanner = ref.watch(verifyBannerImageProvider);
+
     return SingleChildScrollView(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -127,6 +132,7 @@ class VerifyProfileScreen extends ConsumerWidget {
             CupertinoIcons.person,
             () {},
           ),
+
           customFields(
             context,
             'Posting as',
@@ -140,22 +146,55 @@ class VerifyProfileScreen extends ConsumerWidget {
           ),
           customFields(
             context,
+            'Contact',
+            Row(
+              children: [
+                Expanded(
+                  flex: 1,
+                  child: CustomTextFormField(
+                    border: const OutlineInputBorder(),
+                    controller: countryCodeCont,
+                  ),
+                ),
+                const SizedBox(width: 10),
+                Expanded(
+                  flex: 3,
+                  child: CustomTextFormField(
+                    hintText: "Phone Number",
+                    controller: phoneNumberCont,
+                    border: const OutlineInputBorder(),
+                  ),
+                ),
+              ],
+            ),
+            CupertinoIcons.phone_fill,
+            () {},
+          ),
+          customFields(
+            context,
             'Industry',
-            DropdownButtonHideUnderline(
-              child: DropdownButton<String>(
-                hint: const Text('Select an industry'),
-                menuMaxHeight: 300,
-                value: ref.watch(selectedIndustryProvider.notifier).state,
-                onChanged: (String? newValue) {
-                  ref.read(selectedIndustryProvider.notifier).state = newValue;
-                },
-                items: industries.map<DropdownMenuItem<String>>((Map<String, String> item) {
-                  return DropdownMenuItem<String>(
-                    value: item['value'],
-                    child: Text(item['label']!),
-                  );
-                }).toList(),
-              ),
+            StatefulBuilder(
+              builder: (BuildContext context, StateSetter setState) {
+                return DropdownButtonHideUnderline(
+                  child: DropdownButton<String>(
+                    hint: const Text('Select an industry'),
+                    menuMaxHeight: 300,
+                    value: ref.watch(selectedIndustryProvider.notifier).state,
+                    onChanged: (String? newValue) {
+                      log("NEW VALUE=====> $newValue");
+                      setState(
+                        () => ref.read(selectedIndustryProvider.notifier).state = newValue,
+                      );
+                    },
+                    items: industries.map<DropdownMenuItem<String>>((Map<String, String> item) {
+                      return DropdownMenuItem<String>(
+                        value: item['value'],
+                        child: Text(item['label']!),
+                      );
+                    }).toList(),
+                  ),
+                );
+              },
             ),
             CupertinoIcons.square_list_fill,
             () {},
@@ -163,39 +202,42 @@ class VerifyProfileScreen extends ConsumerWidget {
           customFields(
             context,
             'Expertise',
-            CustomTextFormField(
-              hintText: "Enter your Expertise",
-              controller: expertiseCont,
+            StatefulBuilder(
+              builder: (BuildContext context, StateSetter setState) {
+                return DropdownButtonHideUnderline(
+                  child: DropdownButton<String>(
+                    hint: const Text('Select Expertise'),
+                    menuMaxHeight: 300,
+                    value: ref.watch(selectedExpertiseProvider.notifier).state,
+                    onChanged: (String? newValue) {
+                      setState(
+                        () => ref.read(selectedExpertiseProvider.notifier).state = newValue,
+                      );
+                    },
+                    items: expertiseData.map<DropdownMenuItem<String>>((Map<String, String> item) {
+                      return DropdownMenuItem<String>(
+                        value: item['value'],
+                        child: Text(item['label']!),
+                      );
+                    }).toList(),
+                  ),
+                );
+              },
             ),
-            CupertinoIcons.clock_fill,
+            CupertinoIcons.square_list_fill,
             () {},
           ),
           // customFields(
           //   context,
-          //   'Contact',
-          //   Row(
-          //     children: [
-          //       Expanded(
-          //         flex: 1,
-          //         child: CustomTextFormField(
-          //           border: const OutlineInputBorder(),
-          //           controller: countryCodeCont,
-          //         ),
-          //       ),
-          //       const SizedBox(width: 10),
-          //       Expanded(
-          //         flex: 3,
-          //         child: CustomTextFormField(
-          //           hintText: "Phone Number",
-          //           controller: phoneNumberCont,
-          //           border: const OutlineInputBorder(),
-          //         ),
-          //       ),
-          //     ],
+          //   'Expertise',
+          //   CustomTextFormField(
+          //     hintText: "Enter your Expertise",
+          //     controller: expertiseCont,
           //   ),
-          //   CupertinoIcons.phone_fill,
+          //   CupertinoIcons.clock_fill,
           //   () {},
           // ),
+
           customFields(
             context,
             'Designation',

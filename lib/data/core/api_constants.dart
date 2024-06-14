@@ -26,4 +26,9 @@ class ApiConstants {
   static const getChatMessages = "$BASE_URL/discussion/chat/messages/single";
   static const sendChatMessage = "$BASE_URL/discussion/chat/messages/new";
   static const getAllReplyOnComment = "$BASE_URL/discussion/threads/comments/reply";
+  static const postNewNotification = "$BASE_URL/discussion/notifs/new";
+  static const getAllNotification = "$BASE_URL/discussion/notifs/all";
+  static const deleteNotification = "$BASE_URL/discussion/notifs/remove";
+  static const deleteAllNotification = "$BASE_URL/discussion/notifs/remove/all";
+  static const deleteMessageNotification = "$BASE_URL/discussion/notifs/remove/msg";
 }

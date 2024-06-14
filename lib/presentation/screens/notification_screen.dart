@@ -1,15 +1,18 @@
+import 'package:briefsea/presentation/providers/notification_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../common/screen_size.dart';
 import '../widgets/custom_notification_tile.dart';
 
-class NotificationScreen extends StatelessWidget {
+class NotificationScreen extends ConsumerWidget {
   const NotificationScreen({super.key});
 
   static const routeName = "/notificationScreen";
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final allNotifications = ref.watch(getAllNotificationsProvider);
     return Scaffold(
       body: Stack(
         children: [
@@ -30,11 +33,58 @@ class NotificationScreen extends StatelessWidget {
             ),
             child: Padding(
               padding: const EdgeInsets.only(top: 15),
-              child: ListView.builder(
-                itemCount: 5,
-                itemBuilder: (context, index) {
-                  return const CustomNotificationTile();
+              child: allNotifications.when(
+                data: (notification) {
+                  return Column(
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          TextButton(
+                            onPressed: () async {
+                              await ref.read(deleteAllNotificationsProvider.future);
+                              ref.invalidate(getAllNotificationsProvider);
+                            },
+                            child: const Text("Clear All"),
+                          ),
+                        ],
+                      ),
+                      Expanded(
+                        child: ListView.builder(
+                          shrinkWrap: true,
+                          itemCount: notification.length,
+                          itemBuilder: (context, index) {
+                            final reversedIndex = notification.length - 1 - index;
+                            return CustomNotificationTile(
+                              notificationModel: notification[reversedIndex],
+                              onDismissed: () async {
+                                if (notification[reversedIndex].type == "message received") {
+                                  var isDeleted = await ref.read(
+                                    deleteMessageNotificationProvider(conversationId: notification[reversedIndex].conversationId).future,
+                                  );
+                                  ref.invalidate(getAllNotificationsProvider);
+                                  return isDeleted;
+                                } else {
+                                  var isDeleted = ref.read(
+                                    deleteNotificationProvider(notificationId: notification[reversedIndex].notificationId).future,
+                                  );
+                                  ref.invalidate(getAllNotificationsProvider);
+                                  return isDeleted;
+                                }
+                              },
+                            );
+                          },
+                        ),
+                      ),
+                    ],
+                  );
                 },
+                error: (error, stackTrace) {
+                  return Center(child: Text('Error: $error'));
+                },
+                loading: () => const Center(
+                  child: CircularProgressIndicator.adaptive(),
+                ),
               ),
             ),
           ),

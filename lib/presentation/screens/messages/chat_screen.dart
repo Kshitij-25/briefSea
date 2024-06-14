@@ -8,6 +8,7 @@ import '../../../data/models/chat_user_model.dart';
 import '../../providers/auth_provider.dart';
 import '../../providers/chat_provider.dart';
 import '../../providers/messages_list_provider.dart';
+import '../../providers/notification_provider.dart';
 import '../../providers/socket_provider.dart';
 
 class ChatScreen extends ConsumerWidget {
@@ -148,7 +149,19 @@ class ChatScreen extends ConsumerWidget {
                                 );
                                 if (isMessageSend == true) {
                                   sendMessage.clear();
-                                  // ref.invalidate(getChatMessagesProvider(conversationId: chatUser.conversationId!));
+                                  if (chatUser.isUserOnline != true) {
+                                    ref.invalidate(getChatMessagesProvider(conversationId: chatUser.conversationId!));
+                                    await ref.read(postNewNotificationProvider(
+                                      requestBody: {
+                                        "type": 'message received',
+                                        "sender_id": userData['user_id'],
+                                        "sender_name": userData['user_name'],
+                                        "receiver_id": chatUser.id,
+                                        "notification": "New message received from ${userData['user_name']}.",
+                                        "conversation_id": chatUser.conversationId,
+                                      },
+                                    ).future);
+                                  }
                                 }
                               }
                             },

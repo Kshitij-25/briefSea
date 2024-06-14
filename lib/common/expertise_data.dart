@@ -1,4 +1,4 @@
-const List<Map<String, String>> industries = [
+const List<Map<String, String>> expertiseData = [
   {'label': "Artificial Intelligence", 'value': "Artificial Intelligence"},
   {'label': "Machine Learning", 'value': "Machine Learning"},
   {'label': "Data Science", 'value': "Data Science"},

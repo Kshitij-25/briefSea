@@ -59,6 +59,10 @@ class ExistingLoginScreen extends ConsumerWidget {
                       emailCont.text = "kshitij@briefsea.com";
                       passCont.text = '1234567890';
                     },
+                    onDoubleTap: () {
+                      emailCont.text = "rahul@briefsea.com";
+                      passCont.text = "Abcd@1234#";
+                    },
                     child: const Text(
                       "Login as\nExisting User",
                       style: TextStyle(color: Colors.white),

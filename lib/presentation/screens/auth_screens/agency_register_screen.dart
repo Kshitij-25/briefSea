@@ -141,6 +141,14 @@ class AgencyRegisterScreen extends ConsumerWidget {
                           await ref
                               .read(registerNotifierProvider.notifier)
                               .registerUser(agencyUsername.text, agencyEmail.text, agencyPass.text, "agency", "", ref, context);
+                          // await ref.read(postNewNotificationProvider(requestBody: {
+                          //   "type": 'user account',
+                          //   "sender_id": 'briefseaAdmin9712',
+                          //   "sender_name": 'Briefsea',
+                          //   "receiver_id": result?.user_id,
+                          //   "notification":
+                          //       "Welcome to Briefsea.Hire the best freelancers, vendors and professionals for your tech and marketing projects."
+                          // }).future);
                         }
                       },
                     ),

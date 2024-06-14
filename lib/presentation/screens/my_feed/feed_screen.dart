@@ -9,6 +9,7 @@ import '../../../data/models/briefs_model.dart';
 import '../../providers/auth_provider.dart';
 import '../../providers/breifs_provider.dart';
 import '../../providers/likes_provider.dart';
+import '../../providers/notification_provider.dart';
 import '../../providers/reply_provider.dart';
 import '../../state_providers/reply_state_provider.dart';
 import '../../widgets/custom_briefs_card.dart';
@@ -102,6 +103,16 @@ class FeedScreen extends ConsumerWidget {
                           uName: userDetails['user_name'],
                           userId: userDetails['user_id'],
                           replyId: null,
+                        ).future);
+                        await ref.read(postNewNotificationProvider(
+                          requestBody: {
+                            "type": 'brief liked',
+                            "sender_id": userDetails['user_id'],
+                            "sender_name": userDetails['user_name'],
+                            "receiver_id": brief.userId,
+                            "notification": "${userDetails['user_name']} liked your brief.",
+                            "thread_id": brief.id,
+                          },
                         ).future);
                       } else {
                         await ref.read(deleteLikeProvider(
@@ -212,6 +223,16 @@ class FeedScreen extends ConsumerWidget {
                               userId: userDetails['user_id'],
                             ).future);
                             if (commentPosted == true) {
+                              await ref.read(postNewNotificationProvider(
+                                requestBody: {
+                                  "type": 'brief comment',
+                                  "sender_id": userDetails['user_id'],
+                                  "sender_name": userDetails['user_name'],
+                                  "receiver_id": allBrief!.userId ?? userBrief!.userId,
+                                  "notification": "${userDetails['user_name']} commented on your brief.",
+                                  "thread_id": allBrief!.id ?? userBrief!.id,
+                                },
+                              ).future);
                               commentCont.clear();
                             }
                             ref.invalidate(getAllCommentsProvider(threadId: allBrief!.id ?? userBrief!.id));

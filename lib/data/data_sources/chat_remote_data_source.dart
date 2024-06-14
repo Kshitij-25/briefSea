@@ -22,7 +22,7 @@ class ChatRemoteDataSourceImpl implements ChatRemoteDataSource {
 
   Future<String> getJwtToken() async {
     String? jwtToken = prefs!.getString('jwtToken');
-    return jwtToken!;
+    return jwtToken ?? "";
   }
 
   @override

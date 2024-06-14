@@ -165,15 +165,16 @@ class ProfessionalRegisterScreen extends ConsumerWidget {
                           //   AppUtility(context).message("Registered Successfully. Check email to Verify Profile and Login.");
                           //   GoRouter.of(context).pop();
                           // }
-                          await ref.read(registerNotifierProvider.notifier).registerUser(
-                                professionalUserName.text,
-                                professionalEmail.text,
-                                professionalPass.text,
-                                selectedSubType == "Working" ? "professional" : "owner",
-                                selectedSubType,
-                                ref,
-                                context,
-                              );
+                          await ref.read(registerNotifierProvider.notifier).registerUser(professionalUserName.text, professionalEmail.text,
+                              professionalPass.text, selectedSubType == "Working" ? "professional" : "owner", selectedSubType, ref, context);
+                          // await ref.read(postNewNotificationProvider(requestBody: {
+                          //   "type": 'user account',
+                          //   "sender_id": 'briefseaAdmin9712',
+                          //   "sender_name": 'Briefsea',
+                          //   "receiver_id": result?.user_id,
+                          //   "notification":
+                          //       "Welcome to Briefsea.Hire the best freelancers, vendors and professionals for your tech and marketing projects."
+                          // }).future);
                         }
                       },
                     ),
