@@ -8,6 +8,7 @@ import 'package:jwt_decoder/jwt_decoder.dart';
 import '../../main.dart';
 import '../core/api_client.dart';
 import '../core/api_constants.dart';
+import '../core/app_error.dart';
 import '../models/login_model.dart';
 import '../models/register_model.dart';
 
@@ -60,9 +61,9 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       }
     } catch (e) {
       log("Login User Error", error: e);
-      return null;
+      throw AppError(errorMessage: e.toString());
     }
-    return null;
+    throw AppError();
   }
 
   @override
@@ -125,8 +126,8 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       }
     } catch (e) {
       log("Register User Error", error: e);
-      return false;
+      throw AppError(errorMessage: e.toString());
     }
-    return false;
+    throw AppError();
   }
 }

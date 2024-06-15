@@ -32,22 +32,22 @@ class CustomChatCards extends StatelessWidget {
                 ),
               ),
             ),
-            if (isUserOnline ?? false)
-              Positioned(
-                right: 0,
-                bottom: 0,
-                child: Container(
-                  width: 15,
-                  height: 15,
-                  decoration: BoxDecoration(
-                      color: Colors.green,
-                      shape: BoxShape.circle,
-                      border: Border.all(
-                        color: Theme.of(context).scaffoldBackgroundColor,
-                        width: 3,
-                      )),
+            Positioned(
+              right: 0,
+              bottom: 0,
+              child: Container(
+                width: 15,
+                height: 15,
+                decoration: BoxDecoration(
+                  color: isUserOnline == true ? Colors.green : Colors.red,
+                  shape: BoxShape.circle,
+                  border: Border.all(
+                    color: Theme.of(context).scaffoldBackgroundColor,
+                    width: 3,
+                  ),
                 ),
-              )
+              ),
+            )
           ],
         ),
         // leading: CircleAvatar(

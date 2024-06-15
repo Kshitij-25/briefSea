@@ -19,7 +19,9 @@ import 'all_briefs_screen.dart';
 import 'my_briefs_screen.dart';
 
 class MyFeedNavigator extends ConsumerWidget {
-  const MyFeedNavigator({super.key});
+  const MyFeedNavigator({super.key, this.homePageController});
+
+  final PageController? homePageController;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -193,9 +195,9 @@ class MyFeedNavigator extends ConsumerWidget {
                   controller: pageController,
                   onPageChanged: onPageChanged,
                   physics: const NeverScrollableScrollPhysics(),
-                  children: const [
-                    AllBriefsScreen(),
-                    MyBriefsScreen(),
+                  children: [
+                    AllBriefsScreen(pageController: homePageController),
+                    MyBriefsScreen(pageController: homePageController),
                   ],
                 ),
               ),

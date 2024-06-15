@@ -7,6 +7,7 @@ import 'package:dio/dio.dart';
 import '../../main.dart';
 import '../core/api_client.dart';
 import '../core/api_constants.dart';
+import '../core/app_error.dart';
 import '../models/avatar_model.dart';
 import '../models/banner_model.dart';
 import '../models/image_model.dart';
@@ -74,8 +75,9 @@ class UserProfileRemoteDataSourceImpl implements UserProfileRemoteDataSource {
       }
     } catch (e) {
       log("GetUserProfile Error", error: e);
+      throw AppError(errorMessage: e.toString());
     }
-    return null;
+    throw AppError();
   }
 
   @override
@@ -199,8 +201,9 @@ class UserProfileRemoteDataSourceImpl implements UserProfileRemoteDataSource {
       }
     } catch (e) {
       log("uploadAvatar Error", error: e);
+      throw AppError(errorMessage: e.toString());
     }
-    return null;
+    throw AppError();
   }
 
   @override
@@ -229,8 +232,9 @@ class UserProfileRemoteDataSourceImpl implements UserProfileRemoteDataSource {
       }
     } catch (e) {
       log("uploadBanner Error", error: e);
+      throw AppError(errorMessage: e.toString());
     }
-    return null;
+    throw AppError();
   }
 
   @override
@@ -255,9 +259,9 @@ class UserProfileRemoteDataSourceImpl implements UserProfileRemoteDataSource {
       }
     } catch (e) {
       log("uploadToAWS Error", error: e);
-      return false;
+      throw AppError(errorMessage: e.toString());
     }
-    return false;
+    throw AppError();
   }
 
   @override

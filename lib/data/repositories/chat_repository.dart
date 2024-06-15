@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:dartz/dartz.dart';
 
 import '../core/app_error.dart';
@@ -16,10 +14,10 @@ class ChatRepository {
     try {
       final allChatUsers = await _chatRemoteDataSource.getChatUsersList(userId);
       return Right(allChatUsers);
-    } on SocketException {
-      return const Left(AppError(AppErrorType.network));
-    } on Exception {
-      return const Left(AppError(AppErrorType.api));
+    } on AppError catch (e) {
+      return Left(e);
+    } on Exception catch (e) {
+      return Left(AppError(errorMessage: e.toString()));
     }
   }
 
@@ -27,10 +25,10 @@ class ChatRepository {
     try {
       final newChat = await _chatRemoteDataSource.createNewChat(senderId, receiverId);
       return Right(newChat);
-    } on SocketException {
-      return const Left(AppError(AppErrorType.network));
-    } on Exception {
-      return const Left(AppError(AppErrorType.api));
+    } on AppError catch (e) {
+      return Left(e);
+    } on Exception catch (e) {
+      return Left(AppError(errorMessage: e.toString()));
     }
   }
 
@@ -38,10 +36,10 @@ class ChatRepository {
     try {
       final chatMessages = await _chatRemoteDataSource.getChatMessages(conversationId);
       return Right(chatMessages);
-    } on SocketException {
-      return const Left(AppError(AppErrorType.network));
-    } on Exception {
-      return const Left(AppError(AppErrorType.api));
+    } on AppError catch (e) {
+      return Left(e);
+    } on Exception catch (e) {
+      return Left(AppError(errorMessage: e.toString()));
     }
   }
 
@@ -56,10 +54,10 @@ class ChatRepository {
         typedAt: typedAt,
       );
       return Right(sendMessage);
-    } on SocketException {
-      return const Left(AppError(AppErrorType.network));
-    } on Exception {
-      return const Left(AppError(AppErrorType.api));
+    } on AppError catch (e) {
+      return Left(e);
+    } on Exception catch (e) {
+      return Left(AppError(errorMessage: e.toString()));
     }
   }
 }

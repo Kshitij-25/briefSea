@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:dartz/dartz.dart';
 import 'package:http_parser/http_parser.dart';
 
@@ -17,10 +15,10 @@ class BreifsRepository {
     try {
       final allBriefs = await _briefsRemoteDataSource.getAllBriefs();
       return Right(allBriefs);
-    } on SocketException {
-      return const Left(AppError(AppErrorType.network));
-    } on Exception {
-      return const Left(AppError(AppErrorType.api));
+    } on AppError catch (e) {
+      return Left(e);
+    } on Exception catch (e) {
+      return Left(AppError(errorMessage: e.toString()));
     }
   }
 
@@ -28,10 +26,10 @@ class BreifsRepository {
     try {
       final userBriefs = await _briefsRemoteDataSource.getUserBriefs();
       return Right(userBriefs);
-    } on SocketException {
-      return const Left(AppError(AppErrorType.network));
-    } on Exception {
-      return const Left(AppError(AppErrorType.api));
+    } on AppError catch (e) {
+      return Left(e);
+    } on Exception catch (e) {
+      return Left(AppError(errorMessage: e.toString()));
     }
   }
 
@@ -53,10 +51,10 @@ class BreifsRepository {
         imgSrc: imgSrc,
       );
       return Right(userBriefs);
-    } on SocketException {
-      return const Left(AppError(AppErrorType.network));
-    } on Exception {
-      return const Left(AppError(AppErrorType.api));
+    } on AppError catch (e) {
+      return Left(e);
+    } on Exception catch (e) {
+      return Left(AppError(errorMessage: e.toString()));
     }
   }
 
@@ -64,10 +62,10 @@ class BreifsRepository {
     try {
       final avatarModel = await _briefsRemoteDataSource.uploadThreadImage(fileName, fileType, userId, userType);
       return Right(avatarModel!);
-    } on SocketException {
-      return const Left(AppError(AppErrorType.network));
-    } on Exception {
-      return const Left(AppError(AppErrorType.api));
+    } on AppError catch (e) {
+      return Left(e);
+    } on Exception catch (e) {
+      return Left(AppError(errorMessage: e.toString()));
     }
   }
 }

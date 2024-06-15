@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:dartz/dartz.dart';
 
 import '../core/app_error.dart';
@@ -27,10 +25,10 @@ class LikeRepository {
         replyId: replyId,
       );
       return Right(isLiked!);
-    } on SocketException {
-      return const Left(AppError(AppErrorType.network));
-    } on Exception {
-      return const Left(AppError(AppErrorType.api));
+    } on AppError catch (e) {
+      return Left(e);
+    } on Exception catch (e) {
+      return Left(AppError(errorMessage: e.toString()));
     }
   }
 
@@ -38,10 +36,10 @@ class LikeRepository {
     try {
       final isLiked = await _likeRemoteDataSource.getALike(threadId);
       return Right(isLiked!);
-    } on SocketException {
-      return const Left(AppError(AppErrorType.network));
-    } on Exception {
-      return const Left(AppError(AppErrorType.api));
+    } on AppError catch (e) {
+      return Left(e);
+    } on Exception catch (e) {
+      return Left(AppError(errorMessage: e.toString()));
     }
   }
 
@@ -49,10 +47,10 @@ class LikeRepository {
     try {
       final isLikeDeleted = await _likeRemoteDataSource.deleteLike(threadId, likeId);
       return Right(isLikeDeleted!);
-    } on SocketException {
-      return const Left(AppError(AppErrorType.network));
-    } on Exception {
-      return const Left(AppError(AppErrorType.api));
+    } on AppError catch (e) {
+      return Left(e);
+    } on Exception catch (e) {
+      return Left(AppError(errorMessage: e.toString()));
     }
   }
 }

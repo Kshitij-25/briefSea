@@ -334,7 +334,7 @@ class _CreateNewChatProviderElement
   String get receiverId => (origin as CreateNewChatProvider).receiverId;
 }
 
-String _$getChatMessagesHash() => r'21d816807dcd4381061350a5a4096d25d9324d5b';
+String _$getChatMessagesHash() => r'aa151b5b1fabefbca91bdfd0ccd35d6a4add1faf';
 
 /// See also [getChatMessages].
 @ProviderFor(getChatMessages)

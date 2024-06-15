@@ -1,12 +1,40 @@
-import 'package:equatable/equatable.dart';
+class AppError {
+  final int? statusCode;
+  String? errorMessage;
 
-class AppError extends Equatable {
-  final AppErrorType appErrorType;
+  AppError({this.statusCode, this.errorMessage}) {
+    setErrorMessage(statusCode);
+  }
 
-  const AppError(this.appErrorType);
-
-  @override
-  List<Object> get props => [appErrorType];
+  void setErrorMessage(int? code) {
+    switch (code) {
+      case 400:
+        errorMessage = "Bad Request";
+        break;
+      case 401:
+        errorMessage = "Unauthorized";
+        break;
+      case 403:
+        errorMessage = "Forbidden";
+        break;
+      case 404:
+        errorMessage = "Not Found";
+        break;
+      case 500:
+        errorMessage = "Internal Server Error";
+        break;
+      case 502:
+        errorMessage = "Bad Gateway";
+        break;
+      case 503:
+        errorMessage = "Service Unavailable";
+        break;
+      case 504:
+        errorMessage = "Gateway Timeout";
+        break;
+      default:
+        errorMessage = "An unknown error occurred";
+        break;
+    }
+  }
 }
-
-enum AppErrorType { api, network, database, unauthorised, sessionDenied }

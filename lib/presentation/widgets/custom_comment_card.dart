@@ -10,7 +10,7 @@ class CustomCommentCard extends StatelessWidget {
     super.key,
     required this.onCommentTap,
     required this.onLikeTap,
-    required this.onShareTap,
+    required this.onDMTap,
     this.commentModel,
     this.loggedInUserId,
     this.isReplies,
@@ -18,7 +18,7 @@ class CustomCommentCard extends StatelessWidget {
 
   final Function(CommentModel?) onCommentTap;
   final Function(CommentModel?) onLikeTap;
-  final Function(CommentModel?) onShareTap;
+  final Function(CommentModel?) onDMTap;
   final CommentModel? commentModel;
   final String? loggedInUserId;
   final bool? isReplies;
@@ -140,9 +140,9 @@ class CustomCommentCard extends StatelessWidget {
                   onPressed: () => onCommentTap(commentModel),
                 ),
                 // _BriefInputButton(
-                //   iconData: CupertinoIcons.arrowshape_turn_up_right,
-                //   iconLabel: "Share",
-                //   onPressed: () => onShareTap(commentModel),
+                //   iconData: CupertinoIcons.envelope_open_fill,
+                //   iconLabel: "DM",
+                //   onPressed: () => onDMTap(commentModel),
                 // ),
               ],
             ),

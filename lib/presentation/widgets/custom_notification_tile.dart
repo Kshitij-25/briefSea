@@ -7,11 +7,13 @@ class CustomNotificationTile extends StatelessWidget {
   const CustomNotificationTile({
     super.key,
     required this.notificationModel,
-    required this.onDismissed,
+    required this.confirmDismiss,
+    this.onDismissed,
   });
 
   final NotificationModel notificationModel;
-  final Future<bool> Function() onDismissed;
+  final Future<bool> Function() confirmDismiss;
+  final VoidCallback? onDismissed;
 
   @override
   Widget build(BuildContext context) {
@@ -19,8 +21,9 @@ class CustomNotificationTile extends StatelessWidget {
     return Dismissible(
       key: Key(notificationModel.createdAt ?? DateTime.now().toString()), // Ensure unique key for each item
       confirmDismiss: (direction) async {
-        return await onDismissed();
+        return await confirmDismiss();
       },
+      onDismissed: (direction) => onDismissed,
       background: Container(
         color: Colors.red,
         alignment: Alignment.centerLeft,

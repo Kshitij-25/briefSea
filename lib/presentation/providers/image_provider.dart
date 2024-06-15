@@ -1,7 +1,6 @@
 import 'dart:developer';
 import 'dart:io';
 
-import 'package:http_parser/http_parser.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../data/models/image_model.dart';
@@ -22,9 +21,9 @@ Future<String> uploadImage(
   bool isBanner = false,
 }) async {
   String? avatarUrl;
-  String? avatarKey;
+  String? avatarKey = userProfileData?.avatarSrc;
   String? bannerUrl;
-  String? bannerKey;
+  String? bannerKey = userProfileData?.bannerSrc;
 
   if (isAvatar) {
     final uploadedAvatar = await ref.read(uploadAvatarProvider(

@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:http_parser/http_parser.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../data/core/api_client.dart';

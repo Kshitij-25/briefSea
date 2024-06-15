@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:dartz/dartz.dart';
 
 import '../core/app_error.dart';
@@ -15,10 +13,10 @@ class AuthRepository {
     try {
       final loginModel = await _authRemoteDataSource.loginUser(email, password);
       return Right(loginModel!);
-    } on SocketException {
-      return const Left(AppError(AppErrorType.network));
-    } on Exception {
-      return const Left(AppError(AppErrorType.api));
+    } on AppError catch (e) {
+      return Left(e);
+    } on Exception catch (e) {
+      return Left(AppError(errorMessage: e.toString()));
     }
   }
 
@@ -26,10 +24,10 @@ class AuthRepository {
     try {
       final isUserRegistered = await _authRemoteDataSource.registerUser(userName, email, password, type, subType);
       return Right(isUserRegistered);
-    } on SocketException {
-      return const Left(AppError(AppErrorType.network));
-    } on Exception {
-      return const Left(AppError(AppErrorType.api));
+    } on AppError catch (e) {
+      return Left(e);
+    } on Exception catch (e) {
+      return Left(AppError(errorMessage: e.toString()));
     }
   }
 }

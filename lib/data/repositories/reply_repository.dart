@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:dartz/dartz.dart';
 
 import '../core/app_error.dart';
@@ -16,10 +14,10 @@ class ReplyRepository {
     try {
       final userProfileModel = await _remoteDataSource.postReply(userId, threadId, commentText, replyId);
       return Right(userProfileModel);
-    } on SocketException {
-      return const Left(AppError(AppErrorType.network));
-    } on Exception {
-      return const Left(AppError(AppErrorType.api));
+    } on AppError catch (e) {
+      return Left(e);
+    } on Exception catch (e) {
+      return Left(AppError(errorMessage: e.toString()));
     }
   }
 
@@ -27,10 +25,10 @@ class ReplyRepository {
     try {
       final commentModel = await _remoteDataSource.getAllComments(threadId);
       return Right(commentModel);
-    } on SocketException {
-      return const Left(AppError(AppErrorType.network));
-    } on Exception {
-      return const Left(AppError(AppErrorType.api));
+    } on AppError catch (e) {
+      return Left(e);
+    } on Exception catch (e) {
+      return Left(AppError(errorMessage: e.toString()));
     }
   }
 
@@ -38,10 +36,10 @@ class ReplyRepository {
     try {
       final commentLike = await _remoteDataSource.getCommentLike(replyId);
       return Right(commentLike!);
-    } on SocketException {
-      return const Left(AppError(AppErrorType.network));
-    } on Exception {
-      return const Left(AppError(AppErrorType.api));
+    } on AppError catch (e) {
+      return Left(e);
+    } on Exception catch (e) {
+      return Left(AppError(errorMessage: e.toString()));
     }
   }
 
@@ -49,10 +47,10 @@ class ReplyRepository {
     try {
       final repliesOnComment = await _remoteDataSource.getAllReplyOnComment(commentId);
       return Right(repliesOnComment);
-    } on SocketException {
-      return const Left(AppError(AppErrorType.network));
-    } on Exception {
-      return const Left(AppError(AppErrorType.api));
+    } on AppError catch (e) {
+      return Left(e);
+    } on Exception catch (e) {
+      return Left(AppError(errorMessage: e.toString()));
     }
   }
 }

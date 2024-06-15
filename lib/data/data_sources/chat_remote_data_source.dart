@@ -5,6 +5,7 @@ import 'package:dio/dio.dart';
 import '../../main.dart';
 import '../core/api_client.dart';
 import '../core/api_constants.dart';
+import '../core/app_error.dart';
 import '../models/chat_message_model.dart';
 import '../models/chat_user_model.dart';
 
@@ -35,21 +36,20 @@ class ChatRemoteDataSourceImpl implements ChatRemoteDataSource {
         jwtToken: jwtToken,
       );
 
-      if (response!.statusCode == 200) {
-        var responseJson = response.data;
-        if (responseJson != null) {
-          List<dynamic> jsonList = responseJson;
-          List<ChatUserModel> chatUserLists = jsonList.map((json) => ChatUserModel.fromJson(json)).toList();
-          return chatUserLists;
+      if (response?.data != null && response?.statusCode != null) {
+        if (response!.statusCode == 200) {
+          final responseJson = response.data ?? [];
+          return (responseJson as List).map((json) => ChatUserModel.fromJson(json)).toList();
         } else {
-          throw Exception(response.statusMessage);
+          throw AppError(statusCode: response.statusCode);
         }
+      } else {
+        throw AppError();
       }
     } catch (e) {
       log("getChatUsersList Error", error: e);
-      return [];
+      throw AppError(errorMessage: e.toString());
     }
-    return [];
   }
 
   @override
@@ -77,11 +77,11 @@ class ChatRemoteDataSourceImpl implements ChatRemoteDataSource {
           return false;
         }
       } else {
-        throw Exception(response.statusMessage);
+        throw AppError(statusCode: response.statusCode);
       }
     } catch (e) {
-      log("getChatUsersList Error", error: e);
-      return false;
+      log("createNewChat Error", error: e);
+      throw AppError(errorMessage: e.toString());
     }
   }
 
@@ -95,26 +95,20 @@ class ChatRemoteDataSourceImpl implements ChatRemoteDataSource {
         jwtToken: jwtToken,
       );
 
-      if (response!.statusCode == 200) {
-        var responseJson = response.data;
-        if (responseJson != null) {
-          var responseJson = response.data;
-          if (responseJson != null) {
-            List<dynamic> jsonList = responseJson;
-            List<ChatMessageModel> chatMessages = jsonList.map((json) => ChatMessageModel.fromJson(json)).toList();
-            return chatMessages;
-          } else {
-            throw Exception(response.statusMessage);
-          }
+      if (response?.data != null && response?.statusCode != null) {
+        if (response!.statusCode == 200) {
+          final responseJson = response.data ?? [];
+          return (responseJson as List).map((json) => ChatMessageModel.fromJson(json)).toList();
         } else {
-          throw Exception(response.statusMessage);
+          throw AppError(statusCode: response.statusCode);
         }
+      } else {
+        throw AppError();
       }
     } catch (e) {
-      log("getChatUsersList Error", error: e);
-      return [];
+      log("getChatMessages Error", error: e);
+      throw AppError(errorMessage: e.toString());
     }
-    return [];
   }
 
   @override
@@ -149,11 +143,11 @@ class ChatRemoteDataSourceImpl implements ChatRemoteDataSource {
           return false;
         }
       } else {
-        throw Exception(response.statusMessage);
+        throw AppError(statusCode: response.statusCode);
       }
     } catch (e) {
-      log("getChatUsersList Error", error: e);
-      return false;
+      log("sendChatMessage Error", error: e);
+      throw AppError(errorMessage: e.toString());
     }
   }
 }

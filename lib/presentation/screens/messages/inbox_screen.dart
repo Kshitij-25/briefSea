@@ -1,10 +1,10 @@
 import 'dart:developer';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-import '../../../data/models/chat_user_model.dart';
 import '../../providers/auth_provider.dart';
 import '../../providers/chat_provider.dart';
 import '../../providers/socket_provider.dart';
@@ -19,101 +19,110 @@ class InboxScreen extends ConsumerStatefulWidget {
 }
 
 class _InboxScreenState extends ConsumerState<InboxScreen> {
-  late List<ChatUserModel> _chatUsers = [];
+  Set<String> onlineIds = {};
+
+  TextEditingController searchController = TextEditingController();
+  String searchQuery = '';
 
   @override
   void initState() {
     super.initState();
-    final socketService = ref.read(socketServiceProvider);
+    onlineIds.clear();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final socketService = ref.read(socketServiceProvider);
 
-// Initialize the chat users list
-    _initializeChatUsers();
+      socketService.socket.on('add-user', (data) {
+        log("SOCKET SERVICE ADD-USER $data");
+        // _updateUserOnlineStatus(data);
+      });
 
-    socketService.socket.on('add-user', (data) {
-      log("SOCKET SERVICE ADD-USER $data");
-      _updateUserOnlineStatus(data);
+      socketService.socket.on('active-user', (data) {
+        log("SOCKET SERVICE ACTIVE-USER $data");
+        _updateUserOnlineStatus(data);
+      });
     });
-    socketService.socket.on('active-user', (data) {
-      log("SOCKET SERVICE ADD-USER $data");
-    });
-  }
 
-  Future<void> _initializeChatUsers() async {
-    final userData = ref.read(userDetailsProvider);
-    final chatUsersFuture = await ref.read(getChatUsersListProvider(userId: userData['user_id']!).future);
-
-    final chatUsers = chatUsersFuture;
-    setState(() {
-      _chatUsers = chatUsers;
+    searchController.addListener(() {
+      setState(() {
+        searchQuery = searchController.text;
+      });
     });
   }
 
-  void _updateUserOnlineStatus(List<Map<String, dynamic>> usersData) {
+  void _updateUserOnlineStatus(List usersData) {
+    onlineIds.clear();
     final userIds = usersData.map((data) => data['user_id'] as String).toSet();
 
     setState(() {
-      _chatUsers = _chatUsers.map((chatUser) {
-        if (userIds.contains(chatUser.id)) {
-          log("${chatUser.name}====>${chatUser.isUserOnline}");
-          return chatUser.copyWith(isUserOnline: true);
-        }
-        return chatUser;
-      }).toList();
+      onlineIds.addAll(userIds);
+      // onlineIds = userIds;
     });
   }
 
   @override
+  void dispose() {
+    searchController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    // final userData = ref.watch(userDetailsProvider);
-    // final chatUsers = ref.watch(getChatUsersListProvider(userId: userData['user_id']!));
-    // final socket = ref.watch(socketProvider);
-
-    // socket.on('active-user', (data) {
-    //   log("ACTIVE USER DATA$data");
-    // });
-    return _chatUsers.isEmpty
-        ? const Center(child: CircularProgressIndicator.adaptive())
-        : ListView.builder(
-            itemCount: _chatUsers.length,
-            itemBuilder: (context, index) {
-              return CustomChatCards(
-                onTap: () {
-                  context.push(
-                    ChatScreen.routeName,
-                    extra: _chatUsers[index],
-                  );
-                },
-                chatName: _chatUsers[index].name,
-                chatMessage: _chatUsers[index].type,
-                isUserOnline: _chatUsers[index].isUserOnline,
+    return ref.watch(getChatUsersListProvider(userId: ref.read(userDetailsProvider)['user_id']!)).when(
+          data: (chatUsers) {
+            if (chatUsers.isEmpty) {
+              return const Center(
+                child: Text("No Chats"),
               );
-            },
-          );
-
-    // return chatUsers.when(
-    //   data: (users) {
-    //     return ListView.builder(
-    //       itemCount: users.length,
-    //       itemBuilder: (context, index) {
-    //         return CustomChatCards(
-    //           onTap: () {
-    //             context.push(
-    //               ChatScreen.routeName,
-    //               extra: users[index],
-    //             );
-    //           },
-    //           chatName: users[index].name,
-    //           chatMessage: users[index].type,
-    //         );
-    //       },
-    //     );
-    //   },
-    //   error: (error, stackTrace) {
-    //     return Center(child: Text('Error: $error'));
-    //   },
-    //   loading: () => const Center(
-    //     child: CircularProgressIndicator.adaptive(),
-    //   ),
-    // );
+            }
+            // Filter chat users based on search query
+            final filteredChatUsers = chatUsers.where((user) {
+              final userName = user.name!.toLowerCase();
+              final searchLower = searchQuery.toLowerCase();
+              return userName.contains(searchLower);
+            }).toList();
+            return Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(25.0),
+                  child: SearchBar(
+                    controller: searchController,
+                    backgroundColor: WidgetStateProperty.all<Color>(Colors.white),
+                    leading: const Icon(
+                      CupertinoIcons.search,
+                      color: Colors.black,
+                    ),
+                    hintText: "Search...",
+                  ),
+                ),
+                Expanded(
+                  child: ListView.builder(
+                    shrinkWrap: true,
+                    itemCount: filteredChatUsers.length,
+                    itemBuilder: (context, index) {
+                      final isOnline = onlineIds.contains(filteredChatUsers[index].id);
+                      return CustomChatCards(
+                        onTap: () {
+                          context.push(
+                            ChatScreen.routeName,
+                            extra: filteredChatUsers[index],
+                          );
+                        },
+                        chatName: filteredChatUsers[index].name,
+                        chatMessage: filteredChatUsers[index].type,
+                        isUserOnline: isOnline,
+                      );
+                    },
+                  ),
+                ),
+              ],
+            );
+          },
+          error: (error, stackTrace) {
+            return Center(child: Text('Error: $error'));
+          },
+          loading: () => const Center(
+            child: CircularProgressIndicator.adaptive(),
+          ),
+        );
   }
 }

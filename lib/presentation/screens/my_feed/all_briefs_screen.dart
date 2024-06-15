@@ -13,12 +13,14 @@ import '../../providers/chat_provider.dart';
 import '../../providers/likes_provider.dart';
 import '../../providers/notification_provider.dart';
 import '../../providers/user_profile_provider.dart';
+import '../../state_providers/bottom_nav_bar_state_provider.dart';
 import '../../widgets/custom_briefs_card.dart';
-import '../messages/chat_screen.dart';
 import 'feed_screen.dart';
 
 class AllBriefsScreen extends ConsumerWidget {
-  const AllBriefsScreen({super.key});
+  const AllBriefsScreen({super.key, this.pageController});
+
+  final PageController? pageController;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -53,8 +55,10 @@ class AllBriefsScreen extends ConsumerWidget {
                       ).future);
 
                       if (isChatCreated == true) {
-                        context.push(ChatScreen.routeName);
-                        isChatCreated = false;
+                        pageController?.jumpToPage(1);
+                        ref.read(currentIndexProvider.notifier).state = 1;
+                        //   // context.push(ChatScreen.routeName);
+                        //   // isChatCreated = false;
                       }
                     }
                   },
@@ -74,16 +78,18 @@ class AllBriefsScreen extends ConsumerWidget {
                           userId: userDetails['user_id'],
                           replyId: null,
                         ).future);
-                        await ref.read(postNewNotificationProvider(
-                          requestBody: {
-                            "type": 'brief liked',
-                            "sender_id": userDetails['user_id'],
-                            "sender_name": userDetails['user_name'],
-                            "receiver_id": brief.userId,
-                            "notification": "${userDetails['user_name']} liked your brief.",
-                            "thread_id": brief.id,
-                          },
-                        ).future);
+                        if (brief.userId != userDetails['user_id']) {
+                          await ref.read(postNewNotificationProvider(
+                            requestBody: {
+                              "type": 'brief liked',
+                              "sender_id": userDetails['user_id'],
+                              "sender_name": userDetails['user_name'],
+                              "receiver_id": brief.userId,
+                              "notification": "${userDetails['user_name']} liked your brief.",
+                              "thread_id": brief.id,
+                            },
+                          ).future);
+                        }
                       } else {
                         await ref.read(deleteLikeProvider(
                           likeId: brief.postLikeId,

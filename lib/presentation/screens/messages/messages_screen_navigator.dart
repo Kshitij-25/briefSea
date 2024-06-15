@@ -1,12 +1,9 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../common/screen_size.dart';
 import '../../state_providers/messages_state_provider.dart';
-import '../../widgets/custom_tab_bar.dart';
 import 'inbox_screen.dart';
-import 'sent_screen.dart';
 
 class MessagesScreenNavigator extends ConsumerWidget {
   const MessagesScreenNavigator({super.key});
@@ -66,46 +63,38 @@ class MessagesScreenNavigator extends ConsumerWidget {
             ),
             child: Column(
               children: [
-                Container(
-                  height: 170,
-                  decoration: BoxDecoration(
-                    borderRadius: const BorderRadius.only(
-                      topLeft: Radius.circular(40),
-                      topRight: Radius.circular(40),
-                    ),
-                    gradient: LinearGradient(
-                      begin: FractionalOffset.topCenter,
-                      end: FractionalOffset.bottomCenter,
-                      stops: const [0.1, 0.9],
-                      colors: [
-                        Colors.white,
-                        Colors.grey[300]!,
-                      ],
-                    ),
-                  ),
-                  child: Column(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.all(25.0),
-                        child: CustomTabBar(
-                          tab1Text: "Inbox",
-                          tab2Text: "Sent",
-                          onSelectedIndex: (p0) {
-                            onTabTapped(p0);
-                          },
-                        ),
-                      ),
-                      SearchBar(
-                        backgroundColor: WidgetStateProperty.all<Color>(Colors.white),
-                        leading: const Icon(
-                          CupertinoIcons.search,
-                          color: Colors.black,
-                        ),
-                        hintText: "Search...",
-                      ),
-                    ],
-                  ),
-                ),
+                // Container(
+                //   // height: 170,
+                //   decoration: BoxDecoration(
+                //     borderRadius: const BorderRadius.only(
+                //       topLeft: Radius.circular(40),
+                //       topRight: Radius.circular(40),
+                //     ),
+                //     gradient: LinearGradient(
+                //       begin: FractionalOffset.topCenter,
+                //       end: FractionalOffset.bottomCenter,
+                //       stops: const [0.1, 0.9],
+                //       colors: [
+                //         Colors.white,
+                //         Colors.grey[300]!,
+                //       ],
+                //     ),
+                //   ),
+                //   child: const Column(
+                //     children: [
+                //       // Padding(
+                //       //   padding: const EdgeInsets.all(25.0),
+                //       //   child: CustomTabBar(
+                //       //     tab1Text: "Inbox",
+                //       //     tab2Text: "Sent",
+                //       //     onSelectedIndex: (p0) {
+                //       //       onTabTapped(p0);
+                //       //     },
+                //       //   ),
+                //       // ),
+                //     ],
+                //   ),
+                // ),
                 Expanded(
                   child: PageView(
                     controller: pageController,
@@ -113,7 +102,7 @@ class MessagesScreenNavigator extends ConsumerWidget {
                     physics: const NeverScrollableScrollPhysics(),
                     children: const [
                       InboxScreen(),
-                      SentScreen(),
+                      // SentScreen(),
                     ],
                   ),
                 ),

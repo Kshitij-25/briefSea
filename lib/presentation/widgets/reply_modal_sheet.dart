@@ -41,7 +41,7 @@ Future<void> customReplyModalSheet(
                               isReplies: isReplies,
                               onCommentTap: (p0) {},
                               onLikeTap: (p0) {},
-                              onShareTap: (p0) {},
+                              onDMTap: (p0) {},
                               commentModel: replies[index],
                               loggedInUserId: userDetails!['user_id'],
                             );
@@ -97,17 +97,19 @@ Future<void> customReplyModalSheet(
                                       ).future,
                                     );
                                     if (replyPosted == true) {
-                                      await ref.read(postNewNotificationProvider(
-                                        requestBody: {
-                                          "type": 'comment reply',
-                                          "sender_id": userDetails['user_id'],
-                                          "sender_name": userDetails['user_name'],
-                                          "receiver_id": comments.userId,
-                                          "notification": "${userDetails['user_name']} replied on your comment.",
-                                          "thread_id": threadId,
-                                          "reply_id": comments.id,
-                                        },
-                                      ).future);
+                                      if (comments.userId != userDetails['user_id']) {
+                                        await ref.read(postNewNotificationProvider(
+                                          requestBody: {
+                                            "type": 'comment reply',
+                                            "sender_id": userDetails['user_id'],
+                                            "sender_name": userDetails['user_name'],
+                                            "receiver_id": comments.userId,
+                                            "notification": "${userDetails['user_name']} replied on your comment.",
+                                            "thread_id": threadId,
+                                            "reply_id": comments.id,
+                                          },
+                                        ).future);
+                                      }
                                       replyCont.clear();
                                     }
                                     ref.invalidate(getAllReplyOnCommentProvider(commentId: comments.id));

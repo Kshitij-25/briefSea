@@ -104,16 +104,18 @@ class FeedScreen extends ConsumerWidget {
                           userId: userDetails['user_id'],
                           replyId: null,
                         ).future);
-                        await ref.read(postNewNotificationProvider(
-                          requestBody: {
-                            "type": 'brief liked',
-                            "sender_id": userDetails['user_id'],
-                            "sender_name": userDetails['user_name'],
-                            "receiver_id": brief.userId,
-                            "notification": "${userDetails['user_name']} liked your brief.",
-                            "thread_id": brief.id,
-                          },
-                        ).future);
+                        if (allBrief!.userId != userDetails['user_id'] || userBrief!.userId != userDetails['user_id']) {
+                          await ref.read(postNewNotificationProvider(
+                            requestBody: {
+                              "type": 'brief liked',
+                              "sender_id": userDetails['user_id'],
+                              "sender_name": userDetails['user_name'],
+                              "receiver_id": brief.userId,
+                              "notification": "${userDetails['user_name']} liked your brief.",
+                              "thread_id": brief.id,
+                            },
+                          ).future);
+                        }
                       } else {
                         await ref.read(deleteLikeProvider(
                           likeId: brief.postLikeId,
@@ -168,7 +170,7 @@ class FeedScreen extends ConsumerWidget {
                                 log(e.toString());
                               }
                             },
-                            onShareTap: (p0) {},
+                            onDMTap: (p0) async {},
                             commentModel: comments[index],
                             loggedInUserId: userDetails['user_id'],
                           );
@@ -223,16 +225,18 @@ class FeedScreen extends ConsumerWidget {
                               userId: userDetails['user_id'],
                             ).future);
                             if (commentPosted == true) {
-                              await ref.read(postNewNotificationProvider(
-                                requestBody: {
-                                  "type": 'brief comment',
-                                  "sender_id": userDetails['user_id'],
-                                  "sender_name": userDetails['user_name'],
-                                  "receiver_id": allBrief!.userId ?? userBrief!.userId,
-                                  "notification": "${userDetails['user_name']} commented on your brief.",
-                                  "thread_id": allBrief!.id ?? userBrief!.id,
-                                },
-                              ).future);
+                              if (allBrief!.userId != userDetails['user_id'] || userBrief!.userId != userDetails['user_id']) {
+                                await ref.read(postNewNotificationProvider(
+                                  requestBody: {
+                                    "type": 'brief comment',
+                                    "sender_id": userDetails['user_id'],
+                                    "sender_name": userDetails['user_name'],
+                                    "receiver_id": allBrief!.userId ?? userBrief!.userId,
+                                    "notification": "${userDetails['user_name']} commented on your brief.",
+                                    "thread_id": allBrief!.id ?? userBrief!.id,
+                                  },
+                                ).future);
+                              }
                               commentCont.clear();
                             }
                             ref.invalidate(getAllCommentsProvider(threadId: allBrief!.id ?? userBrief!.id));

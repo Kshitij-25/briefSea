@@ -32,10 +32,8 @@ class HomeScreen extends ConsumerWidget {
 
     socketService.socket.on('welcome', (data) {
       log("SOCKET SERVICE WELCOME $data");
-      // Extract room_id from data received in 'welcome' event
       String? roomId = data['room_id'];
       log("WELCOME ===> $roomId");
-      // Emit 'add-user' event with user_id and room_id
       socketService.socket.emit('add-user', {'user_id': userData['user_id'], 'room_id': roomId});
     });
 
@@ -98,11 +96,11 @@ class HomeScreen extends ConsumerWidget {
         controller: pageController,
         onPageChanged: onPageChanged,
         physics: const NeverScrollableScrollPhysics(),
-        children: const [
-          MyFeedNavigator(),
-          MessagesScreenNavigator(),
-          NotificationScreen(),
-          ProfileScreen(),
+        children: [
+          MyFeedNavigator(homePageController: pageController),
+          const MessagesScreenNavigator(),
+          const NotificationScreen(),
+          const ProfileScreen(),
         ],
       ),
       bottomNavigationBar: BottomNavigationBar(

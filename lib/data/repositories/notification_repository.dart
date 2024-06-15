@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:briefsea/data/data_sources/notification_remote_data_source.dart';
 import 'package:briefsea/data/models/notification_model.dart';
 import 'package:dartz/dartz.dart';
@@ -15,10 +13,10 @@ class NotificationRepository {
     try {
       final postNotification = await _notificationRemoteDataSource.postNewNotification(requestBody, isNewRegister);
       return Right(postNotification);
-    } on SocketException {
-      return const Left(AppError(AppErrorType.network));
-    } on Exception {
-      return const Left(AppError(AppErrorType.api));
+    } on AppError catch (e) {
+      return Left(e);
+    } on Exception catch (e) {
+      return Left(AppError(errorMessage: e.toString()));
     }
   }
 
@@ -26,10 +24,10 @@ class NotificationRepository {
     try {
       final allNotifications = await _notificationRemoteDataSource.getAllNotifications();
       return Right(allNotifications);
-    } on SocketException {
-      return const Left(AppError(AppErrorType.network));
-    } on Exception {
-      return const Left(AppError(AppErrorType.api));
+    } on AppError catch (e) {
+      return Left(e);
+    } on Exception catch (e) {
+      return Left(AppError(errorMessage: e.toString()));
     }
   }
 
@@ -37,10 +35,10 @@ class NotificationRepository {
     try {
       final allNotifications = await _notificationRemoteDataSource.deleteAllNotifications();
       return Right(allNotifications);
-    } on SocketException {
-      return const Left(AppError(AppErrorType.network));
-    } on Exception {
-      return const Left(AppError(AppErrorType.api));
+    } on AppError catch (e) {
+      return Left(e);
+    } on Exception catch (e) {
+      return Left(AppError(errorMessage: e.toString()));
     }
   }
 
@@ -48,10 +46,10 @@ class NotificationRepository {
     try {
       final allNotifications = await _notificationRemoteDataSource.deleteMessageNotification(conversationId);
       return Right(allNotifications);
-    } on SocketException {
-      return const Left(AppError(AppErrorType.network));
-    } on Exception {
-      return const Left(AppError(AppErrorType.api));
+    } on AppError catch (e) {
+      return Left(e);
+    } on Exception catch (e) {
+      return Left(AppError(errorMessage: e.toString()));
     }
   }
 
@@ -59,10 +57,10 @@ class NotificationRepository {
     try {
       final allNotifications = await _notificationRemoteDataSource.deleteNotification(notificationId);
       return Right(allNotifications);
-    } on SocketException {
-      return const Left(AppError(AppErrorType.network));
-    } on Exception {
-      return const Left(AppError(AppErrorType.api));
+    } on AppError catch (e) {
+      return Left(e);
+    } on Exception catch (e) {
+      return Left(AppError(errorMessage: e.toString()));
     }
   }
 }

@@ -11,8 +11,10 @@ import '../../widgets/custom_briefs_card.dart';
 import 'feed_screen.dart';
 
 class MyBriefsScreen extends ConsumerWidget {
-  const MyBriefsScreen({super.key});
+  const MyBriefsScreen({super.key, this.pageController});
   // AsyncValue<List<UserBriefsModel?>?> userBriefs;
+
+  final PageController? pageController;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

@@ -5,6 +5,7 @@ import 'package:dio/dio.dart';
 import '../../main.dart';
 import '../core/api_client.dart';
 import '../core/api_constants.dart';
+import '../core/app_error.dart';
 import '../models/like_model.dart';
 
 abstract class LikeRemoteDataSource {
@@ -50,9 +51,9 @@ class LikeRemoteDataSourceImpl implements LikeRemoteDataSource {
       // }
     } catch (e) {
       log("postLike Error", error: e);
-      return false;
+      throw AppError(errorMessage: e.toString());
     }
-    return false;
+    throw AppError();
   }
 
   @override
@@ -74,9 +75,9 @@ class LikeRemoteDataSourceImpl implements LikeRemoteDataSource {
       }
     } catch (e) {
       log("getALike Error", error: e);
-      return null;
+      throw AppError(errorMessage: e.toString());
     }
-    return null;
+    throw AppError();
   }
 
   @override
@@ -101,8 +102,8 @@ class LikeRemoteDataSourceImpl implements LikeRemoteDataSource {
       // }
     } catch (e) {
       log("deleteLike Error", error: e);
-      return false;
+      throw AppError(errorMessage: e.toString());
     }
-    return false;
+    throw AppError();
   }
 }

@@ -25,20 +25,10 @@ class ChatScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final chatMessages = ref.watch(chatMessagesProvider);
+    final chatMessageState = ref.watch(chatMessagesProvider(chatUser.conversationId));
     final userData = ref.watch(userDetailsProvider);
     final sendMsg = ref.read(sendMessageProvider);
-    final socketService = ref.read(socketServiceProvider);
-    // final socket = ref.watch(socketProvider);
-
-    // Listen to incoming messages via Socket.IO
-    // socket.on('receive-message', (data) {
-    //   // Convert data to the message model
-    //   ChatMessageModel message = ChatMessageModel.fromJson(data);
-
-    //   // Append the new message to the list of messages
-    //   ref.read(chatMessagesProvider.notifier).addMessage(message);
-    // });
+    ref.read(socketEventListenerProvider(chatUser.conversationId!));
 
     return Scaffold(
       appBar: AppBar(
@@ -75,18 +65,26 @@ class ChatScreen extends ConsumerWidget {
               padding: const EdgeInsets.only(top: 20.0),
               child: Column(
                 children: [
+                  if (chatMessageState.isLoading)
+                    const Center(
+                      child: CircularProgressIndicator.adaptive(),
+                    ),
+                  if (chatMessageState.error != null)
+                    Center(
+                      child: Text(chatMessageState.error!),
+                    ),
                   Expanded(
                     child: ListView.builder(
                       shrinkWrap: true,
-                      itemCount: chatMessages.length,
+                      itemCount: chatMessageState.chatMessages?.length ?? 0,
                       itemBuilder: (context, index) {
-                        if (chatMessages[index].senderId == userData['user_id']) {
+                        if (chatMessageState.chatMessages?[index].senderId == userData['user_id']) {
                           return _SentMessage(
-                            message: chatMessages[index].messageText ?? "",
+                            message: chatMessageState.chatMessages?[index].messageText ?? "",
                           );
                         } else {
                           return _ReceivedMessage(
-                            message: chatMessages[index].messageText ?? "",
+                            message: chatMessageState.chatMessages?[index].messageText ?? "",
                           );
                         }
                       },
@@ -123,14 +121,6 @@ class ChatScreen extends ConsumerWidget {
                               DateTime now = DateTime.now();
                               String formattedTime = DateFormat('MM/d/yyyy, hh:mm:ss a').format(now);
                               if (sendMessage.text.isNotEmpty) {
-                                // Emit message through Socket.IO
-                                // socket.emit('send-message', {
-                                //   'conversation_id': chatUser.conversationId!,
-                                //   'message': sendMessage.text,
-                                //   'receiver_d': chatUser.id!,
-                                //   'sender_id': userData['user_id']!,
-                                //   'typedAt': formattedTime,
-                                // });
                                 sendMsg(
                                   chatUser.conversationId!,
                                   sendMessage.text,

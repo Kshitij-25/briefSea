@@ -5,6 +5,7 @@ import 'package:dio/dio.dart';
 import '../../main.dart';
 import '../core/api_client.dart';
 import '../core/api_constants.dart';
+import '../core/app_error.dart';
 import '../models/comment_model.dart';
 import '../models/like_model.dart';
 
@@ -48,8 +49,9 @@ class ReplyRemoteDataSourceImpl implements ReplyRemoteDataSource {
       }
     } catch (e) {
       log("postReply Error", error: e);
+      throw AppError(errorMessage: e.toString());
     }
-    return false;
+    throw AppError();
   }
 
   @override
@@ -62,19 +64,20 @@ class ReplyRemoteDataSourceImpl implements ReplyRemoteDataSource {
         jwtToken: jwtToken,
       );
 
-      if (response!.statusCode == 200) {
-        var responseJson = response.data;
-        if (responseJson != null) {
-          List<dynamic> jsonList = responseJson;
-          List<CommentModel> commentModel = jsonList.map((json) => CommentModel.fromJson(json)).toList();
-          return commentModel;
+      if (response?.data != null && response?.statusCode != null) {
+        if (response!.statusCode == 200) {
+          final responseJson = response.data ?? [];
+          return (responseJson as List).map((json) => CommentModel.fromJson(json)).toList();
+        } else {
+          throw AppError(statusCode: response.statusCode);
         }
+      } else {
+        throw AppError();
       }
     } catch (e) {
       log("getAllComments Error", error: e);
-      return [];
+      throw AppError(errorMessage: e.toString());
     }
-    return [];
   }
 
   @override
@@ -96,9 +99,9 @@ class ReplyRemoteDataSourceImpl implements ReplyRemoteDataSource {
       }
     } catch (e) {
       log("getCommentLike Error", error: e);
-      return null;
+      throw AppError(errorMessage: e.toString());
     }
-    return null;
+    throw AppError();
   }
 
   @override
@@ -111,18 +114,19 @@ class ReplyRemoteDataSourceImpl implements ReplyRemoteDataSource {
         jwtToken: jwtToken,
       );
 
-      if (response!.statusCode == 200) {
-        var responseJson = response.data;
-        if (responseJson != null) {
-          List<dynamic> jsonList = responseJson;
-          List<CommentModel> repliesOnComment = jsonList.map((json) => CommentModel.fromJson(json)).toList();
-          return repliesOnComment;
+      if (response?.data != null && response?.statusCode != null) {
+        if (response!.statusCode == 200) {
+          final responseJson = response.data ?? [];
+          return (responseJson as List).map((json) => CommentModel.fromJson(json)).toList();
+        } else {
+          throw AppError(statusCode: response.statusCode);
         }
+      } else {
+        throw AppError();
       }
     } catch (e) {
       log("getAllReplyOnComment Error", error: e);
-      return [];
+      throw AppError(errorMessage: e.toString());
     }
-    return [];
   }
 }

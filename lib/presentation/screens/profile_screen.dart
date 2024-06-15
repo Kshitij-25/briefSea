@@ -235,6 +235,7 @@ class _BannerWidget extends ConsumerWidget {
                       ),
                       errorWidget: (context, url, error) => const Row(
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           Icon(Icons.error),
                           Icon(Icons.error),
@@ -343,28 +344,38 @@ class _AvatarWidget extends ConsumerWidget {
               log("Avatar Not Uploaded", error: e);
             }
           },
-          child: CircleAvatar(
-              backgroundColor: const Color(0xFF1B0C6B),
-              radius: 70,
-              backgroundImage: selectedAvatar != "" && selectedAvatar != null ? CachedNetworkImageProvider(selectedAvatar) : null,
-              child: selectedAvatar == "" && selectedAvatar == null
-                  // ? ClipRRect(
-                  //     borderRadius: BorderRadius.circular(70),
-                  //     child: CachedNetworkImage(
-                  //       imageUrl: selectedAvatar,
-                  //       placeholder: (context, url) => const CircularProgressIndicator(),
-                  //       errorWidget: (context, url, error) => const Icon(
-                  //         Icons.error,
-                  //         color: Colors.white,
-                  //       ),
-                  //     ),
-                  //   )
-                  // :x
-                  ? const Icon(
-                      CupertinoIcons.camera_fill,
-                      color: Colors.white,
-                    )
-                  : const SizedBox.shrink()),
+          child: Stack(
+            children: [
+              CircleAvatar(
+                backgroundColor: const Color(0xFF1B0C6B),
+                radius: 70,
+                backgroundImage: selectedAvatar != "" && selectedAvatar != null ? CachedNetworkImageProvider(selectedAvatar) : null,
+                child: selectedAvatar == null
+                    ? Text(
+                        userProfileData?.name?[0].toUpperCase() ?? "",
+                        style: const TextStyle(color: Colors.white),
+                        textScaler: const TextScaler.linear(3),
+                      )
+                    : const SizedBox.shrink(),
+              ),
+              Positioned(
+                right: 0,
+                top: 0,
+                child: Container(
+                  width: 35,
+                  height: 35,
+                  decoration: BoxDecoration(
+                    color: Colors.grey[300],
+                    shape: BoxShape.circle,
+                  ),
+                  child: const Icon(
+                    CupertinoIcons.camera_fill,
+                    color: Colors.black,
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

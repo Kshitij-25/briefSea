@@ -5,6 +5,7 @@ import 'package:dio/dio.dart';
 import '../../main.dart';
 import '../core/api_client.dart';
 import '../core/api_constants.dart';
+import '../core/app_error.dart';
 import '../models/notification_model.dart';
 
 abstract class NotificationRemoteDataSource {
@@ -45,6 +46,7 @@ class NotificationRemoteDataSourceImpl implements NotificationRemoteDataSource {
       }
     } catch (e) {
       log("postNewNotification Error", error: e);
+      throw AppError(errorMessage: e.toString());
     }
   }
 
@@ -58,19 +60,20 @@ class NotificationRemoteDataSourceImpl implements NotificationRemoteDataSource {
         jwtToken: jwtToken,
       );
 
-      if (response!.statusCode == 200) {
-        var responseJson = response.data;
-        if (responseJson != null) {
-          List<dynamic> jsonList = responseJson;
-          List<NotificationModel> notificationModel = jsonList.map((json) => NotificationModel.fromJson(json)).toList();
-          return notificationModel;
+      if (response?.data != null && response?.statusCode != null) {
+        if (response!.statusCode == 200) {
+          final responseJson = response.data ?? [];
+          return (responseJson as List).map((json) => NotificationModel.fromJson(json)).toList();
+        } else {
+          throw AppError(statusCode: response.statusCode);
         }
+      } else {
+        throw AppError();
       }
     } catch (e) {
       log("getAllNotifications Error", error: e);
-      return [];
+      throw AppError(errorMessage: e.toString());
     }
-    return [];
   }
 
   @override
@@ -94,7 +97,7 @@ class NotificationRemoteDataSourceImpl implements NotificationRemoteDataSource {
       // }
     } catch (e) {
       log("postNewNotification Error", error: e);
-      return false;
+      throw AppError(errorMessage: e.toString());
     }
   }
 
@@ -118,7 +121,7 @@ class NotificationRemoteDataSourceImpl implements NotificationRemoteDataSource {
       // }
     } catch (e) {
       log("postNewNotification Error", error: e);
-      return false;
+      throw AppError(errorMessage: e.toString());
     }
   }
 
@@ -142,7 +145,7 @@ class NotificationRemoteDataSourceImpl implements NotificationRemoteDataSource {
       // }
     } catch (e) {
       log("postNewNotification Error", error: e);
-      return false;
+      throw AppError(errorMessage: e.toString());
     }
   }
 }

@@ -5,7 +5,6 @@ import '../../data/data_sources/chat_remote_data_source.dart';
 import '../../data/di/get_it.dart';
 import '../../data/models/chat_user_model.dart';
 import '../../data/repositories/chat_repository.dart';
-import 'messages_list_provider.dart';
 
 part 'chat_provider.g.dart';
 
@@ -49,11 +48,15 @@ Future<bool> createNewChat(CreateNewChatRef ref, {required String senderId, requ
 Future<void> getChatMessages(GetChatMessagesRef ref, {required String conversationId}) async {
   final chatRepository = ref.watch(chatRepositoryProvider);
   final eitherGetMessagesOrError = await chatRepository.getChatMessages(conversationId);
-  return eitherGetMessagesOrError.fold(
+  eitherGetMessagesOrError.fold(
     (error) {
+      print('Error fetching messages: $error');
       throw error; // Throw the error for Riverpod to handle
     },
-    (newChat) => ref.read(chatMessagesProvider.notifier).setMessages(newChat),
+    (newChat) {
+      print('Fetched messages: $newChat');
+      // ref.read(chatMessagesProvider.notifier).setMessages(newChat);
+    },
   );
 }
 

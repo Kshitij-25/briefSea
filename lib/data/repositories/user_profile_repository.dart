@@ -18,10 +18,10 @@ class UserProfileRepository {
     try {
       final userProfileModel = await _userProfileRemoteDataSource.getUserProfile();
       return Right(userProfileModel!);
-    } on SocketException {
-      return const Left(AppError(AppErrorType.network));
-    } on Exception {
-      return const Left(AppError(AppErrorType.api));
+    } on AppError catch (e) {
+      return Left(e);
+    } on Exception catch (e) {
+      return Left(AppError(errorMessage: e.toString()));
     }
   }
 
@@ -55,10 +55,10 @@ class UserProfileRepository {
         jwtToken: jwtToken,
       );
       return Right(verifyProfile!);
-    } on SocketException {
-      return const Left(AppError(AppErrorType.network));
-    } on Exception {
-      return const Left(AppError(AppErrorType.api));
+    } on AppError catch (e) {
+      return Left(e);
+    } on Exception catch (e) {
+      return Left(AppError(errorMessage: e.toString()));
     }
   }
 
@@ -92,10 +92,10 @@ class UserProfileRepository {
         jwtToken: jwtToken,
       );
       return Right(verifyProfile!);
-    } on SocketException {
-      return const Left(AppError(AppErrorType.network));
-    } on Exception {
-      return const Left(AppError(AppErrorType.api));
+    } on AppError catch (e) {
+      return Left(e);
+    } on Exception catch (e) {
+      return Left(AppError(errorMessage: e.toString()));
     }
   }
 
@@ -108,10 +108,10 @@ class UserProfileRepository {
     try {
       final avatarModel = await _userProfileRemoteDataSource.uploadAvatar(fileName, fileType, userId, userType);
       return Right(avatarModel!);
-    } on SocketException {
-      return const Left(AppError(AppErrorType.network));
-    } on Exception {
-      return const Left(AppError(AppErrorType.api));
+    } on AppError catch (e) {
+      return Left(e);
+    } on Exception catch (e) {
+      return Left(AppError(errorMessage: e.toString()));
     }
   }
 
@@ -124,10 +124,10 @@ class UserProfileRepository {
     try {
       final bannerModel = await _userProfileRemoteDataSource.uploadBanner(fileName, fileType, userId, userType);
       return Right(bannerModel!);
-    } on SocketException {
-      return const Left(AppError(AppErrorType.network));
-    } on Exception {
-      return const Left(AppError(AppErrorType.api));
+    } on AppError catch (e) {
+      return Left(e);
+    } on Exception catch (e) {
+      return Left(AppError(errorMessage: e.toString()));
     }
   }
 
@@ -135,10 +135,10 @@ class UserProfileRepository {
     try {
       final isUploaded = await _userProfileRemoteDataSource.uploadToAWS(url, fileName, file, fileType);
       return Right(isUploaded);
-    } on SocketException {
-      return const Left(AppError(AppErrorType.network));
-    } on Exception {
-      return const Left(AppError(AppErrorType.api));
+    } on AppError catch (e) {
+      return Left(e);
+    } on Exception catch (e) {
+      return Left(AppError(errorMessage: e.toString()));
     }
   }
 
@@ -146,10 +146,10 @@ class UserProfileRepository {
     try {
       final imageUrl = await _userProfileRemoteDataSource.getImage(src);
       return Right(imageUrl);
-    } on SocketException {
-      return const Left(AppError(AppErrorType.network));
-    } on Exception {
-      return const Left(AppError(AppErrorType.api));
+    } on AppError catch (e) {
+      return Left(e);
+    } on Exception catch (e) {
+      return Left(AppError(errorMessage: e.toString()));
     }
   }
 }

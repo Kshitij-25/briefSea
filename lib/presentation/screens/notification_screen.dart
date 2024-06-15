@@ -1,4 +1,5 @@
 import 'package:briefsea/presentation/providers/notification_provider.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
@@ -35,6 +36,15 @@ class NotificationScreen extends ConsumerWidget {
               padding: const EdgeInsets.only(top: 15),
               child: allNotifications.when(
                 data: (notification) {
+                  if (notification.isEmpty) {
+                    return const Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(CupertinoIcons.bell_solid),
+                        Text("No Notifications"),
+                      ],
+                    );
+                  }
                   return Column(
                     children: [
                       Row(
@@ -57,7 +67,7 @@ class NotificationScreen extends ConsumerWidget {
                             final reversedIndex = notification.length - 1 - index;
                             return CustomNotificationTile(
                               notificationModel: notification[reversedIndex],
-                              onDismissed: () async {
+                              confirmDismiss: () async {
                                 if (notification[reversedIndex].type == "message received") {
                                   var isDeleted = await ref.read(
                                     deleteMessageNotificationProvider(conversationId: notification[reversedIndex].conversationId).future,
@@ -72,6 +82,7 @@ class NotificationScreen extends ConsumerWidget {
                                   return isDeleted;
                                 }
                               },
+                              onDismissed: () => ref.invalidate(getAllNotificationsProvider),
                             );
                           },
                         ),

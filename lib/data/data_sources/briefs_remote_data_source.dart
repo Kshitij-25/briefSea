@@ -6,6 +6,7 @@ import 'package:http_parser/http_parser.dart';
 import '../../main.dart';
 import '../core/api_client.dart';
 import '../core/api_constants.dart';
+import '../core/app_error.dart';
 import '../models/briefs_model.dart';
 import '../models/thread_image_model.dart';
 
@@ -36,20 +37,20 @@ class BriefsRemoteDataSourceImpl implements BriefsRemoteDataSource {
         jwtToken: jwtToken,
       );
 
-      if (response!.statusCode == 200) {
-        var responseJson = response.data;
-        if (responseJson != null) {
-          List<dynamic> jsonList = responseJson;
-          List<BriefsModel> briefsModel = jsonList.map((json) => BriefsModel.fromJson(json)).toList();
-          return briefsModel;
+      if (response?.data != null && response?.statusCode != null) {
+        if (response!.statusCode == 200) {
+          final responseJson = response.data ?? [];
+          return (responseJson as List).map((json) => BriefsModel.fromJson(json)).toList();
         } else {
-          throw Exception(response.statusMessage);
+          throw AppError(statusCode: response.statusCode);
         }
+      } else {
+        throw AppError();
       }
     } catch (e) {
       log("getAllBriefs Error", error: e);
+      throw AppError(errorMessage: e.toString());
     }
-    return null;
   }
 
   @override
@@ -62,20 +63,20 @@ class BriefsRemoteDataSourceImpl implements BriefsRemoteDataSource {
         jwtToken: jwtToken,
       );
 
-      if (response!.statusCode == 200) {
-        var responseJson = response.data;
-        if (responseJson != null) {
-          List<dynamic> jsonList = responseJson;
-          List<BriefsModel> briefsModel = jsonList.map((json) => BriefsModel.fromJson(json)).toList();
-          return briefsModel;
+      if (response?.data != null && response?.statusCode != null) {
+        if (response!.statusCode == 200) {
+          final responseJson = response.data ?? [];
+          return (responseJson as List).map((json) => BriefsModel.fromJson(json)).toList();
         } else {
-          throw Exception(response.statusMessage);
+          throw AppError(statusCode: response.statusCode);
         }
+      } else {
+        throw AppError();
       }
     } catch (e) {
       log("getUserBriefs Error", error: e);
+      throw AppError(errorMessage: e.toString());
     }
-    return null;
   }
 
   @override
@@ -109,13 +110,13 @@ class BriefsRemoteDataSourceImpl implements BriefsRemoteDataSource {
       if (responseJson != null) {
         return true;
       } else {
-        throw Exception(response.statusMessage);
+        throw AppError(statusCode: response.statusCode);
       }
       // }
     } catch (e) {
       log("postBrief Error", error: e);
+      throw AppError(errorMessage: e.toString());
     }
-    return false;
   }
 
   @override
@@ -142,14 +143,14 @@ class BriefsRemoteDataSourceImpl implements BriefsRemoteDataSource {
 
       if (response!.statusCode == 200) {
         var responseJson = response.data;
-        log(responseJson.toString());
         if (responseJson != null) {
           return ThreadImageModel.fromJson(responseJson);
         }
       }
     } catch (e) {
       log("uploadThreadImage Error", error: e);
+      throw AppError(errorMessage: e.toString());
     }
-    return null;
+    throw AppError();
   }
 }
