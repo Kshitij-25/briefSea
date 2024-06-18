@@ -37,12 +37,15 @@ class NotificationRemoteDataSourceImpl implements NotificationRemoteDataSource {
         jwtToken: isNewRegister ? jwtToken : null,
       );
 
-      var responseJson = response!.data;
-      var responseMsg = responseJson['message'];
-      if (responseMsg == "Notification saved") {
-        log(responseJson.toString());
+      if (response?.data != null && response?.statusCode != null) {
+        if (response!.statusCode == 201) {
+          var responseJson = response.data;
+          log(responseJson.toString());
+        } else {
+          throw AppError(statusCode: response.statusCode);
+        }
       } else {
-        log(responseJson.toString());
+        throw AppError();
       }
     } catch (e) {
       log("postNewNotification Error", error: e);
@@ -63,6 +66,7 @@ class NotificationRemoteDataSourceImpl implements NotificationRemoteDataSource {
       if (response?.data != null && response?.statusCode != null) {
         if (response!.statusCode == 200) {
           final responseJson = response.data ?? [];
+          log(responseJson.toString());
           return (responseJson as List).map((json) => NotificationModel.fromJson(json)).toList();
         } else {
           throw AppError(statusCode: response.statusCode);
@@ -86,17 +90,19 @@ class NotificationRemoteDataSourceImpl implements NotificationRemoteDataSource {
         jwtToken: jwtToken,
       );
 
-      var responseJson = response!.data;
-      var responseMsg = responseJson['message'];
-      // if (responseMsg == "Notification saved") {
-      log(responseJson.toString());
-      return true;
-      // } else {
-      //   log(responseJson.toString());
-      //   return false;
-      // }
+      if (response?.data != null && response?.statusCode != null) {
+        if (response!.statusCode == 201) {
+          var responseJson = response.data;
+          log(responseJson.toString());
+          return true;
+        } else {
+          throw AppError(statusCode: response.statusCode);
+        }
+      } else {
+        throw AppError();
+      }
     } catch (e) {
-      log("postNewNotification Error", error: e);
+      log("deleteAllNotifications Error", error: e);
       throw AppError(errorMessage: e.toString());
     }
   }
@@ -110,17 +116,19 @@ class NotificationRemoteDataSourceImpl implements NotificationRemoteDataSource {
         jwtToken: jwtToken,
       );
 
-      var responseJson = response!.data;
-      var responseMsg = responseJson['message'];
-      // if (responseMsg == "Notification saved") {
-      log(responseJson.toString());
-      return true;
-      // } else {
-      //   log(responseJson.toString());
-      //   return false;
-      // }
+      if (response?.data != null && response?.statusCode != null) {
+        if (response!.statusCode == 201) {
+          var responseJson = response.data;
+          log(responseJson.toString());
+          return true;
+        } else {
+          throw AppError(statusCode: response.statusCode);
+        }
+      } else {
+        throw AppError();
+      }
     } catch (e) {
-      log("postNewNotification Error", error: e);
+      log("deleteMessageNotification Error", error: e);
       throw AppError(errorMessage: e.toString());
     }
   }
@@ -134,17 +142,19 @@ class NotificationRemoteDataSourceImpl implements NotificationRemoteDataSource {
         jwtToken: jwtToken,
       );
 
-      var responseJson = response!.data;
-      var responseMsg = responseJson['message'];
-      // if (responseMsg == "Notification saved") {
-      log(responseJson.toString());
-      return true;
-      // } else {
-      //   log(responseJson.toString());
-      //   return false;
-      // }
+      if (response?.data != null && response?.statusCode != null) {
+        if (response!.statusCode == 201) {
+          var responseJson = response.data;
+          log(responseJson.toString());
+          return true;
+        } else {
+          throw AppError(statusCode: response.statusCode);
+        }
+      } else {
+        throw AppError();
+      }
     } catch (e) {
-      log("postNewNotification Error", error: e);
+      log("deleteNotification Error", error: e);
       throw AppError(errorMessage: e.toString());
     }
   }

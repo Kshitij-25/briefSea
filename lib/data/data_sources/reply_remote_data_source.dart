@@ -43,15 +43,21 @@ class ReplyRemoteDataSourceImpl implements ReplyRemoteDataSource {
         jwtToken: jwtToken,
       );
 
-      var responseJson = response!.data;
-      if (responseJson != null) {
-        return true;
+      if (response?.data != null && response?.statusCode != null) {
+        if (response!.statusCode == 201) {
+          var responseJson = response.data;
+          log(responseJson.toString());
+          return true;
+        } else {
+          throw AppError(statusCode: response.statusCode);
+        }
+      } else {
+        throw AppError();
       }
     } catch (e) {
       log("postReply Error", error: e);
       throw AppError(errorMessage: e.toString());
     }
-    throw AppError();
   }
 
   @override
@@ -67,6 +73,7 @@ class ReplyRemoteDataSourceImpl implements ReplyRemoteDataSource {
       if (response?.data != null && response?.statusCode != null) {
         if (response!.statusCode == 200) {
           final responseJson = response.data ?? [];
+          log(responseJson.toString());
           return (responseJson as List).map((json) => CommentModel.fromJson(json)).toList();
         } else {
           throw AppError(statusCode: response.statusCode);
@@ -89,19 +96,21 @@ class ReplyRemoteDataSourceImpl implements ReplyRemoteDataSource {
         jwtToken: jwtToken,
       );
 
-      if (response!.statusCode == 200) {
-        var responseJson = response.data;
-        if (responseJson != "") {
+      if (response?.data != null && response?.statusCode != null) {
+        if (response!.statusCode == 200) {
+          var responseJson = response.data;
+          log(responseJson.toString());
           return LikeModel.fromJson(responseJson);
         } else {
-          return LikeModel();
+          throw AppError(statusCode: response.statusCode);
         }
+      } else {
+        throw AppError();
       }
     } catch (e) {
       log("getCommentLike Error", error: e);
       throw AppError(errorMessage: e.toString());
     }
-    throw AppError();
   }
 
   @override
@@ -117,6 +126,7 @@ class ReplyRemoteDataSourceImpl implements ReplyRemoteDataSource {
       if (response?.data != null && response?.statusCode != null) {
         if (response!.statusCode == 200) {
           final responseJson = response.data ?? [];
+          log(responseJson.toString());
           return (responseJson as List).map((json) => CommentModel.fromJson(json)).toList();
         } else {
           throw AppError(statusCode: response.statusCode);

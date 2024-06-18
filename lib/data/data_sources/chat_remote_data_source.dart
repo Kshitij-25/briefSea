@@ -39,6 +39,7 @@ class ChatRemoteDataSourceImpl implements ChatRemoteDataSource {
       if (response?.data != null && response?.statusCode != null) {
         if (response!.statusCode == 200) {
           final responseJson = response.data ?? [];
+          log(responseJson.toString());
           return (responseJson as List).map((json) => ChatUserModel.fromJson(json)).toList();
         } else {
           throw AppError(statusCode: response.statusCode);
@@ -66,18 +67,23 @@ class ChatRemoteDataSourceImpl implements ChatRemoteDataSource {
         jwtToken: jwtToken,
       );
 
-      var responseJson = response!.data;
-      if (responseJson != null) {
-        var responseMsg = responseJson['message'];
-        if (responseMsg == "Conversation created successfully") {
-          return true;
-        } else if (responseMsg == "Conversation already exists") {
-          return true;
+      if (response?.data != null && response?.statusCode != null) {
+        if (response!.statusCode == 201) {
+          var responseJson = response.data;
+          log(responseJson.toString());
+          var responseMsg = responseJson['message'];
+          if (responseMsg == "Conversation created successfully") {
+            return true;
+          } else if (responseMsg == "Conversation already exists") {
+            return true;
+          } else {
+            return false;
+          }
         } else {
-          return false;
+          throw AppError(statusCode: response.statusCode);
         }
       } else {
-        throw AppError(statusCode: response.statusCode);
+        throw AppError();
       }
     } catch (e) {
       log("createNewChat Error", error: e);
@@ -98,6 +104,7 @@ class ChatRemoteDataSourceImpl implements ChatRemoteDataSource {
       if (response?.data != null && response?.statusCode != null) {
         if (response!.statusCode == 200) {
           final responseJson = response.data ?? [];
+          log(responseJson.toString());
           return (responseJson as List).map((json) => ChatMessageModel.fromJson(json)).toList();
         } else {
           throw AppError(statusCode: response.statusCode);
@@ -134,16 +141,21 @@ class ChatRemoteDataSourceImpl implements ChatRemoteDataSource {
         jwtToken: jwtToken,
       );
 
-      var responseJson = response!.data;
-      if (responseJson != null) {
-        var responseMsg = responseJson['message'];
-        if (responseMsg == "Message sent successfully") {
-          return true;
+      if (response?.data != null && response?.statusCode != null) {
+        if (response!.statusCode == 201) {
+          var responseJson = response.data;
+          log(responseJson.toString());
+          var responseMsg = responseJson['message'];
+          if (responseMsg == "Message sent successfully") {
+            return true;
+          } else {
+            return false;
+          }
         } else {
-          return false;
+          throw AppError(statusCode: response.statusCode);
         }
       } else {
-        throw AppError(statusCode: response.statusCode);
+        throw AppError();
       }
     } catch (e) {
       log("sendChatMessage Error", error: e);

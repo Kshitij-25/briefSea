@@ -11,6 +11,7 @@ class LikeModel with _$LikeModel {
     String? name,
     String? type,
     @JsonKey(name: "thread_id") String? threadId,
+    @JsonKey(name: "reply_id") String? replyId,
     String? createdAt,
     String? updatedAt,
   }) = _LikeModel;

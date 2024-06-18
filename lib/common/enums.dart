@@ -1,3 +1,9 @@
+enum DeviceType {
+  Mobile,
+  Tablet,
+  Desktop,
+}
+
 enum LoginState {
   idle,
   loading,

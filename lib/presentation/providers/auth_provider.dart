@@ -3,7 +3,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../common/app_utility.dart';
-import '../../common/enums/login_register_enum.dart';
+import '../../common/enums.dart';
 import '../../data/core/api_client.dart';
 import '../../data/data_sources/auth_remote_data_source.dart';
 import '../../data/di/get_it.dart';

@@ -3,7 +3,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-import '../../../common/enums/login_register_enum.dart';
+import '../../../common/enums.dart';
 import '../../../common/screen_size.dart';
 import '../../providers/auth_provider.dart';
 import '../../state_providers/sub_type_state_provider.dart';

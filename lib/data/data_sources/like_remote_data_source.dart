@@ -41,19 +41,21 @@ class LikeRemoteDataSourceImpl implements LikeRemoteDataSource {
         body: body,
         jwtToken: jwtToken,
       );
-
-      // if (response!.statusCode == 200) {
-      var responseJson = response!.data;
-      log(responseJson.toString());
-      if (responseJson != null) {
-        return true;
+      if (response?.data != null && response?.statusCode != null) {
+        if (response!.statusCode == 201) {
+          var responseJson = response.data;
+          log(responseJson.toString());
+          return true;
+        } else {
+          throw AppError(statusCode: response.statusCode);
+        }
+      } else {
+        throw AppError();
       }
-      // }
     } catch (e) {
       log("postLike Error", error: e);
       throw AppError(errorMessage: e.toString());
     }
-    throw AppError();
   }
 
   @override
@@ -65,19 +67,25 @@ class LikeRemoteDataSourceImpl implements LikeRemoteDataSource {
         jwtToken: jwtToken,
       );
 
-      if (response!.statusCode == 200) {
-        var responseJson = response.data;
-        if (responseJson != "") {
-          return LikeModel.fromJson(responseJson);
+      if (response?.data != null && response?.statusCode != null) {
+        if (response?.data != "") {
+          if (response!.statusCode == 200) {
+            var responseJson = response.data;
+            log(responseJson.toString());
+            return LikeModel.fromJson(responseJson);
+          } else {
+            throw AppError(statusCode: response.statusCode);
+          }
         } else {
           return LikeModel();
         }
+      } else {
+        throw AppError();
       }
     } catch (e) {
       log("getALike Error", error: e);
       throw AppError(errorMessage: e.toString());
     }
-    throw AppError();
   }
 
   @override
@@ -89,21 +97,25 @@ class LikeRemoteDataSourceImpl implements LikeRemoteDataSource {
       };
 
       Response? response = await _apiClient.patchReq(
-        url: "${ApiConstants.removelike}/$likeId",
+        url: "${ApiConstants.removeLike}/$likeId",
         body: body,
         jwtToken: jwtToken,
       );
 
-      // if (response!.statusCode == 200) {
-      var responseJson = response!.data;
-      if (responseJson != null) {
-        return true;
+      if (response?.data != null && response?.statusCode != null) {
+        if (response!.statusCode == 200) {
+          var responseJson = response.data;
+          log(responseJson.toString());
+          return true;
+        } else {
+          throw AppError(statusCode: response.statusCode);
+        }
+      } else {
+        throw AppError();
       }
-      // }
     } catch (e) {
       log("deleteLike Error", error: e);
       throw AppError(errorMessage: e.toString());
     }
-    throw AppError();
   }
 }

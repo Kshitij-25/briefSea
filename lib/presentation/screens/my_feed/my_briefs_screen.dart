@@ -55,7 +55,7 @@ class MyBriefsScreen extends ConsumerWidget {
                           threadId: brief.id,
                         ).future);
                       }
-                      ref.invalidate(getAllBriefsProvider);
+                      ref.invalidate(getUserBriefsProvider);
                     } catch (e) {
                       log(e.toString());
                     }

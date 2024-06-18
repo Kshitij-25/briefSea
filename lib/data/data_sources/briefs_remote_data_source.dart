@@ -40,6 +40,7 @@ class BriefsRemoteDataSourceImpl implements BriefsRemoteDataSource {
       if (response?.data != null && response?.statusCode != null) {
         if (response!.statusCode == 200) {
           final responseJson = response.data ?? [];
+          log(responseJson.toString());
           return (responseJson as List).map((json) => BriefsModel.fromJson(json)).toList();
         } else {
           throw AppError(statusCode: response.statusCode);
@@ -66,6 +67,7 @@ class BriefsRemoteDataSourceImpl implements BriefsRemoteDataSource {
       if (response?.data != null && response?.statusCode != null) {
         if (response!.statusCode == 200) {
           final responseJson = response.data ?? [];
+          log(responseJson.toString());
           return (responseJson as List).map((json) => BriefsModel.fromJson(json)).toList();
         } else {
           throw AppError(statusCode: response.statusCode);
@@ -105,14 +107,17 @@ class BriefsRemoteDataSourceImpl implements BriefsRemoteDataSource {
         jwtToken: jwtToken,
       );
 
-      // if (response!.statusCode == 200) {
-      var responseJson = response!.data;
-      if (responseJson != null) {
-        return true;
+      if (response?.data != null && response?.statusCode != null) {
+        if (response!.statusCode == 201) {
+          var responseJson = response.data;
+          log(responseJson.toString());
+          return true;
+        } else {
+          throw AppError(statusCode: response.statusCode);
+        }
       } else {
-        throw AppError(statusCode: response.statusCode);
+        throw AppError();
       }
-      // }
     } catch (e) {
       log("postBrief Error", error: e);
       throw AppError(errorMessage: e.toString());
@@ -141,16 +146,20 @@ class BriefsRemoteDataSourceImpl implements BriefsRemoteDataSource {
         jwtToken: jwtToken,
       );
 
-      if (response!.statusCode == 200) {
-        var responseJson = response.data;
-        if (responseJson != null) {
+      if (response?.data != null && response?.statusCode != null) {
+        if (response!.statusCode == 200) {
+          var responseJson = response.data;
+          log(responseJson.toString());
           return ThreadImageModel.fromJson(responseJson);
+        } else {
+          throw AppError(statusCode: response.statusCode);
         }
+      } else {
+        throw AppError();
       }
     } catch (e) {
       log("uploadThreadImage Error", error: e);
       throw AppError(errorMessage: e.toString());
     }
-    throw AppError();
   }
 }

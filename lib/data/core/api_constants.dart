@@ -1,34 +1,51 @@
 class ApiConstants {
   ApiConstants._();
 
-  static const BASE_URL = 'https://briefsea-backend.onrender.com/forum'; //Test Url
-  // static const BASE_URL = 'https://www.api.briefsea.com/forum'; //Prod Url
-  static const loginUrl = '$BASE_URL/discussion/login/one';
-  static const registerUrl = '$BASE_URL/discussion/register/new';
-  static const getUserProfile = '$BASE_URL/discussion/profile/single';
-  static const verifyProfile = "$BASE_URL/discussion/profile/new";
-  static const editProfile = "$BASE_URL/discussion/profile/single";
-  static const uploadAvatar = "$BASE_URL/discussion/uploads/profile/put/avatar";
-  static const uploadBanner = "$BASE_URL/discussion/uploads/profile/put/banner";
-  static const getAllBriefs = "$BASE_URL/discussion/threads/pagination";
-  static const getUserBriefs = "$BASE_URL/discussion/threads";
-  static const postBrief = "$BASE_URL/discussion/threads/new";
-  static const likeUrl = "$BASE_URL/discussion/threads/likes/new";
-  static const getALike = "$BASE_URL/discussion/threads/likes/single";
-  static const removelike = "$BASE_URL/discussion/threads/likes/single";
-  static const postReply = "$BASE_URL/discussion/threads/comments/new";
-  static const getAllComments = "$BASE_URL/discussion/threads/comments/all";
-  static const getCommentsLike = "$BASE_URL/discussion/threads/likes/reply";
-  static const getImage = "https://briefsea-backend.onrender.com/upload/get";
-  static const uploadThreadImage = "https://briefsea-backend.onrender.com/discussion/uploads/threads/put";
-  static const getChatUsersList = "$BASE_URL/discussion/chats/single";
-  static const createNewChat = "$BASE_URL/discussion/chats/new";
-  static const getChatMessages = "$BASE_URL/discussion/chat/messages/single";
-  static const sendChatMessage = "$BASE_URL/discussion/chat/messages/new";
-  static const getAllReplyOnComment = "$BASE_URL/discussion/threads/comments/reply";
-  static const postNewNotification = "$BASE_URL/discussion/notifs/new";
-  static const getAllNotification = "$BASE_URL/discussion/notifs/all";
-  static const deleteNotification = "$BASE_URL/discussion/notifs/remove";
-  static const deleteAllNotification = "$BASE_URL/discussion/notifs/remove/all";
-  static const deleteMessageNotification = "$BASE_URL/discussion/notifs/remove/msg";
+  // Base URLs
+  static const BASE_URL = 'https://briefsea-backend.onrender.com'; //Test Url
+  // static const BASE_URL = 'https://www.api.briefsea.com'; //Prod Url
+
+  // User authentication
+  static const loginUrl = '$BASE_URL/forum/discussion/login/one';
+  static const registerUrl = '$BASE_URL/forum/discussion/register/new';
+
+  // User profile
+  static const getUserProfile = '$BASE_URL/forum/discussion/profile/single';
+  static const verifyProfile = '$BASE_URL/forum/discussion/profile/new';
+  static const editProfile = '$BASE_URL/forum/discussion/profile/single';
+  static const uploadAvatar = '$BASE_URL/forum/discussion/uploads/profile/put/avatar';
+  static const uploadBanner = '$BASE_URL/forum/discussion/uploads/profile/put/banner';
+
+  // Threads and briefs
+  static const getAllBriefs = '$BASE_URL/forum/discussion/threads/pagination';
+  static const getUserBriefs = '$BASE_URL/forum/discussion/threads';
+  static const postBrief = '$BASE_URL/forum/discussion/threads/new';
+
+  // Likes
+  static const likeUrl = '$BASE_URL/forum/discussion/threads/likes/new';
+  static const getALike = '$BASE_URL/forum/discussion/threads/likes/single';
+  static const removeLike = '$BASE_URL/forum/discussion/threads/likes/single';
+
+  // Comments
+  static const postReply = '$BASE_URL/forum/discussion/threads/comments/new';
+  static const getAllComments = '$BASE_URL/forum/discussion/threads/comments/all';
+  static const getCommentsLike = '$BASE_URL/forum/discussion/threads/likes/reply';
+  static const getAllReplyOnComment = '$BASE_URL/forum/discussion/threads/comments/reply';
+
+  // Uploads
+  static const getImage = '$BASE_URL/upload/get';
+  static const uploadThreadImage = '$BASE_URL/discussion/uploads/threads/put';
+
+  // Chats
+  static const getChatUsersList = '$BASE_URL/forum/discussion/chats/single';
+  static const createNewChat = '$BASE_URL/forum/discussion/chats/new';
+  static const getChatMessages = '$BASE_URL/forum/discussion/chat/messages/single';
+  static const sendChatMessage = '$BASE_URL/forum/discussion/chat/messages/new';
+
+  // Notifications
+  static const postNewNotification = '$BASE_URL/forum/discussion/notifs/new';
+  static const getAllNotification = '$BASE_URL/forum/discussion/notifs/all';
+  static const deleteNotification = '$BASE_URL/forum/discussion/notifs/remove';
+  static const deleteAllNotification = '$BASE_URL/forum/discussion/notifs/remove/all';
+  static const deleteMessageNotification = '$BASE_URL/forum/discussion/notifs/remove/msg';
 }

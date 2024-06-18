@@ -32,38 +32,44 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
         'password': password,
       };
 
-      Response? response = await _apiClient!.postReq(
+      Response? response = await _apiClient?.postReq(
         url: ApiConstants.loginUrl,
         body: body,
       );
-      if (response!.statusCode == 200) {
-        var responseJson = response.data;
-        if (responseJson != null) {
+      if (response?.data != null && response?.statusCode != null) {
+        if (response!.statusCode == 200) {
+          final responseJson = response.data;
           log(responseJson.toString());
+
           var loginMessage = responseJson['message'];
           var jwtToken = responseJson['token'];
-          if (loginMessage == 'Login sucessfull') {
+
+          if (loginMessage == 'Login sucessfull' && jwtToken != null) {
             Map<String, dynamic> accessTokenPayload = JwtDecoder.decode(jwtToken);
 
             // Save the payload to shared preferences
-            await prefs!.setString('jwtToken', jwtToken);
-            await prefs!.setString('user_id', accessTokenPayload['user_detail']['user_id']);
-            await prefs!.setString('user_name', accessTokenPayload['user_detail']['user_name']);
-            await prefs!.setString('email', accessTokenPayload['user_detail']['email']);
-            await prefs!.setString('type', accessTokenPayload['user_detail']['type']);
-            await prefs!.setString('subtype', accessTokenPayload['user_detail']['subtype']);
+            await prefs?.setString('jwtToken', jwtToken);
+            await prefs?.setString('user_id', accessTokenPayload['user_detail']['user_id']);
+            await prefs?.setString('user_name', accessTokenPayload['user_detail']['user_name']);
+            await prefs?.setString('email', accessTokenPayload['user_detail']['email']);
+            await prefs?.setString('type', accessTokenPayload['user_detail']['type']);
+            await prefs?.setString('subtype', accessTokenPayload['user_detail']['subtype']);
 
             return LoginModel.fromJson(responseJson);
           } else if (loginMessage == "Email sent") {
             return LoginModel(message: loginMessage);
+          } else {
+            throw AppError(errorMessage: loginMessage);
           }
+        } else {
+          throw AppError(statusCode: response.statusCode);
         }
       }
     } catch (e) {
       log("Login User Error", error: e);
       throw AppError(errorMessage: e.toString());
     }
-    throw AppError();
+    throw AppError(errorMessage: "Unknown error occurred during login");
   }
 
   @override
@@ -94,13 +100,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   }
 
   @override
-  Future<bool> registerUser(
-    String? userName,
-    String? email,
-    String? password,
-    String? type,
-    String? subType,
-  ) async {
+  Future<bool> registerUser(String? userName, String? email, String? password, String? type, String? subType) async {
     try {
       var body = {
         'user_name': userName,
@@ -110,24 +110,30 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
         'subtype': subType,
       };
 
-      Response? response = await _apiClient!.postReq(
+      Response? response = await _apiClient?.postReq(
         url: ApiConstants.registerUrl,
         body: body,
       );
 
-      var responseJson = response!.data;
-      if (responseJson != null) {
-        log(responseJson.toString());
-        var registerMessage = responseJson['message'];
-        if (registerMessage == 'User registered') {
-          RegisterModel.fromJson(responseJson);
-          return true;
+      if (response?.data != null && response?.statusCode != null) {
+        if (response!.statusCode == 201) {
+          final responseJson = response.data;
+          log(responseJson.toString());
+          var registerMessage = responseJson['message'];
+          if (registerMessage == 'User registered') {
+            RegisterModel.fromJson(responseJson);
+            return true;
+          } else {
+            throw AppError(errorMessage: registerMessage);
+          }
+        } else {
+          throw AppError(statusCode: response.statusCode);
         }
       }
     } catch (e) {
       log("Register User Error", error: e);
       throw AppError(errorMessage: e.toString());
     }
-    throw AppError();
+    throw AppError(errorMessage: "Unknown error occurred during registration");
   }
 }

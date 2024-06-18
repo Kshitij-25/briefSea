@@ -1,8 +1,6 @@
-// ignore_for_file: constant_identifier_names
-
 import 'package:flutter/material.dart';
 
-import 'enums/device_type_enum.dart';
+import 'enums.dart';
 
 DeviceType getDeviceType(BuildContext context) {
   double screenWidth = MediaQuery.of(context).size.width;

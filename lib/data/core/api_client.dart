@@ -56,9 +56,7 @@ class ApiClient {
         ),
       );
 
-      if (response.statusCode == 200) {
-        return response;
-      } else if (response.statusCode == 201) {
+      if (response.statusCode == 200 || response.statusCode == 201) {
         return response;
       } else {
         throw DioRequestException("HTTP error: ${response.statusCode}");

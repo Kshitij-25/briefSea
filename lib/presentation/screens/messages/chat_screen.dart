@@ -11,8 +11,8 @@ import '../../providers/messages_list_provider.dart';
 import '../../providers/notification_provider.dart';
 import '../../providers/socket_provider.dart';
 
-class ChatScreen extends ConsumerWidget {
-  ChatScreen({
+class ChatScreen extends ConsumerStatefulWidget {
+  const ChatScreen({
     super.key,
     required this.chatUser,
   });
@@ -21,20 +21,48 @@ class ChatScreen extends ConsumerWidget {
 
   final ChatUserModel chatUser;
 
+  @override
+  ConsumerState<ChatScreen> createState() => _ChatScreenState();
+}
+
+class _ChatScreenState extends ConsumerState<ChatScreen> {
   final TextEditingController sendMessage = TextEditingController();
+  final ScrollController _scrollController = ScrollController();
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final chatMessageState = ref.watch(chatMessagesProvider(chatUser.conversationId));
+  void dispose() {
+    sendMessage.dispose();
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  void _scrollToBottom() {
+    _scrollController.animateTo(
+      _scrollController.position.maxScrollExtent,
+      duration: const Duration(milliseconds: 300),
+      curve: Curves.easeOut,
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final chatMessageState = ref.watch(chatMessagesProvider(widget.chatUser.conversationId));
     final userData = ref.watch(userDetailsProvider);
     final sendMsg = ref.read(sendMessageProvider);
-    ref.read(socketEventListenerProvider(chatUser.conversationId!));
+    ref.read(socketEventListenerProvider(widget.chatUser.conversationId!));
+
+    // Scroll to the bottom when messages are updated
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (chatMessageState.chatMessages != null) {
+        _scrollToBottom();
+      }
+    });
 
     return Scaffold(
       appBar: AppBar(
         backgroundColor: const Color(0xFF4B26FD),
         title: Text(
-          chatUser.name ?? "",
+          widget.chatUser.name ?? "",
           style: const TextStyle(
             fontWeight: FontWeight.bold,
             color: Colors.white,
@@ -75,6 +103,7 @@ class ChatScreen extends ConsumerWidget {
                     ),
                   Expanded(
                     child: ListView.builder(
+                      controller: _scrollController,
                       shrinkWrap: true,
                       itemCount: chatMessageState.chatMessages?.length ?? 0,
                       itemBuilder: (context, index) {
@@ -122,33 +151,33 @@ class ChatScreen extends ConsumerWidget {
                               String formattedTime = DateFormat('MM/d/yyyy, hh:mm:ss a').format(now);
                               if (sendMessage.text.isNotEmpty) {
                                 sendMsg(
-                                  chatUser.conversationId!,
+                                  widget.chatUser.conversationId!,
                                   sendMessage.text,
-                                  chatUser.id!,
+                                  widget.chatUser.id!,
                                   userData['user_id']!,
                                   formattedTime,
                                 );
                                 var isMessageSend = await ref.read(
                                   sendChatMessagesProvider(
-                                    conversationId: chatUser.conversationId!,
+                                    conversationId: widget.chatUser.conversationId!,
                                     messageText: sendMessage.text,
-                                    receiverId: chatUser.id!,
+                                    receiverId: widget.chatUser.id!,
                                     senderId: userData['user_id']!,
                                     typedAt: formattedTime,
                                   ).future,
                                 );
                                 if (isMessageSend == true) {
                                   sendMessage.clear();
-                                  if (chatUser.isUserOnline != true) {
-                                    ref.invalidate(getChatMessagesProvider(conversationId: chatUser.conversationId!));
+                                  if (widget.chatUser.isUserOnline != true) {
+                                    ref.invalidate(getChatMessagesProvider(conversationId: widget.chatUser.conversationId!));
                                     await ref.read(postNewNotificationProvider(
                                       requestBody: {
                                         "type": 'message received',
                                         "sender_id": userData['user_id'],
                                         "sender_name": userData['user_name'],
-                                        "receiver_id": chatUser.id,
+                                        "receiver_id": widget.chatUser.id,
                                         "notification": "New message received from ${userData['user_name']}.",
-                                        "conversation_id": chatUser.conversationId,
+                                        "conversation_id": widget.chatUser.conversationId,
                                       },
                                     ).future);
                                   }

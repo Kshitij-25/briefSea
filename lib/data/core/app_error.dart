@@ -9,31 +9,31 @@ class AppError {
   void setErrorMessage(int? code) {
     switch (code) {
       case 400:
-        errorMessage = "Bad Request";
+        errorMessage = "Oops! Something went wrong. Please try again.";
         break;
       case 401:
-        errorMessage = "Unauthorized";
+        errorMessage = "Whoops! You need to log in to access this.";
         break;
       case 403:
-        errorMessage = "Forbidden";
+        errorMessage = "Sorry, you don't have permission to do that.";
         break;
       case 404:
-        errorMessage = "Not Found";
+        errorMessage = "Uh-oh! We can't find what you're looking for.";
         break;
       case 500:
-        errorMessage = "Internal Server Error";
+        errorMessage = "Yikes! Something broke on our end. Please try later.";
         break;
       case 502:
-        errorMessage = "Bad Gateway";
+        errorMessage = "Hmmm... We got a bad response from the server.";
         break;
       case 503:
-        errorMessage = "Service Unavailable";
+        errorMessage = "Sorry! Our service is currently unavailable. Check back soon.";
         break;
       case 504:
-        errorMessage = "Gateway Timeout";
+        errorMessage = "Oops! The server took too long to respond. Try again later.";
         break;
       default:
-        errorMessage = "An unknown error occurred";
+        errorMessage = "An unexpected error occurred. Please try again.";
         break;
     }
   }

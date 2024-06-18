@@ -28,6 +28,8 @@ mixin _$LikeModel {
   String? get type => throw _privateConstructorUsedError;
   @JsonKey(name: "thread_id")
   String? get threadId => throw _privateConstructorUsedError;
+  @JsonKey(name: "reply_id")
+  String? get replyId => throw _privateConstructorUsedError;
   String? get createdAt => throw _privateConstructorUsedError;
   String? get updatedAt => throw _privateConstructorUsedError;
 
@@ -48,6 +50,7 @@ abstract class $LikeModelCopyWith<$Res> {
       String? name,
       String? type,
       @JsonKey(name: "thread_id") String? threadId,
+      @JsonKey(name: "reply_id") String? replyId,
       String? createdAt,
       String? updatedAt});
 }
@@ -70,6 +73,7 @@ class _$LikeModelCopyWithImpl<$Res, $Val extends LikeModel>
     Object? name = freezed,
     Object? type = freezed,
     Object? threadId = freezed,
+    Object? replyId = freezed,
     Object? createdAt = freezed,
     Object? updatedAt = freezed,
   }) {
@@ -93,6 +97,10 @@ class _$LikeModelCopyWithImpl<$Res, $Val extends LikeModel>
       threadId: freezed == threadId
           ? _value.threadId
           : threadId // ignore: cast_nullable_to_non_nullable
+              as String?,
+      replyId: freezed == replyId
+          ? _value.replyId
+          : replyId // ignore: cast_nullable_to_non_nullable
               as String?,
       createdAt: freezed == createdAt
           ? _value.createdAt
@@ -120,6 +128,7 @@ abstract class _$$LikeModelImplCopyWith<$Res>
       String? name,
       String? type,
       @JsonKey(name: "thread_id") String? threadId,
+      @JsonKey(name: "reply_id") String? replyId,
       String? createdAt,
       String? updatedAt});
 }
@@ -140,6 +149,7 @@ class __$$LikeModelImplCopyWithImpl<$Res>
     Object? name = freezed,
     Object? type = freezed,
     Object? threadId = freezed,
+    Object? replyId = freezed,
     Object? createdAt = freezed,
     Object? updatedAt = freezed,
   }) {
@@ -164,6 +174,10 @@ class __$$LikeModelImplCopyWithImpl<$Res>
           ? _value.threadId
           : threadId // ignore: cast_nullable_to_non_nullable
               as String?,
+      replyId: freezed == replyId
+          ? _value.replyId
+          : replyId // ignore: cast_nullable_to_non_nullable
+              as String?,
       createdAt: freezed == createdAt
           ? _value.createdAt
           : createdAt // ignore: cast_nullable_to_non_nullable
@@ -185,6 +199,7 @@ class _$LikeModelImpl implements _LikeModel {
       this.name,
       this.type,
       @JsonKey(name: "thread_id") this.threadId,
+      @JsonKey(name: "reply_id") this.replyId,
       this.createdAt,
       this.updatedAt});
 
@@ -205,13 +220,16 @@ class _$LikeModelImpl implements _LikeModel {
   @JsonKey(name: "thread_id")
   final String? threadId;
   @override
+  @JsonKey(name: "reply_id")
+  final String? replyId;
+  @override
   final String? createdAt;
   @override
   final String? updatedAt;
 
   @override
   String toString() {
-    return 'LikeModel(likeId: $likeId, userId: $userId, name: $name, type: $type, threadId: $threadId, createdAt: $createdAt, updatedAt: $updatedAt)';
+    return 'LikeModel(likeId: $likeId, userId: $userId, name: $name, type: $type, threadId: $threadId, replyId: $replyId, createdAt: $createdAt, updatedAt: $updatedAt)';
   }
 
   @override
@@ -225,6 +243,7 @@ class _$LikeModelImpl implements _LikeModel {
             (identical(other.type, type) || other.type == type) &&
             (identical(other.threadId, threadId) ||
                 other.threadId == threadId) &&
+            (identical(other.replyId, replyId) || other.replyId == replyId) &&
             (identical(other.createdAt, createdAt) ||
                 other.createdAt == createdAt) &&
             (identical(other.updatedAt, updatedAt) ||
@@ -233,8 +252,8 @@ class _$LikeModelImpl implements _LikeModel {
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode => Object.hash(
-      runtimeType, likeId, userId, name, type, threadId, createdAt, updatedAt);
+  int get hashCode => Object.hash(runtimeType, likeId, userId, name, type,
+      threadId, replyId, createdAt, updatedAt);
 
   @JsonKey(ignore: true)
   @override
@@ -257,6 +276,7 @@ abstract class _LikeModel implements LikeModel {
       final String? name,
       final String? type,
       @JsonKey(name: "thread_id") final String? threadId,
+      @JsonKey(name: "reply_id") final String? replyId,
       final String? createdAt,
       final String? updatedAt}) = _$LikeModelImpl;
 
@@ -276,6 +296,9 @@ abstract class _LikeModel implements LikeModel {
   @override
   @JsonKey(name: "thread_id")
   String? get threadId;
+  @override
+  @JsonKey(name: "reply_id")
+  String? get replyId;
   @override
   String? get createdAt;
   @override

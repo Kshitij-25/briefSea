@@ -116,6 +116,7 @@ class CustomBriefsCard extends StatelessWidget {
                     Padding(
                       padding: const EdgeInsets.only(left: 10),
                       child: PopupMenuButton(
+                        color: Colors.white,
                         icon: const Icon(
                           Icons.keyboard_arrow_down,
                           color: Colors.grey,

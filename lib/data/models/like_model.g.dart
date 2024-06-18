@@ -13,6 +13,7 @@ _$LikeModelImpl _$$LikeModelImplFromJson(Map<String, dynamic> json) =>
       name: json['name'] as String?,
       type: json['type'] as String?,
       threadId: json['thread_id'] as String?,
+      replyId: json['reply_id'] as String?,
       createdAt: json['createdAt'] as String?,
       updatedAt: json['updatedAt'] as String?,
     );
@@ -24,6 +25,7 @@ Map<String, dynamic> _$$LikeModelImplToJson(_$LikeModelImpl instance) =>
       'name': instance.name,
       'type': instance.type,
       'thread_id': instance.threadId,
+      'reply_id': instance.replyId,
       'createdAt': instance.createdAt,
       'updatedAt': instance.updatedAt,
     };

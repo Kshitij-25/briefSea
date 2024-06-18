@@ -67,17 +67,21 @@ class UserProfileRemoteDataSourceImpl implements UserProfileRemoteDataSource {
         jwtToken: jwtToken,
       );
 
-      if (response!.statusCode == 200) {
-        var responseJson = response.data;
-        if (responseJson != null) {
+      if (response?.data != null && response?.statusCode != null) {
+        if (response!.statusCode == 200) {
+          var responseJson = response.data;
+          log(responseJson.toString());
           return UserProfileModel.fromJson(responseJson);
+        } else {
+          throw AppError(statusCode: response.statusCode);
         }
+      } else {
+        throw AppError();
       }
     } catch (e) {
       log("GetUserProfile Error", error: e);
       throw AppError(errorMessage: e.toString());
     }
-    throw AppError();
   }
 
   @override
@@ -118,16 +122,25 @@ class UserProfileRemoteDataSourceImpl implements UserProfileRemoteDataSource {
         jwtToken: jwtToken,
       );
 
-      var responseJson = response!.data;
-      var responseMsg = responseJson['message'];
-      if (responseMsg == "Profile added cuccessfully") {
-        return responseMsg;
+      if (response?.data != null && response?.statusCode != null) {
+        if (response!.statusCode == 201) {
+          var responseJson = response.data;
+          log(responseJson.toString());
+          var responseMsg = responseJson['message'];
+          if (responseMsg == "Profile added cuccessfully") {
+            return responseMsg;
+          }
+        } else {
+          throw AppError(statusCode: response.statusCode);
+        }
+      } else {
+        throw AppError();
       }
     } catch (e) {
       log("GetUserProfile Error", error: e);
-      return "Failed to add Profile";
+      throw AppError(errorMessage: e.toString());
     }
-    return "Failed to add Profile";
+    throw AppError();
   }
 
   @override
@@ -168,10 +181,12 @@ class UserProfileRemoteDataSourceImpl implements UserProfileRemoteDataSource {
         jwtToken: jwtToken,
       );
 
+      var responseJson = response?.data;
+      log(responseJson.toString());
       return "Success";
     } catch (e) {
       log("EditProfile Error", error: e);
-      return "Failed to add Profile";
+      throw AppError(errorMessage: e.toString());
     }
   }
 
@@ -192,18 +207,21 @@ class UserProfileRemoteDataSourceImpl implements UserProfileRemoteDataSource {
         jwtToken: jwtToken,
       );
 
-      if (response!.statusCode == 200) {
-        var responseJson = response.data;
-        log(responseJson.toString());
-        if (responseJson != null) {
+      if (response?.data != null && response?.statusCode != null) {
+        if (response!.statusCode == 200) {
+          var responseJson = response.data;
+          log(responseJson.toString());
           return AvatarModel.fromJson(responseJson);
+        } else {
+          throw AppError(statusCode: response.statusCode);
         }
+      } else {
+        throw AppError();
       }
     } catch (e) {
       log("uploadAvatar Error", error: e);
       throw AppError(errorMessage: e.toString());
     }
-    throw AppError();
   }
 
   @override
@@ -223,18 +241,21 @@ class UserProfileRemoteDataSourceImpl implements UserProfileRemoteDataSource {
         jwtToken: jwtToken,
       );
 
-      if (response!.statusCode == 200) {
-        var responseJson = response.data;
-        log(responseJson.toString());
-        if (responseJson != null) {
+      if (response?.data != null && response?.statusCode != null) {
+        if (response!.statusCode == 200) {
+          var responseJson = response.data;
+          log(responseJson.toString());
           return BannerModel.fromJson(responseJson);
+        } else {
+          throw AppError(statusCode: response.statusCode);
         }
+      } else {
+        throw AppError();
       }
     } catch (e) {
       log("uploadBanner Error", error: e);
       throw AppError(errorMessage: e.toString());
     }
-    throw AppError();
   }
 
   @override
@@ -250,18 +271,21 @@ class UserProfileRemoteDataSourceImpl implements UserProfileRemoteDataSource {
         jwtToken: null,
       );
 
-      if (response!.statusCode == 200) {
-        var responseJson = response.data;
-        log("${responseJson}Successfully uploaded");
-        if (responseJson != null) {
+      if (response?.data != null && response?.statusCode != null) {
+        if (response!.statusCode == 200) {
+          var responseJson = response.data;
+          log("${responseJson}Successfully uploaded");
           return true;
+        } else {
+          throw AppError(statusCode: response.statusCode);
         }
+      } else {
+        throw AppError();
       }
     } catch (e) {
       log("uploadToAWS Error", error: e);
       throw AppError(errorMessage: e.toString());
     }
-    throw AppError();
   }
 
   @override
@@ -278,17 +302,20 @@ class UserProfileRemoteDataSourceImpl implements UserProfileRemoteDataSource {
         jwtToken: jwtToken,
       );
 
-      if (response!.statusCode == 200) {
-        var responseJson = response.data;
-        log(responseJson.toString());
-        if (responseJson != null) {
+      if (response?.data != null && response?.statusCode != null) {
+        if (response!.statusCode == 200) {
+          var responseJson = response.data;
+          log(responseJson.toString());
           return ImageModel.fromJson(responseJson);
+        } else {
+          throw AppError(statusCode: response.statusCode);
         }
+      } else {
+        throw AppError();
       }
     } catch (e) {
-      log("uploadBanner Error", error: e);
-      return ImageModel(url: "");
+      log("getImage Error", error: e);
+      throw AppError(errorMessage: e.toString());
     }
-    return ImageModel(url: "");
   }
 }
