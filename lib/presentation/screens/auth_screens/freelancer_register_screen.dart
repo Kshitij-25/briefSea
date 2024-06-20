@@ -19,6 +19,8 @@ class FreelancerRegisterScreen extends ConsumerWidget {
   final TextEditingController freelanceUserName = TextEditingController();
   final TextEditingController freelanceEmail = TextEditingController();
   final TextEditingController freelancePass = TextEditingController();
+  final TextEditingController freelanceConfirmPass = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -27,7 +29,172 @@ class FreelancerRegisterScreen extends ConsumerWidget {
       backgroundColor: const Color(0xFF4C27FF),
       body: Stack(
         children: [
-          bodyWidget(context, ref, registerState),
+          Form(
+            key: _formKey,
+            child: SizedBox(
+              height: ScreenSize.height(context),
+              child: Stack(
+                children: [
+                  const CustomShapeWidget(),
+                  Container(
+                    width: ScreenSize.width(context),
+                    padding: const EdgeInsets.symmetric(horizontal: 50),
+                    child: SingleChildScrollView(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          SizedBox(height: ScreenSize.height(context) * .15),
+                          const Text(
+                            "Briefsea for Freelancers",
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 20,
+                            ),
+                            textAlign: TextAlign.center,
+                            // textScaler: TextScaler.linear(1.2),
+                          ),
+                          SizedBox(height: ScreenSize.height(context) * .05),
+                          CustomTextFormField(
+                            hintText: "Enter Name",
+                            controller: freelanceUserName,
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Name is required';
+                              }
+                              return null;
+                            },
+                          ),
+                          const SizedBox(height: 20),
+                          CustomTextFormField(
+                            hintText: "Enter your Email",
+                            controller: freelanceEmail,
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Email is required';
+                              }
+                              if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value)) {
+                                return 'Enter a valid email';
+                              }
+                              return null;
+                            },
+                          ),
+                          const SizedBox(height: 20),
+                          CustomTextFormField(
+                            hintText: "Enter Password",
+                            controller: freelancePass,
+                            obscureText: true,
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Password is required';
+                              }
+                              if (value.length < 8) {
+                                return 'Password should be at least 8 characters';
+                              }
+                              if (!value.contains(RegExp(r'[0-9]'))) {
+                                return 'Password should contain at least one number';
+                              }
+                              if (!value.contains(RegExp(r'[!@#$%^&*(),.?":{}|<>]'))) {
+                                return 'Password should contain at least one special character';
+                              }
+                              return null;
+                            },
+                          ),
+                          const SizedBox(height: 20),
+                          CustomTextFormField(
+                            hintText: "Confirm Password",
+                            controller: freelanceConfirmPass,
+                            obscureText: true,
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Please confirm your password';
+                              }
+                              if (value != freelancePass.text) {
+                                return 'Passwords do not match';
+                              }
+                              return null;
+                            },
+                          ),
+                          // SizedBox(height: ScreenSize.height(context) * .05),
+                          // const Text(
+                          //   "Or sign up using an option:",
+                          //   style: TextStyle(color: Colors.white),
+                          //   textScaler: TextScaler.linear(1),
+                          //   textAlign: TextAlign.center,
+                          // ),
+                          // const SizedBox(height: 20),
+                          // Row(
+                          //   mainAxisAlignment: MainAxisAlignment.center,
+                          //   children: [
+                          //     _signUpOptions(
+                          //       context,
+                          //       'assets/logos/google-icon.svg',
+                          //       () {},
+                          //     ),
+                          //     const SizedBox(width: 20),
+                          //     _signUpOptions(
+                          //       context,
+                          //       'assets/logos/linkedin-icon.svg',
+                          //       () {},
+                          //     ),
+                          //   ],
+                          // ),
+                          SizedBox(height: ScreenSize.height(context) * .05),
+                          const Text(
+                            "Agency, Working professional or\nExisting User?",
+                            style: TextStyle(color: Colors.white),
+                            textScaler: TextScaler.linear(1),
+                            textAlign: TextAlign.center,
+                          ),
+                          TextButton(
+                            onPressed: () {
+                              GoRouter.of(context).pop();
+                            },
+                            style: const ButtonStyle(
+                              overlayColor: WidgetStateColor.transparent,
+                            ),
+                            child: const Text(
+                              "Go back",
+                              style: TextStyle(
+                                color: Color(0xFF01FFF5),
+                              ),
+                            ),
+                          ),
+                          Center(
+                            child: CustomElevatedButton(
+                              width: ScreenSize.width(context) * 0.5,
+                              buttonLabel: "Next",
+                              onPressed: () async {
+                                if (_formKey.currentState!.validate()) {
+                                  await ref.read(registerNotifierProvider.notifier).registerUser(
+                                        userName: freelanceUserName.text,
+                                        email: freelanceEmail.text,
+                                        password: freelancePass.text,
+                                        type: "freelancer",
+                                        subType: "",
+                                        ref: ref,
+                                        context: context,
+                                      );
+                                }
+                              },
+                            ),
+                          ),
+                          SizedBox(height: ScreenSize.height(context) * .05),
+                          const Text(
+                            "Instantly discover and grab\nhot freelancing opportunities\nin your industry.",
+                            style: TextStyle(color: Colors.white),
+                            textScaler: TextScaler.linear(1),
+                            textAlign: TextAlign.center,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  const Positioned(top: 40, left: 0, child: CustomBackButton()),
+                ],
+              ),
+            ),
+          ),
           if (registerState == RegisterState.loading)
             Container(
               color: Colors.black54,
@@ -35,129 +202,6 @@ class FreelancerRegisterScreen extends ConsumerWidget {
                 child: CircularProgressIndicator.adaptive(),
               ),
             ),
-        ],
-      ),
-    );
-  }
-
-  bodyWidget(context, WidgetRef ref, RegisterState registerState) {
-    return SizedBox(
-      height: ScreenSize.height(context),
-      child: Stack(
-        children: [
-          const CustomShapeWidget(),
-          Container(
-            width: ScreenSize.width(context),
-            padding: const EdgeInsets.symmetric(horizontal: 50),
-            child: SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  SizedBox(height: ScreenSize.height(context) * .15),
-                  const Text(
-                    "Login as \nworking Freelancer",
-                    style: TextStyle(color: Colors.white),
-                    textScaler: TextScaler.linear(2),
-                  ),
-                  SizedBox(height: ScreenSize.height(context) * .05),
-                  CustomTextFormField(
-                    hintText: "Enter Name",
-                    controller: freelanceUserName,
-                  ),
-                  const SizedBox(height: 20),
-                  CustomTextFormField(
-                    hintText: "Enter your Email",
-                    controller: freelanceEmail,
-                  ),
-                  const SizedBox(height: 20),
-                  CustomTextFormField(
-                    hintText: "Enter Password",
-                    controller: freelancePass,
-                    obscureText: true,
-                  ),
-                  // SizedBox(height: ScreenSize.height(context) * .05),
-                  // const Text(
-                  //   "Or sign up using an option:",
-                  //   style: TextStyle(color: Colors.white),
-                  //   textScaler: TextScaler.linear(1),
-                  //   textAlign: TextAlign.center,
-                  // ),
-                  // const SizedBox(height: 20),
-                  // Row(
-                  //   mainAxisAlignment: MainAxisAlignment.center,
-                  //   children: [
-                  //     _signUpOptions(
-                  //       context,
-                  //       'assets/logos/google-icon.svg',
-                  //       () {},
-                  //     ),
-                  //     const SizedBox(width: 20),
-                  //     _signUpOptions(
-                  //       context,
-                  //       'assets/logos/linkedin-icon.svg',
-                  //       () {},
-                  //     ),
-                  //   ],
-                  // ),
-                  SizedBox(height: ScreenSize.height(context) * .05),
-                  const Text(
-                    "Agency, Professional or Existing User?",
-                    style: TextStyle(color: Colors.white),
-                    textScaler: TextScaler.linear(1),
-                    textAlign: TextAlign.center,
-                  ),
-                  TextButton(
-                    onPressed: () {
-                      GoRouter.of(context).pop();
-                    },
-                    child: const Text(
-                      "Go back",
-                      style: TextStyle(
-                        color: Color(0xFF01FFF5),
-                      ),
-                    ),
-                  ),
-                  Center(
-                    child: CustomElevatedButton(
-                      width: ScreenSize.width(context) * 0.5,
-                      buttonLabel: "Next",
-                      onPressed: () async {
-                        if (freelanceUserName.text.isNotEmpty && freelanceEmail.text.isNotEmpty && freelancePass.text.isNotEmpty) {
-                          // final isRegistered = await ref.read(registerUserProvider(
-                          //   userName: freelanceUserName.text,
-                          //   email: freelanceEmail.text,
-                          //   password: freelancePass.text,
-                          //   type: "agency",
-                          //   subType: "",
-                          // ).future);
-
-                          // print(isRegistered);
-
-                          // if (isRegistered == true) {
-                          //   AppUtility(context).message("Registered Successfully. Check email to Verify Profile and Login.");
-                          //   GoRouter.of(context).pop();
-                          // }
-                          await ref
-                              .read(registerNotifierProvider.notifier)
-                              .registerUser(freelanceUserName.text, freelanceEmail.text, freelancePass.text, "freelancer", "", ref, context);
-                          // await ref.read(postNewNotificationProvider(requestBody: {
-                          //   "type": 'user account',
-                          //   "sender_id": 'briefseaAdmin9712',
-                          //   "sender_name": 'Briefsea',
-                          //   "receiver_id": result?.user_id,
-                          //   "notification":
-                          //       "Welcome to Briefsea.Hire the best freelancers, vendors and professionals for your tech and marketing projects."
-                          // }).future);
-                        }
-                      },
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-          const Positioned(top: 40, left: 0, child: CustomBackButton()),
         ],
       ),
     );

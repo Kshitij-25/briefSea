@@ -38,6 +38,7 @@ Future<void> customReplyModalSheet(
                           itemCount: replies.length,
                           itemBuilder: (context, index) {
                             return CustomCommentCard(
+                              isUserTrue: false,
                               isReplies: isReplies,
                               onCommentTap: (p0) {},
                               onLikeTap: (p0) {},
@@ -77,7 +78,7 @@ Future<void> customReplyModalSheet(
                                       minLines: 1,
                                       maxLines: 100,
                                       decoration: const InputDecoration.collapsed(
-                                        hintText: "Leave a thought...",
+                                        hintText: "Reply to this comment",
                                       ),
                                     ),
                                   ),

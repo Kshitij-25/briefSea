@@ -51,6 +51,9 @@ class NotificationScreen extends ConsumerWidget {
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
                           TextButton(
+                            style: const ButtonStyle(
+                              overlayColor: WidgetStateColor.transparent,
+                            ),
                             onPressed: () async {
                               await ref.read(deleteAllNotificationsProvider.future);
                               ref.invalidate(getAllNotificationsProvider);

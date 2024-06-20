@@ -23,7 +23,7 @@ class MyBriefsScreen extends ConsumerWidget {
           data: (briefs) {
             if (briefs == null || briefs.isEmpty) {
               return const Center(
-                child: Text('No Briefs Found'),
+                child: Text('All the briefs you’ve posted will be here'),
               );
             }
             return ListView.builder(

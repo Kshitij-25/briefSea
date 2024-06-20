@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
+import '../../common/assets.dart';
 import '../../common/screen_size.dart';
 import '../providers/auth_provider.dart';
 import '../providers/socket_provider.dart';
@@ -49,16 +50,23 @@ class HomeScreen extends ConsumerWidget {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: const Color(0xFF4B26FD),
-        title: Text(
-          currentIndex == 0
-              ? "Briefsea"
-              : currentIndex == 1
-                  ? "Messages"
-                  : currentIndex == 2
-                      ? "Notifications"
-                      : "Profile",
-          style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
-        ),
+        title: currentIndex == 0
+            ? Padding(
+                padding: const EdgeInsets.only(bottom: 10),
+                child: Image.asset(
+                  APP_LOGO,
+                  height: 150,
+                  color: Colors.white,
+                ),
+              )
+            : Text(
+                currentIndex == 1
+                    ? "Briefsea Chat"
+                    : currentIndex == 2
+                        ? "Notifications"
+                        : "Profile",
+                style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
+              ),
         centerTitle: true,
         elevation: 0,
         leadingWidth: ScreenSize.width(context) * 0.3,
@@ -100,7 +108,7 @@ class HomeScreen extends ConsumerWidget {
           MyFeedNavigator(homePageController: pageController),
           const MessagesScreenNavigator(),
           const NotificationScreen(),
-          const ProfileScreen(),
+          ProfileScreen(),
         ],
       ),
       bottomNavigationBar: BottomNavigationBar(
@@ -119,7 +127,7 @@ class HomeScreen extends ConsumerWidget {
           ),
           BottomNavigationBarItem(
             icon: Icon(CupertinoIcons.envelope_open_fill),
-            label: "Messages",
+            label: "Chat",
           ),
           // BottomNavigationBarItem(
           //   icon: Icon(CupertinoIcons.person_3_fill),

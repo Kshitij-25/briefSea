@@ -3,6 +3,7 @@ import 'package:dartz/dartz.dart';
 import '../core/app_error.dart';
 import '../data_sources/auth_remote_data_source.dart';
 import '../models/login_model.dart';
+import '../models/register_model.dart';
 
 class AuthRepository {
   final AuthRemoteDataSource _authRemoteDataSource;
@@ -20,10 +21,21 @@ class AuthRepository {
     }
   }
 
-  Future<Either<AppError, bool>>? registerUser(String? userName, String? email, String? password, String? type, String? subType) async {
+  Future<Either<AppError, RegisterModel>>? registerUser(String? userName, String? email, String? password, String? type, String? subType) async {
     try {
       final isUserRegistered = await _authRemoteDataSource.registerUser(userName, email, password, type, subType);
       return Right(isUserRegistered);
+    } on AppError catch (e) {
+      return Left(e);
+    } on Exception catch (e) {
+      return Left(AppError(errorMessage: e.toString()));
+    }
+  }
+
+  Future<Either<AppError, bool>>? forgetPassword(String? email) async {
+    try {
+      final forgetPass = await _authRemoteDataSource.forgetPassword(email);
+      return Right(forgetPass);
     } on AppError catch (e) {
       return Left(e);
     } on Exception catch (e) {

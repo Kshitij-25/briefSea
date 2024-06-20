@@ -21,6 +21,9 @@ class UserProfileModel with _$UserProfileModel {
     @JsonKey(name: 'bannerSrc') String? bannerSrc,
     @JsonKey(name: 'createdAt') String? createdAt,
     @JsonKey(name: 'updatedAt') String? updatedAt,
+    @JsonKey(name: 'postingAs') String? postingAs,
+    @JsonKey(name: 'gender') String? gender,
+
     // @JsonKey(name: '') String? id,
   }) = _UserProfileModel;
 

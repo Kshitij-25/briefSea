@@ -102,7 +102,7 @@ Future<void> customPostBriefModalSheet(
                                 controller: postTextCont,
                                 decoration: const InputDecoration(
                                   border: InputBorder.none,
-                                  hintText: "Write your brief...",
+                                  hintText: "Describe in detail",
                                   hintStyle: TextStyle(
                                     color: Colors.grey,
                                   ),

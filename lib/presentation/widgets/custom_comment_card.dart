@@ -14,6 +14,7 @@ class CustomCommentCard extends StatelessWidget {
     this.commentModel,
     this.loggedInUserId,
     this.isReplies,
+    required this.isUserTrue,
   });
 
   final Function(CommentModel?) onCommentTap;
@@ -22,6 +23,7 @@ class CustomCommentCard extends StatelessWidget {
   final CommentModel? commentModel;
   final String? loggedInUserId;
   final bool? isReplies;
+  final bool isUserTrue;
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +31,7 @@ class CustomCommentCard extends StatelessWidget {
       return const SizedBox();
     }
     return Padding(
-      padding: const EdgeInsets.all(15.0),
+      padding: const EdgeInsets.all(10.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -38,7 +40,7 @@ class CustomCommentCard extends StatelessWidget {
             children: [
               commentModel!.userId != loggedInUserId
                   ? Padding(
-                      padding: const EdgeInsets.only(right: 10.0),
+                      padding: const EdgeInsets.only(right: 0.0),
                       child: CircleAvatar(
                         backgroundColor: const Color(0xFF1B0C6B),
                         radius: 15,
@@ -106,7 +108,7 @@ class CustomCommentCard extends StatelessWidget {
               ),
               commentModel!.userId == loggedInUserId
                   ? Padding(
-                      padding: const EdgeInsets.only(left: 10.0),
+                      padding: const EdgeInsets.only(left: 0.0),
                       child: CircleAvatar(
                         backgroundColor: const Color(0xFF1B0C6B),
                         radius: 15,
@@ -139,11 +141,12 @@ class CustomCommentCard extends StatelessWidget {
                       (commentModel!.replyCount != null) ? (commentModel!.replyCount == 0 ? 'Reply' : "${commentModel!.replyCount} Reply") : '-',
                   onPressed: () => onCommentTap(commentModel),
                 ),
-                // _BriefInputButton(
-                //   iconData: CupertinoIcons.envelope_open_fill,
-                //   iconLabel: "DM",
-                //   onPressed: () => onDMTap(commentModel),
-                // ),
+                if (isUserTrue == true && commentModel!.userId != loggedInUserId)
+                  _BriefInputButton(
+                    iconData: CupertinoIcons.envelope_open_fill,
+                    iconLabel: "DM",
+                    onPressed: () => onDMTap(commentModel),
+                  ),
               ],
             ),
         ],
@@ -164,19 +167,26 @@ class _BriefInputButton extends StatelessWidget {
   final String? iconLabel;
   @override
   Widget build(BuildContext context) {
-    return ElevatedButton.icon(
-      style: ButtonStyle(
-        backgroundColor: WidgetStateProperty.all<Color>(Colors.white),
-        elevation: WidgetStateProperty.all<double>(0),
-      ),
-      onPressed: onPressed,
-      icon: Icon(
-        iconData,
-        color: Colors.grey,
-      ),
-      label: Text(
-        iconLabel ?? "",
-        style: const TextStyle(color: Colors.grey),
+    return GestureDetector(
+      onTap: onPressed,
+      child: Container(
+        child: Row(
+          children: [
+            Icon(
+              iconData,
+              color: Colors.grey,
+              size: 18,
+            ),
+            const SizedBox(width: 5),
+            Text(
+              iconLabel ?? "",
+              style: const TextStyle(
+                color: Colors.grey,
+                fontSize: 13,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -194,24 +204,32 @@ class _BriefLikeButton extends StatelessWidget {
   final bool isLiked;
   @override
   Widget build(BuildContext context) {
-    return ElevatedButton.icon(
-      style: ButtonStyle(
-        backgroundColor: WidgetStateProperty.all<Color>(Colors.white),
-        elevation: WidgetStateProperty.all<double>(0),
-      ),
-      onPressed: onPressed,
-      icon: !isLiked
-          ? const Icon(
-              CupertinoIcons.heart,
-              color: Colors.grey,
-            )
-          : const Icon(
-              CupertinoIcons.heart_fill,
-              color: Colors.red,
+    return GestureDetector(
+      onTap: onPressed,
+      child: Container(
+        child: Row(
+          children: [
+            !isLiked
+                ? const Icon(
+                    CupertinoIcons.heart,
+                    color: Colors.grey,
+                    size: 18,
+                  )
+                : const Icon(
+                    CupertinoIcons.heart_fill,
+                    color: Colors.red,
+                    size: 18,
+                  ),
+            const SizedBox(width: 5),
+            Text(
+              iconLabel ?? "",
+              style: const TextStyle(
+                color: Colors.grey,
+                fontSize: 13,
+              ),
             ),
-      label: Text(
-        iconLabel ?? "",
-        style: const TextStyle(color: Colors.grey),
+          ],
+        ),
       ),
     );
   }

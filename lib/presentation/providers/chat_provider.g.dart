@@ -657,5 +657,149 @@ class _SendChatMessagesProviderElement
   @override
   String get typedAt => (origin as SendChatMessagesProvider).typedAt;
 }
+
+String _$getDMUserHash() => r'd762c26ee6e5e68b4dbb6fa69f82e3d9d42d6ce4';
+
+/// See also [getDMUser].
+@ProviderFor(getDMUser)
+const getDMUserProvider = GetDMUserFamily();
+
+/// See also [getDMUser].
+class GetDMUserFamily extends Family<AsyncValue<ChatUserModel>> {
+  /// See also [getDMUser].
+  const GetDMUserFamily();
+
+  /// See also [getDMUser].
+  GetDMUserProvider call({
+    required String senderId,
+    required String receiverId,
+  }) {
+    return GetDMUserProvider(
+      senderId: senderId,
+      receiverId: receiverId,
+    );
+  }
+
+  @override
+  GetDMUserProvider getProviderOverride(
+    covariant GetDMUserProvider provider,
+  ) {
+    return call(
+      senderId: provider.senderId,
+      receiverId: provider.receiverId,
+    );
+  }
+
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'getDMUserProvider';
+}
+
+/// See also [getDMUser].
+class GetDMUserProvider extends AutoDisposeFutureProvider<ChatUserModel> {
+  /// See also [getDMUser].
+  GetDMUserProvider({
+    required String senderId,
+    required String receiverId,
+  }) : this._internal(
+          (ref) => getDMUser(
+            ref as GetDMUserRef,
+            senderId: senderId,
+            receiverId: receiverId,
+          ),
+          from: getDMUserProvider,
+          name: r'getDMUserProvider',
+          debugGetCreateSourceHash:
+              const bool.fromEnvironment('dart.vm.product')
+                  ? null
+                  : _$getDMUserHash,
+          dependencies: GetDMUserFamily._dependencies,
+          allTransitiveDependencies: GetDMUserFamily._allTransitiveDependencies,
+          senderId: senderId,
+          receiverId: receiverId,
+        );
+
+  GetDMUserProvider._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.senderId,
+    required this.receiverId,
+  }) : super.internal();
+
+  final String senderId;
+  final String receiverId;
+
+  @override
+  Override overrideWith(
+    FutureOr<ChatUserModel> Function(GetDMUserRef provider) create,
+  ) {
+    return ProviderOverride(
+      origin: this,
+      override: GetDMUserProvider._internal(
+        (ref) => create(ref as GetDMUserRef),
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        senderId: senderId,
+        receiverId: receiverId,
+      ),
+    );
+  }
+
+  @override
+  AutoDisposeFutureProviderElement<ChatUserModel> createElement() {
+    return _GetDMUserProviderElement(this);
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is GetDMUserProvider &&
+        other.senderId == senderId &&
+        other.receiverId == receiverId;
+  }
+
+  @override
+  int get hashCode {
+    var hash = _SystemHash.combine(0, runtimeType.hashCode);
+    hash = _SystemHash.combine(hash, senderId.hashCode);
+    hash = _SystemHash.combine(hash, receiverId.hashCode);
+
+    return _SystemHash.finish(hash);
+  }
+}
+
+mixin GetDMUserRef on AutoDisposeFutureProviderRef<ChatUserModel> {
+  /// The parameter `senderId` of this provider.
+  String get senderId;
+
+  /// The parameter `receiverId` of this provider.
+  String get receiverId;
+}
+
+class _GetDMUserProviderElement
+    extends AutoDisposeFutureProviderElement<ChatUserModel> with GetDMUserRef {
+  _GetDMUserProviderElement(super.provider);
+
+  @override
+  String get senderId => (origin as GetDMUserProvider).senderId;
+  @override
+  String get receiverId => (origin as GetDMUserProvider).receiverId;
+}
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member

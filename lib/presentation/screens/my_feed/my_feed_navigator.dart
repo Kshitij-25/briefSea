@@ -176,10 +176,12 @@ class MyFeedNavigator extends ConsumerWidget {
                             Expanded(
                               child: Center(
                                 child: Text(
-                                  "Post a brief...",
+                                  "Post a brief to instantly connect with agencies, freelancers and working professionals.",
                                   style: TextStyle(
                                     color: Colors.grey,
+                                    fontSize: 12,
                                   ),
+                                  textAlign: TextAlign.center,
                                 ),
                               ),
                             ),

@@ -38,6 +38,18 @@ Future<UserProfileModel> getUserProfile(GetUserProfileRef ref) async {
 }
 
 @riverpod
+Future<UserProfileModel> getOtherProfile(GetOtherProfileRef ref, {required String? otherUserId}) async {
+  final userProfileRepository = ref.read(userProfileRepositoryProvider);
+  final eitherUserProfilenOrError = await userProfileRepository.getOtherProfile(otherUserId);
+  return eitherUserProfilenOrError!.fold(
+    (error) {
+      throw error; // Throw the error for Riverpod to handle
+    },
+    (userProfile) => userProfile,
+  );
+}
+
+@riverpod
 Future<String> verifyProfile(
   VerifyProfileRef ref, {
   required String? userId,
@@ -46,12 +58,14 @@ Future<String> verifyProfile(
   required int? contact,
   required String? jobTitle,
   required String? company,
-  required String? industry,
-  required String? expertise,
+  required List<String>? industry,
+  required List<String>? expertise,
   required String? location,
   required String? avatarSrc,
   required String? bannerSrc,
   required String? jwtToken,
+  required String? postingAs,
+  required String? gender,
 }) async {
   final userProfileRepository = ref.read(userProfileRepositoryProvider);
   final eitherVerifyProfilenOrError = await userProfileRepository.verifyProfile(
@@ -67,6 +81,8 @@ Future<String> verifyProfile(
     avatarSrc: avatarSrc,
     bannerSrc: bannerSrc,
     jwtToken: jwtToken,
+    postingAs: postingAs,
+    gender: gender,
   );
   return eitherVerifyProfilenOrError!.fold(
     (error) {
@@ -85,12 +101,14 @@ Future<String> editProfile(
   required int? contact,
   required String? jobTitle,
   required String? company,
-  required String? industry,
-  required String? expertise,
+  required List<String>? industry,
+  required List<String>? expertise,
   required String? location,
   required String? avatarSrc,
   required String? bannerSrc,
   required String? jwtToken,
+  required String? postingAs,
+  required String? gender,
 }) async {
   final userProfileRepository = ref.read(userProfileRepositoryProvider);
   final eitherEditProfileOrError = await userProfileRepository.editProfile(
@@ -106,6 +124,8 @@ Future<String> editProfile(
     avatarSrc: avatarSrc,
     bannerSrc: bannerSrc,
     jwtToken: jwtToken,
+    postingAs: postingAs,
+    gender: gender,
   );
   return eitherEditProfileOrError!.fold(
     (error) {
@@ -172,5 +192,17 @@ Future<ImageModel> getImage(GetImageRef ref, {required String src}) async {
       throw error; // Throw the error for Riverpod to handle
     },
     (image) => image,
+  );
+}
+
+@riverpod
+Future<bool> deleteAccount(DeleteAccountRef ref, {required String userId}) async {
+  final userProfileRepository = ref.read(userProfileRepositoryProvider);
+  final eitherAccountDeletedOrError = await userProfileRepository.deleteAccount(userId);
+  return eitherAccountDeletedOrError.fold(
+    (error) {
+      throw error; // Throw the error for Riverpod to handle
+    },
+    (accountDeleted) => accountDeleted,
   );
 }

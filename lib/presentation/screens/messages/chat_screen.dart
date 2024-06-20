@@ -92,14 +92,27 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
             child: Padding(
               padding: const EdgeInsets.only(top: 20.0),
               child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   if (chatMessageState.isLoading)
-                    const Center(
-                      child: CircularProgressIndicator.adaptive(),
+                    const Expanded(
+                      child: Center(
+                        child: CircularProgressIndicator.adaptive(),
+                      ),
                     ),
                   if (chatMessageState.error != null)
                     Center(
                       child: Text(chatMessageState.error!),
+                    ),
+                  if (chatMessageState.chatMessages != null && chatMessageState.chatMessages!.isEmpty)
+                    const Expanded(
+                      child: Center(
+                        child: Text(
+                          "Directly Chat and work with\ntop freelancers, vendors and working professionals.",
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
                     ),
                   Expanded(
                     child: ListView.builder(

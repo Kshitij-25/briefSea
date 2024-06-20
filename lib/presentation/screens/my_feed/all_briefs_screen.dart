@@ -5,15 +5,14 @@ import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:share_plus/share_plus.dart';
 
+import '../../../data/core/api_constants.dart';
 import '../../../data/models/briefs_model.dart';
 import '../../../data/models/image_model.dart';
 import '../../providers/auth_provider.dart';
 import '../../providers/breifs_provider.dart';
-import '../../providers/chat_provider.dart';
 import '../../providers/likes_provider.dart';
 import '../../providers/notification_provider.dart';
 import '../../providers/user_profile_provider.dart';
-import '../../state_providers/bottom_nav_bar_state_provider.dart';
 import '../../widgets/custom_briefs_card.dart';
 import 'feed_screen.dart';
 
@@ -47,21 +46,21 @@ class AllBriefsScreen extends ConsumerWidget {
                   isUserTrue: briefs[index]!.userId != userDetails['user_id'] ? false : true,
                   brief: briefs[index],
                   postImage: postImage,
-                  onSelected: (value) async {
-                    if (value == "message") {
-                      var isChatCreated = await ref.watch(createNewChatProvider(
-                        receiverId: briefs[index]!.userId!,
-                        senderId: userDetails['user_id']!,
-                      ).future);
+                  // onSelected: (value) async {
+                  //   if (value == "message") {
+                  //     var isChatCreated = await ref.watch(createNewChatProvider(
+                  //       receiverId: briefs[index]!.userId!,
+                  //       senderId: userDetails['user_id']!,
+                  //     ).future);
 
-                      if (isChatCreated == true) {
-                        pageController?.jumpToPage(1);
-                        ref.read(currentIndexProvider.notifier).state = 1;
-                        //   // context.push(ChatScreen.routeName);
-                        //   // isChatCreated = false;
-                      }
-                    }
-                  },
+                  //     if (isChatCreated == true) {
+                  //       pageController?.jumpToPage(1);
+                  //       ref.read(currentIndexProvider.notifier).state = 1;
+                  //       //   // context.push(ChatScreen.routeName);
+                  //       //   // isChatCreated = false;
+                  //     }
+                  //   }
+                  // },
                   onCommentTap: (brief) {
                     context.push(
                       FeedScreen.routeName,
@@ -125,7 +124,7 @@ class AllBriefsScreen extends ConsumerWidget {
 
   void shareBrief(BriefsModel brief) {
     Share.share(
-      'Check out this brief by: ${brief.name![0].toUpperCase()}${brief.name!.substring(1)}\n${brief.postText}',
+      'Check out this brief by: ${brief.name![0].toUpperCase()}${brief.name!.substring(1)} at\n ${ApiConstants.shareBrief}/${brief.id}',
       subject: 'Check out this brief!',
     );
   }

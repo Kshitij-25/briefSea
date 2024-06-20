@@ -97,12 +97,16 @@ class ReplyRemoteDataSourceImpl implements ReplyRemoteDataSource {
       );
 
       if (response?.data != null && response?.statusCode != null) {
-        if (response!.statusCode == 200) {
-          var responseJson = response.data;
-          log(responseJson.toString());
-          return LikeModel.fromJson(responseJson);
+        if (response?.data != "") {
+          if (response!.statusCode == 200) {
+            var responseJson = response.data;
+            log(responseJson.toString());
+            return LikeModel.fromJson(responseJson);
+          } else {
+            throw AppError(statusCode: response.statusCode);
+          }
         } else {
-          throw AppError(statusCode: response.statusCode);
+          return LikeModel();
         }
       } else {
         throw AppError();

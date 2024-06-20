@@ -203,14 +203,14 @@ class _LoginUserProviderElement
   String get password => (origin as LoginUserProvider).password;
 }
 
-String _$registerUserHash() => r'f3672407e0bd0f2c9f2e721555f8c4424a6f6789';
+String _$registerUserHash() => r'd1a6ed99be3baa6ea109a699876a301bf08d1889';
 
 /// See also [registerUser].
 @ProviderFor(registerUser)
 const registerUserProvider = RegisterUserFamily();
 
 /// See also [registerUser].
-class RegisterUserFamily extends Family<AsyncValue<bool>> {
+class RegisterUserFamily extends Family<AsyncValue<RegisterModel>> {
   /// See also [registerUser].
   const RegisterUserFamily();
 
@@ -260,7 +260,7 @@ class RegisterUserFamily extends Family<AsyncValue<bool>> {
 }
 
 /// See also [registerUser].
-class RegisterUserProvider extends AutoDisposeFutureProvider<bool> {
+class RegisterUserProvider extends AutoDisposeFutureProvider<RegisterModel> {
   /// See also [registerUser].
   RegisterUserProvider({
     required String userName,
@@ -315,7 +315,7 @@ class RegisterUserProvider extends AutoDisposeFutureProvider<bool> {
 
   @override
   Override overrideWith(
-    FutureOr<bool> Function(RegisterUserRef provider) create,
+    FutureOr<RegisterModel> Function(RegisterUserRef provider) create,
   ) {
     return ProviderOverride(
       origin: this,
@@ -336,7 +336,7 @@ class RegisterUserProvider extends AutoDisposeFutureProvider<bool> {
   }
 
   @override
-  AutoDisposeFutureProviderElement<bool> createElement() {
+  AutoDisposeFutureProviderElement<RegisterModel> createElement() {
     return _RegisterUserProviderElement(this);
   }
 
@@ -363,7 +363,7 @@ class RegisterUserProvider extends AutoDisposeFutureProvider<bool> {
   }
 }
 
-mixin RegisterUserRef on AutoDisposeFutureProviderRef<bool> {
+mixin RegisterUserRef on AutoDisposeFutureProviderRef<RegisterModel> {
   /// The parameter `userName` of this provider.
   String get userName;
 
@@ -381,7 +381,8 @@ mixin RegisterUserRef on AutoDisposeFutureProviderRef<bool> {
 }
 
 class _RegisterUserProviderElement
-    extends AutoDisposeFutureProviderElement<bool> with RegisterUserRef {
+    extends AutoDisposeFutureProviderElement<RegisterModel>
+    with RegisterUserRef {
   _RegisterUserProviderElement(super.provider);
 
   @override
@@ -394,6 +395,134 @@ class _RegisterUserProviderElement
   String get type => (origin as RegisterUserProvider).type;
   @override
   String get subType => (origin as RegisterUserProvider).subType;
+}
+
+String _$forgetPasswordHash() => r'b6062d395cd3f96938efa82824fd030c0b6be523';
+
+/// See also [forgetPassword].
+@ProviderFor(forgetPassword)
+const forgetPasswordProvider = ForgetPasswordFamily();
+
+/// See also [forgetPassword].
+class ForgetPasswordFamily extends Family<AsyncValue<bool>> {
+  /// See also [forgetPassword].
+  const ForgetPasswordFamily();
+
+  /// See also [forgetPassword].
+  ForgetPasswordProvider call({
+    required String email,
+  }) {
+    return ForgetPasswordProvider(
+      email: email,
+    );
+  }
+
+  @override
+  ForgetPasswordProvider getProviderOverride(
+    covariant ForgetPasswordProvider provider,
+  ) {
+    return call(
+      email: provider.email,
+    );
+  }
+
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'forgetPasswordProvider';
+}
+
+/// See also [forgetPassword].
+class ForgetPasswordProvider extends AutoDisposeFutureProvider<bool> {
+  /// See also [forgetPassword].
+  ForgetPasswordProvider({
+    required String email,
+  }) : this._internal(
+          (ref) => forgetPassword(
+            ref as ForgetPasswordRef,
+            email: email,
+          ),
+          from: forgetPasswordProvider,
+          name: r'forgetPasswordProvider',
+          debugGetCreateSourceHash:
+              const bool.fromEnvironment('dart.vm.product')
+                  ? null
+                  : _$forgetPasswordHash,
+          dependencies: ForgetPasswordFamily._dependencies,
+          allTransitiveDependencies:
+              ForgetPasswordFamily._allTransitiveDependencies,
+          email: email,
+        );
+
+  ForgetPasswordProvider._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.email,
+  }) : super.internal();
+
+  final String email;
+
+  @override
+  Override overrideWith(
+    FutureOr<bool> Function(ForgetPasswordRef provider) create,
+  ) {
+    return ProviderOverride(
+      origin: this,
+      override: ForgetPasswordProvider._internal(
+        (ref) => create(ref as ForgetPasswordRef),
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        email: email,
+      ),
+    );
+  }
+
+  @override
+  AutoDisposeFutureProviderElement<bool> createElement() {
+    return _ForgetPasswordProviderElement(this);
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is ForgetPasswordProvider && other.email == email;
+  }
+
+  @override
+  int get hashCode {
+    var hash = _SystemHash.combine(0, runtimeType.hashCode);
+    hash = _SystemHash.combine(hash, email.hashCode);
+
+    return _SystemHash.finish(hash);
+  }
+}
+
+mixin ForgetPasswordRef on AutoDisposeFutureProviderRef<bool> {
+  /// The parameter `email` of this provider.
+  String get email;
+}
+
+class _ForgetPasswordProviderElement
+    extends AutoDisposeFutureProviderElement<bool> with ForgetPasswordRef {
+  _ForgetPasswordProviderElement(super.provider);
+
+  @override
+  String get email => (origin as ForgetPasswordProvider).email;
 }
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member

@@ -1,3 +1,5 @@
+// ignore_for_file: no_leading_underscores_for_local_identifiers
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
@@ -19,6 +21,8 @@ class AgencyRegisterScreen extends ConsumerWidget {
   final TextEditingController agencyUsername = TextEditingController();
   final TextEditingController agencyEmail = TextEditingController();
   final TextEditingController agencyPass = TextEditingController();
+  final TextEditingController agencyConfirmPass = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -27,7 +31,173 @@ class AgencyRegisterScreen extends ConsumerWidget {
       backgroundColor: const Color(0xFF4C27FF),
       body: Stack(
         children: [
-          bodyWidget(context, ref, registerState),
+          Form(
+            key: _formKey,
+            child: SizedBox(
+              height: ScreenSize.height(context),
+              child: Stack(
+                children: [
+                  const CustomShapeWidget(),
+                  Container(
+                    width: ScreenSize.width(context),
+                    padding: const EdgeInsets.symmetric(horizontal: 50),
+                    child: SingleChildScrollView(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          SizedBox(height: ScreenSize.height(context) * .15),
+                          const Text(
+                            "Briefsea for Agencies",
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 20,
+                            ),
+                            // textScaler: TextScaler.linear(1.2),
+                            textAlign: TextAlign.center,
+                          ),
+                          SizedBox(height: ScreenSize.height(context) * .05),
+                          CustomTextFormField(
+                            hintText: "Enter Name",
+                            controller: agencyUsername,
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Name is required';
+                              }
+                              return null;
+                            },
+                          ),
+                          const SizedBox(height: 20),
+                          CustomTextFormField(
+                            hintText: "Enter your Email",
+                            controller: agencyEmail,
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Email is required';
+                              }
+                              if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value)) {
+                                return 'Enter a valid email';
+                              }
+                              return null;
+                            },
+                          ),
+                          const SizedBox(height: 20),
+                          CustomTextFormField(
+                            hintText: "Enter Password",
+                            controller: agencyPass,
+                            obscureText: true,
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Password is required';
+                              }
+                              if (value.length < 8) {
+                                return 'Password should be at least 8 characters';
+                              }
+                              if (!value.contains(RegExp(r'[0-9]'))) {
+                                return 'Password should contain at least one number';
+                              }
+                              if (!value.contains(RegExp(r'[!@#$%^&*(),.?":{}|<>]'))) {
+                                return 'Password should contain at least one special character';
+                              }
+                              return null;
+                            },
+                          ),
+                          const SizedBox(height: 20),
+                          CustomTextFormField(
+                            hintText: "Confirm Password",
+                            controller: agencyConfirmPass,
+                            obscureText: true,
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Please confirm your password';
+                              }
+                              if (value != agencyPass.text) {
+                                return 'Passwords do not match';
+                              }
+                              return null;
+                            },
+                          ),
+                          // SizedBox(height: ScreenSize.height(context) * .05),
+                          // const Text(
+                          //   "Or sign up using an option:",
+                          //   style: TextStyle(color: Colors.white),
+                          //   textScaler: TextScaler.linear(1),
+                          //   textAlign: TextAlign.center,
+                          // ),
+                          // const SizedBox(height: 20),
+                          // Row(
+                          //   mainAxisAlignment: MainAxisAlignment.center,
+                          //   children: [
+                          //     _signUpOptions(
+                          //       context,
+                          //       'assets/logos/google-icon.svg',
+                          //       () {},
+                          //     ),
+                          //     const SizedBox(width: 20),
+                          //     _signUpOptions(
+                          //       context,
+                          //       'assets/logos/linkedin-icon.svg',
+                          //       () {},
+                          //     ),
+                          //   ],
+                          // ),
+                          SizedBox(height: ScreenSize.height(context) * .05),
+                          const Text(
+                            "Freelancer, Working professional or\nExisting User?",
+                            style: TextStyle(color: Colors.white),
+                            textScaler: TextScaler.linear(1),
+                            textAlign: TextAlign.center,
+                          ),
+                          TextButton(
+                            onPressed: () {
+                              GoRouter.of(context).pop();
+                            },
+                            style: const ButtonStyle(
+                              overlayColor: WidgetStateColor.transparent,
+                            ),
+                            child: const Text(
+                              "Go back",
+                              style: TextStyle(
+                                color: Color(0xFF01FFF5),
+                              ),
+                            ),
+                          ),
+                          Center(
+                            child: CustomElevatedButton(
+                              width: ScreenSize.width(context) * 0.5,
+                              buttonLabel: "Next",
+                              onPressed: () async {
+                                if (_formKey.currentState!.validate()) {
+                                  // Proceed with registration if validation passes
+                                  await ref.read(registerNotifierProvider.notifier).registerUser(
+                                        userName: agencyUsername.text,
+                                        email: agencyEmail.text,
+                                        password: agencyPass.text,
+                                        type: "agency",
+                                        subType: "",
+                                        ref: ref,
+                                        context: context,
+                                      );
+                                }
+                              },
+                            ),
+                          ),
+                          SizedBox(height: ScreenSize.height(context) * .05),
+                          const Text(
+                            "Instantly Connect with top freelancers and vendors in your industry to get work done.",
+                            style: TextStyle(color: Colors.white),
+                            textScaler: TextScaler.linear(0.9),
+                            textAlign: TextAlign.center,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  const Positioned(top: 40, left: 0, child: CustomBackButton()),
+                ],
+              ),
+            ),
+          ),
           if (registerState == RegisterState.loading)
             Container(
               color: Colors.black54,
@@ -35,129 +205,6 @@ class AgencyRegisterScreen extends ConsumerWidget {
                 child: CircularProgressIndicator.adaptive(),
               ),
             ),
-        ],
-      ),
-    );
-  }
-
-  bodyWidget(context, WidgetRef ref, RegisterState registerState) {
-    return SizedBox(
-      height: ScreenSize.height(context),
-      child: Stack(
-        children: [
-          const CustomShapeWidget(),
-          Container(
-            width: ScreenSize.width(context),
-            padding: const EdgeInsets.symmetric(horizontal: 50),
-            child: SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  SizedBox(height: ScreenSize.height(context) * .15),
-                  const Text(
-                    "Verify your Agency",
-                    style: TextStyle(color: Colors.white),
-                    textScaler: TextScaler.linear(2),
-                    textAlign: TextAlign.left,
-                  ),
-                  SizedBox(height: ScreenSize.height(context) * .05),
-                  CustomTextFormField(
-                    hintText: "Enter Name",
-                    controller: agencyUsername,
-                  ),
-                  const SizedBox(height: 20),
-                  CustomTextFormField(
-                    hintText: "Enter your Email",
-                    controller: agencyEmail,
-                  ),
-                  const SizedBox(height: 20),
-                  CustomTextFormField(
-                    hintText: "Enter Password",
-                    controller: agencyPass,
-                    obscureText: true,
-                  ),
-                  // SizedBox(height: ScreenSize.height(context) * .05),
-                  // const Text(
-                  //   "Or sign up using an option:",
-                  //   style: TextStyle(color: Colors.white),
-                  //   textScaler: TextScaler.linear(1),
-                  //   textAlign: TextAlign.center,
-                  // ),
-                  // const SizedBox(height: 20),
-                  // Row(
-                  //   mainAxisAlignment: MainAxisAlignment.center,
-                  //   children: [
-                  //     _signUpOptions(
-                  //       context,
-                  //       'assets/logos/google-icon.svg',
-                  //       () {},
-                  //     ),
-                  //     const SizedBox(width: 20),
-                  //     _signUpOptions(
-                  //       context,
-                  //       'assets/logos/linkedin-icon.svg',
-                  //       () {},
-                  //     ),
-                  //   ],
-                  // ),
-                  SizedBox(height: ScreenSize.height(context) * .05),
-                  const Text(
-                    "Freelancer, Professional or Existing User?",
-                    style: TextStyle(color: Colors.white),
-                    textScaler: TextScaler.linear(1),
-                    textAlign: TextAlign.center,
-                  ),
-                  TextButton(
-                    onPressed: () {
-                      GoRouter.of(context).pop();
-                    },
-                    child: const Text(
-                      "Go back",
-                      style: TextStyle(
-                        color: Color(0xFF01FFF5),
-                      ),
-                    ),
-                  ),
-                  Center(
-                    child: CustomElevatedButton(
-                      width: ScreenSize.width(context) * 0.5,
-                      buttonLabel: "Next",
-                      onPressed: () async {
-                        if (agencyUsername.text.isNotEmpty && agencyEmail.text.isNotEmpty && agencyPass.text.isNotEmpty) {
-                          //   final isRegistered = await ref.read(registerUserProvider(
-                          //     userName: agencyUsername.text,
-                          //     email: agencyEmail.text,
-                          //     password: agencyPass.text,
-                          //     type: "agency",
-                          //     subType: "",
-                          //   ).future);
-                          //   print(isRegistered);
-
-                          //   if (isRegistered == true) {
-                          //     AppUtility(context).message("Registered Successfully. Check email to Verify Profile and Login.");
-                          //     GoRouter.of(context).pop();
-                          //   }
-                          await ref
-                              .read(registerNotifierProvider.notifier)
-                              .registerUser(agencyUsername.text, agencyEmail.text, agencyPass.text, "agency", "", ref, context);
-                          // await ref.read(postNewNotificationProvider(requestBody: {
-                          //   "type": 'user account',
-                          //   "sender_id": 'briefseaAdmin9712',
-                          //   "sender_name": 'Briefsea',
-                          //   "receiver_id": result?.user_id,
-                          //   "notification":
-                          //       "Welcome to Briefsea.Hire the best freelancers, vendors and professionals for your tech and marketing projects."
-                          // }).future);
-                        }
-                      },
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-          const Positioned(top: 40, left: 0, child: CustomBackButton()),
         ],
       ),
     );

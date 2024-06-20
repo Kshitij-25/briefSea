@@ -15,8 +15,9 @@ import '../models/register_model.dart';
 abstract class AuthRemoteDataSource {
   Future<LoginModel?>? loginUser(String? email, String? password);
   Future<dynamic> loginWithGoogle();
-  Future<bool> registerUser(String? userName, String? email, String? password, String? type, String? subType);
+  Future<RegisterModel> registerUser(String? userName, String? email, String? password, String? type, String? subType);
   Future<void> logout();
+  Future<bool> forgetPassword(String? email);
 }
 
 class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
@@ -41,7 +42,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
           final responseJson = response.data;
           log(responseJson.toString());
 
-          var loginMessage = responseJson['message'];
+          var loginMessage = responseJson['message'] ?? responseJson['msg'];
           var jwtToken = responseJson['token'];
 
           if (loginMessage == 'Login sucessfull' && jwtToken != null) {
@@ -57,6 +58,10 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
 
             return LoginModel.fromJson(responseJson);
           } else if (loginMessage == "Email sent") {
+            return LoginModel(message: loginMessage);
+          } else if (loginMessage == "Login failed") {
+            return LoginModel(message: loginMessage);
+          } else if (loginMessage == "Invalid Email") {
             return LoginModel(message: loginMessage);
           } else {
             throw AppError(errorMessage: loginMessage);
@@ -100,7 +105,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   }
 
   @override
-  Future<bool> registerUser(String? userName, String? email, String? password, String? type, String? subType) async {
+  Future<RegisterModel> registerUser(String? userName, String? email, String? password, String? type, String? subType) async {
     try {
       var body = {
         'user_name': userName,
@@ -119,13 +124,11 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
         if (response!.statusCode == 201) {
           final responseJson = response.data;
           log(responseJson.toString());
-          var registerMessage = responseJson['message'];
-          if (registerMessage == 'User registered') {
-            RegisterModel.fromJson(responseJson);
-            return true;
-          } else {
-            throw AppError(errorMessage: registerMessage);
-          }
+          return RegisterModel.fromJson(responseJson);
+        } else if (response.statusCode == 200) {
+          final responseJson = response.data;
+          log(responseJson.toString());
+          return RegisterModel.fromJson(responseJson);
         } else {
           throw AppError(statusCode: response.statusCode);
         }
@@ -135,5 +138,38 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       throw AppError(errorMessage: e.toString());
     }
     throw AppError(errorMessage: "Unknown error occurred during registration");
+  }
+
+  @override
+  Future<bool> forgetPassword(String? email) async {
+    try {
+      var body = {
+        'email': email,
+      };
+
+      Response? response = await _apiClient?.postReq(
+        url: ApiConstants.forgetPassword,
+        body: body,
+      );
+
+      if (response?.data != null && response?.statusCode != null) {
+        if (response!.statusCode == 200) {
+          final responseJson = response.data;
+          log(responseJson.toString());
+          return true;
+          //   return RegisterModel.fromJson(responseJson);
+          // } else if (response.statusCode == 200) {
+          //   final responseJson = response.data;
+          //   log(responseJson.toString());
+          //   return RegisterModel.fromJson(responseJson);
+        } else {
+          throw AppError(statusCode: response.statusCode);
+        }
+      }
+    } catch (e) {
+      log("forgetPassword Error", error: e);
+      throw AppError(errorMessage: e.toString());
+    }
+    throw AppError(errorMessage: "Unknown error occurred");
   }
 }

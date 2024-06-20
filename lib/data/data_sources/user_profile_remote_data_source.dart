@@ -15,6 +15,7 @@ import '../models/user_profile_model.dart';
 
 abstract class UserProfileRemoteDataSource {
   Future<UserProfileModel?>? getUserProfile();
+  Future<UserProfileModel?>? getOtherProfile(String? otherUserId);
   Future<String?>? verifyProfile(
       {String? userId,
       String? name,
@@ -22,12 +23,14 @@ abstract class UserProfileRemoteDataSource {
       int? contact,
       String? jobTitle,
       String? company,
-      String? industry,
-      String? expertise,
+      List<String>? industry,
+      List<String>? expertise,
       String? location,
       String? avatarSrc,
       String? bannerSrc,
-      String? jwtToken});
+      String? jwtToken,
+      String? postingAs,
+      String? gender});
   Future<String?>? editProfile(
       {String? userId,
       String? name,
@@ -35,16 +38,19 @@ abstract class UserProfileRemoteDataSource {
       int? contact,
       String? jobTitle,
       String? company,
-      String? industry,
-      String? expertise,
+      List<String>? industry,
+      List<String>? expertise,
       String? location,
       String? avatarSrc,
       String? bannerSrc,
-      String? jwtToken});
+      String? jwtToken,
+      String? postingAs,
+      String? gender});
   Future<AvatarModel?>? uploadAvatar(String? fileName, String? fileType, String? userId, String? userType);
   Future<BannerModel?>? uploadBanner(String? fileName, String? fileType, String? userId, String? userType);
   Future<bool> uploadToAWS(String? url, String? fileName, File file, String? fileType);
   Future<ImageModel> getImage(String? src);
+  Future<bool> deleteAccount(String? userId);
 }
 
 class UserProfileRemoteDataSourceImpl implements UserProfileRemoteDataSource {
@@ -85,6 +91,33 @@ class UserProfileRemoteDataSourceImpl implements UserProfileRemoteDataSource {
   }
 
   @override
+  Future<UserProfileModel?>? getOtherProfile(String? otherUserId) async {
+    var jwtToken = await getJwtToken();
+    print(jwtToken);
+    try {
+      Response? response = await _apiClient.getReq(
+        url: "${ApiConstants.getOtherProfile}/$otherUserId",
+        jwtToken: jwtToken,
+      );
+
+      if (response?.data != null && response?.statusCode != null) {
+        if (response!.statusCode == 200) {
+          var responseJson = response.data;
+          log(responseJson.toString());
+          return UserProfileModel.fromJson(responseJson);
+        } else {
+          throw AppError(statusCode: response.statusCode);
+        }
+      } else {
+        throw AppError();
+      }
+    } catch (e) {
+      log("getOtherProfile Error", error: e);
+      throw AppError(errorMessage: e.toString());
+    }
+  }
+
+  @override
   Future<String?>? verifyProfile({
     String? userId,
     String? name,
@@ -92,12 +125,14 @@ class UserProfileRemoteDataSourceImpl implements UserProfileRemoteDataSource {
     int? contact,
     String? jobTitle,
     String? company,
-    String? industry,
-    String? expertise,
+    List<String>? industry,
+    List<String>? expertise,
     String? location,
     String? avatarSrc,
     String? bannerSrc,
     String? jwtToken,
+    String? postingAs,
+    String? gender,
   }) async {
     var jwtToken = await getJwtToken();
     try {
@@ -114,6 +149,8 @@ class UserProfileRemoteDataSourceImpl implements UserProfileRemoteDataSource {
         'location': location,
         'avatarSrc': avatarSrc,
         'bannerSrc': bannerSrc,
+        "postingAs": postingAs,
+        'gender': gender,
       };
 
       Response? response = await _apiClient.postReq(
@@ -127,7 +164,7 @@ class UserProfileRemoteDataSourceImpl implements UserProfileRemoteDataSource {
           var responseJson = response.data;
           log(responseJson.toString());
           var responseMsg = responseJson['message'];
-          if (responseMsg == "Profile added cuccessfully") {
+          if (responseMsg == "Profile added successfully") {
             return responseMsg;
           }
         } else {
@@ -151,12 +188,14 @@ class UserProfileRemoteDataSourceImpl implements UserProfileRemoteDataSource {
     int? contact,
     String? jobTitle,
     String? company,
-    String? industry,
-    String? expertise,
+    List<String>? industry,
+    List<String>? expertise,
     String? location,
     String? avatarSrc,
     String? bannerSrc,
     String? jwtToken,
+    String? postingAs,
+    String? gender,
   }) async {
     var jwtToken = await getJwtToken();
     try {
@@ -173,6 +212,8 @@ class UserProfileRemoteDataSourceImpl implements UserProfileRemoteDataSource {
         'location': location,
         'avatarSrc': avatarSrc,
         'bannerSrc': bannerSrc,
+        "postingAs": postingAs,
+        'gender': gender,
       };
 
       Response? response = await _apiClient.patchReq(
@@ -315,6 +356,33 @@ class UserProfileRemoteDataSourceImpl implements UserProfileRemoteDataSource {
       }
     } catch (e) {
       log("getImage Error", error: e);
+      throw AppError(errorMessage: e.toString());
+    }
+  }
+
+  @override
+  Future<bool> deleteAccount(String? userId) async {
+    var jwtToken = await getJwtToken();
+
+    try {
+      Response? response = await _apiClient.deleteReq(
+        url: "${ApiConstants.deleteAccount}/$userId",
+        jwtToken: jwtToken,
+      );
+
+      if (response?.data != null && response?.statusCode != null) {
+        if (response!.statusCode == 200) {
+          var responseJson = response.data;
+          log(responseJson.toString());
+          return true;
+        } else {
+          throw AppError(statusCode: response.statusCode);
+        }
+      } else {
+        throw AppError();
+      }
+    } catch (e) {
+      log("deleteAccount Error", error: e);
       throw AppError(errorMessage: e.toString());
     }
   }

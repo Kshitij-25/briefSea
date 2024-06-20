@@ -82,3 +82,15 @@ Future<bool> sendChatMessages(SendChatMessagesRef ref,
     (newChat) => newChat,
   );
 }
+
+@riverpod
+Future<ChatUserModel> getDMUser(GetDMUserRef ref, {required String senderId, required String receiverId}) async {
+  final chatRepository = ref.watch(chatRepositoryProvider);
+  final eitherDMUserOrError = await chatRepository.getDMUser(senderId, receiverId);
+  return eitherDMUserOrError.fold(
+    (error) {
+      throw error; // Throw the error for Riverpod to handle
+    },
+    (user) => user,
+  );
+}

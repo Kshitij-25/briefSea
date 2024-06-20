@@ -28,6 +28,8 @@ _$UserProfileModelImpl _$$UserProfileModelImplFromJson(
       bannerSrc: json['bannerSrc'] as String?,
       createdAt: json['createdAt'] as String?,
       updatedAt: json['updatedAt'] as String?,
+      postingAs: json['postingAs'] as String?,
+      gender: json['gender'] as String?,
     );
 
 Map<String, dynamic> _$$UserProfileModelImplToJson(
@@ -48,4 +50,6 @@ Map<String, dynamic> _$$UserProfileModelImplToJson(
       'bannerSrc': instance.bannerSrc,
       'createdAt': instance.createdAt,
       'updatedAt': instance.updatedAt,
+      'postingAs': instance.postingAs,
+      'gender': instance.gender,
     };

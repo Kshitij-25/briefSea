@@ -15,12 +15,13 @@ import '../presentation/screens/messages/chat_screen.dart';
 import '../presentation/screens/messages/messages_screen_navigator.dart';
 import '../presentation/screens/my_feed/feed_screen.dart';
 import '../presentation/screens/notification_screen.dart';
+import '../presentation/screens/profile_screen.dart';
 
 final router = GoRouter(
   initialLocation: prefs!.getBool('isLogin') != true
       ? WelcomeScreen.routeName
       : prefs!.getBool('profile') != true
-          ? VerifyProfileScreen.routeName
+          ? WelcomeScreen.routeName
           : HomeScreen.routeName,
   routes: [
     GoRoute(
@@ -42,6 +43,15 @@ final router = GoRouter(
     GoRoute(
       path: ExistingLoginScreen.routeName,
       builder: (context, state) => ExistingLoginScreen(),
+    ),
+    GoRoute(
+      path: ProfileScreen.routeName,
+      builder: (context, state) {
+        final Map<String, dynamic> extras = state.extra as Map<String, dynamic>;
+        final bool isOtherProfile = extras['isOtherProfile'];
+        final String otherUserId = extras['otherUserId'] ?? "";
+        return ProfileScreen(isOtherProfile: isOtherProfile, otherUserId: otherUserId);
+      },
     ),
     GoRoute(
       path: OtpScreen.routeName,

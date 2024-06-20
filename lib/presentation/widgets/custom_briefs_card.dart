@@ -1,5 +1,7 @@
+import 'package:briefsea/presentation/screens/profile_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
 import '../../data/models/briefs_model.dart';
@@ -41,23 +43,36 @@ class CustomBriefsCard extends StatelessWidget {
       child: _BriefCard(
         isCardVisible: cardVisible,
         child: Padding(
-          padding: const EdgeInsets.all(15.0),
+          padding: const EdgeInsets.all(12.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Row(
                 children: [
-                  CircleAvatar(
-                    backgroundColor: const Color(0xFF1B0C6B),
-                    radius: 25,
-                    child: Text(
-                      brief?.name?[0] ?? "",
-                      style: const TextStyle(
-                        color: Colors.white,
+                  GestureDetector(
+                    onTap: () {
+                      if (isUserTrue != true) {
+                        context.push(
+                          ProfileScreen.routeName,
+                          extra: {
+                            'isOtherProfile': true,
+                            'otherUserId': brief!.userId,
+                          },
+                        );
+                      }
+                    },
+                    child: CircleAvatar(
+                      backgroundColor: const Color(0xFF1B0C6B),
+                      radius: 25,
+                      child: Text(
+                        brief?.name?[0] ?? "",
+                        style: const TextStyle(
+                          color: Colors.white,
+                        ),
+                        textScaler: const TextScaler.linear(1.3),
                       ),
-                      textScaler: const TextScaler.linear(1.3),
+                      // backgroundImage: avatarUrl?.url != "" ? NetworkImage(avatarUrl!.url!) : null,
                     ),
-                    // backgroundImage: avatarUrl?.url != "" ? NetworkImage(avatarUrl!.url!) : null,
                   ),
                   // FutureBuilder(
                   //   future: avatarUrl,
@@ -94,15 +109,13 @@ class CustomBriefsCard extends StatelessWidget {
                           color: Colors.black,
                         ),
                       ),
-                      cardVisible == false
-                          ? Text(
-                              ">> ${brief?.category ?? ""}",
-                              style: const TextStyle(
-                                color: Colors.black,
-                                fontSize: 12,
-                              ),
-                            )
-                          : const SizedBox.shrink(),
+                      Text(
+                        ">> ${brief?.category ?? ""}",
+                        style: const TextStyle(
+                          color: Colors.black,
+                          fontSize: 12,
+                        ),
+                      )
                     ],
                   ),
                   const Spacer(),
@@ -112,26 +125,26 @@ class CustomBriefsCard extends StatelessWidget {
                       color: Colors.grey,
                     ),
                   ),
-                  if (isUserTrue == false)
-                    Padding(
-                      padding: const EdgeInsets.only(left: 10),
-                      child: PopupMenuButton(
-                        color: Colors.white,
-                        icon: const Icon(
-                          Icons.keyboard_arrow_down,
-                          color: Colors.grey,
-                        ),
-                        itemBuilder: (context) {
-                          return <PopupMenuEntry<String>>[
-                            const PopupMenuItem<String>(
-                              value: 'message',
-                              child: Text('Chat with user'),
-                            ),
-                          ];
-                        },
-                        onSelected: onSelected,
-                      ),
-                    )
+                  // if (isUserTrue == false)
+                  //   Padding(
+                  //     padding: const EdgeInsets.only(left: 10),
+                  //     child: PopupMenuButton(
+                  //       color: Colors.white,
+                  //       icon: const Icon(
+                  //         Icons.keyboard_arrow_down,
+                  //         color: Colors.grey,
+                  //       ),
+                  //       itemBuilder: (context) {
+                  //         return <PopupMenuEntry<String>>[
+                  //           const PopupMenuItem<String>(
+                  //             value: 'message',
+                  //             child: Text('Chat with user'),
+                  //           ),
+                  //         ];
+                  //       },
+                  //       onSelected: onSelected,
+                  //     ),
+                  //   )
                 ],
               ),
               Padding(
@@ -191,19 +204,26 @@ class _BriefInputButton extends StatelessWidget {
   final String? iconLabel;
   @override
   Widget build(BuildContext context) {
-    return ElevatedButton.icon(
-      style: ButtonStyle(
-        backgroundColor: WidgetStateProperty.all<Color>(Colors.white),
-        elevation: WidgetStateProperty.all<double>(0),
-      ),
-      onPressed: onPressed,
-      icon: Icon(
-        iconData,
-        color: Colors.grey,
-      ),
-      label: Text(
-        iconLabel ?? "",
-        style: const TextStyle(color: Colors.grey),
+    return GestureDetector(
+      onTap: onPressed,
+      child: Container(
+        child: Row(
+          children: [
+            Icon(
+              iconData,
+              color: Colors.grey,
+              size: 18,
+            ),
+            const SizedBox(width: 5),
+            Text(
+              iconLabel ?? "",
+              style: const TextStyle(
+                color: Colors.grey,
+                fontSize: 13,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -221,24 +241,32 @@ class _BriefLikeButton extends StatelessWidget {
   final bool isLiked;
   @override
   Widget build(BuildContext context) {
-    return ElevatedButton.icon(
-      style: ButtonStyle(
-        backgroundColor: WidgetStateProperty.all<Color>(Colors.white),
-        elevation: WidgetStateProperty.all<double>(0),
-      ),
-      onPressed: onPressed,
-      icon: !isLiked
-          ? const Icon(
-              CupertinoIcons.heart,
-              color: Colors.grey,
-            )
-          : const Icon(
-              CupertinoIcons.heart_fill,
-              color: Colors.red,
+    return GestureDetector(
+      onTap: onPressed,
+      child: Container(
+        child: Row(
+          children: [
+            !isLiked
+                ? const Icon(
+                    CupertinoIcons.heart,
+                    color: Colors.grey,
+                    size: 18,
+                  )
+                : const Icon(
+                    CupertinoIcons.heart_fill,
+                    color: Colors.red,
+                    size: 18,
+                  ),
+            const SizedBox(width: 5),
+            Text(
+              iconLabel ?? "",
+              style: const TextStyle(
+                color: Colors.grey,
+                fontSize: 13,
+              ),
             ),
-      label: Text(
-        iconLabel ?? "",
-        style: const TextStyle(color: Colors.grey),
+          ],
+        ),
       ),
     );
   }

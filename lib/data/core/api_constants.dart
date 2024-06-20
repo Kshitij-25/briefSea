@@ -1,6 +1,10 @@
 class ApiConstants {
   ApiConstants._();
 
+  // Social Media Links
+  static const instaUrl = 'https://www.instagram.com/brief.sea/';
+  static const linkedInUrl = 'https://www.linkedin.com/company/briefsea/';
+
   // Base URLs
   static const BASE_URL = 'https://briefsea-backend.onrender.com'; //Test Url
   // static const BASE_URL = 'https://www.api.briefsea.com'; //Prod Url
@@ -8,13 +12,16 @@ class ApiConstants {
   // User authentication
   static const loginUrl = '$BASE_URL/forum/discussion/login/one';
   static const registerUrl = '$BASE_URL/forum/discussion/register/new';
+  static const forgetPassword = "$BASE_URL/forum/discussion/forget/password";
 
   // User profile
   static const getUserProfile = '$BASE_URL/forum/discussion/profile/single';
+  static const getOtherProfile = '$BASE_URL/forum/discussion/profile/single';
   static const verifyProfile = '$BASE_URL/forum/discussion/profile/new';
   static const editProfile = '$BASE_URL/forum/discussion/profile/single';
   static const uploadAvatar = '$BASE_URL/forum/discussion/uploads/profile/put/avatar';
   static const uploadBanner = '$BASE_URL/forum/discussion/uploads/profile/put/banner';
+  static const deleteAccount = "$BASE_URL/forum/discussion/login/remove";
 
   // Threads and briefs
   static const getAllBriefs = '$BASE_URL/forum/discussion/threads/pagination';
@@ -41,6 +48,7 @@ class ApiConstants {
   static const createNewChat = '$BASE_URL/forum/discussion/chats/new';
   static const getChatMessages = '$BASE_URL/forum/discussion/chat/messages/single';
   static const sendChatMessage = '$BASE_URL/forum/discussion/chat/messages/new';
+  static const getDMUser = '$BASE_URL/forum/discussion/chats/particular';
 
   // Notifications
   static const postNewNotification = '$BASE_URL/forum/discussion/notifs/new';
@@ -48,4 +56,7 @@ class ApiConstants {
   static const deleteNotification = '$BASE_URL/forum/discussion/notifs/remove';
   static const deleteAllNotification = '$BASE_URL/forum/discussion/notifs/remove/all';
   static const deleteMessageNotification = '$BASE_URL/forum/discussion/notifs/remove/msg';
+
+  // Share Brief
+  static const shareBrief = '$BASE_URL/forum/discussion/thread/share';
 }

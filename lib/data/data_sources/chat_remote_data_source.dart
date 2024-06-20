@@ -14,6 +14,7 @@ abstract class ChatRemoteDataSource {
   Future<bool> createNewChat(String? senderId, String? receiverId);
   Future<List<ChatMessageModel>> getChatMessages(String? conversationId);
   Future<bool> sendChatMessage({String? senderId, String? receiverId, String? conversationId, String? messageText, String? typedAt});
+  Future<ChatUserModel> getDMUser(String? senderId, String? receiverId);
 }
 
 class ChatRemoteDataSourceImpl implements ChatRemoteDataSource {
@@ -74,7 +75,14 @@ class ChatRemoteDataSourceImpl implements ChatRemoteDataSource {
           var responseMsg = responseJson['message'];
           if (responseMsg == "Conversation created successfully") {
             return true;
-          } else if (responseMsg == "Conversation already exists") {
+          } else {
+            return false;
+          }
+        } else if (response.statusCode == 200) {
+          var responseJson = response.data;
+          log(responseJson.toString());
+          var responseMsg = responseJson['message'];
+          if (responseMsg == "Conversation already exists") {
             return true;
           } else {
             return false;
@@ -159,6 +167,38 @@ class ChatRemoteDataSourceImpl implements ChatRemoteDataSource {
       }
     } catch (e) {
       log("sendChatMessage Error", error: e);
+      throw AppError(errorMessage: e.toString());
+    }
+  }
+
+  @override
+  Future<ChatUserModel> getDMUser(String? senderId, String? receiverId) async {
+    var jwtToken = await getJwtToken();
+
+    try {
+      Response? response = await _apiClient.getReq(
+        url: "${ApiConstants.getDMUser}/$receiverId",
+        jwtToken: jwtToken,
+      );
+
+      if (response?.data != null && response?.statusCode != null) {
+        if (response!.statusCode == 200) {
+          var responseJson = response.data;
+          log(responseJson.toString());
+          // Check if responseJson is an array and not empty
+          if (responseJson is List && responseJson.isNotEmpty) {
+            return ChatUserModel.fromJson(responseJson[0]);
+          } else {
+            throw AppError(errorMessage: "Invalid response format or empty array");
+          }
+        } else {
+          throw AppError(statusCode: response.statusCode);
+        }
+      } else {
+        throw AppError();
+      }
+    } catch (e) {
+      log("createNewChat Error", error: e);
       throw AppError(errorMessage: e.toString());
     }
   }

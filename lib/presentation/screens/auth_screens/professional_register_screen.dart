@@ -6,7 +6,6 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../../../common/enums.dart';
 import '../../../common/screen_size.dart';
 import '../../providers/auth_provider.dart';
-import '../../state_providers/sub_type_state_provider.dart';
 import '../../widgets/custom_back_button.dart';
 import '../../widgets/custom_elevated_button.dart';
 import '../../widgets/custom_shape_widget.dart';
@@ -20,6 +19,8 @@ class ProfessionalRegisterScreen extends ConsumerWidget {
   final TextEditingController professionalUserName = TextEditingController();
   final TextEditingController professionalEmail = TextEditingController();
   final TextEditingController professionalPass = TextEditingController();
+  final TextEditingController professionalConfirmPass = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
 
   var dropDownItems = ['Owner', 'Working'];
 
@@ -30,7 +31,172 @@ class ProfessionalRegisterScreen extends ConsumerWidget {
       backgroundColor: const Color(0xFF4C27FF),
       body: Stack(
         children: [
-          bodyWidget(context, ref, registerState),
+          Form(
+            key: _formKey,
+            child: SizedBox(
+              height: ScreenSize.height(context),
+              child: Stack(
+                children: [
+                  const CustomShapeWidget(),
+                  Container(
+                    width: ScreenSize.width(context),
+                    padding: const EdgeInsets.symmetric(horizontal: 50),
+                    child: SingleChildScrollView(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          SizedBox(height: ScreenSize.height(context) * .15),
+                          const Text(
+                            "Briefsea for Working Professionals",
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 16,
+                            ),
+                            textAlign: TextAlign.center,
+                            textScaler: TextScaler.linear(1),
+                          ),
+                          SizedBox(height: ScreenSize.height(context) * .05),
+                          CustomTextFormField(
+                            hintText: "Enter Name",
+                            controller: professionalUserName,
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Name is required';
+                              }
+                              return null;
+                            },
+                          ),
+                          const SizedBox(height: 20),
+                          CustomTextFormField(
+                            hintText: "Enter your Email",
+                            controller: professionalEmail,
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Email is required';
+                              }
+                              if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value)) {
+                                return 'Enter a valid email';
+                              }
+                              return null;
+                            },
+                          ),
+                          const SizedBox(height: 20),
+                          CustomTextFormField(
+                            hintText: "Enter Password",
+                            controller: professionalPass,
+                            obscureText: true,
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Password is required';
+                              }
+                              if (value.length < 8) {
+                                return 'Password should be at least 8 characters';
+                              }
+                              if (!value.contains(RegExp(r'[0-9]'))) {
+                                return 'Password should contain at least one number';
+                              }
+                              if (!value.contains(RegExp(r'[!@#$%^&*(),.?":{}|<>]'))) {
+                                return 'Password should contain at least one special character';
+                              }
+                              return null;
+                            },
+                          ),
+                          const SizedBox(height: 20),
+                          CustomTextFormField(
+                            hintText: "Confirm Password",
+                            controller: professionalConfirmPass,
+                            obscureText: true,
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Please confirm your password';
+                              }
+                              if (value != professionalPass.text) {
+                                return 'Passwords do not match';
+                              }
+                              return null;
+                            },
+                          ),
+                          // SizedBox(height: ScreenSize.height(context) * .05),
+                          // const Text(
+                          //   "Or sign up using an option:",
+                          //   style: TextStyle(color: Colors.white),
+                          //   textScaler: TextScaler.linear(1),
+                          //   textAlign: TextAlign.center,
+                          // ),
+                          // const SizedBox(height: 20),
+                          // Row(
+                          //   mainAxisAlignment: MainAxisAlignment.center,
+                          //   children: [
+                          //     _signUpOptions(
+                          //       context,
+                          //       'assets/logos/google-icon.svg',
+                          //       () {},
+                          //     ),
+                          //     const SizedBox(width: 20),
+                          //     _signUpOptions(
+                          //       context,
+                          //       'assets/logos/linkedin-icon.svg',
+                          //       () {},
+                          //     ),
+                          //   ],
+                          // ),
+                          SizedBox(height: ScreenSize.height(context) * .05),
+                          const Text(
+                            "Agency, Freelancer or Existing User?",
+                            style: TextStyle(color: Colors.white),
+                            textScaler: TextScaler.linear(1),
+                            textAlign: TextAlign.center,
+                          ),
+                          TextButton(
+                            onPressed: () {
+                              GoRouter.of(context).pop();
+                            },
+                            style: const ButtonStyle(
+                              overlayColor: WidgetStateColor.transparent,
+                            ),
+                            child: const Text(
+                              "Go back",
+                              style: TextStyle(
+                                color: Color(0xFF01FFF5),
+                              ),
+                            ),
+                          ),
+                          Center(
+                            child: CustomElevatedButton(
+                              width: ScreenSize.width(context) * 0.5,
+                              buttonLabel: "Next",
+                              onPressed: () async {
+                                if (_formKey.currentState!.validate()) {
+                                  await ref.read(registerNotifierProvider.notifier).registerUser(
+                                        userName: professionalUserName.text,
+                                        email: professionalEmail.text,
+                                        password: professionalPass.text,
+                                        type: "professional",
+                                        subType: "",
+                                        ref: ref,
+                                        context: context,
+                                      );
+                                }
+                              },
+                            ),
+                          ),
+                          SizedBox(height: ScreenSize.height(context) * .05),
+                          const Text(
+                            "Instantly connect with agencies, freelancers, and vendors of your industry.",
+                            style: TextStyle(color: Colors.white),
+                            textScaler: TextScaler.linear(1),
+                            textAlign: TextAlign.center,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  const Positioned(top: 40, left: 0, child: CustomBackButton()),
+                ],
+              ),
+            ),
+          ),
           if (registerState == RegisterState.loading)
             Container(
               color: Colors.black54,
@@ -38,152 +204,6 @@ class ProfessionalRegisterScreen extends ConsumerWidget {
                 child: CircularProgressIndicator.adaptive(),
               ),
             ),
-        ],
-      ),
-    );
-  }
-
-  bodyWidget(context, WidgetRef ref, RegisterState registerState) {
-    final selectedSubType = ref.watch(subTypeProvider);
-    return SizedBox(
-      height: ScreenSize.height(context),
-      child: Stack(
-        children: [
-          const CustomShapeWidget(),
-          Container(
-            width: ScreenSize.width(context),
-            padding: const EdgeInsets.symmetric(horizontal: 50),
-            child: SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  SizedBox(height: ScreenSize.height(context) * .15),
-                  const Text(
-                    "Login as Working Professional",
-                    style: TextStyle(color: Colors.white),
-                    textScaler: TextScaler.linear(2),
-                  ),
-                  SizedBox(height: ScreenSize.height(context) * .05),
-                  CustomTextFormField(
-                    hintText: "Enter Name",
-                    controller: professionalUserName,
-                  ),
-                  const SizedBox(height: 20),
-                  CustomTextFormField(
-                    hintText: "Enter your Email",
-                    controller: professionalEmail,
-                  ),
-                  const SizedBox(height: 20),
-                  CustomTextFormField(
-                    hintText: "Enter Password",
-                    controller: professionalPass,
-                    obscureText: true,
-                  ),
-                  const SizedBox(height: 20),
-                  Container(
-                    height: 55,
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: DropdownButtonHideUnderline(
-                      child: DropdownButton(
-                        padding: const EdgeInsets.all(15),
-                        value: selectedSubType,
-                        items: dropDownItems.map((String items) {
-                          return DropdownMenuItem(
-                            value: items.toLowerCase(),
-                            child: Text(items),
-                          );
-                        }).toList(),
-                        onChanged: (value) {
-                          ref.read(subTypeProvider.notifier).state = value!;
-                        },
-                      ),
-                    ),
-                  ),
-                  // SizedBox(height: ScreenSize.height(context) * .05),
-                  // const Text(
-                  //   "Or sign up using an option:",
-                  //   style: TextStyle(color: Colors.white),
-                  //   textScaler: TextScaler.linear(1),
-                  //   textAlign: TextAlign.center,
-                  // ),
-                  // const SizedBox(height: 20),
-                  // Row(
-                  //   mainAxisAlignment: MainAxisAlignment.center,
-                  //   children: [
-                  //     _signUpOptions(
-                  //       context,
-                  //       'assets/logos/google-icon.svg',
-                  //       () {},
-                  //     ),
-                  //     const SizedBox(width: 20),
-                  //     _signUpOptions(
-                  //       context,
-                  //       'assets/logos/linkedin-icon.svg',
-                  //       () {},
-                  //     ),
-                  //   ],
-                  // ),
-                  SizedBox(height: ScreenSize.height(context) * .05),
-                  const Text(
-                    "Agency, Freelancer or Existing User?",
-                    style: TextStyle(color: Colors.white),
-                    textScaler: TextScaler.linear(1),
-                    textAlign: TextAlign.center,
-                  ),
-                  TextButton(
-                    onPressed: () {
-                      GoRouter.of(context).pop();
-                    },
-                    child: const Text(
-                      "Go back",
-                      style: TextStyle(
-                        color: Color(0xFF01FFF5),
-                      ),
-                    ),
-                  ),
-                  Center(
-                    child: CustomElevatedButton(
-                      width: ScreenSize.width(context) * 0.5,
-                      buttonLabel: "Next",
-                      onPressed: () async {
-                        if (professionalUserName.text.isNotEmpty && professionalEmail.text.isNotEmpty && professionalPass.text.isNotEmpty) {
-                          // final isRegistered = await ref.read(registerUserProvider(
-                          //   userName: professionalUserName.text,
-                          //   email: professionalEmail.text,
-                          //   password: professionalPass.text,
-                          //   type: "agency",
-                          //   subType: selectedSubType,
-                          // ).future);
-
-                          // print(isRegistered);
-
-                          // if (isRegistered == true) {
-                          //   AppUtility(context).message("Registered Successfully. Check email to Verify Profile and Login.");
-                          //   GoRouter.of(context).pop();
-                          // }
-                          await ref.read(registerNotifierProvider.notifier).registerUser(professionalUserName.text, professionalEmail.text,
-                              professionalPass.text, selectedSubType == "Working" ? "professional" : "owner", selectedSubType, ref, context);
-                          // await ref.read(postNewNotificationProvider(requestBody: {
-                          //   "type": 'user account',
-                          //   "sender_id": 'briefseaAdmin9712',
-                          //   "sender_name": 'Briefsea',
-                          //   "receiver_id": result?.user_id,
-                          //   "notification":
-                          //       "Welcome to Briefsea.Hire the best freelancers, vendors and professionals for your tech and marketing projects."
-                          // }).future);
-                        }
-                      },
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-          const Positioned(top: 40, left: 0, child: CustomBackButton()),
         ],
       ),
     );

@@ -1,6 +1,9 @@
 import 'dart:developer';
 
+import 'package:briefsea/data/core/api_constants.dart';
+import 'package:briefsea/data/models/chat_user_model.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:share_plus/share_plus.dart';
 
@@ -8,6 +11,7 @@ import '../../../common/screen_size.dart';
 import '../../../data/models/briefs_model.dart';
 import '../../providers/auth_provider.dart';
 import '../../providers/breifs_provider.dart';
+import '../../providers/chat_provider.dart';
 import '../../providers/likes_provider.dart';
 import '../../providers/notification_provider.dart';
 import '../../providers/reply_provider.dart';
@@ -15,6 +19,7 @@ import '../../state_providers/reply_state_provider.dart';
 import '../../widgets/custom_briefs_card.dart';
 import '../../widgets/custom_comment_card.dart';
 import '../../widgets/reply_modal_sheet.dart';
+import '../messages/chat_screen.dart';
 
 class FeedScreen extends ConsumerWidget {
   FeedScreen({
@@ -86,7 +91,7 @@ class FeedScreen extends ConsumerWidget {
             child: Column(
               children: [
                 CustomBriefsCard(
-                  isUserTrue: (allBrief!.userId == userDetails['userId'] || userBrief!.userId == userDetails['userId']) ? true : false,
+                  isUserTrue: (allBrief!.userId == userDetails['user_id'] || userBrief!.userId == userDetails['user_id']) ? true : false,
                   maxLine: 100,
                   cardVisible: false,
                   brief: allBrief ?? userBrief,
@@ -137,7 +142,10 @@ class FeedScreen extends ConsumerWidget {
                       return ListView.builder(
                         itemCount: comments.length,
                         itemBuilder: (context, index) {
+                          print(
+                              "${allBrief!.userId}== ${userDetails['user_id']}  ==>${(allBrief!.userId == userDetails['user_id'] || userBrief!.userId == userDetails['user_id'])}");
                           return CustomCommentCard(
+                            isUserTrue: (allBrief!.userId == userDetails['user_id'] || userBrief!.userId == userDetails['user_id']) ? true : false,
                             isReplies: false,
                             onCommentTap: (p0) {
                               ref.watch(isReplyStateProvider.notifier).state = true;
@@ -170,7 +178,27 @@ class FeedScreen extends ConsumerWidget {
                                 log(e.toString());
                               }
                             },
-                            onDMTap: (p0) async {},
+                            onDMTap: (p0) async {
+                              var isChatCreated = await ref.watch(
+                                createNewChatProvider(
+                                  receiverId: comments[index].userId!,
+                                  senderId: userDetails['user_id']!,
+                                ).future,
+                              );
+
+                              if (isChatCreated == true) {
+                                ChatUserModel chatUserModel = await ref.watch(
+                                  getDMUserProvider(
+                                    receiverId: comments[index].userId!,
+                                    senderId: userDetails['user_id']!,
+                                  ).future,
+                                );
+                                context.push(
+                                  ChatScreen.routeName,
+                                  extra: chatUserModel,
+                                );
+                              }
+                            },
                             commentModel: comments[index],
                             loggedInUserId: userDetails['user_id'],
                           );
@@ -208,7 +236,7 @@ class FeedScreen extends ConsumerWidget {
                               minLines: 1,
                               maxLines: 100,
                               decoration: const InputDecoration.collapsed(
-                                hintText: "Leave a thought...",
+                                hintText: "Reply to this brief",
                               ),
                             ),
                           ),
@@ -263,7 +291,7 @@ class FeedScreen extends ConsumerWidget {
 
   void shareBrief(BriefsModel brief) {
     Share.share(
-      'Check out this brief by: ${brief.name![0].toUpperCase()}${brief.name!.substring(1)}\n${brief.postText}',
+      'Check out this brief by: ${brief.name![0].toUpperCase()}${brief.name!.substring(1)} at\n ${ApiConstants.shareBrief}/${brief.id}',
       subject: 'Check out this brief!',
     );
   }

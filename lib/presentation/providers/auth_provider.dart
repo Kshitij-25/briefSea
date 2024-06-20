@@ -8,10 +8,12 @@ import '../../data/core/api_client.dart';
 import '../../data/data_sources/auth_remote_data_source.dart';
 import '../../data/di/get_it.dart';
 import '../../data/models/login_model.dart';
+import '../../data/models/register_model.dart';
 import '../../data/repositories/auth_repository.dart';
 import '../../main.dart';
 import '../screens/auth_screens/verify_profile_screen.dart';
 import '../screens/home_screen.dart';
+import 'notification_provider.dart';
 
 part 'auth_provider.g.dart';
 
@@ -57,11 +59,17 @@ class LoginNotifier extends StateNotifier<LoginState> {
         await prefs!.setBool('isLogin', isLoginSuccess);
         await prefs!.setBool('profile', loginModel.profile!);
         // Navigate based on profile status
-        loginModel.profile == false ? GoRouter.of(context).go(VerifyProfileScreen.routeName) : GoRouter.of(context).go(HomeScreen.routeName);
+        loginModel.profile == false ? GoRouter.of(context).push(VerifyProfileScreen.routeName) : GoRouter.of(context).go(HomeScreen.routeName);
         state = LoginState.success;
       } else if (loginModel.message == 'Email sent') {
         state = LoginState.error;
         AppUtility(context).message("Verify your email first");
+      } else if (loginModel.message == 'Login failed') {
+        state = LoginState.error;
+        AppUtility(context).message("Incorrect username or password");
+      } else if (loginModel.message == 'Invalid Email') {
+        state = LoginState.error;
+        AppUtility(context).message("Invalid Email");
       } else {
         state = LoginState.error;
       }
@@ -72,7 +80,7 @@ class LoginNotifier extends StateNotifier<LoginState> {
 }
 
 @riverpod
-Future<bool> registerUser(RegisterUserRef ref,
+Future<RegisterModel> registerUser(RegisterUserRef ref,
     {required String userName, required String email, required String password, required String type, required String subType}) async {
   final authRepository = ref.read(authRepositoryProvider);
   final eitherRegisteredOrError = await authRepository.registerUser(userName, email, password, type, subType);
@@ -84,10 +92,30 @@ Future<bool> registerUser(RegisterUserRef ref,
   );
 }
 
+@riverpod
+Future<bool> forgetPassword(ForgetPasswordRef ref, {required String email}) async {
+  final authRepository = ref.read(authRepositoryProvider);
+  final eitherForgetPassOrError = await authRepository.forgetPassword(email);
+  return eitherForgetPassOrError!.fold(
+    (error) {
+      throw error; // Throw the error for Riverpod to handle
+    },
+    (forgetPassword) => forgetPassword,
+  );
+}
+
 class RegisterNotifier extends StateNotifier<RegisterState> {
   RegisterNotifier() : super(RegisterState.idle);
 
-  Future<void> registerUser(String? userName, String? email, String? password, String? type, String? subType, WidgetRef ref, context) async {
+  Future<void> registerUser({
+    String? userName,
+    String? email,
+    String? password,
+    String? type,
+    String? subType,
+    required WidgetRef ref,
+    required context,
+  }) async {
     state = RegisterState.loading;
     try {
       final isRegistered = await ref.read(
@@ -100,14 +128,26 @@ class RegisterNotifier extends StateNotifier<RegisterState> {
         ).future,
       );
 
-      if (isRegistered == true) {
+      if (isRegistered.message == "User registered") {
         AppUtility(context).message("Registered Successfully. Check email to Verify Profile and Login.");
+        await ref.read(
+          postNewNotificationProvider(
+            requestBody: {
+              "type": 'user account',
+              "sender_id": 'briefseaAdmin9712',
+              "sender_name": 'Briefsea',
+              "receiver_id": isRegistered.userId,
+              "notification": "Welcome to Briefsea.Hire the best freelancers, vendors and professionals for your tech and marketing projects."
+            },
+          ).future,
+        );
         GoRouter.of(context).pop();
 
         state = RegisterState.success;
         // Handle successful registration (e.g., navigate to a different screen)
-      } else {
+      } else if (isRegistered.message == "User already exists") {
         state = RegisterState.error;
+        AppUtility(context).message("User already exists");
       }
     } catch (e) {
       state = RegisterState.error;
@@ -136,6 +176,6 @@ class UserDetailsNotifier extends StateNotifier<Map<String, String>> {
   }
 }
 
-final userDetailsProvider = StateNotifierProvider<UserDetailsNotifier, Map<String, String>>((ref) {
+final userDetailsProvider = StateNotifierProvider.autoDispose<UserDetailsNotifier, Map<String, String>>((ref) {
   return UserDetailsNotifier();
 });

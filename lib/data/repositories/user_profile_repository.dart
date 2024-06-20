@@ -25,6 +25,17 @@ class UserProfileRepository {
     }
   }
 
+  Future<Either<AppError, UserProfileModel>>? getOtherProfile(String? otherUserId) async {
+    try {
+      final userProfileModel = await _userProfileRemoteDataSource.getOtherProfile(otherUserId);
+      return Right(userProfileModel!);
+    } on AppError catch (e) {
+      return Left(e);
+    } on Exception catch (e) {
+      return Left(AppError(errorMessage: e.toString()));
+    }
+  }
+
   Future<Either<AppError, String>>? verifyProfile({
     String? userId,
     String? name,
@@ -32,12 +43,14 @@ class UserProfileRepository {
     int? contact,
     String? jobTitle,
     String? company,
-    String? industry,
-    String? expertise,
+    List<String>? industry,
+    List<String>? expertise,
     String? location,
     String? avatarSrc,
     String? bannerSrc,
     String? jwtToken,
+    String? postingAs,
+    String? gender,
   }) async {
     try {
       final verifyProfile = await _userProfileRemoteDataSource.verifyProfile(
@@ -53,6 +66,8 @@ class UserProfileRepository {
         avatarSrc: avatarSrc,
         bannerSrc: bannerSrc,
         jwtToken: jwtToken,
+        postingAs: postingAs,
+        gender: gender,
       );
       return Right(verifyProfile!);
     } on AppError catch (e) {
@@ -69,12 +84,14 @@ class UserProfileRepository {
     int? contact,
     String? jobTitle,
     String? company,
-    String? industry,
-    String? expertise,
+    List<String>? industry,
+    List<String>? expertise,
     String? location,
     String? avatarSrc,
     String? bannerSrc,
     String? jwtToken,
+    String? postingAs,
+    String? gender,
   }) async {
     try {
       final verifyProfile = await _userProfileRemoteDataSource.editProfile(
@@ -90,6 +107,8 @@ class UserProfileRepository {
         avatarSrc: avatarSrc,
         bannerSrc: bannerSrc,
         jwtToken: jwtToken,
+        postingAs: postingAs,
+        gender: gender,
       );
       return Right(verifyProfile!);
     } on AppError catch (e) {
@@ -146,6 +165,17 @@ class UserProfileRepository {
     try {
       final imageUrl = await _userProfileRemoteDataSource.getImage(src);
       return Right(imageUrl);
+    } on AppError catch (e) {
+      return Left(e);
+    } on Exception catch (e) {
+      return Left(AppError(errorMessage: e.toString()));
+    }
+  }
+
+  Future<Either<AppError, bool>> deleteAccount(String userId) async {
+    try {
+      final isAccountDeleted = await _userProfileRemoteDataSource.deleteAccount(userId);
+      return Right(isAccountDeleted);
     } on AppError catch (e) {
       return Left(e);
     } on Exception catch (e) {

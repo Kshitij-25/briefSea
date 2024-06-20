@@ -3,6 +3,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
+import '../../../common/app_utility.dart';
 import '../../../common/enums.dart';
 import '../../../common/screen_size.dart';
 import '../../providers/auth_provider.dart';
@@ -18,6 +19,9 @@ class ExistingLoginScreen extends ConsumerWidget {
 
   final TextEditingController emailCont = TextEditingController();
   final TextEditingController passCont = TextEditingController();
+  final TextEditingController forgotEmail = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
+  final _formKey2 = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -26,7 +30,207 @@ class ExistingLoginScreen extends ConsumerWidget {
       backgroundColor: const Color(0xFF4C27FF),
       body: Stack(
         children: [
-          bodyWidget(context, ref, loginState),
+          Form(
+            key: _formKey,
+            child: SizedBox(
+              height: ScreenSize.height(context),
+              child: Stack(
+                children: [
+                  const CustomShapeWidget(),
+                  Container(
+                    width: ScreenSize.width(context),
+                    padding: const EdgeInsets.symmetric(horizontal: 50),
+                    child: SingleChildScrollView(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          SizedBox(height: ScreenSize.height(context) * .2),
+                          GestureDetector(
+                            onTap: () {
+                              emailCont.text = "kshitij@briefsea.com";
+                              passCont.text = '1234567890';
+                            },
+                            onLongPress: () {
+                              emailCont.text = "dowaye6258@elahan.com";
+                              passCont.text = 'Test@123';
+                            },
+                            onDoubleTap: () {
+                              emailCont.text = "rahul@briefsea.com";
+                              passCont.text = "Abcd@1234#";
+                            },
+                            child: const Text(
+                              "Login as Existing User",
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 20,
+                              ),
+                              // textScaler: TextScaler.linear(1.2),
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                          SizedBox(height: ScreenSize.height(context) * .1),
+                          CustomTextFormField(
+                            hintText: "Enter your Email",
+                            controller: emailCont,
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Email is required';
+                              }
+                              if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value)) {
+                                return 'Enter a valid email';
+                              }
+                              return null;
+                            },
+                          ),
+                          const SizedBox(height: 20),
+                          CustomTextFormField(
+                            hintText: "Enter Password",
+                            controller: passCont,
+                            obscureText: true,
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Password is required';
+                              }
+                              return null;
+                            },
+                          ),
+                          TextButton(
+                            style: const ButtonStyle(
+                              overlayColor: WidgetStateColor.transparent,
+                            ),
+                            onPressed: () {
+                              showModalBottomSheet(
+                                context: context,
+                                backgroundColor: const Color(0xFF4C27FF),
+                                // isScrollControlled: true,
+                                useSafeArea: true,
+                                builder: (context) {
+                                  return SafeArea(
+                                    child: Form(
+                                      key: _formKey2,
+                                      child: Padding(
+                                        padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(15.0),
+                                          child: Column(
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: [
+                                              const Text(
+                                                "Reset your password",
+                                                style: TextStyle(color: Colors.white),
+                                                textScaler: TextScaler.linear(1),
+                                                textAlign: TextAlign.center,
+                                              ),
+                                              const SizedBox(height: 20),
+                                              CustomTextFormField(
+                                                hintText: "Enter Email",
+                                                controller: forgotEmail,
+                                                validator: (value) {
+                                                  if (value == null || value.isEmpty) {
+                                                    return 'Email is required';
+                                                  }
+                                                  if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value)) {
+                                                    return 'Enter a valid email';
+                                                  }
+                                                  return null;
+                                                },
+                                              ),
+                                              const SizedBox(height: 20),
+                                              CustomElevatedButton(
+                                                width: ScreenSize.width(context) * 0.5,
+                                                buttonLabel: "Submit",
+                                                onPressed: () async {
+                                                  if (_formKey2.currentState!.validate()) {
+                                                    await ref.read(ForgetPasswordProvider(email: forgotEmail.text).future);
+                                                    context.pop();
+                                                    AppUtility(context).message("Check email to reset password.");
+                                                  }
+                                                },
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  );
+                                },
+                              );
+                            },
+                            child: const Text(
+                              "Forgot Password?",
+                              style: TextStyle(color: Colors.white),
+                            ),
+                          ),
+                          // SizedBox(height: ScreenSize.height(context) * .05),
+                          // const Text(
+                          //   "Or sign up using an option:",
+                          //   style: TextStyle(color: Colors.white),
+                          //   textScaler: TextScaler.linear(1),
+                          //   textAlign: TextAlign.center,
+                          // ),
+                          // const SizedBox(height: 20),
+                          // Row(
+                          //   mainAxisAlignment: MainAxisAlignment.center,
+                          //   children: [
+                          //     _signUpOptions(
+                          //       context,
+                          //       'assets/logos/google-icon.svg',
+                          //       () {},
+                          //     ),
+                          //     const SizedBox(width: 20),
+                          //     _signUpOptions(
+                          //       context,
+                          //       'assets/logos/linkedin-icon.svg',
+                          //       () {},
+                          //     ),
+                          //   ],
+                          // ),
+                          SizedBox(height: ScreenSize.height(context) * .05),
+                          const Text(
+                            "Agency, Freelancer or\nWorking Professional?",
+                            style: TextStyle(color: Colors.white),
+                            textScaler: TextScaler.linear(1),
+                            textAlign: TextAlign.center,
+                          ),
+                          TextButton(
+                            onPressed: () {
+                              GoRouter.of(context).pop();
+                            },
+                            style: const ButtonStyle(
+                              overlayColor: WidgetStateColor.transparent,
+                            ),
+                            child: const Text(
+                              "Go back",
+                              style: TextStyle(
+                                color: Color(0xFF01FFF5),
+                              ),
+                            ),
+                          ),
+                          Center(
+                            child: CustomElevatedButton(
+                              width: ScreenSize.width(context) * 0.5,
+                              buttonLabel: "Next",
+                              onPressed: () async {
+                                if (_formKey.currentState!.validate()) {
+                                  await ref.read(loginNotifierProvider.notifier).loginUser(emailCont.text, passCont.text, ref, context);
+                                }
+                              },
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  const Positioned(
+                    top: 40,
+                    left: 0,
+                    child: CustomBackButton(),
+                  ),
+                ],
+              ),
+            ),
+          ),
           if (loginState == LoginState.loading)
             Container(
               color: Colors.black54,
@@ -34,110 +238,6 @@ class ExistingLoginScreen extends ConsumerWidget {
                 child: CircularProgressIndicator.adaptive(),
               ),
             ),
-        ],
-      ),
-    );
-  }
-
-  bodyWidget(context, WidgetRef ref, LoginState loginState) {
-    return SizedBox(
-      height: ScreenSize.height(context),
-      child: Stack(
-        children: [
-          const CustomShapeWidget(),
-          Container(
-            width: ScreenSize.width(context),
-            padding: const EdgeInsets.symmetric(horizontal: 50),
-            child: SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  SizedBox(height: ScreenSize.height(context) * .2),
-                  GestureDetector(
-                    onTap: () {
-                      emailCont.text = "kshitij@briefsea.com";
-                      passCont.text = '1234567890';
-                    },
-                    onDoubleTap: () {
-                      emailCont.text = "rahul@briefsea.com";
-                      passCont.text = "Abcd@1234#";
-                    },
-                    child: const Text(
-                      "Login as\nExisting User",
-                      style: TextStyle(color: Colors.white),
-                      textScaler: TextScaler.linear(2),
-                    ),
-                  ),
-                  SizedBox(height: ScreenSize.height(context) * .1),
-                  CustomTextFormField(
-                    hintText: "Enter your Email",
-                    controller: emailCont,
-                  ),
-                  const SizedBox(height: 20),
-                  CustomTextFormField(
-                    hintText: "Enter Password",
-                    controller: passCont,
-                    obscureText: true,
-                  ),
-                  // SizedBox(height: ScreenSize.height(context) * .05),
-                  // const Text(
-                  //   "Or sign up using an option:",
-                  //   style: TextStyle(color: Colors.white),
-                  //   textScaler: TextScaler.linear(1),
-                  //   textAlign: TextAlign.center,
-                  // ),
-                  // const SizedBox(height: 20),
-                  // Row(
-                  //   mainAxisAlignment: MainAxisAlignment.center,
-                  //   children: [
-                  //     _signUpOptions(
-                  //       context,
-                  //       'assets/logos/google-icon.svg',
-                  //       () {},
-                  //     ),
-                  //     const SizedBox(width: 20),
-                  //     _signUpOptions(
-                  //       context,
-                  //       'assets/logos/linkedin-icon.svg',
-                  //       () {},
-                  //     ),
-                  //   ],
-                  // ),
-                  SizedBox(height: ScreenSize.height(context) * .05),
-                  const Text(
-                    "Agency, Freelancer or Professional?",
-                    style: TextStyle(color: Colors.white),
-                    textScaler: TextScaler.linear(1),
-                    textAlign: TextAlign.center,
-                  ),
-                  TextButton(
-                    onPressed: () {
-                      GoRouter.of(context).pop();
-                    },
-                    child: const Text(
-                      "Go back",
-                      style: TextStyle(
-                        color: Color(0xFF01FFF5),
-                      ),
-                    ),
-                  ),
-                  Center(
-                    child: CustomElevatedButton(
-                      width: ScreenSize.width(context) * 0.5,
-                      buttonLabel: "Next",
-                      onPressed: () async {
-                        if (emailCont.text.isNotEmpty && passCont.text.isNotEmpty) {
-                          await ref.read(loginNotifierProvider.notifier).loginUser(emailCont.text, passCont.text, ref, context);
-                        }
-                      },
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-          const Positioned(top: 40, left: 0, child: CustomBackButton()),
         ],
       ),
     );

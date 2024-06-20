@@ -58,7 +58,7 @@ final getUserProfileProvider =
 );
 
 typedef GetUserProfileRef = AutoDisposeFutureProviderRef<UserProfileModel>;
-String _$verifyProfileHash() => r'2604c1af6f02b80c12909ac4e88fb6a30e2c6415';
+String _$getOtherProfileHash() => r'ba671d8b4a4c905195a32ae58b2479fa7046d942';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -81,6 +81,136 @@ class _SystemHash {
   }
 }
 
+/// See also [getOtherProfile].
+@ProviderFor(getOtherProfile)
+const getOtherProfileProvider = GetOtherProfileFamily();
+
+/// See also [getOtherProfile].
+class GetOtherProfileFamily extends Family<AsyncValue<UserProfileModel>> {
+  /// See also [getOtherProfile].
+  const GetOtherProfileFamily();
+
+  /// See also [getOtherProfile].
+  GetOtherProfileProvider call({
+    required String? otherUserId,
+  }) {
+    return GetOtherProfileProvider(
+      otherUserId: otherUserId,
+    );
+  }
+
+  @override
+  GetOtherProfileProvider getProviderOverride(
+    covariant GetOtherProfileProvider provider,
+  ) {
+    return call(
+      otherUserId: provider.otherUserId,
+    );
+  }
+
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'getOtherProfileProvider';
+}
+
+/// See also [getOtherProfile].
+class GetOtherProfileProvider
+    extends AutoDisposeFutureProvider<UserProfileModel> {
+  /// See also [getOtherProfile].
+  GetOtherProfileProvider({
+    required String? otherUserId,
+  }) : this._internal(
+          (ref) => getOtherProfile(
+            ref as GetOtherProfileRef,
+            otherUserId: otherUserId,
+          ),
+          from: getOtherProfileProvider,
+          name: r'getOtherProfileProvider',
+          debugGetCreateSourceHash:
+              const bool.fromEnvironment('dart.vm.product')
+                  ? null
+                  : _$getOtherProfileHash,
+          dependencies: GetOtherProfileFamily._dependencies,
+          allTransitiveDependencies:
+              GetOtherProfileFamily._allTransitiveDependencies,
+          otherUserId: otherUserId,
+        );
+
+  GetOtherProfileProvider._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.otherUserId,
+  }) : super.internal();
+
+  final String? otherUserId;
+
+  @override
+  Override overrideWith(
+    FutureOr<UserProfileModel> Function(GetOtherProfileRef provider) create,
+  ) {
+    return ProviderOverride(
+      origin: this,
+      override: GetOtherProfileProvider._internal(
+        (ref) => create(ref as GetOtherProfileRef),
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        otherUserId: otherUserId,
+      ),
+    );
+  }
+
+  @override
+  AutoDisposeFutureProviderElement<UserProfileModel> createElement() {
+    return _GetOtherProfileProviderElement(this);
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is GetOtherProfileProvider && other.otherUserId == otherUserId;
+  }
+
+  @override
+  int get hashCode {
+    var hash = _SystemHash.combine(0, runtimeType.hashCode);
+    hash = _SystemHash.combine(hash, otherUserId.hashCode);
+
+    return _SystemHash.finish(hash);
+  }
+}
+
+mixin GetOtherProfileRef on AutoDisposeFutureProviderRef<UserProfileModel> {
+  /// The parameter `otherUserId` of this provider.
+  String? get otherUserId;
+}
+
+class _GetOtherProfileProviderElement
+    extends AutoDisposeFutureProviderElement<UserProfileModel>
+    with GetOtherProfileRef {
+  _GetOtherProfileProviderElement(super.provider);
+
+  @override
+  String? get otherUserId => (origin as GetOtherProfileProvider).otherUserId;
+}
+
+String _$verifyProfileHash() => r'ad8127a8db15441e9d2939fdcca2f869cceb9f84';
+
 /// See also [verifyProfile].
 @ProviderFor(verifyProfile)
 const verifyProfileProvider = VerifyProfileFamily();
@@ -98,12 +228,14 @@ class VerifyProfileFamily extends Family<AsyncValue<String>> {
     required int? contact,
     required String? jobTitle,
     required String? company,
-    required String? industry,
-    required String? expertise,
+    required List<String>? industry,
+    required List<String>? expertise,
     required String? location,
     required String? avatarSrc,
     required String? bannerSrc,
     required String? jwtToken,
+    required String? postingAs,
+    required String? gender,
   }) {
     return VerifyProfileProvider(
       userId: userId,
@@ -118,6 +250,8 @@ class VerifyProfileFamily extends Family<AsyncValue<String>> {
       avatarSrc: avatarSrc,
       bannerSrc: bannerSrc,
       jwtToken: jwtToken,
+      postingAs: postingAs,
+      gender: gender,
     );
   }
 
@@ -138,6 +272,8 @@ class VerifyProfileFamily extends Family<AsyncValue<String>> {
       avatarSrc: provider.avatarSrc,
       bannerSrc: provider.bannerSrc,
       jwtToken: provider.jwtToken,
+      postingAs: provider.postingAs,
+      gender: provider.gender,
     );
   }
 
@@ -166,12 +302,14 @@ class VerifyProfileProvider extends AutoDisposeFutureProvider<String> {
     required int? contact,
     required String? jobTitle,
     required String? company,
-    required String? industry,
-    required String? expertise,
+    required List<String>? industry,
+    required List<String>? expertise,
     required String? location,
     required String? avatarSrc,
     required String? bannerSrc,
     required String? jwtToken,
+    required String? postingAs,
+    required String? gender,
   }) : this._internal(
           (ref) => verifyProfile(
             ref as VerifyProfileRef,
@@ -187,6 +325,8 @@ class VerifyProfileProvider extends AutoDisposeFutureProvider<String> {
             avatarSrc: avatarSrc,
             bannerSrc: bannerSrc,
             jwtToken: jwtToken,
+            postingAs: postingAs,
+            gender: gender,
           ),
           from: verifyProfileProvider,
           name: r'verifyProfileProvider',
@@ -209,6 +349,8 @@ class VerifyProfileProvider extends AutoDisposeFutureProvider<String> {
           avatarSrc: avatarSrc,
           bannerSrc: bannerSrc,
           jwtToken: jwtToken,
+          postingAs: postingAs,
+          gender: gender,
         );
 
   VerifyProfileProvider._internal(
@@ -230,6 +372,8 @@ class VerifyProfileProvider extends AutoDisposeFutureProvider<String> {
     required this.avatarSrc,
     required this.bannerSrc,
     required this.jwtToken,
+    required this.postingAs,
+    required this.gender,
   }) : super.internal();
 
   final String? userId;
@@ -238,12 +382,14 @@ class VerifyProfileProvider extends AutoDisposeFutureProvider<String> {
   final int? contact;
   final String? jobTitle;
   final String? company;
-  final String? industry;
-  final String? expertise;
+  final List<String>? industry;
+  final List<String>? expertise;
   final String? location;
   final String? avatarSrc;
   final String? bannerSrc;
   final String? jwtToken;
+  final String? postingAs;
+  final String? gender;
 
   @override
   Override overrideWith(
@@ -270,6 +416,8 @@ class VerifyProfileProvider extends AutoDisposeFutureProvider<String> {
         avatarSrc: avatarSrc,
         bannerSrc: bannerSrc,
         jwtToken: jwtToken,
+        postingAs: postingAs,
+        gender: gender,
       ),
     );
   }
@@ -293,7 +441,9 @@ class VerifyProfileProvider extends AutoDisposeFutureProvider<String> {
         other.location == location &&
         other.avatarSrc == avatarSrc &&
         other.bannerSrc == bannerSrc &&
-        other.jwtToken == jwtToken;
+        other.jwtToken == jwtToken &&
+        other.postingAs == postingAs &&
+        other.gender == gender;
   }
 
   @override
@@ -311,6 +461,8 @@ class VerifyProfileProvider extends AutoDisposeFutureProvider<String> {
     hash = _SystemHash.combine(hash, avatarSrc.hashCode);
     hash = _SystemHash.combine(hash, bannerSrc.hashCode);
     hash = _SystemHash.combine(hash, jwtToken.hashCode);
+    hash = _SystemHash.combine(hash, postingAs.hashCode);
+    hash = _SystemHash.combine(hash, gender.hashCode);
 
     return _SystemHash.finish(hash);
   }
@@ -336,10 +488,10 @@ mixin VerifyProfileRef on AutoDisposeFutureProviderRef<String> {
   String? get company;
 
   /// The parameter `industry` of this provider.
-  String? get industry;
+  List<String>? get industry;
 
   /// The parameter `expertise` of this provider.
-  String? get expertise;
+  List<String>? get expertise;
 
   /// The parameter `location` of this provider.
   String? get location;
@@ -352,6 +504,12 @@ mixin VerifyProfileRef on AutoDisposeFutureProviderRef<String> {
 
   /// The parameter `jwtToken` of this provider.
   String? get jwtToken;
+
+  /// The parameter `postingAs` of this provider.
+  String? get postingAs;
+
+  /// The parameter `gender` of this provider.
+  String? get gender;
 }
 
 class _VerifyProfileProviderElement
@@ -371,9 +529,9 @@ class _VerifyProfileProviderElement
   @override
   String? get company => (origin as VerifyProfileProvider).company;
   @override
-  String? get industry => (origin as VerifyProfileProvider).industry;
+  List<String>? get industry => (origin as VerifyProfileProvider).industry;
   @override
-  String? get expertise => (origin as VerifyProfileProvider).expertise;
+  List<String>? get expertise => (origin as VerifyProfileProvider).expertise;
   @override
   String? get location => (origin as VerifyProfileProvider).location;
   @override
@@ -382,9 +540,13 @@ class _VerifyProfileProviderElement
   String? get bannerSrc => (origin as VerifyProfileProvider).bannerSrc;
   @override
   String? get jwtToken => (origin as VerifyProfileProvider).jwtToken;
+  @override
+  String? get postingAs => (origin as VerifyProfileProvider).postingAs;
+  @override
+  String? get gender => (origin as VerifyProfileProvider).gender;
 }
 
-String _$editProfileHash() => r'05e7b2baf5f5a147b795e06afb9baa619f0d7165';
+String _$editProfileHash() => r'8b3a817e0b1c8ccb19185ba0940d2676c5c2aaf9';
 
 /// See also [editProfile].
 @ProviderFor(editProfile)
@@ -403,12 +565,14 @@ class EditProfileFamily extends Family<AsyncValue<String>> {
     required int? contact,
     required String? jobTitle,
     required String? company,
-    required String? industry,
-    required String? expertise,
+    required List<String>? industry,
+    required List<String>? expertise,
     required String? location,
     required String? avatarSrc,
     required String? bannerSrc,
     required String? jwtToken,
+    required String? postingAs,
+    required String? gender,
   }) {
     return EditProfileProvider(
       userId: userId,
@@ -423,6 +587,8 @@ class EditProfileFamily extends Family<AsyncValue<String>> {
       avatarSrc: avatarSrc,
       bannerSrc: bannerSrc,
       jwtToken: jwtToken,
+      postingAs: postingAs,
+      gender: gender,
     );
   }
 
@@ -443,6 +609,8 @@ class EditProfileFamily extends Family<AsyncValue<String>> {
       avatarSrc: provider.avatarSrc,
       bannerSrc: provider.bannerSrc,
       jwtToken: provider.jwtToken,
+      postingAs: provider.postingAs,
+      gender: provider.gender,
     );
   }
 
@@ -471,12 +639,14 @@ class EditProfileProvider extends AutoDisposeFutureProvider<String> {
     required int? contact,
     required String? jobTitle,
     required String? company,
-    required String? industry,
-    required String? expertise,
+    required List<String>? industry,
+    required List<String>? expertise,
     required String? location,
     required String? avatarSrc,
     required String? bannerSrc,
     required String? jwtToken,
+    required String? postingAs,
+    required String? gender,
   }) : this._internal(
           (ref) => editProfile(
             ref as EditProfileRef,
@@ -492,6 +662,8 @@ class EditProfileProvider extends AutoDisposeFutureProvider<String> {
             avatarSrc: avatarSrc,
             bannerSrc: bannerSrc,
             jwtToken: jwtToken,
+            postingAs: postingAs,
+            gender: gender,
           ),
           from: editProfileProvider,
           name: r'editProfileProvider',
@@ -514,6 +686,8 @@ class EditProfileProvider extends AutoDisposeFutureProvider<String> {
           avatarSrc: avatarSrc,
           bannerSrc: bannerSrc,
           jwtToken: jwtToken,
+          postingAs: postingAs,
+          gender: gender,
         );
 
   EditProfileProvider._internal(
@@ -535,6 +709,8 @@ class EditProfileProvider extends AutoDisposeFutureProvider<String> {
     required this.avatarSrc,
     required this.bannerSrc,
     required this.jwtToken,
+    required this.postingAs,
+    required this.gender,
   }) : super.internal();
 
   final String? userId;
@@ -543,12 +719,14 @@ class EditProfileProvider extends AutoDisposeFutureProvider<String> {
   final int? contact;
   final String? jobTitle;
   final String? company;
-  final String? industry;
-  final String? expertise;
+  final List<String>? industry;
+  final List<String>? expertise;
   final String? location;
   final String? avatarSrc;
   final String? bannerSrc;
   final String? jwtToken;
+  final String? postingAs;
+  final String? gender;
 
   @override
   Override overrideWith(
@@ -575,6 +753,8 @@ class EditProfileProvider extends AutoDisposeFutureProvider<String> {
         avatarSrc: avatarSrc,
         bannerSrc: bannerSrc,
         jwtToken: jwtToken,
+        postingAs: postingAs,
+        gender: gender,
       ),
     );
   }
@@ -598,7 +778,9 @@ class EditProfileProvider extends AutoDisposeFutureProvider<String> {
         other.location == location &&
         other.avatarSrc == avatarSrc &&
         other.bannerSrc == bannerSrc &&
-        other.jwtToken == jwtToken;
+        other.jwtToken == jwtToken &&
+        other.postingAs == postingAs &&
+        other.gender == gender;
   }
 
   @override
@@ -616,6 +798,8 @@ class EditProfileProvider extends AutoDisposeFutureProvider<String> {
     hash = _SystemHash.combine(hash, avatarSrc.hashCode);
     hash = _SystemHash.combine(hash, bannerSrc.hashCode);
     hash = _SystemHash.combine(hash, jwtToken.hashCode);
+    hash = _SystemHash.combine(hash, postingAs.hashCode);
+    hash = _SystemHash.combine(hash, gender.hashCode);
 
     return _SystemHash.finish(hash);
   }
@@ -641,10 +825,10 @@ mixin EditProfileRef on AutoDisposeFutureProviderRef<String> {
   String? get company;
 
   /// The parameter `industry` of this provider.
-  String? get industry;
+  List<String>? get industry;
 
   /// The parameter `expertise` of this provider.
-  String? get expertise;
+  List<String>? get expertise;
 
   /// The parameter `location` of this provider.
   String? get location;
@@ -657,6 +841,12 @@ mixin EditProfileRef on AutoDisposeFutureProviderRef<String> {
 
   /// The parameter `jwtToken` of this provider.
   String? get jwtToken;
+
+  /// The parameter `postingAs` of this provider.
+  String? get postingAs;
+
+  /// The parameter `gender` of this provider.
+  String? get gender;
 }
 
 class _EditProfileProviderElement
@@ -676,9 +866,9 @@ class _EditProfileProviderElement
   @override
   String? get company => (origin as EditProfileProvider).company;
   @override
-  String? get industry => (origin as EditProfileProvider).industry;
+  List<String>? get industry => (origin as EditProfileProvider).industry;
   @override
-  String? get expertise => (origin as EditProfileProvider).expertise;
+  List<String>? get expertise => (origin as EditProfileProvider).expertise;
   @override
   String? get location => (origin as EditProfileProvider).location;
   @override
@@ -687,6 +877,10 @@ class _EditProfileProviderElement
   String? get bannerSrc => (origin as EditProfileProvider).bannerSrc;
   @override
   String? get jwtToken => (origin as EditProfileProvider).jwtToken;
+  @override
+  String? get postingAs => (origin as EditProfileProvider).postingAs;
+  @override
+  String? get gender => (origin as EditProfileProvider).gender;
 }
 
 String _$uploadAvatarHash() => r'77d74af3c84698c8b1a0895e9a8230d3db34a264';
@@ -1345,6 +1539,134 @@ class _GetImageProviderElement
 
   @override
   String get src => (origin as GetImageProvider).src;
+}
+
+String _$deleteAccountHash() => r'686436cb51114e3fb11234664c2f8d28f8472dac';
+
+/// See also [deleteAccount].
+@ProviderFor(deleteAccount)
+const deleteAccountProvider = DeleteAccountFamily();
+
+/// See also [deleteAccount].
+class DeleteAccountFamily extends Family<AsyncValue<bool>> {
+  /// See also [deleteAccount].
+  const DeleteAccountFamily();
+
+  /// See also [deleteAccount].
+  DeleteAccountProvider call({
+    required String userId,
+  }) {
+    return DeleteAccountProvider(
+      userId: userId,
+    );
+  }
+
+  @override
+  DeleteAccountProvider getProviderOverride(
+    covariant DeleteAccountProvider provider,
+  ) {
+    return call(
+      userId: provider.userId,
+    );
+  }
+
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'deleteAccountProvider';
+}
+
+/// See also [deleteAccount].
+class DeleteAccountProvider extends AutoDisposeFutureProvider<bool> {
+  /// See also [deleteAccount].
+  DeleteAccountProvider({
+    required String userId,
+  }) : this._internal(
+          (ref) => deleteAccount(
+            ref as DeleteAccountRef,
+            userId: userId,
+          ),
+          from: deleteAccountProvider,
+          name: r'deleteAccountProvider',
+          debugGetCreateSourceHash:
+              const bool.fromEnvironment('dart.vm.product')
+                  ? null
+                  : _$deleteAccountHash,
+          dependencies: DeleteAccountFamily._dependencies,
+          allTransitiveDependencies:
+              DeleteAccountFamily._allTransitiveDependencies,
+          userId: userId,
+        );
+
+  DeleteAccountProvider._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.userId,
+  }) : super.internal();
+
+  final String userId;
+
+  @override
+  Override overrideWith(
+    FutureOr<bool> Function(DeleteAccountRef provider) create,
+  ) {
+    return ProviderOverride(
+      origin: this,
+      override: DeleteAccountProvider._internal(
+        (ref) => create(ref as DeleteAccountRef),
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        userId: userId,
+      ),
+    );
+  }
+
+  @override
+  AutoDisposeFutureProviderElement<bool> createElement() {
+    return _DeleteAccountProviderElement(this);
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is DeleteAccountProvider && other.userId == userId;
+  }
+
+  @override
+  int get hashCode {
+    var hash = _SystemHash.combine(0, runtimeType.hashCode);
+    hash = _SystemHash.combine(hash, userId.hashCode);
+
+    return _SystemHash.finish(hash);
+  }
+}
+
+mixin DeleteAccountRef on AutoDisposeFutureProviderRef<bool> {
+  /// The parameter `userId` of this provider.
+  String get userId;
+}
+
+class _DeleteAccountProviderElement
+    extends AutoDisposeFutureProviderElement<bool> with DeleteAccountRef {
+  _DeleteAccountProviderElement(super.provider);
+
+  @override
+  String get userId => (origin as DeleteAccountProvider).userId;
 }
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member

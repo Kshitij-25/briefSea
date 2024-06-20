@@ -49,5 +49,10 @@
     <string>App needs access to the camera to take photos and videos.</string>
     <key>NSPhotoLibraryUsageDescription</key>
     <string>App needs access to the photo library to select photos and videos.</string>
+	<key>LSApplicationQueriesSchemes</key>
+	<array>
+	  	<string>instagram</string>
+  		<string>linkedin</string>
+	</array>
 </dict>
 </plist>

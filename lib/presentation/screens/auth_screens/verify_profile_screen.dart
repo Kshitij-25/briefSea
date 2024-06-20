@@ -1,17 +1,19 @@
 import 'dart:developer';
 import 'dart:io';
 
-import 'package:briefsea/common/expertise_data.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:mime/mime.dart';
+import 'package:multi_select_flutter/multi_select_flutter.dart';
 
 import '../../../common/app_utility.dart';
+import '../../../common/assets.dart';
 import '../../../common/industry_data.dart';
 import '../../../common/screen_size.dart';
+import '../../../main.dart';
 import '../../providers/auth_provider.dart';
 import '../../providers/user_profile_provider.dart';
 import '../../state_providers/image_picker_provider.dart';
@@ -39,6 +41,7 @@ class VerifyProfileScreen extends ConsumerWidget {
     return Scaffold(
       backgroundColor: Colors.grey[200]!,
       appBar: AppBar(
+        iconTheme: const IconThemeData(color: Colors.white),
         backgroundColor: const Color(0xFF4C27FF),
         centerTitle: true,
         title: const Text(
@@ -50,29 +53,31 @@ class VerifyProfileScreen extends ConsumerWidget {
             onPressed: () async {
               final uploadedAvatarKey = ref.watch(uploadedAvatarKeyProvider.notifier).state;
               final uploadedBannerKey = ref.watch(uploadedBannerKeyProvider.notifier).state;
-              final selectedIndustry = ref.watch(selectedIndustryProvider.notifier).state;
+              final selectedIndustry = ref.watch(selectedIndustriesProvider.notifier).state;
               final selectedExpertise = ref.watch(selectedExpertiseProvider.notifier).state;
-              if (companyCont.text.isNotEmpty &&
-                  phoneNumberCont.text.isNotEmpty &&
+              final selectedGender = ref.watch(selectedGenderProvider).selectedGender;
+              if (phoneNumberCont.text.isNotEmpty &&
                   companyCont.text.isNotEmpty &&
                   jobTitleCont.text.isNotEmpty &&
-                  industryCont.text.isNotEmpty &&
-                  locationCont.text.isNotEmpty) {
+                  locationCont.text.isNotEmpty &&
+                  countryCodeCont.text.isNotEmpty) {
                 var verifyMessage = await ref.read(verifyProfileProvider(
-                        userId: userDetails['user_id']!,
-                        uName: userDetails['user_name']!,
-                        countryCode: int.tryParse(countryCodeCont.text),
-                        contact: int.tryParse(phoneNumberCont.text),
-                        company: companyCont.text,
-                        jobTitle: jobTitleCont.text,
-                        industry: selectedIndustry,
-                        location: locationCont.text,
-                        avatarSrc: uploadedAvatarKey ?? '',
-                        bannerSrc: uploadedBannerKey ?? '',
-                        jwtToken: userDetails['jwtToken'],
-                        expertise: selectedExpertise)
-                    .future);
-                if (verifyMessage == "Profile added cuccessfully") {
+                  userId: userDetails['user_id']!,
+                  uName: userDetails['user_name']!,
+                  countryCode: int.tryParse(countryCodeCont.text),
+                  contact: int.tryParse(phoneNumberCont.text),
+                  company: companyCont.text,
+                  jobTitle: jobTitleCont.text,
+                  industry: selectedIndustry,
+                  location: locationCont.text,
+                  avatarSrc: uploadedAvatarKey ?? '',
+                  bannerSrc: uploadedBannerKey ?? '',
+                  jwtToken: userDetails['jwtToken'],
+                  expertise: selectedExpertise,
+                  postingAs: userDetails['type']!,
+                  gender: selectedGender,
+                ).future);
+                if (verifyMessage == "Profile added successfully") {
                   AppUtility(context).message(verifyMessage);
                   context.go(HomeScreen.routeName);
                 }
@@ -95,6 +100,8 @@ class VerifyProfileScreen extends ConsumerWidget {
   bodyWidget(context, WidgetRef ref, Map<String, String> userDetails) {
     final verifyAvatar = ref.watch(verifyAvatarImageProvider);
     final verifyBanner = ref.watch(verifyBannerImageProvider);
+    final selectedIndustries = ref.watch(selectedIndustriesProvider.notifier).state;
+    final selectedExpertise = ref.watch(selectedExpertiseProvider.notifier).state;
 
     return SingleChildScrollView(
       child: Column(
@@ -112,6 +119,7 @@ class VerifyProfileScreen extends ConsumerWidget {
                 picker: _picker,
                 verifyAvatar: verifyAvatar,
                 userDetails: userDetails,
+                gender: ref.watch(selectedGenderProvider).selectedGender,
               ),
             ],
           ),
@@ -124,24 +132,50 @@ class VerifyProfileScreen extends ConsumerWidget {
           customFields(
             context,
             'Name',
-            const CustomTextFormField(
+            CustomTextFormField(
               readOnly: true,
-              // hintText: "${userDetails['user_name']![0].toUpperCase()}${userDetails['user_name']!.substring(1)}",
+              hintText: "${userDetails['user_name']?[0].toUpperCase()}${userDetails['user_name']!.substring(1)}",
               hintColor: Colors.black,
             ),
             CupertinoIcons.person,
             () {},
           ),
-
           customFields(
             context,
             'Posting as',
-            const CustomTextFormField(
+            CustomTextFormField(
               readOnly: true,
-              // hintText: "${userDetails['type']![0].toUpperCase()}${userDetails['type']!.substring(1)}",
+              hintText: "${userDetails['type']?[0].toUpperCase()}${userDetails['type']!.substring(1)}",
               hintColor: Colors.black,
             ),
             CupertinoIcons.person_2,
+            () {},
+          ),
+          customFields(
+            context,
+            'Gender',
+            DropdownButtonHideUnderline(
+              child: DropdownButton<String>(
+                hint: const Text('Choose your gender'),
+                menuMaxHeight: 300,
+                value: ref.watch(selectedGenderProvider).selectedGender,
+                onChanged: (String? newValue) async {
+                  print(prefs!.getString('userGener'));
+                  log("NEW VALUE=====> $newValue");
+
+                  ref.read(selectedGenderProvider).setGender(newValue!);
+
+                  await prefs!.setString('userGener', newValue ?? "");
+                },
+                items: ref.watch(selectedGenderProvider).genders.map<DropdownMenuItem<String>>((item) {
+                  return DropdownMenuItem(
+                    value: item,
+                    child: Text(item),
+                  );
+                }).toList(),
+              ),
+            ),
+            Icons.female,
             () {},
           ),
           customFields(
@@ -152,6 +186,7 @@ class VerifyProfileScreen extends ConsumerWidget {
                 Expanded(
                   flex: 1,
                   child: CustomTextFormField(
+                    hintText: "91",
                     border: const OutlineInputBorder(),
                     controller: countryCodeCont,
                   ),
@@ -173,71 +208,18 @@ class VerifyProfileScreen extends ConsumerWidget {
           customFields(
             context,
             'Industry',
-            StatefulBuilder(
-              builder: (BuildContext context, StateSetter setState) {
-                return DropdownButtonHideUnderline(
-                  child: DropdownButton<String>(
-                    hint: const Text('Select an industry'),
-                    menuMaxHeight: 300,
-                    value: ref.watch(selectedIndustryProvider.notifier).state,
-                    onChanged: (String? newValue) {
-                      log("NEW VALUE=====> $newValue");
-                      setState(
-                        () => ref.read(selectedIndustryProvider.notifier).state = newValue,
-                      );
-                    },
-                    items: industries.map<DropdownMenuItem<String>>((Map<String, String> item) {
-                      return DropdownMenuItem<String>(
-                        value: item['value'],
-                        child: Text(item['label']!),
-                      );
-                    }).toList(),
-                  ),
-                );
+            MultiSelectDialogField(
+              items: industries.map((item) => MultiSelectItem<String>(item['value']!, item['label']!)).toList(),
+              initialValue: selectedIndustries,
+              listType: MultiSelectListType.CHIP,
+              onConfirm: (values) {
+                ref.read(selectedIndustriesProvider.notifier).state = values;
               },
+              title: const Text('Select Industries'),
             ),
             CupertinoIcons.square_list_fill,
             () {},
           ),
-          customFields(
-            context,
-            'Expertise',
-            StatefulBuilder(
-              builder: (BuildContext context, StateSetter setState) {
-                return DropdownButtonHideUnderline(
-                  child: DropdownButton<String>(
-                    hint: const Text('Select Expertise'),
-                    menuMaxHeight: 300,
-                    value: ref.watch(selectedExpertiseProvider.notifier).state,
-                    onChanged: (String? newValue) {
-                      setState(
-                        () => ref.read(selectedExpertiseProvider.notifier).state = newValue,
-                      );
-                    },
-                    items: expertiseData.map<DropdownMenuItem<String>>((Map<String, String> item) {
-                      return DropdownMenuItem<String>(
-                        value: item['value'],
-                        child: Text(item['label']!),
-                      );
-                    }).toList(),
-                  ),
-                );
-              },
-            ),
-            CupertinoIcons.square_list_fill,
-            () {},
-          ),
-          // customFields(
-          //   context,
-          //   'Expertise',
-          //   CustomTextFormField(
-          //     hintText: "Enter your Expertise",
-          //     controller: expertiseCont,
-          //   ),
-          //   CupertinoIcons.clock_fill,
-          //   () {},
-          // ),
-
           customFields(
             context,
             'Designation',
@@ -258,7 +240,6 @@ class VerifyProfileScreen extends ConsumerWidget {
             CupertinoIcons.building_2_fill,
             () {},
           ),
-
           customFields(
             context,
             'Location',
@@ -269,13 +250,6 @@ class VerifyProfileScreen extends ConsumerWidget {
             CupertinoIcons.location_solid,
             () {},
           ),
-          // customFields(
-          //   context,
-          //   'About me',
-          //   "",
-          //   CupertinoIcons.info,
-          //   () {},
-          // ),
         ],
       ),
     );
@@ -297,11 +271,13 @@ class _AvatarWidget extends ConsumerWidget {
     required this.userDetails,
     required ImagePicker picker,
     required this.verifyAvatar,
+    this.gender,
   }) : _picker = picker;
 
   final ImagePicker _picker;
   final File? verifyAvatar;
   final Map<String, String> userDetails;
+  final String? gender;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -330,23 +306,54 @@ class _AvatarWidget extends ConsumerWidget {
               ref.read(verifyAvatarImageProvider.notifier).state = File(pickedFile.path);
             }
           },
-          child: CircleAvatar(
-            backgroundColor: const Color(0xFF1B0C6B),
-            radius: 70,
-            backgroundImage: verifyAvatar != null ? FileImage(verifyAvatar!) : null,
-            child: verifyAvatar == null
-                ? const Center(
-                    child: Icon(
-                      CupertinoIcons.camera_fill,
-                      color: Colors.white,
-                      size: 30,
-                    ),
-                  )
-                : null,
+          child: Stack(
+            children: [
+              Container(
+                height: 140,
+                width: 140,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(200),
+                  color: const Color(0xFF1B0C6B),
+                  image: DecorationImage(
+                    fit: gender == null ? BoxFit.scaleDown : BoxFit.cover,
+                    image: verifyAvatar != null ? FileImage(verifyAvatar!) : _getImageByGender(gender),
+                    colorFilter: gender == null ? const ColorFilter.mode(Colors.white, BlendMode.srcIn) : null,
+                  ),
+                ),
+              ),
+              Positioned(
+                right: 0,
+                top: 0,
+                child: Container(
+                  width: 35,
+                  height: 35,
+                  decoration: BoxDecoration(
+                    color: Colors.grey[300],
+                    shape: BoxShape.circle,
+                  ),
+                  child: const Icon(
+                    CupertinoIcons.camera_fill,
+                    color: Colors.black,
+                  ),
+                ),
+              ),
+            ],
           ),
         ),
       ),
     );
+  }
+
+  _getImageByGender(String? gender) {
+    if (gender == null) {
+      return const AssetImage(PERSON);
+    } else if (gender == "Male") {
+      return const AssetImage(MALE);
+    } else if (gender == "Female") {
+      return const AssetImage(FEMALE);
+    } else {
+      return const AssetImage(OTHERS);
+    }
   }
 }
 
