@@ -414,31 +414,40 @@ class _BannerWidget extends ConsumerWidget {
                 ),
               ],
             )
-          : Align(
-              alignment: Alignment.topRight,
-              child: IconButton(
-                onPressed: () async {
-                  final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
-                  if (pickedFile != null) {
-                    var uploadedBanner = await ref.read(uploadBannerProvider(
-                      fileName: pickedFile.name,
-                      fileType: lookupMimeType(pickedFile.path),
-                      userId: userDetails['user_id'],
-                      userType: userDetails['type'],
-                    ).future);
-                    ref.read(uploadToAWSProvider(
-                      url: uploadedBanner.url,
-                      fileName: pickedFile.name,
-                      file: File(pickedFile.path),
-                      fileType: lookupMimeType(pickedFile.path),
-                    ));
-                    ref.read(uploadedBannerKeyProvider.notifier).state = uploadedBanner.key;
+          : Stack(
+              children: [
+                Image.asset(
+                  BANNER,
+                  fit: BoxFit.cover,
+                  width: ScreenSize.width(context),
+                ),
+                Align(
+                  alignment: Alignment.topRight,
+                  child: IconButton(
+                    onPressed: () async {
+                      final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
+                      if (pickedFile != null) {
+                        var uploadedBanner = await ref.read(uploadBannerProvider(
+                          fileName: pickedFile.name,
+                          fileType: lookupMimeType(pickedFile.path),
+                          userId: userDetails['user_id'],
+                          userType: userDetails['type'],
+                        ).future);
+                        ref.read(uploadToAWSProvider(
+                          url: uploadedBanner.url,
+                          fileName: pickedFile.name,
+                          file: File(pickedFile.path),
+                          fileType: lookupMimeType(pickedFile.path),
+                        ));
+                        ref.read(uploadedBannerKeyProvider.notifier).state = uploadedBanner.key;
 
-                    ref.read(verifyBannerImageProvider.notifier).state = File(pickedFile.path);
-                  }
-                },
-                icon: const Icon(CupertinoIcons.camera_fill),
-              ),
+                        ref.read(verifyBannerImageProvider.notifier).state = File(pickedFile.path);
+                      }
+                    },
+                    icon: const Icon(CupertinoIcons.camera_fill),
+                  ),
+                ),
+              ],
             ),
     );
   }

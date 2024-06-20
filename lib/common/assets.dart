@@ -8,3 +8,4 @@ const MALE = "assets/logos/male.png";
 const FEMALE = "assets/logos/female.png";
 const OTHERS = 'assets/logos/team.png';
 const PERSON = "assets/logos/person.png";
+const BANNER = "assets/logos/default-banner.jpg";

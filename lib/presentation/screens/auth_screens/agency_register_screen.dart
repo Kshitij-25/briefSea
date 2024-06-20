@@ -184,7 +184,7 @@ class AgencyRegisterScreen extends ConsumerWidget {
                           ),
                           SizedBox(height: ScreenSize.height(context) * .05),
                           const Text(
-                            "Instantly Connect with top freelancers and vendors in your industry to get work done.",
+                            "Instantly Connect with top freelancers and vendors in Tech and Marketing to get work done.",
                             style: TextStyle(color: Colors.white),
                             textScaler: TextScaler.linear(0.9),
                             textAlign: TextAlign.center,

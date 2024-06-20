@@ -199,72 +199,14 @@ class ProfileScreen extends ConsumerWidget {
                                     ),
                                   ),
                                   isOtherProfile != true
-                                      ? Row(
-                                          mainAxisAlignment: MainAxisAlignment.center,
-                                          children: [
-                                            Padding(
-                                              padding: const EdgeInsets.all(10),
-                                              child: ElevatedButton(
-                                                style: const ButtonStyle(
-                                                  backgroundColor: WidgetStateColor.transparent,
-                                                  shadowColor: WidgetStateColor.transparent,
-                                                  overlayColor: WidgetStateColor.transparent,
-                                                ),
-                                                onPressed: () async {
-                                                  await handleLogout(context, prefs, ref, false);
-                                                },
-                                                child: const Text("Logout"),
-                                              ),
-                                            ),
-                                            Padding(
-                                              padding: const EdgeInsets.all(10),
-                                              child: ElevatedButton(
-                                                style: ButtonStyle(
-                                                  backgroundColor: WidgetStateProperty.all<Color>(Colors.red),
-                                                  shadowColor: WidgetStateColor.transparent,
-                                                  overlayColor: WidgetStateColor.transparent,
-                                                ),
-                                                onPressed: () async {
-                                                  final deleteResponse = await showAdaptiveDialog<bool>(
-                                                    context: context,
-                                                    builder: (context) {
-                                                      return AlertDialog.adaptive(
-                                                        content: const Text(
-                                                            'This action cannot be undone and you will lose all your data associated with this account.'),
-                                                        title: const Text('Are you sure you want to delete your account?'),
-                                                        actions: [
-                                                          TextButton(
-                                                            onPressed: () {
-                                                              context.pop(false);
-                                                            },
-                                                            child: const Text('Cancel'),
-                                                          ),
-                                                          TextButton(
-                                                            onPressed: () async {
-                                                              var isAccountDeleted =
-                                                                  await ref.read(deleteAccountProvider(userId: userDetails.userId!).future);
-                                                              if (isAccountDeleted == true) {
-                                                                context.pop(true);
-                                                              }
-                                                            },
-                                                            child: const Text('Delete'),
-                                                          ),
-                                                        ],
-                                                      );
-                                                    },
-                                                  );
-                                                  print(deleteResponse);
-                                                  if (deleteResponse == true) {
-                                                    await handleLogout(context, prefs, ref, true);
-                                                  }
-                                                },
-                                                child: const Text(
-                                                  "Delete Account",
-                                                  style: TextStyle(color: Colors.white),
-                                                ),
-                                              ),
-                                            ),
-                                          ],
+                                      ? Padding(
+                                          padding: const EdgeInsets.all(10),
+                                          child: GestureDetector(
+                                            onTap: () async {
+                                              await handleLogout(context, prefs, ref, false);
+                                            },
+                                            child: const Text("Logout"),
+                                          ),
                                         )
                                       : const SizedBox(height: 20),
                                 ],
@@ -291,31 +233,77 @@ class ProfileScreen extends ConsumerWidget {
                                     }
                                   },
                                 ),
-                                const SizedBox(width: 25),
-                                _socialMedia(
-                                  context,
-                                  PROFILE_LINKEDIN,
-                                  () async {
-                                    if (await launchUrlString(
-                                      ApiConstants.linkedInUrl,
-                                      mode: LaunchMode.externalApplication,
-                                    )) {
-                                      await launchUrlString(
+                                const SizedBox(width: 15),
+                                Padding(
+                                  padding: const EdgeInsets.only(bottom: 5.0),
+                                  child: _socialMedia(
+                                    context,
+                                    PROFILE_LINKEDIN,
+                                    () async {
+                                      if (await launchUrlString(
                                         ApiConstants.linkedInUrl,
                                         mode: LaunchMode.externalApplication,
-                                      );
-                                    } else {
-                                      throw 'There was a problem to open the url: ${ApiConstants.linkedInUrl}';
-                                    }
-                                  },
+                                      )) {
+                                        await launchUrlString(
+                                          ApiConstants.linkedInUrl,
+                                          mode: LaunchMode.externalApplication,
+                                        );
+                                      } else {
+                                        throw 'There was a problem to open the url: ${ApiConstants.linkedInUrl}';
+                                      }
+                                    },
+                                  ),
                                 ),
                               ],
                             ),
-                            const SizedBox(height: 15),
+                            const SizedBox(height: 5),
                             const Text(
                               "Copyright © 2024 Briefsea. All rights reserved",
                               style: TextStyle(fontSize: 12),
-                            )
+                            ),
+                            if (isOtherProfile != true)
+                              Padding(
+                                padding: const EdgeInsets.only(top: 10),
+                                child: GestureDetector(
+                                  onTap: () async {
+                                    final deleteResponse = await showAdaptiveDialog<bool>(
+                                      context: context,
+                                      builder: (context) {
+                                        return AlertDialog.adaptive(
+                                          content: const Text(
+                                              'This action cannot be undone and you will lose all your data associated with this account.'),
+                                          title: const Text('Are you sure you want to delete your account?'),
+                                          actions: [
+                                            TextButton(
+                                              onPressed: () {
+                                                context.pop(false);
+                                              },
+                                              child: const Text('Cancel'),
+                                            ),
+                                            TextButton(
+                                              onPressed: () async {
+                                                var isAccountDeleted = await ref.read(deleteAccountProvider(userId: userDetails.userId!).future);
+                                                if (isAccountDeleted == true) {
+                                                  context.pop(true);
+                                                }
+                                              },
+                                              child: const Text('Delete'),
+                                            ),
+                                          ],
+                                        );
+                                      },
+                                    );
+                                    print(deleteResponse);
+                                    if (deleteResponse == true) {
+                                      await handleLogout(context, prefs, ref, true);
+                                    }
+                                  },
+                                  child: const Text(
+                                    "Delete Account",
+                                    style: TextStyle(fontSize: 10),
+                                  ),
+                                ),
+                              ),
                           ],
                         );
                       }
@@ -336,7 +324,7 @@ class ProfileScreen extends ConsumerWidget {
     );
   }
 
-  _socialMedia(context, imagePath, onTap) {
+  Widget _socialMedia(context, imagePath, onTap) {
     return GestureDetector(
       onTap: onTap,
       child: SizedBox(
@@ -466,36 +454,45 @@ class _BannerWidget extends ConsumerWidget {
                 ),
               ],
             )
-          : Align(
-              alignment: Alignment.topRight,
-              child: isOtherProfile != true
-                  ? IconButton(
-                      onPressed: () async {
-                        try {
-                          final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
-                          final imageUrl = await ref.read(
-                            uploadImageProvider(
-                              fileName: pickedFile!.name,
-                              fileType: lookupMimeType(pickedFile.path),
-                              userDetails: userDetails!,
-                              userProfileData: userProfileData,
-                              file: File(pickedFile.path),
-                              isBanner: true,
-                              isAvatar: false,
-                            ).future,
-                          );
-                          ref.read(selectedBannerImageProvider.notifier).state = imageUrl;
-                          log("PROFILE_SCREEN BANNERURL =====> $imageUrl");
-                        } catch (e) {
-                          log("Banner Not Uploaded", error: e);
-                        }
-                      },
-                      icon: const Icon(
-                        CupertinoIcons.camera_fill,
-                        color: Colors.black,
-                      ),
-                    )
-                  : const SizedBox.shrink(),
+          : Stack(
+              children: [
+                Image.asset(
+                  BANNER,
+                  fit: BoxFit.cover,
+                  width: ScreenSize.width(context),
+                ),
+                Align(
+                  alignment: Alignment.topRight,
+                  child: isOtherProfile != true
+                      ? IconButton(
+                          onPressed: () async {
+                            try {
+                              final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
+                              final imageUrl = await ref.read(
+                                uploadImageProvider(
+                                  fileName: pickedFile!.name,
+                                  fileType: lookupMimeType(pickedFile.path),
+                                  userDetails: userDetails!,
+                                  userProfileData: userProfileData,
+                                  file: File(pickedFile.path),
+                                  isBanner: true,
+                                  isAvatar: false,
+                                ).future,
+                              );
+                              ref.read(selectedBannerImageProvider.notifier).state = imageUrl;
+                              log("PROFILE_SCREEN BANNERURL =====> $imageUrl");
+                            } catch (e) {
+                              log("Banner Not Uploaded", error: e);
+                            }
+                          },
+                          icon: const Icon(
+                            CupertinoIcons.camera_fill,
+                            color: Colors.black,
+                          ),
+                        )
+                      : const SizedBox.shrink(),
+                ),
+              ],
             ),
     );
   }

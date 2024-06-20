@@ -56,7 +56,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                   children: [
                     logoImage!,
                     const Text(
-                      "Instantly connect with\nAgencies, Freelancers & Vendors\nof your industry",
+                      "Instantly connect with\nAgencies, Freelancers & Vendors\nin Tech and Marketing",
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 16,

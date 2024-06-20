@@ -181,7 +181,7 @@ class FreelancerRegisterScreen extends ConsumerWidget {
                           ),
                           SizedBox(height: ScreenSize.height(context) * .05),
                           const Text(
-                            "Instantly discover and grab\nhot freelancing opportunities\nin your industry.",
+                            "Instantly discover and grab\nhot freelancing opportunities\nin Tech and Marketing.",
                             style: TextStyle(color: Colors.white),
                             textScaler: TextScaler.linear(1),
                             textAlign: TextAlign.center,
