@@ -1,4 +1,4 @@
-package com.kshitijcodecraft.briefsea
+package com.briefsea.briefsea
 
 import io.flutter.embedding.android.FlutterActivity
 
