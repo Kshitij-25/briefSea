@@ -68,4 +68,26 @@ class BreifsRepository {
       return Left(AppError(errorMessage: e.toString()));
     }
   }
+
+  Future<Either<AppError, bool>>? deleteBrief({String? briefId}) async {
+    try {
+      final isDeleted = await _briefsRemoteDataSource.deleteBrief(briefId: briefId);
+      return Right(isDeleted);
+    } on AppError catch (e) {
+      return Left(e);
+    } on Exception catch (e) {
+      return Left(AppError(errorMessage: e.toString()));
+    }
+  }
+
+  Future<Either<AppError, bool>>? editBrief({String? briefId, bool? isVisible}) async {
+    try {
+      final editedBrief = await _briefsRemoteDataSource.editBrief(briefId: briefId, isVisible: isVisible);
+      return Right(editedBrief);
+    } on AppError catch (e) {
+      return Left(e);
+    } on Exception catch (e) {
+      return Left(AppError(errorMessage: e.toString()));
+    }
+  }
 }

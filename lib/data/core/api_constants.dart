@@ -27,6 +27,8 @@ class ApiConstants {
   static const getAllBriefs = '$BASE_URL/forum/discussion/threads/pagination';
   static const getUserBriefs = '$BASE_URL/forum/discussion/threads';
   static const postBrief = '$BASE_URL/forum/discussion/threads/new';
+  static const deleteBrief = '$BASE_URL/forum/discussion/threads/single';
+  static const editBrief = '$BASE_URL/forum/discussion/threads/single';
 
   // Likes
   static const likeUrl = '$BASE_URL/forum/discussion/threads/likes/new';

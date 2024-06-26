@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:briefsea/common/app_utility.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -62,7 +63,7 @@ class MyFeedNavigator extends ConsumerWidget {
           child: Column(
             children: [
               Container(
-                height: 170,
+                height: 150,
                 decoration: BoxDecoration(
                   borderRadius: const BorderRadius.only(
                     topLeft: Radius.circular(40),
@@ -120,23 +121,27 @@ class MyFeedNavigator extends ConsumerWidget {
                           },
                           postOnTap: (postText, selectedCategory) async {
                             if (postTextCont.text.isNotEmpty) {
-                              var status = await ref.watch(
-                                postBriefProvider(
-                                  userId: userData['user_id'],
-                                  uName: userData['user_name'],
-                                  type: userData['type'],
-                                  postText: postText,
-                                  imgSrc: ref.read(uploadedThreadImageKeyProvider.notifier).state,
-                                  category: selectedCategory,
-                                ).future,
-                              );
+                              if (selectedCategory != '') {
+                                var status = await ref.watch(
+                                  postBriefProvider(
+                                    userId: userData['user_id'],
+                                    uName: userData['user_name'],
+                                    type: userData['type'],
+                                    postText: postText,
+                                    imgSrc: ref.read(uploadedThreadImageKeyProvider.notifier).state,
+                                    category: selectedCategory,
+                                  ).future,
+                                );
 
-                              if (status == true) {
-                                postTextCont.clear();
-                                GoRouter.of(context).pop();
+                                if (status == true) {
+                                  postTextCont.clear();
+                                  GoRouter.of(context).pop();
+                                }
+                                ref.invalidate(getAllBriefsProvider);
+                                ref.invalidate(getUserBriefsProvider);
+                              } else {
+                                AppUtility(context).error('Choose a category first.');
                               }
-                              ref.invalidate(getAllBriefsProvider);
-                              ref.invalidate(getUserBriefsProvider);
                             }
                           },
                         );
@@ -176,7 +181,7 @@ class MyFeedNavigator extends ConsumerWidget {
                             Expanded(
                               child: Center(
                                 child: Text(
-                                  "Post a brief to instantly connect with agencies, freelancers and working professionals.",
+                                  "Post a brief to instantly connect with\nagencies, freelancers and working professionals.",
                                   style: TextStyle(
                                     color: Colors.grey,
                                     fontSize: 12,

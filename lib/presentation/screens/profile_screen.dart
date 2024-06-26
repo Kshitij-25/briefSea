@@ -24,7 +24,6 @@ import '../providers/image_provider.dart';
 import '../providers/user_profile_provider.dart';
 import '../state_providers/bottom_nav_bar_state_provider.dart';
 import '../state_providers/image_picker_provider.dart';
-import '../state_providers/verify_profile_industry_provider.dart';
 import 'auth_screens/welcome_screen.dart';
 
 class ProfileScreen extends ConsumerWidget {
@@ -393,7 +392,7 @@ class _BannerWidget extends ConsumerWidget {
           topRight: Radius.circular(40),
         ),
       ),
-      child: selectedBanner != null
+      child: selectedBanner != null && userProfileData?.bannerSrc != ""
           ? Stack(
               children: [
                 ClipRRect(
@@ -456,10 +455,16 @@ class _BannerWidget extends ConsumerWidget {
             )
           : Stack(
               children: [
-                Image.asset(
-                  BANNER,
-                  fit: BoxFit.cover,
-                  width: ScreenSize.width(context),
+                ClipRRect(
+                  borderRadius: const BorderRadius.only(
+                    topLeft: Radius.circular(40),
+                    topRight: Radius.circular(40),
+                  ),
+                  child: Image.asset(
+                    BANNER,
+                    fit: BoxFit.cover,
+                    width: ScreenSize.width(context),
+                  ),
                 ),
                 Align(
                   alignment: Alignment.topRight,
@@ -487,7 +492,7 @@ class _BannerWidget extends ConsumerWidget {
                           },
                           icon: const Icon(
                             CupertinoIcons.camera_fill,
-                            color: Colors.black,
+                            color: Colors.white,
                           ),
                         )
                       : const SizedBox.shrink(),
@@ -514,7 +519,7 @@ class _AvatarWidget extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final selectedAvatar = ref.watch(selectedAvatarImageProvider);
-    final selectedGender = ref.watch(selectedGenderProvider).selectedGender;
+
     return Align(
       alignment: Alignment.center,
       child: Padding(
@@ -547,16 +552,16 @@ class _AvatarWidget extends ConsumerWidget {
               CircleAvatar(
                 backgroundColor: const Color(0xFF1B0C6B),
                 radius: 70,
-                backgroundImage: selectedAvatar != "" && selectedAvatar != null
+                backgroundImage: selectedAvatar != "" && selectedAvatar != null && userProfileData?.avatarSrc != ""
                     ? CachedNetworkImageProvider(selectedAvatar)
-                    : selectedGender == "Male"
+                    : userProfileData?.gender == "Male"
                         ? const AssetImage(MALE)
-                        : selectedGender == "Female"
+                        : userProfileData?.gender == "Female"
                             ? const AssetImage(FEMALE)
-                            : selectedGender == "Others"
+                            : userProfileData?.gender == "Others"
                                 ? const AssetImage(OTHERS)
                                 : null,
-                child: selectedAvatar == null && selectedGender == null
+                child: selectedAvatar == null && userProfileData?.gender == null
                     ? Text(
                         userProfileData?.name?[0].toUpperCase() ?? "",
                         style: const TextStyle(color: Colors.white),

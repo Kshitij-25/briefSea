@@ -5,10 +5,9 @@ import 'package:go_router/go_router.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
 import '../../data/models/briefs_model.dart';
-import '../../data/models/image_model.dart';
 
 class CustomBriefsCard extends StatelessWidget {
-  CustomBriefsCard({
+  const CustomBriefsCard({
     super.key,
     this.brief,
     required this.onCommentTap,
@@ -20,6 +19,7 @@ class CustomBriefsCard extends StatelessWidget {
     this.postImage,
     required this.isUserTrue,
     this.onSelected,
+    this.avatarName,
   });
 
   final Function(BriefsModel?) onCommentTap;
@@ -30,7 +30,8 @@ class CustomBriefsCard extends StatelessWidget {
   final BriefsModel? brief;
   final bool cardVisible;
   final int? maxLine;
-  Future<ImageModel>? postImage;
+  final String? postImage;
+  final String? avatarName;
   final bool isUserTrue;
 
   @override
@@ -63,42 +64,25 @@ class CustomBriefsCard extends StatelessWidget {
                     },
                     child: CircleAvatar(
                       backgroundColor: const Color(0xFF1B0C6B),
+                      backgroundImage: avatarName != null && avatarName != '' ? NetworkImage(avatarName!) : null,
                       radius: 25,
-                      child: Text(
-                        brief?.name?[0] ?? "",
-                        style: const TextStyle(
-                          color: Colors.white,
-                        ),
-                        textScaler: const TextScaler.linear(1.3),
-                      ),
-                      // backgroundImage: avatarUrl?.url != "" ? NetworkImage(avatarUrl!.url!) : null,
+                      child: avatarName == null || avatarName == ''
+                          ? Text(
+                              brief?.name?[0] ?? "",
+                              style: const TextStyle(
+                                color: Colors.white,
+                              ),
+                              textScaler: const TextScaler.linear(1.3),
+                            )
+                          : const SizedBox.shrink(),
                     ),
                   ),
-                  // FutureBuilder(
-                  //   future: avatarUrl,
-                  //   builder: (context, snapshot) {
-                  //     if (snapshot.connectionState == ConnectionState.waiting) {
-                  //       return const CircularProgressIndicator();
-                  //     } else if (snapshot.hasError || !snapshot.hasData) {
-                  //       return const Icon(
-                  //         CupertinoIcons.camera_fill,
-                  //         color: Colors.white,
-                  //         size: 30,
-                  //       );
-                  //     } else {
-                  //       return CircleAvatar(
-                  //         backgroundImage: NetworkImage(snapshot.data!.url!),
-                  //         radius: 70,
-                  //       );
-                  //     }
-                  //   },
-                  // ),
                   const SizedBox(width: 10),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        brief?.name ?? "",
+                        '${brief?.name?[0].toUpperCase()}${brief?.name?.substring(1) ?? ""}',
                         style: const TextStyle(
                           color: Color(0xFF33BBE7),
                         ),
@@ -125,26 +109,30 @@ class CustomBriefsCard extends StatelessWidget {
                       color: Colors.grey,
                     ),
                   ),
-                  // if (isUserTrue == false)
-                  //   Padding(
-                  //     padding: const EdgeInsets.only(left: 10),
-                  //     child: PopupMenuButton(
-                  //       color: Colors.white,
-                  //       icon: const Icon(
-                  //         Icons.keyboard_arrow_down,
-                  //         color: Colors.grey,
-                  //       ),
-                  //       itemBuilder: (context) {
-                  //         return <PopupMenuEntry<String>>[
-                  //           const PopupMenuItem<String>(
-                  //             value: 'message',
-                  //             child: Text('Chat with user'),
-                  //           ),
-                  //         ];
-                  //       },
-                  //       onSelected: onSelected,
-                  //     ),
-                  //   )
+                  if (isUserTrue != false)
+                    Padding(
+                      padding: const EdgeInsets.only(left: 10),
+                      child: PopupMenuButton(
+                        color: Colors.white,
+                        icon: const Icon(
+                          CupertinoIcons.chevron_down,
+                          color: Colors.grey,
+                        ),
+                        itemBuilder: (context) {
+                          return <PopupMenuEntry<String>>[
+                            const PopupMenuItem<String>(
+                              value: 'delete',
+                              child: Text('Delete Brief'),
+                            ),
+                            PopupMenuItem<String>(
+                              value: 'visible',
+                              child: Text(brief?.isVisible == true ? 'Hide Brief' : 'Show Brief'),
+                            ),
+                          ];
+                        },
+                        onSelected: onSelected,
+                      ),
+                    )
                 ],
               ),
               Padding(
@@ -158,12 +146,12 @@ class CustomBriefsCard extends StatelessWidget {
                   overflow: TextOverflow.ellipsis,
                 ),
               ),
-              // if (cardVisible == false && brief?.imgSrc != null && (brief!.imgSrc != ""))
-              //   Container(
-              //     height: 300,
-              //     width: 300,
-              //     color: const Color(0xFF1B0C6B),
-              //   ),
+              if (cardVisible == false && brief?.imgSrc != null && (brief?.imgSrc != ""))
+                Container(
+                  height: 300,
+                  width: 300,
+                  color: const Color(0xFF1B0C6B),
+                ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [

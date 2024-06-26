@@ -52,10 +52,13 @@ class VerifyProfileScreen extends ConsumerWidget {
           TextButton(
             onPressed: () async {
               final uploadedAvatarKey = ref.watch(uploadedAvatarKeyProvider.notifier).state;
-              final uploadedBannerKey = ref.watch(uploadedBannerKeyProvider.notifier).state;
+              var uploadedBannerKey = ref.watch(uploadedBannerKeyProvider.notifier).state;
               final selectedIndustry = ref.watch(selectedIndustriesProvider.notifier).state;
               final selectedExpertise = ref.watch(selectedExpertiseProvider.notifier).state;
               final selectedGender = ref.watch(selectedGenderProvider).selectedGender;
+              // if (uploadedBannerKey == '' || uploadedBannerKey == null) {
+              //   uploadedBannerKey = await sendDefaultBanner(ref: ref, userDetails: userDetails);
+              // }
               if (phoneNumberCont.text.isNotEmpty &&
                   companyCont.text.isNotEmpty &&
                   jobTitleCont.text.isNotEmpty &&
@@ -264,6 +267,25 @@ class VerifyProfileScreen extends ConsumerWidget {
       onTap: onTap!,
     );
   }
+
+  Future<String?> sendDefaultBanner({WidgetRef? ref, Map<String, String>? userDetails}) async {
+    var uploadedBanner = await ref!.read(
+      uploadBannerProvider(
+        fileName: "Placeholder Image",
+        fileType: lookupMimeType(BANNER),
+        userId: userDetails!['user_id'],
+        userType: userDetails['type'],
+      ).future,
+    );
+    ref.read(uploadToAWSProvider(
+      url: uploadedBanner.url,
+      fileName: "Placeholder Image",
+      file: File(BANNER),
+      fileType: lookupMimeType(BANNER),
+    ));
+    // ref.read(uploadedBannerKeyProvider.notifier).state = uploadedBanner.key;
+    return uploadedBanner.key;
+  }
 }
 
 class _AvatarWidget extends ConsumerWidget {
@@ -444,7 +466,10 @@ class _BannerWidget extends ConsumerWidget {
                         ref.read(verifyBannerImageProvider.notifier).state = File(pickedFile.path);
                       }
                     },
-                    icon: const Icon(CupertinoIcons.camera_fill),
+                    icon: const Icon(
+                      CupertinoIcons.camera_fill,
+                      color: Colors.white,
+                    ),
                   ),
                 ),
               ],

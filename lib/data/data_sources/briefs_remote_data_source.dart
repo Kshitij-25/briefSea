@@ -15,6 +15,8 @@ abstract class BriefsRemoteDataSource {
   Future<List<BriefsModel?>?> getUserBriefs();
   Future<bool> postBrief({String? userId, String? name, String? type, String? category, String? postText, String? imgSrc});
   Future<ThreadImageModel?>? uploadThreadImage(String? fileName, MediaType fileType, String? userId, String? userType);
+  Future<bool> deleteBrief({String? briefId});
+  Future<bool> editBrief({String? briefId, bool? isVisible});
 }
 
 class BriefsRemoteDataSourceImpl implements BriefsRemoteDataSource {
@@ -159,6 +161,64 @@ class BriefsRemoteDataSourceImpl implements BriefsRemoteDataSource {
       }
     } catch (e) {
       log("uploadThreadImage Error", error: e);
+      throw AppError(errorMessage: e.toString());
+    }
+  }
+
+  @override
+  Future<bool> deleteBrief({String? briefId}) async {
+    var jwtToken = await getJwtToken();
+
+    try {
+      Response? response = await _apiClient.deleteReq(
+        url: "${ApiConstants.deleteBrief}/$briefId",
+        jwtToken: jwtToken,
+      );
+
+      if (response?.data != null && response?.statusCode != null) {
+        if (response!.statusCode == 200) {
+          var responseJson = response.data;
+          log(responseJson.toString());
+          return true;
+        } else {
+          throw AppError(statusCode: response.statusCode);
+        }
+      } else {
+        throw AppError();
+      }
+    } catch (e) {
+      log("deleteBrief Error", error: e);
+      throw AppError(errorMessage: e.toString());
+    }
+  }
+
+  @override
+  Future<bool> editBrief({String? briefId, bool? isVisible}) async {
+    var jwtToken = await getJwtToken();
+    try {
+      var body = {
+        'isVisible': isVisible,
+      };
+
+      Response? response = await _apiClient.patchReq(
+        url: "${ApiConstants.editBrief}/$briefId",
+        body: body,
+        jwtToken: jwtToken,
+      );
+
+      if (response?.data != null && response?.statusCode != null) {
+        if (response!.statusCode == 200) {
+          var responseJson = response.data;
+          log(responseJson.toString());
+          return true;
+        } else {
+          throw AppError(statusCode: response.statusCode);
+        }
+      } else {
+        throw AppError();
+      }
+    } catch (e) {
+      log("editBrief Error", error: e);
       throw AppError(errorMessage: e.toString());
     }
   }

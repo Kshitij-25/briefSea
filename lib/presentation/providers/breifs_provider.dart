@@ -1,4 +1,3 @@
-import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../data/core/api_client.dart';
@@ -100,4 +99,26 @@ Future<ThreadImageModel> uploadThreadImage(UploadThreadImageRef ref,
   );
 }
 
-final selectedAvatarProvider = StateProvider<String?>((ref) => null);
+@riverpod
+Future<bool> deleteBrief(DeleteBriefRef ref, {required String? briefId}) async {
+  final breifsRepository = ref.watch(briefsRepositoryProvider);
+  final eitherBriefsOrError = await breifsRepository.deleteBrief(briefId: briefId);
+  return eitherBriefsOrError!.fold(
+    (error) {
+      throw error; // Throw the error for Riverpod to handle
+    },
+    (briefs) => briefs,
+  );
+}
+
+@riverpod
+Future<bool> editBrief(EditBriefRef ref, {required String? briefId, required bool? isVisible}) async {
+  final breifsRepository = ref.watch(briefsRepositoryProvider);
+  final eitherBriefsOrError = await breifsRepository.editBrief(briefId: briefId, isVisible: isVisible);
+  return eitherBriefsOrError!.fold(
+    (error) {
+      throw error; // Throw the error for Riverpod to handle
+    },
+    (briefs) => briefs,
+  );
+}

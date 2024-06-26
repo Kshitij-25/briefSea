@@ -477,5 +477,277 @@ class _UploadThreadImageProviderElement
   @override
   dynamic get userType => (origin as UploadThreadImageProvider).userType;
 }
+
+String _$deleteBriefHash() => r'6dcd800b987598b3893be19d76c8f0f49d28ce1e';
+
+/// See also [deleteBrief].
+@ProviderFor(deleteBrief)
+const deleteBriefProvider = DeleteBriefFamily();
+
+/// See also [deleteBrief].
+class DeleteBriefFamily extends Family<AsyncValue<bool>> {
+  /// See also [deleteBrief].
+  const DeleteBriefFamily();
+
+  /// See also [deleteBrief].
+  DeleteBriefProvider call({
+    required String? briefId,
+  }) {
+    return DeleteBriefProvider(
+      briefId: briefId,
+    );
+  }
+
+  @override
+  DeleteBriefProvider getProviderOverride(
+    covariant DeleteBriefProvider provider,
+  ) {
+    return call(
+      briefId: provider.briefId,
+    );
+  }
+
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'deleteBriefProvider';
+}
+
+/// See also [deleteBrief].
+class DeleteBriefProvider extends AutoDisposeFutureProvider<bool> {
+  /// See also [deleteBrief].
+  DeleteBriefProvider({
+    required String? briefId,
+  }) : this._internal(
+          (ref) => deleteBrief(
+            ref as DeleteBriefRef,
+            briefId: briefId,
+          ),
+          from: deleteBriefProvider,
+          name: r'deleteBriefProvider',
+          debugGetCreateSourceHash:
+              const bool.fromEnvironment('dart.vm.product')
+                  ? null
+                  : _$deleteBriefHash,
+          dependencies: DeleteBriefFamily._dependencies,
+          allTransitiveDependencies:
+              DeleteBriefFamily._allTransitiveDependencies,
+          briefId: briefId,
+        );
+
+  DeleteBriefProvider._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.briefId,
+  }) : super.internal();
+
+  final String? briefId;
+
+  @override
+  Override overrideWith(
+    FutureOr<bool> Function(DeleteBriefRef provider) create,
+  ) {
+    return ProviderOverride(
+      origin: this,
+      override: DeleteBriefProvider._internal(
+        (ref) => create(ref as DeleteBriefRef),
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        briefId: briefId,
+      ),
+    );
+  }
+
+  @override
+  AutoDisposeFutureProviderElement<bool> createElement() {
+    return _DeleteBriefProviderElement(this);
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is DeleteBriefProvider && other.briefId == briefId;
+  }
+
+  @override
+  int get hashCode {
+    var hash = _SystemHash.combine(0, runtimeType.hashCode);
+    hash = _SystemHash.combine(hash, briefId.hashCode);
+
+    return _SystemHash.finish(hash);
+  }
+}
+
+mixin DeleteBriefRef on AutoDisposeFutureProviderRef<bool> {
+  /// The parameter `briefId` of this provider.
+  String? get briefId;
+}
+
+class _DeleteBriefProviderElement extends AutoDisposeFutureProviderElement<bool>
+    with DeleteBriefRef {
+  _DeleteBriefProviderElement(super.provider);
+
+  @override
+  String? get briefId => (origin as DeleteBriefProvider).briefId;
+}
+
+String _$editBriefHash() => r'49dbb8ea4acc263511e5dc49703233609f982165';
+
+/// See also [editBrief].
+@ProviderFor(editBrief)
+const editBriefProvider = EditBriefFamily();
+
+/// See also [editBrief].
+class EditBriefFamily extends Family<AsyncValue<bool>> {
+  /// See also [editBrief].
+  const EditBriefFamily();
+
+  /// See also [editBrief].
+  EditBriefProvider call({
+    required String? briefId,
+    required bool? isVisible,
+  }) {
+    return EditBriefProvider(
+      briefId: briefId,
+      isVisible: isVisible,
+    );
+  }
+
+  @override
+  EditBriefProvider getProviderOverride(
+    covariant EditBriefProvider provider,
+  ) {
+    return call(
+      briefId: provider.briefId,
+      isVisible: provider.isVisible,
+    );
+  }
+
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'editBriefProvider';
+}
+
+/// See also [editBrief].
+class EditBriefProvider extends AutoDisposeFutureProvider<bool> {
+  /// See also [editBrief].
+  EditBriefProvider({
+    required String? briefId,
+    required bool? isVisible,
+  }) : this._internal(
+          (ref) => editBrief(
+            ref as EditBriefRef,
+            briefId: briefId,
+            isVisible: isVisible,
+          ),
+          from: editBriefProvider,
+          name: r'editBriefProvider',
+          debugGetCreateSourceHash:
+              const bool.fromEnvironment('dart.vm.product')
+                  ? null
+                  : _$editBriefHash,
+          dependencies: EditBriefFamily._dependencies,
+          allTransitiveDependencies: EditBriefFamily._allTransitiveDependencies,
+          briefId: briefId,
+          isVisible: isVisible,
+        );
+
+  EditBriefProvider._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.briefId,
+    required this.isVisible,
+  }) : super.internal();
+
+  final String? briefId;
+  final bool? isVisible;
+
+  @override
+  Override overrideWith(
+    FutureOr<bool> Function(EditBriefRef provider) create,
+  ) {
+    return ProviderOverride(
+      origin: this,
+      override: EditBriefProvider._internal(
+        (ref) => create(ref as EditBriefRef),
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        briefId: briefId,
+        isVisible: isVisible,
+      ),
+    );
+  }
+
+  @override
+  AutoDisposeFutureProviderElement<bool> createElement() {
+    return _EditBriefProviderElement(this);
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is EditBriefProvider &&
+        other.briefId == briefId &&
+        other.isVisible == isVisible;
+  }
+
+  @override
+  int get hashCode {
+    var hash = _SystemHash.combine(0, runtimeType.hashCode);
+    hash = _SystemHash.combine(hash, briefId.hashCode);
+    hash = _SystemHash.combine(hash, isVisible.hashCode);
+
+    return _SystemHash.finish(hash);
+  }
+}
+
+mixin EditBriefRef on AutoDisposeFutureProviderRef<bool> {
+  /// The parameter `briefId` of this provider.
+  String? get briefId;
+
+  /// The parameter `isVisible` of this provider.
+  bool? get isVisible;
+}
+
+class _EditBriefProviderElement extends AutoDisposeFutureProviderElement<bool>
+    with EditBriefRef {
+  _EditBriefProviderElement(super.provider);
+
+  @override
+  String? get briefId => (origin as EditBriefProvider).briefId;
+  @override
+  bool? get isVisible => (origin as EditBriefProvider).isVisible;
+}
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member

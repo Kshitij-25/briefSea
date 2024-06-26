@@ -21,6 +21,29 @@ class AllBriefsScreen extends ConsumerWidget {
 
   final PageController? pageController;
 
+  Future<BriefsModel?> _initializeImageProviders(WidgetRef ref, BriefsModel briefModel) async {
+    try {
+      if (briefModel.avatarSrc != null && briefModel.avatarSrc != '') {
+        ImageModel avatarUrl = await ref.watch(getImageProvider(src: briefModel.avatarSrc!).future);
+        if (avatarUrl.url != null && avatarUrl.url != '') {
+          briefModel = briefModel.copyWith(avatarSrc: avatarUrl.url);
+        }
+      }
+
+      if (briefModel.imgSrc != null && briefModel.imgSrc != '') {
+        ImageModel postImage = await ref.watch(getImageProvider(src: briefModel.imgSrc!).future);
+        if (postImage.url != null && postImage.url != '') {
+          briefModel = briefModel.copyWith(imgSrc: postImage.url);
+        }
+      }
+
+      return briefModel;
+    } catch (e) {
+      print('Error initializing image providers: $e');
+      return null;
+    }
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final userDetails = ref.watch(userDetailsProvider);
@@ -35,79 +58,83 @@ class AllBriefsScreen extends ConsumerWidget {
               shrinkWrap: true,
               itemCount: briefs.length,
               itemBuilder: (context, index) {
-                Future<ImageModel>? postImage;
-
-                // Check if imgSrc is not null before fetching the avatarUrl
-                if (briefs[index]!.imgSrc != null) {
-                  postImage = ref.watch(getImageProvider(src: briefs[index]!.imgSrc!).future);
-                }
-
-                return CustomBriefsCard(
-                  isUserTrue: briefs[index]!.userId != userDetails['user_id'] ? false : true,
-                  brief: briefs[index],
-                  postImage: postImage,
-                  // onSelected: (value) async {
-                  //   if (value == "message") {
-                  //     var isChatCreated = await ref.watch(createNewChatProvider(
-                  //       receiverId: briefs[index]!.userId!,
-                  //       senderId: userDetails['user_id']!,
-                  //     ).future);
-
-                  //     if (isChatCreated == true) {
-                  //       pageController?.jumpToPage(1);
-                  //       ref.read(currentIndexProvider.notifier).state = 1;
-                  //       //   // context.push(ChatScreen.routeName);
-                  //       //   // isChatCreated = false;
-                  //     }
-                  //   }
-                  // },
-                  onCommentTap: (brief) {
-                    context.push(
-                      FeedScreen.routeName,
-                      extra: {'allBrief': briefs[index]},
-                    );
-                  },
-                  onLikeTap: (brief) async {
-                    try {
-                      if (!brief!.isPostLiked) {
-                        await ref.read(postLikeProvider(
-                          threadId: brief.id,
-                          type: userDetails['type'],
-                          uName: userDetails['user_name'],
-                          userId: userDetails['user_id'],
-                          replyId: null,
-                        ).future);
-                        if (brief.userId != userDetails['user_id']) {
-                          await ref.read(postNewNotificationProvider(
-                            requestBody: {
-                              "type": 'brief liked',
-                              "sender_id": userDetails['user_id'],
-                              "sender_name": userDetails['user_name'],
-                              "receiver_id": brief.userId,
-                              "notification": "${userDetails['user_name']} liked your brief.",
-                              "thread_id": brief.id,
-                            },
-                          ).future);
-                        }
-                      } else {
-                        await ref.read(deleteLikeProvider(
-                          likeId: brief.postLikeId,
-                          threadId: brief.id,
-                        ).future);
-                      }
-                      ref.invalidate(getAllBriefsProvider);
-                    } catch (e) {
-                      log(e.toString());
+                return FutureBuilder(
+                  future: _initializeImageProviders(ref, briefs[index]!),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const SizedBox.shrink();
+                    } else if (snapshot.hasError) {
+                      return Center(child: Text('Error: ${snapshot.error}'));
+                    } else {
+                      return CustomBriefsCard(
+                        isUserTrue: briefs[index]!.userId != userDetails['user_id'] ? false : true,
+                        brief: briefs[index],
+                        postImage: snapshot.data?.imgSrc,
+                        avatarName: snapshot.data?.avatarSrc,
+                        onSelected: (value) async {
+                          if (value == "delete") {
+                            var isDeleted = await ref.watch(deleteBriefProvider(briefId: briefs[index]?.id).future);
+                            if (isDeleted == true) {
+                              ref.invalidate(getAllBriefsProvider);
+                            }
+                          } else if (value == "visible") {
+                            var isVisible =
+                                await ref.watch(editBriefProvider(briefId: briefs[index]?.id, isVisible: !briefs[index]!.isVisible!).future);
+                            if (isVisible == true) {
+                              ref.invalidate(getAllBriefsProvider);
+                            }
+                          }
+                        },
+                        onCommentTap: (brief) {
+                          context.push(
+                            FeedScreen.routeName,
+                            extra: {'allBrief': briefs[index]},
+                          );
+                        },
+                        onLikeTap: (brief) async {
+                          try {
+                            if (!brief!.isPostLiked) {
+                              await ref.read(postLikeProvider(
+                                threadId: brief.id,
+                                type: userDetails['type'],
+                                uName: userDetails['user_name'],
+                                userId: userDetails['user_id'],
+                                replyId: null,
+                              ).future);
+                              if (brief.userId != userDetails['user_id']) {
+                                await ref.read(postNewNotificationProvider(
+                                  requestBody: {
+                                    "type": 'brief liked',
+                                    "sender_id": userDetails['user_id'],
+                                    "sender_name": userDetails['user_name'],
+                                    "receiver_id": brief.userId,
+                                    "notification": "${userDetails['user_name']} liked your brief.",
+                                    "thread_id": brief.id,
+                                  },
+                                ).future);
+                              }
+                            } else {
+                              await ref.read(deleteLikeProvider(
+                                likeId: brief.postLikeId,
+                                threadId: brief.id,
+                              ).future);
+                            }
+                            ref.invalidate(getAllBriefsProvider);
+                          } catch (e) {
+                            log(e.toString());
+                          }
+                        },
+                        onShareTap: (brief) {
+                          shareBrief(brief!);
+                        },
+                        onTap: () {
+                          context.push(
+                            FeedScreen.routeName,
+                            extra: {'allBrief': briefs[index]},
+                          );
+                        },
+                      );
                     }
-                  },
-                  onShareTap: (brief) {
-                    shareBrief(brief!);
-                  },
-                  onTap: () {
-                    context.push(
-                      FeedScreen.routeName,
-                      extra: {'allBrief': briefs[index]},
-                    );
                   },
                 );
               },

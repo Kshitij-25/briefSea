@@ -37,6 +37,8 @@ mixin _$BriefsModel {
   String? get updatedAt => throw _privateConstructorUsedError;
   bool get isPostLiked => throw _privateConstructorUsedError;
   String? get postLikeId => throw _privateConstructorUsedError;
+  bool? get isVisible => throw _privateConstructorUsedError;
+  String? get avatarSrc => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -64,7 +66,9 @@ abstract class $BriefsModelCopyWith<$Res> {
       String? createdAt,
       String? updatedAt,
       bool isPostLiked,
-      String? postLikeId});
+      String? postLikeId,
+      bool? isVisible,
+      String? avatarSrc});
 }
 
 /// @nodoc
@@ -94,6 +98,8 @@ class _$BriefsModelCopyWithImpl<$Res, $Val extends BriefsModel>
     Object? updatedAt = freezed,
     Object? isPostLiked = null,
     Object? postLikeId = freezed,
+    Object? isVisible = freezed,
+    Object? avatarSrc = freezed,
   }) {
     return _then(_value.copyWith(
       id: freezed == id
@@ -152,6 +158,14 @@ class _$BriefsModelCopyWithImpl<$Res, $Val extends BriefsModel>
           ? _value.postLikeId
           : postLikeId // ignore: cast_nullable_to_non_nullable
               as String?,
+      isVisible: freezed == isVisible
+          ? _value.isVisible
+          : isVisible // ignore: cast_nullable_to_non_nullable
+              as bool?,
+      avatarSrc: freezed == avatarSrc
+          ? _value.avatarSrc
+          : avatarSrc // ignore: cast_nullable_to_non_nullable
+              as String?,
     ) as $Val);
   }
 }
@@ -178,7 +192,9 @@ abstract class _$$BriefsModelImplCopyWith<$Res>
       String? createdAt,
       String? updatedAt,
       bool isPostLiked,
-      String? postLikeId});
+      String? postLikeId,
+      bool? isVisible,
+      String? avatarSrc});
 }
 
 /// @nodoc
@@ -206,6 +222,8 @@ class __$$BriefsModelImplCopyWithImpl<$Res>
     Object? updatedAt = freezed,
     Object? isPostLiked = null,
     Object? postLikeId = freezed,
+    Object? isVisible = freezed,
+    Object? avatarSrc = freezed,
   }) {
     return _then(_$BriefsModelImpl(
       id: freezed == id
@@ -264,6 +282,14 @@ class __$$BriefsModelImplCopyWithImpl<$Res>
           ? _value.postLikeId
           : postLikeId // ignore: cast_nullable_to_non_nullable
               as String?,
+      isVisible: freezed == isVisible
+          ? _value.isVisible
+          : isVisible // ignore: cast_nullable_to_non_nullable
+              as bool?,
+      avatarSrc: freezed == avatarSrc
+          ? _value.avatarSrc
+          : avatarSrc // ignore: cast_nullable_to_non_nullable
+              as String?,
     ));
   }
 }
@@ -285,7 +311,9 @@ class _$BriefsModelImpl implements _BriefsModel {
       this.createdAt,
       this.updatedAt,
       this.isPostLiked = false,
-      this.postLikeId});
+      this.postLikeId,
+      this.isVisible,
+      this.avatarSrc});
 
   factory _$BriefsModelImpl.fromJson(Map<String, dynamic> json) =>
       _$$BriefsModelImplFromJson(json);
@@ -322,10 +350,14 @@ class _$BriefsModelImpl implements _BriefsModel {
   final bool isPostLiked;
   @override
   final String? postLikeId;
+  @override
+  final bool? isVisible;
+  @override
+  final String? avatarSrc;
 
   @override
   String toString() {
-    return 'BriefsModel(id: $id, userId: $userId, name: $name, type: $type, category: $category, postText: $postText, likesCount: $likesCount, replyCount: $replyCount, postedAt: $postedAt, imgSrc: $imgSrc, createdAt: $createdAt, updatedAt: $updatedAt, isPostLiked: $isPostLiked, postLikeId: $postLikeId)';
+    return 'BriefsModel(id: $id, userId: $userId, name: $name, type: $type, category: $category, postText: $postText, likesCount: $likesCount, replyCount: $replyCount, postedAt: $postedAt, imgSrc: $imgSrc, createdAt: $createdAt, updatedAt: $updatedAt, isPostLiked: $isPostLiked, postLikeId: $postLikeId, isVisible: $isVisible, avatarSrc: $avatarSrc)';
   }
 
   @override
@@ -355,7 +387,11 @@ class _$BriefsModelImpl implements _BriefsModel {
             (identical(other.isPostLiked, isPostLiked) ||
                 other.isPostLiked == isPostLiked) &&
             (identical(other.postLikeId, postLikeId) ||
-                other.postLikeId == postLikeId));
+                other.postLikeId == postLikeId) &&
+            (identical(other.isVisible, isVisible) ||
+                other.isVisible == isVisible) &&
+            (identical(other.avatarSrc, avatarSrc) ||
+                other.avatarSrc == avatarSrc));
   }
 
   @JsonKey(ignore: true)
@@ -375,7 +411,9 @@ class _$BriefsModelImpl implements _BriefsModel {
       createdAt,
       updatedAt,
       isPostLiked,
-      postLikeId);
+      postLikeId,
+      isVisible,
+      avatarSrc);
 
   @JsonKey(ignore: true)
   @override
@@ -406,7 +444,9 @@ abstract class _BriefsModel implements BriefsModel {
       final String? createdAt,
       final String? updatedAt,
       final bool isPostLiked,
-      final String? postLikeId}) = _$BriefsModelImpl;
+      final String? postLikeId,
+      final bool? isVisible,
+      final String? avatarSrc}) = _$BriefsModelImpl;
 
   factory _BriefsModel.fromJson(Map<String, dynamic> json) =
       _$BriefsModelImpl.fromJson;
@@ -442,6 +482,10 @@ abstract class _BriefsModel implements BriefsModel {
   bool get isPostLiked;
   @override
   String? get postLikeId;
+  @override
+  bool? get isVisible;
+  @override
+  String? get avatarSrc;
   @override
   @JsonKey(ignore: true)
   _$$BriefsModelImplCopyWith<_$BriefsModelImpl> get copyWith =>

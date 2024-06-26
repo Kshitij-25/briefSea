@@ -49,7 +49,7 @@ class ExistingLoginScreen extends ConsumerWidget {
                           GestureDetector(
                             onTap: () {
                               emailCont.text = "kshitij@briefsea.com";
-                              passCont.text = '1234567890';
+                              passCont.text = 'Test@1234';
                             },
                             onLongPress: () {
                               emailCont.text = "dowaye6258@elahan.com";
