@@ -26,6 +26,7 @@ class ApiConstants {
   // Threads and briefs
   static const getAllBriefs = '$BASE_URL/forum/discussion/threads/pagination';
   static const getUserBriefs = '$BASE_URL/forum/discussion/threads';
+  static const getSingleBrief = '$BASE_URL/forum/discussion/threads/single';
   static const postBrief = '$BASE_URL/forum/discussion/threads/new';
   static const deleteBrief = '$BASE_URL/forum/discussion/threads/single';
   static const editBrief = '$BASE_URL/forum/discussion/threads/single';

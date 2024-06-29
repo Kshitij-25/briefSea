@@ -15,7 +15,7 @@ import '../models/register_model.dart';
 abstract class AuthRemoteDataSource {
   Future<LoginModel?>? loginUser(String? email, String? password);
   Future<dynamic> loginWithGoogle();
-  Future<RegisterModel> registerUser(String? userName, String? email, String? password, String? type, String? subType);
+  Future<RegisterModel> registerUser(String? firstName, String? lastName, String? email, String? password, String? type, String? subType);
   Future<void> logout();
   Future<bool> forgetPassword(String? email);
 }
@@ -50,11 +50,14 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
 
             // Save the payload to shared preferences
             await prefs?.setString('jwtToken', jwtToken);
-            await prefs?.setString('user_id', accessTokenPayload['user_detail']['user_id']);
-            await prefs?.setString('user_name', accessTokenPayload['user_detail']['user_name']);
-            await prefs?.setString('email', accessTokenPayload['user_detail']['email']);
-            await prefs?.setString('type', accessTokenPayload['user_detail']['type']);
-            await prefs?.setString('subtype', accessTokenPayload['user_detail']['subtype']);
+            await prefs?.setString('user_id', accessTokenPayload['user_detail']['user_id']) ?? '';
+            await prefs?.setString('userName', accessTokenPayload['user_detail']['userName'] ?? '');
+            await prefs?.setString('firstName', accessTokenPayload['user_detail']['firstName'] ?? '');
+            await prefs?.setString('user_name', accessTokenPayload['user_detail']['user_name'] ?? '');
+            await prefs?.setString('lastName', accessTokenPayload['user_detail']['lastName'] ?? '');
+            await prefs?.setString('email', accessTokenPayload['user_detail']['email'] ?? '');
+            await prefs?.setString('type', accessTokenPayload['user_detail']['type'] ?? '');
+            // await prefs?.setString('subtype', accessTokenPayload['user_detail']['subtype']);
 
             return LoginModel.fromJson(responseJson);
           } else if (loginMessage == "Email sent") {
@@ -105,10 +108,11 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   }
 
   @override
-  Future<RegisterModel> registerUser(String? userName, String? email, String? password, String? type, String? subType) async {
+  Future<RegisterModel> registerUser(String? firstName, String? lastName, String? email, String? password, String? type, String? subType) async {
     try {
       var body = {
-        'user_name': userName,
+        'firstName': firstName,
+        'lastName': lastName,
         'email': email,
         'password': password,
         'type': type,

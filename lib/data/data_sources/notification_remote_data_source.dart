@@ -117,7 +117,7 @@ class NotificationRemoteDataSourceImpl implements NotificationRemoteDataSource {
       );
 
       if (response?.data != null && response?.statusCode != null) {
-        if (response!.statusCode == 201) {
+        if (response!.statusCode == 200) {
           var responseJson = response.data;
           log(responseJson.toString());
           return true;
@@ -143,7 +143,7 @@ class NotificationRemoteDataSourceImpl implements NotificationRemoteDataSource {
       );
 
       if (response?.data != null && response?.statusCode != null) {
-        if (response!.statusCode == 201) {
+        if (response!.statusCode == 200) {
           var responseJson = response.data;
           log(responseJson.toString());
           return true;

@@ -70,7 +70,7 @@ final getUserBriefsProvider =
 );
 
 typedef GetUserBriefsRef = AutoDisposeFutureProviderRef<List<BriefsModel?>?>;
-String _$postBriefHash() => r'5e285840e5174397201a04f1262705b96a61d96a';
+String _$getSingleBriefHash() => r'3f38e059b31d89a5e79152ac8b692cd76ee03fc0';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -92,6 +92,135 @@ class _SystemHash {
     return 0x1fffffff & (hash + ((0x00003fff & hash) << 15));
   }
 }
+
+/// See also [getSingleBrief].
+@ProviderFor(getSingleBrief)
+const getSingleBriefProvider = GetSingleBriefFamily();
+
+/// See also [getSingleBrief].
+class GetSingleBriefFamily extends Family<AsyncValue<BriefsModel?>> {
+  /// See also [getSingleBrief].
+  const GetSingleBriefFamily();
+
+  /// See also [getSingleBrief].
+  GetSingleBriefProvider call({
+    required String? briefId,
+  }) {
+    return GetSingleBriefProvider(
+      briefId: briefId,
+    );
+  }
+
+  @override
+  GetSingleBriefProvider getProviderOverride(
+    covariant GetSingleBriefProvider provider,
+  ) {
+    return call(
+      briefId: provider.briefId,
+    );
+  }
+
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'getSingleBriefProvider';
+}
+
+/// See also [getSingleBrief].
+class GetSingleBriefProvider extends AutoDisposeFutureProvider<BriefsModel?> {
+  /// See also [getSingleBrief].
+  GetSingleBriefProvider({
+    required String? briefId,
+  }) : this._internal(
+          (ref) => getSingleBrief(
+            ref as GetSingleBriefRef,
+            briefId: briefId,
+          ),
+          from: getSingleBriefProvider,
+          name: r'getSingleBriefProvider',
+          debugGetCreateSourceHash:
+              const bool.fromEnvironment('dart.vm.product')
+                  ? null
+                  : _$getSingleBriefHash,
+          dependencies: GetSingleBriefFamily._dependencies,
+          allTransitiveDependencies:
+              GetSingleBriefFamily._allTransitiveDependencies,
+          briefId: briefId,
+        );
+
+  GetSingleBriefProvider._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.briefId,
+  }) : super.internal();
+
+  final String? briefId;
+
+  @override
+  Override overrideWith(
+    FutureOr<BriefsModel?> Function(GetSingleBriefRef provider) create,
+  ) {
+    return ProviderOverride(
+      origin: this,
+      override: GetSingleBriefProvider._internal(
+        (ref) => create(ref as GetSingleBriefRef),
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        briefId: briefId,
+      ),
+    );
+  }
+
+  @override
+  AutoDisposeFutureProviderElement<BriefsModel?> createElement() {
+    return _GetSingleBriefProviderElement(this);
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is GetSingleBriefProvider && other.briefId == briefId;
+  }
+
+  @override
+  int get hashCode {
+    var hash = _SystemHash.combine(0, runtimeType.hashCode);
+    hash = _SystemHash.combine(hash, briefId.hashCode);
+
+    return _SystemHash.finish(hash);
+  }
+}
+
+mixin GetSingleBriefRef on AutoDisposeFutureProviderRef<BriefsModel?> {
+  /// The parameter `briefId` of this provider.
+  String? get briefId;
+}
+
+class _GetSingleBriefProviderElement
+    extends AutoDisposeFutureProviderElement<BriefsModel?>
+    with GetSingleBriefRef {
+  _GetSingleBriefProviderElement(super.provider);
+
+  @override
+  String? get briefId => (origin as GetSingleBriefProvider).briefId;
+}
+
+String _$postBriefHash() => r'5e285840e5174397201a04f1262705b96a61d96a';
 
 /// See also [postBrief].
 @ProviderFor(postBrief)

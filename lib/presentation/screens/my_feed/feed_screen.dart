@@ -24,28 +24,26 @@ import '../messages/chat_screen.dart';
 class FeedScreen extends ConsumerWidget {
   FeedScreen({
     super.key,
-    this.allBrief,
-    this.userBrief,
+    this.brief,
   });
 
   static const routeName = '/feedScreen';
 
-  final BriefsModel? allBrief;
-  final BriefsModel? userBrief;
+  final BriefsModel? brief;
 
   final TextEditingController commentCont = TextEditingController();
   final TextEditingController replyCont = TextEditingController();
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final getComments = ref.watch(getAllCommentsProvider(threadId: allBrief!.id ?? userBrief!.id));
+    final getComments = ref.watch(getAllCommentsProvider(threadId: brief!.id));
     final userDetails = ref.watch(userDetailsProvider);
     final textFieldFocusNode = ref.watch(textFieldFocusNodeProvider);
     return Scaffold(
       appBar: AppBar(
         backgroundColor: const Color(0xFF4B26FD),
         title: Text(
-          allBrief!.name ?? userBrief!.name ?? "",
+          brief!.name ?? "",
           style: const TextStyle(
             fontWeight: FontWeight.bold,
             color: Colors.white,
@@ -91,10 +89,10 @@ class FeedScreen extends ConsumerWidget {
             child: Column(
               children: [
                 CustomBriefsCard(
-                  isUserTrue: (allBrief!.userId == userDetails['user_id'] || userBrief!.userId == userDetails['user_id']) ? true : false,
+                  isUserTrue: (brief!.userId == userDetails['user_id']) ? true : false,
                   maxLine: 100,
                   cardVisible: false,
-                  brief: allBrief ?? userBrief,
+                  brief: brief,
                   onCommentTap: (brief) {
                     final focusNode = ref.read(textFieldFocusNodeProvider);
                     focusNode.requestFocus();
@@ -109,7 +107,7 @@ class FeedScreen extends ConsumerWidget {
                           userId: userDetails['user_id'],
                           replyId: null,
                         ).future);
-                        if (allBrief!.userId != userDetails['user_id'] || userBrief!.userId != userDetails['user_id']) {
+                        if (brief.userId != userDetails['user_id']) {
                           await ref.read(postNewNotificationProvider(
                             requestBody: {
                               "type": 'brief liked',
@@ -142,10 +140,9 @@ class FeedScreen extends ConsumerWidget {
                       return ListView.builder(
                         itemCount: comments.length,
                         itemBuilder: (context, index) {
-                          print(
-                              "${allBrief!.userId}== ${userDetails['user_id']}  ==>${(allBrief!.userId == userDetails['user_id'] || userBrief!.userId == userDetails['user_id'])}");
+                          print("${brief!.userId}== ${userDetails['user_id']}");
                           return CustomCommentCard(
-                            isUserTrue: (allBrief!.userId == userDetails['user_id'] || userBrief!.userId == userDetails['user_id']) ? true : false,
+                            isUserTrue: (brief!.userId == userDetails['user_id']) ? true : false,
                             isReplies: false,
                             onCommentTap: (p0) {
                               ref.watch(isReplyStateProvider.notifier).state = true;
@@ -153,7 +150,7 @@ class FeedScreen extends ConsumerWidget {
                                 context,
                                 comments: comments[index],
                                 replyCont: replyCont,
-                                threadId: allBrief!.id ?? userBrief!.id,
+                                threadId: brief!.id,
                                 userDetails: userDetails,
                               );
                             },
@@ -173,7 +170,7 @@ class FeedScreen extends ConsumerWidget {
                                     threadId: comments[index].threadId,
                                   ).future);
                                 }
-                                ref.invalidate(getAllCommentsProvider(threadId: allBrief!.id ?? userBrief!.id));
+                                ref.invalidate(getAllCommentsProvider(threadId: brief!.id));
                               } catch (e) {
                                 log(e.toString());
                               }
@@ -243,36 +240,39 @@ class FeedScreen extends ConsumerWidget {
                         ),
                         ElevatedButton(
                           style: ButtonStyle(
-                            backgroundColor: WidgetStateProperty.all<Color>(const Color(0xFF212121)),
+                            backgroundColor: WidgetStateProperty.all<Color>(const Color(0xFF4B26FD)),
                             elevation: WidgetStateProperty.all<double>(0),
                           ),
                           onPressed: () async {
                             var commentPosted = await ref.read(postReplyProvider(
                               commentText: commentCont.text,
-                              threadId: allBrief!.id ?? userBrief!.id,
+                              threadId: brief!.id,
                               userId: userDetails['user_id'],
                             ).future);
                             if (commentPosted == true) {
-                              if (allBrief!.userId != userDetails['user_id'] || userBrief!.userId != userDetails['user_id']) {
+                              if (brief!.userId != userDetails['user_id']) {
                                 await ref.read(postNewNotificationProvider(
                                   requestBody: {
                                     "type": 'brief comment',
                                     "sender_id": userDetails['user_id'],
                                     "sender_name": userDetails['user_name'],
-                                    "receiver_id": allBrief!.userId ?? userBrief!.userId,
+                                    "receiver_id": brief!.userId,
                                     "notification": "${userDetails['user_name']} commented on your brief.",
-                                    "thread_id": allBrief!.id ?? userBrief!.id,
+                                    "thread_id": brief!.id,
                                   },
                                 ).future);
                               }
                               commentCont.clear();
                             }
-                            ref.invalidate(getAllCommentsProvider(threadId: allBrief!.id ?? userBrief!.id));
+                            ref.invalidate(getAllCommentsProvider(threadId: brief!.id));
+                            ref.invalidate(getAllBriefsProvider);
+                            ref.invalidate(getUserBriefsProvider);
+                            ref.invalidate(getSingleBriefProvider(briefId: brief!.id));
                           },
                           child: const Text(
                             "Post",
                             style: TextStyle(
-                              color: Colors.grey,
+                              color: Colors.white,
                               fontWeight: FontWeight.bold,
                             ),
                           ),

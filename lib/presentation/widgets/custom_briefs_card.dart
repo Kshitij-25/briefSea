@@ -83,21 +83,20 @@ class CustomBriefsCard extends StatelessWidget {
                     children: [
                       Text(
                         '${brief?.name?[0].toUpperCase()}${brief?.name?.substring(1) ?? ""}',
+                        style: const TextStyle(color: Colors.black),
+                      ),
+                      Text(
+                        "Posting as ${brief?.type ?? ""}",
                         style: const TextStyle(
-                          color: Color(0xFF33BBE7),
+                          color: Color(0xFF4A26FE),
+                          fontSize: 11,
                         ),
                       ),
                       Text(
-                        "Posting as a ${brief?.type ?? ""}",
+                        brief?.category ?? "",
                         style: const TextStyle(
-                          color: Colors.black,
-                        ),
-                      ),
-                      Text(
-                        ">> ${brief?.category ?? ""}",
-                        style: const TextStyle(
-                          color: Colors.black,
-                          fontSize: 12,
+                          color: Color(0xFF4A26FE),
+                          fontSize: 11,
                         ),
                       )
                     ],
@@ -126,7 +125,7 @@ class CustomBriefsCard extends StatelessWidget {
                             ),
                             PopupMenuItem<String>(
                               value: 'visible',
-                              child: Text(brief?.isVisible == true ? 'Hide Brief' : 'Show Brief'),
+                              child: Text(brief?.isVisible == true ? 'Make it Private' : 'Make it Public'),
                             ),
                           ];
                         },

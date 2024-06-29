@@ -62,14 +62,14 @@ class CustomChatCards extends StatelessWidget {
         title: Text(
           chatName!,
           style: const TextStyle(
-            color: Color(0xFF33BBE7),
+            color: Colors.black,
           ),
         ),
         subtitle: Text(
           chatMessage!,
           overflow: TextOverflow.ellipsis,
           style: const TextStyle(
-            color: Colors.black,
+            color: Color(0xFF4A26FE),
           ),
         ),
       ),

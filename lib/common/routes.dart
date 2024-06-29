@@ -83,9 +83,8 @@ final router = GoRouter(
       path: FeedScreen.routeName,
       builder: (context, state) {
         final Map<String, dynamic> extras = state.extra as Map<String, dynamic>;
-        final BriefsModel allBrief = extras['allBrief'];
-        final BriefsModel userBrief = extras['userBrief'] ?? BriefsModel();
-        return FeedScreen(allBrief: allBrief, userBrief: userBrief);
+        final BriefsModel brief = extras['singleBrief'] ?? BriefsModel();
+        return FeedScreen(brief: brief);
       },
     ),
   ],

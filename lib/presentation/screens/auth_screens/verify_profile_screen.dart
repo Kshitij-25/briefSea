@@ -28,6 +28,7 @@ class VerifyProfileScreen extends ConsumerWidget {
 
   final ImagePicker _picker = ImagePicker();
 
+  final TextEditingController userNameCont = TextEditingController();
   final TextEditingController countryCodeCont = TextEditingController();
   final TextEditingController phoneNumberCont = TextEditingController();
   final TextEditingController companyCont = TextEditingController();
@@ -59,11 +60,7 @@ class VerifyProfileScreen extends ConsumerWidget {
               // if (uploadedBannerKey == '' || uploadedBannerKey == null) {
               //   uploadedBannerKey = await sendDefaultBanner(ref: ref, userDetails: userDetails);
               // }
-              if (phoneNumberCont.text.isNotEmpty &&
-                  companyCont.text.isNotEmpty &&
-                  jobTitleCont.text.isNotEmpty &&
-                  locationCont.text.isNotEmpty &&
-                  countryCodeCont.text.isNotEmpty) {
+              if (phoneNumberCont.text.isNotEmpty && locationCont.text.isNotEmpty && countryCodeCont.text.isNotEmpty) {
                 var verifyMessage = await ref.read(verifyProfileProvider(
                   userId: userDetails['user_id']!,
                   uName: userDetails['user_name']!,
@@ -156,6 +153,17 @@ class VerifyProfileScreen extends ConsumerWidget {
           ),
           customFields(
             context,
+            'Username',
+            CustomTextFormField(
+              controller: userNameCont,
+              // readOnly: true,
+              hintText: "Enter your username",
+            ),
+            CupertinoIcons.person_2,
+            () {},
+          ),
+          customFields(
+            context,
             'Gender',
             DropdownButtonHideUnderline(
               child: DropdownButton<String>(
@@ -192,6 +200,12 @@ class VerifyProfileScreen extends ConsumerWidget {
                     hintText: "91",
                     border: const OutlineInputBorder(),
                     controller: countryCodeCont,
+                    validator: (value) {
+                      if (value!.length > 3) {
+                        return;
+                      }
+                      return null;
+                    },
                   ),
                 ),
                 const SizedBox(width: 10),
@@ -223,26 +237,28 @@ class VerifyProfileScreen extends ConsumerWidget {
             CupertinoIcons.square_list_fill,
             () {},
           ),
-          customFields(
-            context,
-            'Designation',
-            CustomTextFormField(
-              hintText: "Enter your Designation",
-              controller: jobTitleCont,
+          if (userDetails['type'] != 'freelancer')
+            customFields(
+              context,
+              'Designation',
+              CustomTextFormField(
+                hintText: "Enter your Designation",
+                controller: jobTitleCont,
+              ),
+              Icons.work_outline_rounded,
+              () {},
             ),
-            Icons.work_outline_rounded,
-            () {},
-          ),
-          customFields(
-            context,
-            'Company',
-            CustomTextFormField(
-              hintText: "Enter Company Name",
-              controller: companyCont,
+          if (userDetails['type'] != 'freelancer')
+            customFields(
+              context,
+              'Company',
+              CustomTextFormField(
+                hintText: "Enter Company Name",
+                controller: companyCont,
+              ),
+              CupertinoIcons.building_2_fill,
+              () {},
             ),
-            CupertinoIcons.building_2_fill,
-            () {},
-          ),
           customFields(
             context,
             'Location',

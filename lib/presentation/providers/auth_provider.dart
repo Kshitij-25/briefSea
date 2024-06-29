@@ -80,10 +80,17 @@ class LoginNotifier extends StateNotifier<LoginState> {
 }
 
 @riverpod
-Future<RegisterModel> registerUser(RegisterUserRef ref,
-    {required String userName, required String email, required String password, required String type, required String subType}) async {
+Future<RegisterModel> registerUser(
+  RegisterUserRef ref, {
+  required String firstName,
+  required String lastName,
+  required String email,
+  required String password,
+  required String type,
+  required String subType,
+}) async {
   final authRepository = ref.read(authRepositoryProvider);
-  final eitherRegisteredOrError = await authRepository.registerUser(userName, email, password, type, subType);
+  final eitherRegisteredOrError = await authRepository.registerUser(firstName, lastName, email, password, type, subType);
   return eitherRegisteredOrError!.fold(
     (error) {
       throw error; // Throw the error for Riverpod to handle
@@ -108,7 +115,8 @@ class RegisterNotifier extends StateNotifier<RegisterState> {
   RegisterNotifier() : super(RegisterState.idle);
 
   Future<void> registerUser({
-    String? userName,
+    String? firstName,
+    String? lastName,
     String? email,
     String? password,
     String? type,
@@ -120,7 +128,8 @@ class RegisterNotifier extends StateNotifier<RegisterState> {
     try {
       final isRegistered = await ref.read(
         registerUserProvider(
-          userName: userName!,
+          firstName: firstName!,
+          lastName: lastName!,
           email: email!,
           password: password!,
           type: type!,

@@ -550,7 +550,7 @@ class _AvatarWidget extends ConsumerWidget {
           child: Stack(
             children: [
               CircleAvatar(
-                backgroundColor: const Color(0xFF1B0C6B),
+                backgroundColor: userProfileData?.gender == "Male" ? Colors.transparent : const Color(0xFF1B0C6B),
                 radius: 70,
                 backgroundImage: selectedAvatar != "" && selectedAvatar != null && userProfileData?.avatarSrc != ""
                     ? CachedNetworkImageProvider(selectedAvatar)

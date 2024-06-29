@@ -21,6 +21,8 @@ _$CommentModelImpl _$$CommentModelImplFromJson(Map<String, dynamic> json) =>
       updatedAt: json['updatedAt'] as String?,
       isCommentLiked: json['isCommentLiked'] as bool? ?? false,
       commentLikeId: json['commentLikeId'] as String?,
+      isVisible: json['isVisible'] as bool?,
+      avatarSrc: json['avatarSrc'] as String?,
     );
 
 Map<String, dynamic> _$$CommentModelImplToJson(_$CommentModelImpl instance) =>
@@ -38,4 +40,6 @@ Map<String, dynamic> _$$CommentModelImplToJson(_$CommentModelImpl instance) =>
       'updatedAt': instance.updatedAt,
       'isCommentLiked': instance.isCommentLiked,
       'commentLikeId': instance.commentLikeId,
+      'isVisible': instance.isVisible,
+      'avatarSrc': instance.avatarSrc,
     };

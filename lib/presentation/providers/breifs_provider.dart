@@ -60,6 +60,18 @@ Future<List<BriefsModel?>?> getUserBriefs(GetUserBriefsRef ref) async {
 }
 
 @riverpod
+Future<BriefsModel?> getSingleBrief(GetSingleBriefRef ref, {required String? briefId}) async {
+  final breifsRepository = ref.watch(briefsRepositoryProvider);
+  final eitherBriefOrError = await breifsRepository.getSingleBrief(briefId);
+  return eitherBriefOrError!.fold(
+    (error) {
+      throw error; // Throw the error for Riverpod to handle
+    },
+    (brief) => brief,
+  );
+}
+
+@riverpod
 Future<bool> postBrief(
   PostBriefRef ref, {
   String? userId,

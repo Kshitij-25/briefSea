@@ -16,7 +16,8 @@ class ProfessionalRegisterScreen extends ConsumerWidget {
 
   static const routeName = "/professionalRegisterScreen";
 
-  final TextEditingController professionalUserName = TextEditingController();
+  final TextEditingController professionalFirstName = TextEditingController();
+  final TextEditingController professionalLastName = TextEditingController();
   final TextEditingController professionalEmail = TextEditingController();
   final TextEditingController professionalPass = TextEditingController();
   final TextEditingController professionalConfirmPass = TextEditingController();
@@ -58,11 +59,22 @@ class ProfessionalRegisterScreen extends ConsumerWidget {
                           ),
                           SizedBox(height: ScreenSize.height(context) * .05),
                           CustomTextFormField(
-                            hintText: "Enter Name",
-                            controller: professionalUserName,
+                            hintText: "Enter your First Name",
+                            controller: professionalFirstName,
                             validator: (value) {
                               if (value == null || value.isEmpty) {
-                                return 'Name is required';
+                                return 'First Name is required';
+                              }
+                              return null;
+                            },
+                          ),
+                          const SizedBox(height: 20),
+                          CustomTextFormField(
+                            hintText: "Enter your Last Name",
+                            controller: professionalLastName,
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Last Name is required';
                               }
                               return null;
                             },
@@ -169,7 +181,8 @@ class ProfessionalRegisterScreen extends ConsumerWidget {
                               onPressed: () async {
                                 if (_formKey.currentState!.validate()) {
                                   await ref.read(registerNotifierProvider.notifier).registerUser(
-                                        userName: professionalUserName.text,
+                                        firstName: professionalFirstName.text,
+                                        lastName: professionalLastName.text,
                                         email: professionalEmail.text,
                                         password: professionalPass.text,
                                         type: "professional",

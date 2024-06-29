@@ -19,6 +19,8 @@ class CommentModel with _$CommentModel {
     String? updatedAt,
     @Default(false) bool isCommentLiked,
     String? commentLikeId,
+    bool? isVisible,
+    String? avatarSrc,
   }) = _CommentModel;
 
   factory CommentModel.fromJson(Map<String, dynamic> json) => _$CommentModelFromJson(json);

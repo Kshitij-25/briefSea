@@ -18,7 +18,8 @@ class AgencyRegisterScreen extends ConsumerWidget {
 
   static const routeName = "/agencyRegisterScreen";
 
-  final TextEditingController agencyUsername = TextEditingController();
+  final TextEditingController agencyFirstName = TextEditingController();
+  final TextEditingController agencyLastName = TextEditingController();
   final TextEditingController agencyEmail = TextEditingController();
   final TextEditingController agencyPass = TextEditingController();
   final TextEditingController agencyConfirmPass = TextEditingController();
@@ -58,11 +59,22 @@ class AgencyRegisterScreen extends ConsumerWidget {
                           ),
                           SizedBox(height: ScreenSize.height(context) * .05),
                           CustomTextFormField(
-                            hintText: "Enter Name",
-                            controller: agencyUsername,
+                            hintText: "Enter your First Name",
+                            controller: agencyFirstName,
                             validator: (value) {
                               if (value == null || value.isEmpty) {
-                                return 'Name is required';
+                                return 'First Name is required';
+                              }
+                              return null;
+                            },
+                          ),
+                          const SizedBox(height: 20),
+                          CustomTextFormField(
+                            hintText: "Enter your Last Name",
+                            controller: agencyLastName,
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Last Name is required';
                               }
                               return null;
                             },
@@ -170,7 +182,8 @@ class AgencyRegisterScreen extends ConsumerWidget {
                                 if (_formKey.currentState!.validate()) {
                                   // Proceed with registration if validation passes
                                   await ref.read(registerNotifierProvider.notifier).registerUser(
-                                        userName: agencyUsername.text,
+                                        firstName: agencyFirstName.text,
+                                        lastName: agencyLastName.text,
                                         email: agencyEmail.text,
                                         password: agencyPass.text,
                                         type: "agency",

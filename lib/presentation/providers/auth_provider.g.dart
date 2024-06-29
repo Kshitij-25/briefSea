@@ -203,7 +203,7 @@ class _LoginUserProviderElement
   String get password => (origin as LoginUserProvider).password;
 }
 
-String _$registerUserHash() => r'd1a6ed99be3baa6ea109a699876a301bf08d1889';
+String _$registerUserHash() => r'd2bddbce0c16ef22865097192eb7c615896c025d';
 
 /// See also [registerUser].
 @ProviderFor(registerUser)
@@ -216,14 +216,16 @@ class RegisterUserFamily extends Family<AsyncValue<RegisterModel>> {
 
   /// See also [registerUser].
   RegisterUserProvider call({
-    required String userName,
+    required String firstName,
+    required String lastName,
     required String email,
     required String password,
     required String type,
     required String subType,
   }) {
     return RegisterUserProvider(
-      userName: userName,
+      firstName: firstName,
+      lastName: lastName,
       email: email,
       password: password,
       type: type,
@@ -236,7 +238,8 @@ class RegisterUserFamily extends Family<AsyncValue<RegisterModel>> {
     covariant RegisterUserProvider provider,
   ) {
     return call(
-      userName: provider.userName,
+      firstName: provider.firstName,
+      lastName: provider.lastName,
       email: provider.email,
       password: provider.password,
       type: provider.type,
@@ -263,7 +266,8 @@ class RegisterUserFamily extends Family<AsyncValue<RegisterModel>> {
 class RegisterUserProvider extends AutoDisposeFutureProvider<RegisterModel> {
   /// See also [registerUser].
   RegisterUserProvider({
-    required String userName,
+    required String firstName,
+    required String lastName,
     required String email,
     required String password,
     required String type,
@@ -271,7 +275,8 @@ class RegisterUserProvider extends AutoDisposeFutureProvider<RegisterModel> {
   }) : this._internal(
           (ref) => registerUser(
             ref as RegisterUserRef,
-            userName: userName,
+            firstName: firstName,
+            lastName: lastName,
             email: email,
             password: password,
             type: type,
@@ -286,7 +291,8 @@ class RegisterUserProvider extends AutoDisposeFutureProvider<RegisterModel> {
           dependencies: RegisterUserFamily._dependencies,
           allTransitiveDependencies:
               RegisterUserFamily._allTransitiveDependencies,
-          userName: userName,
+          firstName: firstName,
+          lastName: lastName,
           email: email,
           password: password,
           type: type,
@@ -300,14 +306,16 @@ class RegisterUserProvider extends AutoDisposeFutureProvider<RegisterModel> {
     required super.allTransitiveDependencies,
     required super.debugGetCreateSourceHash,
     required super.from,
-    required this.userName,
+    required this.firstName,
+    required this.lastName,
     required this.email,
     required this.password,
     required this.type,
     required this.subType,
   }) : super.internal();
 
-  final String userName;
+  final String firstName;
+  final String lastName;
   final String email;
   final String password;
   final String type;
@@ -326,7 +334,8 @@ class RegisterUserProvider extends AutoDisposeFutureProvider<RegisterModel> {
         dependencies: null,
         allTransitiveDependencies: null,
         debugGetCreateSourceHash: null,
-        userName: userName,
+        firstName: firstName,
+        lastName: lastName,
         email: email,
         password: password,
         type: type,
@@ -343,7 +352,8 @@ class RegisterUserProvider extends AutoDisposeFutureProvider<RegisterModel> {
   @override
   bool operator ==(Object other) {
     return other is RegisterUserProvider &&
-        other.userName == userName &&
+        other.firstName == firstName &&
+        other.lastName == lastName &&
         other.email == email &&
         other.password == password &&
         other.type == type &&
@@ -353,7 +363,8 @@ class RegisterUserProvider extends AutoDisposeFutureProvider<RegisterModel> {
   @override
   int get hashCode {
     var hash = _SystemHash.combine(0, runtimeType.hashCode);
-    hash = _SystemHash.combine(hash, userName.hashCode);
+    hash = _SystemHash.combine(hash, firstName.hashCode);
+    hash = _SystemHash.combine(hash, lastName.hashCode);
     hash = _SystemHash.combine(hash, email.hashCode);
     hash = _SystemHash.combine(hash, password.hashCode);
     hash = _SystemHash.combine(hash, type.hashCode);
@@ -364,8 +375,11 @@ class RegisterUserProvider extends AutoDisposeFutureProvider<RegisterModel> {
 }
 
 mixin RegisterUserRef on AutoDisposeFutureProviderRef<RegisterModel> {
-  /// The parameter `userName` of this provider.
-  String get userName;
+  /// The parameter `firstName` of this provider.
+  String get firstName;
+
+  /// The parameter `lastName` of this provider.
+  String get lastName;
 
   /// The parameter `email` of this provider.
   String get email;
@@ -386,7 +400,9 @@ class _RegisterUserProviderElement
   _RegisterUserProviderElement(super.provider);
 
   @override
-  String get userName => (origin as RegisterUserProvider).userName;
+  String get firstName => (origin as RegisterUserProvider).firstName;
+  @override
+  String get lastName => (origin as RegisterUserProvider).lastName;
   @override
   String get email => (origin as RegisterUserProvider).email;
   @override

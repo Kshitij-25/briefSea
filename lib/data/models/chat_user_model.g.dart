@@ -13,6 +13,7 @@ _$ChatUserModelImpl _$$ChatUserModelImplFromJson(Map<String, dynamic> json) =>
       type: json['type'] as String?,
       conversationId: json['conversation_id'] as String?,
       isUserOnline: json['isUserOnline'] as bool? ?? false,
+      lastMsg: json['lastMsg'] as String?,
     );
 
 Map<String, dynamic> _$$ChatUserModelImplToJson(_$ChatUserModelImpl instance) =>
@@ -22,4 +23,5 @@ Map<String, dynamic> _$$ChatUserModelImplToJson(_$ChatUserModelImpl instance) =>
       'type': instance.type,
       'conversation_id': instance.conversationId,
       'isUserOnline': instance.isUserOnline,
+      'lastMsg': instance.lastMsg,
     };

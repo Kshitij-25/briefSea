@@ -33,6 +33,17 @@ class BreifsRepository {
     }
   }
 
+  Future<Either<AppError, BriefsModel?>>? getSingleBrief(String? briefId) async {
+    try {
+      final singleBrief = await _briefsRemoteDataSource.getSingleBrief(briefId);
+      return Right(singleBrief);
+    } on AppError catch (e) {
+      return Left(e);
+    } on Exception catch (e) {
+      return Left(AppError(errorMessage: e.toString()));
+    }
+  }
+
   Future<Either<AppError, bool>>? postBrief({
     String? userId,
     String? name,

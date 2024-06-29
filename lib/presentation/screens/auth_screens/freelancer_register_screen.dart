@@ -16,7 +16,8 @@ class FreelancerRegisterScreen extends ConsumerWidget {
 
   static const routeName = "/freelancerRegisterScreen";
 
-  final TextEditingController freelanceUserName = TextEditingController();
+  final TextEditingController freelanceFirstName = TextEditingController();
+  final TextEditingController freelanceLastName = TextEditingController();
   final TextEditingController freelanceEmail = TextEditingController();
   final TextEditingController freelancePass = TextEditingController();
   final TextEditingController freelanceConfirmPass = TextEditingController();
@@ -56,11 +57,22 @@ class FreelancerRegisterScreen extends ConsumerWidget {
                           ),
                           SizedBox(height: ScreenSize.height(context) * .05),
                           CustomTextFormField(
-                            hintText: "Enter Name",
-                            controller: freelanceUserName,
+                            hintText: "Enter your First Name",
+                            controller: freelanceFirstName,
                             validator: (value) {
                               if (value == null || value.isEmpty) {
-                                return 'Name is required';
+                                return 'First Name is required';
+                              }
+                              return null;
+                            },
+                          ),
+                          const SizedBox(height: 20),
+                          CustomTextFormField(
+                            hintText: "Enter your Last Name",
+                            controller: freelanceLastName,
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Last Name is required';
                               }
                               return null;
                             },
@@ -167,7 +179,8 @@ class FreelancerRegisterScreen extends ConsumerWidget {
                               onPressed: () async {
                                 if (_formKey.currentState!.validate()) {
                                   await ref.read(registerNotifierProvider.notifier).registerUser(
-                                        userName: freelanceUserName.text,
+                                        firstName: freelanceFirstName.text,
+                                        lastName: freelanceLastName.text,
                                         email: freelanceEmail.text,
                                         password: freelancePass.text,
                                         type: "freelancer",

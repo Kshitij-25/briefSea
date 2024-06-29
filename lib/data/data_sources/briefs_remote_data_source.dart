@@ -13,6 +13,7 @@ import '../models/thread_image_model.dart';
 abstract class BriefsRemoteDataSource {
   Future<List<BriefsModel?>?> getAllBriefs();
   Future<List<BriefsModel?>?> getUserBriefs();
+  Future<BriefsModel> getSingleBrief(String? briefId);
   Future<bool> postBrief({String? userId, String? name, String? type, String? category, String? postText, String? imgSrc});
   Future<ThreadImageModel?>? uploadThreadImage(String? fileName, MediaType fileType, String? userId, String? userType);
   Future<bool> deleteBrief({String? briefId});
@@ -71,6 +72,33 @@ class BriefsRemoteDataSourceImpl implements BriefsRemoteDataSource {
           final responseJson = response.data ?? [];
           log(responseJson.toString());
           return (responseJson as List).map((json) => BriefsModel.fromJson(json)).toList();
+        } else {
+          throw AppError(statusCode: response.statusCode);
+        }
+      } else {
+        throw AppError();
+      }
+    } catch (e) {
+      log("getUserBriefs Error", error: e);
+      throw AppError(errorMessage: e.toString());
+    }
+  }
+
+  @override
+  Future<BriefsModel> getSingleBrief(String? briefId) async {
+    var jwtToken = await getJwtToken();
+
+    try {
+      Response? response = await _apiClient.getReq(
+        url: "${ApiConstants.getSingleBrief}/$briefId",
+        jwtToken: jwtToken,
+      );
+
+      if (response?.data != null && response?.statusCode != null) {
+        if (response!.statusCode == 200) {
+          final responseJson = response.data ?? [];
+          log(responseJson.toString());
+          return BriefsModel.fromJson(responseJson);
         } else {
           throw AppError(statusCode: response.statusCode);
         }

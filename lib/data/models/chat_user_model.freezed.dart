@@ -26,6 +26,7 @@ mixin _$ChatUserModel {
   @JsonKey(name: "conversation_id")
   String? get conversationId => throw _privateConstructorUsedError;
   bool get isUserOnline => throw _privateConstructorUsedError;
+  String? get lastMsg => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -44,7 +45,8 @@ abstract class $ChatUserModelCopyWith<$Res> {
       String? name,
       String? type,
       @JsonKey(name: "conversation_id") String? conversationId,
-      bool isUserOnline});
+      bool isUserOnline,
+      String? lastMsg});
 }
 
 /// @nodoc
@@ -65,6 +67,7 @@ class _$ChatUserModelCopyWithImpl<$Res, $Val extends ChatUserModel>
     Object? type = freezed,
     Object? conversationId = freezed,
     Object? isUserOnline = null,
+    Object? lastMsg = freezed,
   }) {
     return _then(_value.copyWith(
       id: freezed == id
@@ -87,6 +90,10 @@ class _$ChatUserModelCopyWithImpl<$Res, $Val extends ChatUserModel>
           ? _value.isUserOnline
           : isUserOnline // ignore: cast_nullable_to_non_nullable
               as bool,
+      lastMsg: freezed == lastMsg
+          ? _value.lastMsg
+          : lastMsg // ignore: cast_nullable_to_non_nullable
+              as String?,
     ) as $Val);
   }
 }
@@ -104,7 +111,8 @@ abstract class _$$ChatUserModelImplCopyWith<$Res>
       String? name,
       String? type,
       @JsonKey(name: "conversation_id") String? conversationId,
-      bool isUserOnline});
+      bool isUserOnline,
+      String? lastMsg});
 }
 
 /// @nodoc
@@ -123,6 +131,7 @@ class __$$ChatUserModelImplCopyWithImpl<$Res>
     Object? type = freezed,
     Object? conversationId = freezed,
     Object? isUserOnline = null,
+    Object? lastMsg = freezed,
   }) {
     return _then(_$ChatUserModelImpl(
       id: freezed == id
@@ -145,6 +154,10 @@ class __$$ChatUserModelImplCopyWithImpl<$Res>
           ? _value.isUserOnline
           : isUserOnline // ignore: cast_nullable_to_non_nullable
               as bool,
+      lastMsg: freezed == lastMsg
+          ? _value.lastMsg
+          : lastMsg // ignore: cast_nullable_to_non_nullable
+              as String?,
     ));
   }
 }
@@ -157,7 +170,8 @@ class _$ChatUserModelImpl implements _ChatUserModel {
       this.name,
       this.type,
       @JsonKey(name: "conversation_id") this.conversationId,
-      this.isUserOnline = false});
+      this.isUserOnline = false,
+      this.lastMsg});
 
   factory _$ChatUserModelImpl.fromJson(Map<String, dynamic> json) =>
       _$$ChatUserModelImplFromJson(json);
@@ -174,10 +188,12 @@ class _$ChatUserModelImpl implements _ChatUserModel {
   @override
   @JsonKey()
   final bool isUserOnline;
+  @override
+  final String? lastMsg;
 
   @override
   String toString() {
-    return 'ChatUserModel(id: $id, name: $name, type: $type, conversationId: $conversationId, isUserOnline: $isUserOnline)';
+    return 'ChatUserModel(id: $id, name: $name, type: $type, conversationId: $conversationId, isUserOnline: $isUserOnline, lastMsg: $lastMsg)';
   }
 
   @override
@@ -191,13 +207,14 @@ class _$ChatUserModelImpl implements _ChatUserModel {
             (identical(other.conversationId, conversationId) ||
                 other.conversationId == conversationId) &&
             (identical(other.isUserOnline, isUserOnline) ||
-                other.isUserOnline == isUserOnline));
+                other.isUserOnline == isUserOnline) &&
+            (identical(other.lastMsg, lastMsg) || other.lastMsg == lastMsg));
   }
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode =>
-      Object.hash(runtimeType, id, name, type, conversationId, isUserOnline);
+  int get hashCode => Object.hash(
+      runtimeType, id, name, type, conversationId, isUserOnline, lastMsg);
 
   @JsonKey(ignore: true)
   @override
@@ -219,7 +236,8 @@ abstract class _ChatUserModel implements ChatUserModel {
       final String? name,
       final String? type,
       @JsonKey(name: "conversation_id") final String? conversationId,
-      final bool isUserOnline}) = _$ChatUserModelImpl;
+      final bool isUserOnline,
+      final String? lastMsg}) = _$ChatUserModelImpl;
 
   factory _ChatUserModel.fromJson(Map<String, dynamic> json) =
       _$ChatUserModelImpl.fromJson;
@@ -235,6 +253,8 @@ abstract class _ChatUserModel implements ChatUserModel {
   String? get conversationId;
   @override
   bool get isUserOnline;
+  @override
+  String? get lastMsg;
   @override
   @JsonKey(ignore: true)
   _$$ChatUserModelImplCopyWith<_$ChatUserModelImpl> get copyWith =>
