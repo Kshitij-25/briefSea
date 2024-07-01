@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="112" height="112" viewBox="0 0 112 112">
+  <title>Company avatar</title>
+  <defs>
+    <rect id="a" width="112" height="112" rx="20" />
+    <path id="c" d="M0 0h200v200H0z" />
+  </defs>
+  <g fill="none" fill-rule="evenodd">
+    <mask id="b" fill="#fff">
+      <use xlink:href="#a" />
+    </mask>
+    <use fill="#4352CF" xlink:href="#a" />
+    <g mask="url(#b)">
+      <g transform="translate(-44 -44)">
+        <mask id="d" fill="#fff">
+          <use xlink:href="#c" />
+        </mask>
+        <use fill="#4352CF" fill-rule="nonzero" xlink:href="#c" />
+        <g mask="url(#d)">
+          <path fill="#006CFF" d="M-49.5-22.5l223.617 223.475H-49.5z" />
+          <path fill="#4C57FF" d="M-49.5 222.5V-.975h223.617z" />
+          <path fill="#8491FF" d="M249.5 222.5L25.883-.975H249.5z" />
+          <path fill="#5A81F8" d="M249.5-22.5v223.475H25.883z" />
+          <path fill="#006CFF" d="M73.892 101l107.871 108.85L-45.5 220.317z" />
+        </g>
+      </g>
+    </g>
+    <g fill-rule="nonzero" mask="url(#b)">
+      <path fill="#FFF"
+            d="M56.257 44.051l11.368 4.74c.5.21.5.875 0 1.084l-11.368 4.74a.67.67 0 0 1-.514 0l-11.368-4.74a.578.578 0 0 1 0-1.083l11.368-4.74a.67.67 0 0 1 .514 0z" />
+      <path stroke="#FFF" stroke-linecap="round" stroke-width="2.667" d="M66.672 56.939l-10.415 4.343a.67.67 0 0 1-.514 0L45.332 56.94" />
+      <path stroke="#FFF" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.333"
+            d="M66.674 63.605l-10.417 4.344a.67.67 0 0 1-.514 0l-10.405-4.34" />
+    </g>
+  </g>
+</svg>

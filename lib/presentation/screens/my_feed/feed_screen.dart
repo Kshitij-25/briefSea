@@ -7,7 +7,7 @@ import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:share_plus/share_plus.dart';
 
-import '../../../common/screen_size.dart';
+import '../../../common/app_utils/screen_size.dart';
 import '../../../data/models/briefs_model.dart';
 import '../../providers/auth_provider.dart';
 import '../../providers/breifs_provider.dart';

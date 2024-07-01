@@ -1,5 +1,8 @@
+import 'package:flutter/foundation.dart' show immutable;
+
+@immutable
 class ApiConstants {
-  ApiConstants._();
+  const ApiConstants._();
 
   // Social Media Links
   static const instaUrl = 'https://www.instagram.com/brief.sea/';
@@ -22,6 +25,7 @@ class ApiConstants {
   static const uploadAvatar = '$BASE_URL/forum/discussion/uploads/profile/put/avatar';
   static const uploadBanner = '$BASE_URL/forum/discussion/uploads/profile/put/banner';
   static const deleteAccount = "$BASE_URL/forum/discussion/login/remove";
+  static const checkUsername = "$BASE_URL/forum/discussion/profile/check?username=";
 
   // Threads and briefs
   static const getAllBriefs = '$BASE_URL/forum/discussion/threads/pagination';

@@ -206,3 +206,15 @@ Future<bool> deleteAccount(DeleteAccountRef ref, {required String userId}) async
     (accountDeleted) => accountDeleted,
   );
 }
+
+@riverpod
+Future<bool> checkUserName(CheckUserNameRef ref, {required String userName}) async {
+  final userProfileRepository = ref.read(userProfileRepositoryProvider);
+  final eitherUserNameExistsOrError = await userProfileRepository.checkUserName(userName);
+  return eitherUserNameExistsOrError.fold(
+    (error) {
+      throw error; // Throw the error for Riverpod to handle
+    },
+    (userNameExists) => userNameExists,
+  );
+}

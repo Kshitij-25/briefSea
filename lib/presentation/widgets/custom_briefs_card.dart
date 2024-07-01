@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:briefsea/presentation/screens/profile_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -36,6 +38,8 @@ class CustomBriefsCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    math.Random random = math.Random(brief?.userId.hashCode);
+    Color userColor = Color((random.nextDouble() * 0xFFFFFF).toInt()).withOpacity(1.0);
     if (brief == null) {
       return const SizedBox();
     }
@@ -63,7 +67,7 @@ class CustomBriefsCard extends StatelessWidget {
                       }
                     },
                     child: CircleAvatar(
-                      backgroundColor: const Color(0xFF1B0C6B),
+                      backgroundColor: userColor,
                       backgroundImage: avatarName != null && avatarName != '' ? NetworkImage(avatarName!) : null,
                       radius: 25,
                       child: avatarName == null || avatarName == ''
@@ -83,7 +87,10 @@ class CustomBriefsCard extends StatelessWidget {
                     children: [
                       Text(
                         '${brief?.name?[0].toUpperCase()}${brief?.name?.substring(1) ?? ""}',
-                        style: const TextStyle(color: Colors.black),
+                        style: const TextStyle(
+                          color: Colors.black,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                       Text(
                         "Posting as ${brief?.type ?? ""}",
@@ -119,13 +126,17 @@ class CustomBriefsCard extends StatelessWidget {
                         ),
                         itemBuilder: (context) {
                           return <PopupMenuEntry<String>>[
-                            const PopupMenuItem<String>(
-                              value: 'delete',
-                              child: Text('Delete Brief'),
-                            ),
+                            // const PopupMenuItem<String>(
+                            //   value: 'edit',
+                            //   child: Text('Edit Brief'),
+                            // ),
                             PopupMenuItem<String>(
                               value: 'visible',
                               child: Text(brief?.isVisible == true ? 'Make it Private' : 'Make it Public'),
+                            ),
+                            const PopupMenuItem<String>(
+                              value: 'delete',
+                              child: Text('Delete Brief'),
                             ),
                           ];
                         },

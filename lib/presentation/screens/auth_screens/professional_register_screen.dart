@@ -3,8 +3,9 @@ import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-import '../../../common/enums.dart';
-import '../../../common/screen_size.dart';
+import '../../../common/app_utils/screen_size.dart';
+import '../../../common/enums/enums.dart';
+import '../../../common/others/strings.dart';
 import '../../providers/auth_provider.dart';
 import '../../widgets/custom_back_button.dart';
 import '../../widgets/custom_elevated_button.dart';
@@ -196,7 +197,7 @@ class ProfessionalRegisterScreen extends ConsumerWidget {
                           ),
                           SizedBox(height: ScreenSize.height(context) * .05),
                           const Text(
-                            "Instantly connect with agencies, freelancers, and vendors in Tech and Marketing.",
+                            Strings.professionalFooter,
                             style: TextStyle(color: Colors.white),
                             textScaler: TextScaler.linear(1),
                             textAlign: TextAlign.center,

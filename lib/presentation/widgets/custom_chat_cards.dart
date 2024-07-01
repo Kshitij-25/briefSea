@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 
 class CustomChatCards extends StatelessWidget {
@@ -16,6 +18,8 @@ class CustomChatCards extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    math.Random random = math.Random(chatMessage?.hashCode);
+    Color userColor = Color((random.nextDouble() * 0xFFFFFF).toInt()).withOpacity(1.0);
     return Card(
       color: Colors.white,
       child: ListTile(
@@ -24,7 +28,7 @@ class CustomChatCards extends StatelessWidget {
           children: [
             CircleAvatar(
               radius: 25,
-              backgroundColor: const Color(0xFF1B0C6B),
+              backgroundColor: userColor,
               child: Text(
                 chatName?[0].toUpperCase() ?? "",
                 style: const TextStyle(
@@ -60,13 +64,13 @@ class CustomChatCards extends StatelessWidget {
         //   ),
         // ),
         title: Text(
-          chatName!,
+          chatName ?? '',
           style: const TextStyle(
             color: Colors.black,
           ),
         ),
         subtitle: Text(
-          chatMessage!,
+          chatMessage ?? '...',
           overflow: TextOverflow.ellipsis,
           style: const TextStyle(
             color: Color(0xFF4A26FE),

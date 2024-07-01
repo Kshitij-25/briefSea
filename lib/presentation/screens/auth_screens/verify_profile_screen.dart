@@ -9,10 +9,11 @@ import 'package:image_picker/image_picker.dart';
 import 'package:mime/mime.dart';
 import 'package:multi_select_flutter/multi_select_flutter.dart';
 
-import '../../../common/app_utility.dart';
-import '../../../common/assets.dart';
-import '../../../common/industry_data.dart';
-import '../../../common/screen_size.dart';
+import '../../../common/app_utils/app_utility.dart';
+import '../../../common/app_utils/debouncer.dart';
+import '../../../common/app_utils/screen_size.dart';
+import '../../../common/others/assets.dart';
+import '../../../common/static_data/industry_data.dart';
 import '../../../main.dart';
 import '../../providers/auth_provider.dart';
 import '../../providers/user_profile_provider.dart';
@@ -35,9 +36,26 @@ class VerifyProfileScreen extends ConsumerWidget {
   final TextEditingController jobTitleCont = TextEditingController();
   final TextEditingController industryCont = TextEditingController();
   final TextEditingController locationCont = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
+
+  final Debouncer _debouncer = Debouncer(milliseconds: 500);
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    userNameCont.addListener(() {
+      _debouncer.run(() async {
+        if (_formKey.currentState!.validate()) {
+          if (userNameCont.text.isNotEmpty) {
+            var doesUsernameExist = await ref.read(checkUserNameProvider(userName: userNameCont.text).future);
+
+            if (!doesUsernameExist) {
+              AppUtility(context).message("Username already exists.");
+            }
+          }
+        }
+      });
+    });
+
     final userDetails = ref.watch(userDetailsProvider);
     return Scaffold(
       backgroundColor: Colors.grey[200]!,
@@ -104,183 +122,197 @@ class VerifyProfileScreen extends ConsumerWidget {
     final selectedExpertise = ref.watch(selectedExpertiseProvider.notifier).state;
 
     return SingleChildScrollView(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Stack(
-            children: [
-              _BannerWidget(
-                verifyBanner: verifyBanner,
-                picker: _picker,
-                userDetails: userDetails,
-              ),
-              _AvatarWidget(
-                picker: _picker,
-                verifyAvatar: verifyAvatar,
-                userDetails: userDetails,
-                gender: ref.watch(selectedGenderProvider).selectedGender,
-              ),
-            ],
-          ),
-          const Text(
-            "Tap a field to edit.",
-            style: TextStyle(
-              color: Colors.black,
-            ),
-          ),
-          customFields(
-            context,
-            'Name',
-            CustomTextFormField(
-              readOnly: true,
-              hintText: "${userDetails['user_name']?[0].toUpperCase()}${userDetails['user_name']!.substring(1)}",
-              hintColor: Colors.black,
-            ),
-            CupertinoIcons.person,
-            () {},
-          ),
-          customFields(
-            context,
-            'Posting as',
-            CustomTextFormField(
-              readOnly: true,
-              hintText: "${userDetails['type']?[0].toUpperCase()}${userDetails['type']!.substring(1)}",
-              hintColor: Colors.black,
-            ),
-            CupertinoIcons.person_2,
-            () {},
-          ),
-          customFields(
-            context,
-            'Username',
-            CustomTextFormField(
-              controller: userNameCont,
-              // readOnly: true,
-              hintText: "Enter your username",
-            ),
-            CupertinoIcons.person_2,
-            () {},
-          ),
-          customFields(
-            context,
-            'Gender',
-            DropdownButtonHideUnderline(
-              child: DropdownButton<String>(
-                hint: const Text('Choose your gender'),
-                menuMaxHeight: 300,
-                value: ref.watch(selectedGenderProvider).selectedGender,
-                onChanged: (String? newValue) async {
-                  print(prefs!.getString('userGener'));
-                  log("NEW VALUE=====> $newValue");
-
-                  ref.read(selectedGenderProvider).setGender(newValue!);
-
-                  await prefs!.setString('userGener', newValue ?? "");
-                },
-                items: ref.watch(selectedGenderProvider).genders.map<DropdownMenuItem<String>>((item) {
-                  return DropdownMenuItem(
-                    value: item,
-                    child: Text(item),
-                  );
-                }).toList(),
-              ),
-            ),
-            Icons.female,
-            () {},
-          ),
-          customFields(
-            context,
-            'Contact',
-            Row(
+      child: Form(
+        key: _formKey,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Stack(
               children: [
-                Expanded(
-                  flex: 1,
-                  child: CustomTextFormField(
-                    hintText: "91",
-                    border: const OutlineInputBorder(),
-                    controller: countryCodeCont,
-                    validator: (value) {
-                      if (value!.length > 3) {
-                        return;
-                      }
-                      return null;
-                    },
-                  ),
+                _BannerWidget(
+                  verifyBanner: verifyBanner,
+                  picker: _picker,
+                  userDetails: userDetails,
                 ),
-                const SizedBox(width: 10),
-                Expanded(
-                  flex: 3,
-                  child: CustomTextFormField(
-                    hintText: "Phone Number",
-                    controller: phoneNumberCont,
-                    border: const OutlineInputBorder(),
-                  ),
+                _AvatarWidget(
+                  picker: _picker,
+                  verifyAvatar: verifyAvatar,
+                  userDetails: userDetails,
+                  gender: ref.watch(selectedGenderProvider).selectedGender,
                 ),
               ],
             ),
-            CupertinoIcons.phone_fill,
-            () {},
-          ),
-          customFields(
-            context,
-            'Industry',
-            MultiSelectDialogField(
-              items: industries.map((item) => MultiSelectItem<String>(item['value']!, item['label']!)).toList(),
-              initialValue: selectedIndustries,
-              listType: MultiSelectListType.CHIP,
-              onConfirm: (values) {
-                ref.read(selectedIndustriesProvider.notifier).state = values;
-              },
-              title: const Text('Select Industries'),
+            const Text(
+              "Tap a field to edit.",
+              style: TextStyle(
+                color: Colors.black,
+              ),
             ),
-            CupertinoIcons.square_list_fill,
-            () {},
-          ),
-          if (userDetails['type'] != 'freelancer')
             customFields(
               context,
-              'Designation',
+              'Name',
               CustomTextFormField(
-                hintText: "Enter your Designation",
-                controller: jobTitleCont,
+                readOnly: true,
+                hintText: "${userDetails['user_name']?[0].toUpperCase()}${userDetails['user_name']!.substring(1)}",
+                hintColor: Colors.black,
               ),
-              Icons.work_outline_rounded,
-              () {},
+              CupertinoIcons.person,
             ),
-          if (userDetails['type'] != 'freelancer')
             customFields(
               context,
-              'Company',
+              'Posting as',
               CustomTextFormField(
-                hintText: "Enter Company Name",
-                controller: companyCont,
+                readOnly: true,
+                hintText: "${userDetails['type']?[0].toUpperCase()}${userDetails['type']!.substring(1)}",
+                hintColor: Colors.black,
               ),
-              CupertinoIcons.building_2_fill,
-              () {},
+              CupertinoIcons.person_2,
             ),
-          customFields(
-            context,
-            'Location',
-            CustomTextFormField(
-              hintText: "Enter your Location",
-              controller: locationCont,
+            customFields(
+              context,
+              'Username',
+              CustomTextFormField(
+                controller: userNameCont,
+                // readOnly: true,
+                hintText: "Enter your username",
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Username is required';
+                  }
+                  // Regular expression to match only lowercase letters, numbers, and dots
+                  final regex = RegExp(r'^[a-z0-9.]+$');
+                  if (!regex.hasMatch(value)) {
+                    return 'Username can only contain lowercase letters, numbers, and dots';
+                  }
+                  return null;
+                },
+                // onEditingComplete: () async {
+                //   if (_formKey.currentState!.validate()) {
+                //     var doesUsernameExist = await ref.watch(checkUserNameProvider(userName: userNameCont.text).future);
+
+                //     if (doesUsernameExist) {
+                //       AppUtility(context).message("Username already exists.");
+                //     }
+                //   }
+                // },
+              ),
+              CupertinoIcons.person_2,
             ),
-            CupertinoIcons.location_solid,
-            () {},
-          ),
-        ],
+            customFields(
+              context,
+              'Gender',
+              DropdownButtonHideUnderline(
+                child: DropdownButton<String>(
+                  hint: const Text('Choose your gender'),
+                  menuMaxHeight: 300,
+                  value: ref.watch(selectedGenderProvider).selectedGender,
+                  onChanged: (String? newValue) async {
+                    print(prefs!.getString('userGener'));
+                    log("NEW VALUE=====> $newValue");
+
+                    ref.read(selectedGenderProvider).setGender(newValue!);
+
+                    await prefs!.setString('userGener', newValue ?? "");
+                  },
+                  items: ref.watch(selectedGenderProvider).genders.map<DropdownMenuItem<String>>((item) {
+                    return DropdownMenuItem(
+                      value: item,
+                      child: Text(item),
+                    );
+                  }).toList(),
+                ),
+              ),
+              Icons.female,
+            ),
+            customFields(
+              context,
+              'Contact',
+              Row(
+                children: [
+                  Expanded(
+                    flex: 1,
+                    child: CustomTextFormField(
+                      hintText: "91",
+                      border: const OutlineInputBorder(),
+                      controller: countryCodeCont,
+                      validator: (value) {
+                        if (value!.length > 3) {
+                          return;
+                        }
+                        return null;
+                      },
+                    ),
+                  ),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    flex: 3,
+                    child: CustomTextFormField(
+                      hintText: "Phone Number",
+                      controller: phoneNumberCont,
+                      border: const OutlineInputBorder(),
+                    ),
+                  ),
+                ],
+              ),
+              CupertinoIcons.phone_fill,
+            ),
+            customFields(
+              context,
+              'Industry',
+              MultiSelectDialogField(
+                items: industries.map((item) => MultiSelectItem<String>(item['value']!, item['label']!)).toList(),
+                initialValue: selectedIndustries,
+                listType: MultiSelectListType.CHIP,
+                onConfirm: (values) {
+                  ref.read(selectedIndustriesProvider.notifier).state = values;
+                },
+                title: const Text('Select Industries'),
+              ),
+              CupertinoIcons.square_list_fill,
+            ),
+            if (userDetails['type'] != 'freelancer')
+              customFields(
+                context,
+                'Designation',
+                CustomTextFormField(
+                  hintText: "Enter your Designation",
+                  controller: jobTitleCont,
+                ),
+                Icons.work_outline_rounded,
+              ),
+            if (userDetails['type'] != 'freelancer')
+              customFields(
+                context,
+                'Company',
+                CustomTextFormField(
+                  hintText: "Enter Company Name",
+                  controller: companyCont,
+                ),
+                CupertinoIcons.building_2_fill,
+              ),
+            customFields(
+              context,
+              'Location',
+              CustomTextFormField(
+                hintText: "Enter your Location",
+                controller: locationCont,
+              ),
+              CupertinoIcons.location_solid,
+            ),
+          ],
+        ),
       ),
     );
   }
 
-  customFields(context, title, subtitle, icon, void Function()? onTap) {
+  customFields(context, title, subtitle, icon) {
     return ListTile(
       dense: true,
       leading: Icon(icon),
       title: Text(title),
       subtitle: subtitle,
-      onTap: onTap!,
+      // onTap: onTap!,
     );
   }
 
@@ -288,7 +320,7 @@ class VerifyProfileScreen extends ConsumerWidget {
     var uploadedBanner = await ref!.read(
       uploadBannerProvider(
         fileName: "Placeholder Image",
-        fileType: lookupMimeType(BANNER),
+        fileType: lookupMimeType(Assets.BANNER),
         userId: userDetails!['user_id'],
         userType: userDetails['type'],
       ).future,
@@ -296,8 +328,8 @@ class VerifyProfileScreen extends ConsumerWidget {
     ref.read(uploadToAWSProvider(
       url: uploadedBanner.url,
       fileName: "Placeholder Image",
-      file: File(BANNER),
-      fileType: lookupMimeType(BANNER),
+      file: File(Assets.BANNER),
+      fileType: lookupMimeType(Assets.BANNER),
     ));
     // ref.read(uploadedBannerKeyProvider.notifier).state = uploadedBanner.key;
     return uploadedBanner.key;
@@ -384,13 +416,13 @@ class _AvatarWidget extends ConsumerWidget {
 
   _getImageByGender(String? gender) {
     if (gender == null) {
-      return const AssetImage(PERSON);
+      return const AssetImage(Assets.PERSON);
     } else if (gender == "Male") {
-      return const AssetImage(MALE);
+      return const AssetImage(Assets.MALE);
     } else if (gender == "Female") {
-      return const AssetImage(FEMALE);
+      return const AssetImage(Assets.FEMALE);
     } else {
-      return const AssetImage(OTHERS);
+      return const AssetImage(Assets.OTHERS);
     }
   }
 }
@@ -455,7 +487,7 @@ class _BannerWidget extends ConsumerWidget {
           : Stack(
               children: [
                 Image.asset(
-                  BANNER,
+                  Assets.BANNER,
                   fit: BoxFit.cover,
                   width: ScreenSize.width(context),
                 ),

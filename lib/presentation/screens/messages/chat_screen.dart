@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:intl/intl.dart';
 
-import '../../../common/screen_size.dart';
+import '../../../common/app_utils/screen_size.dart';
 import '../../../data/models/chat_user_model.dart';
 import '../../providers/auth_provider.dart';
 import '../../providers/chat_provider.dart';

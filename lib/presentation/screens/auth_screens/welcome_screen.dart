@@ -1,8 +1,9 @@
+import 'package:briefsea/common/others/strings.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../common/assets.dart';
-import '../../../common/screen_size.dart';
+import '../../../common/app_utils/screen_size.dart';
+import '../../../common/others/assets.dart';
 import '../../widgets/custom_elevated_button.dart';
 import '../../widgets/custom_shape_widget.dart';
 import 'agency_register_screen.dart';
@@ -25,7 +26,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
   @override
   void initState() {
     logoImage = Image.asset(
-      APP_LOGO,
+      Assets.APP_LOGO,
       color: Colors.white,
     );
     super.initState();
@@ -56,7 +57,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                   children: [
                     logoImage!,
                     const Text(
-                      "Instantly connect with\nAgencies, Freelancers & Vendors\nin Tech and Marketing",
+                      Strings.welcomeText,
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 16,
@@ -66,7 +67,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                     ),
                     SizedBox(height: ScreenSize.height(context) * .05),
                     const Text(
-                      "By continuing you agree to\nTerms of Use and Privacy Policy",
+                      Strings.privacyPolicy,
                       style: TextStyle(color: Colors.white),
                       textScaler: TextScaler.linear(1),
                       textAlign: TextAlign.center,

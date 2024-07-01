@@ -1,6 +1,8 @@
 import 'dart:developer';
 import 'dart:io';
+import 'dart:math' as math;
 
+import 'package:briefsea/common/others/strings.dart';
 import 'package:briefsea/data/core/api_constants.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
@@ -13,9 +15,9 @@ import 'package:mime/mime.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
-import '../../common/app_utility.dart';
-import '../../common/assets.dart';
-import '../../common/screen_size.dart';
+import '../../common/app_utils/app_utility.dart';
+import '../../common/app_utils/screen_size.dart';
+import '../../common/others/assets.dart';
 import '../../data/models/image_model.dart';
 import '../../data/models/user_profile_model.dart';
 import '../../main.dart';
@@ -178,21 +180,36 @@ class ProfileScreen extends ConsumerWidget {
                                         //   ),
                                         //   textScaler: const TextScaler.linear(1),
                                         // ),
-                                        Text(
-                                          userDetails.post ?? "",
-                                          style: const TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                            color: Colors.black,
-                                          ),
-                                          textScaler: const TextScaler.linear(1),
-                                        ),
-                                        Text(
-                                          userDetails.worksAt ?? "",
-                                          style: const TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                            color: Colors.black,
-                                          ),
-                                          textScaler: const TextScaler.linear(1),
+                                        Row(
+                                          mainAxisAlignment: MainAxisAlignment.center,
+                                          children: [
+                                            SizedBox(
+                                              height: ScreenSize.height(context) * 0.04,
+                                              width: ScreenSize.width(context) * 0.12,
+                                              child: SvgPicture.asset(Assets.COMPANY_ICON),
+                                            ),
+                                            Column(
+                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                              children: [
+                                                Text(
+                                                  userDetails.post ?? "",
+                                                  style: const TextStyle(
+                                                    fontWeight: FontWeight.bold,
+                                                    color: Colors.black,
+                                                  ),
+                                                  textScaler: const TextScaler.linear(1),
+                                                ),
+                                                Text(
+                                                  userDetails.worksAt ?? "",
+                                                  style: const TextStyle(
+                                                    fontWeight: FontWeight.bold,
+                                                    color: Colors.black,
+                                                  ),
+                                                  textScaler: const TextScaler.linear(1),
+                                                ),
+                                              ],
+                                            )
+                                          ],
                                         ),
                                       ],
                                     ),
@@ -217,7 +234,7 @@ class ProfileScreen extends ConsumerWidget {
                               children: [
                                 _socialMedia(
                                   context,
-                                  INSTA_LOGO,
+                                  Assets.INSTA_LOGO,
                                   () async {
                                     if (await launchUrlString(
                                       ApiConstants.instaUrl,
@@ -237,7 +254,7 @@ class ProfileScreen extends ConsumerWidget {
                                   padding: const EdgeInsets.only(bottom: 5.0),
                                   child: _socialMedia(
                                     context,
-                                    PROFILE_LINKEDIN,
+                                    Assets.PROFILE_LINKEDIN,
                                     () async {
                                       if (await launchUrlString(
                                         ApiConstants.linkedInUrl,
@@ -257,7 +274,7 @@ class ProfileScreen extends ConsumerWidget {
                             ),
                             const SizedBox(height: 5),
                             const Text(
-                              "Copyright © 2024 Briefsea. All rights reserved",
+                              Strings.copyrightText,
                               style: TextStyle(fontSize: 12),
                             ),
                             if (isOtherProfile != true)
@@ -270,8 +287,9 @@ class ProfileScreen extends ConsumerWidget {
                                       builder: (context) {
                                         return AlertDialog.adaptive(
                                           content: const Text(
-                                              'This action cannot be undone and you will lose all your data associated with this account.'),
-                                          title: const Text('Are you sure you want to delete your account?'),
+                                            Strings.deleteContent,
+                                          ),
+                                          title: const Text(Strings.deleteWarning),
                                           actions: [
                                             TextButton(
                                               onPressed: () {
@@ -461,7 +479,7 @@ class _BannerWidget extends ConsumerWidget {
                     topRight: Radius.circular(40),
                   ),
                   child: Image.asset(
-                    BANNER,
+                    Assets.BANNER,
                     fit: BoxFit.cover,
                     width: ScreenSize.width(context),
                   ),
@@ -520,6 +538,9 @@ class _AvatarWidget extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final selectedAvatar = ref.watch(selectedAvatarImageProvider);
 
+    math.Random random = math.Random(userProfileData?.id.hashCode);
+    Color userColor = Color((random.nextDouble() * 0xFFFFFF).toInt()).withOpacity(1.0);
+
     return Align(
       alignment: Alignment.center,
       child: Padding(
@@ -550,16 +571,16 @@ class _AvatarWidget extends ConsumerWidget {
           child: Stack(
             children: [
               CircleAvatar(
-                backgroundColor: userProfileData?.gender == "Male" ? Colors.transparent : const Color(0xFF1B0C6B),
+                backgroundColor: userProfileData?.gender == "Male" ? Colors.transparent : userColor,
                 radius: 70,
                 backgroundImage: selectedAvatar != "" && selectedAvatar != null && userProfileData?.avatarSrc != ""
                     ? CachedNetworkImageProvider(selectedAvatar)
                     : userProfileData?.gender == "Male"
-                        ? const AssetImage(MALE)
+                        ? const AssetImage(Assets.MALE)
                         : userProfileData?.gender == "Female"
-                            ? const AssetImage(FEMALE)
+                            ? const AssetImage(Assets.FEMALE)
                             : userProfileData?.gender == "Others"
-                                ? const AssetImage(OTHERS)
+                                ? const AssetImage(Assets.OTHERS)
                                 : null,
                 child: selectedAvatar == null && userProfileData?.gender == null
                     ? Text(

@@ -1,6 +1,7 @@
 import 'dart:io';
 
-import 'package:briefsea/common/app_utility.dart';
+import 'package:briefsea/common/app_utils/app_utility.dart';
+import 'package:briefsea/common/others/strings.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -8,7 +9,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:mime/mime.dart';
 
-import '../../../common/screen_size.dart';
+import '../../../common/app_utils/screen_size.dart';
 import '../../providers/auth_provider.dart';
 import '../../providers/breifs_provider.dart';
 import '../../providers/user_profile_provider.dart';
@@ -181,7 +182,7 @@ class MyFeedNavigator extends ConsumerWidget {
                             Expanded(
                               child: Center(
                                 child: Text(
-                                  "Post a brief to instantly connect with\nagencies, freelancers and working professionals.",
+                                  Strings.postABrief,
                                   style: TextStyle(
                                     color: Colors.grey,
                                     fontSize: 12,

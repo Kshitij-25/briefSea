@@ -1,10 +1,11 @@
+import 'package:briefsea/common/others/strings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-import '../../../common/enums.dart';
-import '../../../common/screen_size.dart';
+import '../../../common/app_utils/screen_size.dart';
+import '../../../common/enums/enums.dart';
 import '../../providers/auth_provider.dart';
 import '../../widgets/custom_back_button.dart';
 import '../../widgets/custom_elevated_button.dart';
@@ -194,7 +195,7 @@ class FreelancerRegisterScreen extends ConsumerWidget {
                           ),
                           SizedBox(height: ScreenSize.height(context) * .05),
                           const Text(
-                            "Instantly discover and grab\nhot freelancing opportunities\nin Tech and Marketing.",
+                            Strings.freelancerFooter,
                             style: TextStyle(color: Colors.white),
                             textScaler: TextScaler.linear(1),
                             textAlign: TextAlign.center,

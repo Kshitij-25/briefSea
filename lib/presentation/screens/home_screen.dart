@@ -4,8 +4,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-import '../../common/assets.dart';
-import '../../common/screen_size.dart';
+import '../../common/app_utils/screen_size.dart';
+import '../../common/others/assets.dart';
 import '../providers/auth_provider.dart';
 import '../providers/socket_provider.dart';
 import '../state_providers/bottom_nav_bar_state_provider.dart';
@@ -54,7 +54,7 @@ class HomeScreen extends ConsumerWidget {
             ? Padding(
                 padding: const EdgeInsets.only(bottom: 10),
                 child: Image.asset(
-                  APP_LOGO,
+                  Assets.APP_LOGO,
                   height: 150,
                   color: Colors.white,
                 ),

@@ -3,7 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-import '../../common/screen_size.dart';
+import '../../common/app_utils/screen_size.dart';
 import '../widgets/custom_notification_tile.dart';
 
 class NotificationScreen extends ConsumerWidget {
@@ -47,21 +47,21 @@ class NotificationScreen extends ConsumerWidget {
                   }
                   return Column(
                     children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          TextButton(
-                            style: const ButtonStyle(
-                              overlayColor: WidgetStateColor.transparent,
-                            ),
-                            onPressed: () async {
-                              await ref.read(deleteAllNotificationsProvider.future);
-                              ref.invalidate(getAllNotificationsProvider);
-                            },
-                            child: const Text("Clear All"),
-                          ),
-                        ],
-                      ),
+                      // Row(
+                      //   mainAxisAlignment: MainAxisAlignment.end,
+                      //   children: [
+                      //     TextButton(
+                      //       style: const ButtonStyle(
+                      //         overlayColor: WidgetStateColor.transparent,
+                      //       ),
+                      //       onPressed: () async {
+                      //         await ref.read(deleteAllNotificationsProvider.future);
+                      //         ref.invalidate(getAllNotificationsProvider);
+                      //       },
+                      //       child: const Text("Clear All"),
+                      //     ),
+                      //   ],
+                      // ),
                       Expanded(
                         child: ListView.builder(
                           shrinkWrap: true,

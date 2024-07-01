@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
@@ -18,12 +20,18 @@ class CustomNotificationTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     DateTime dateTime = DateTime.parse(notificationModel.createdAt ?? "");
+    math.Random random = math.Random(notificationModel.senderId?.hashCode);
+    Color userColor = Color((random.nextDouble() * 0xFFFFFF).toInt()).withOpacity(1.0);
     return Dismissible(
       key: Key(notificationModel.createdAt ?? DateTime.now().toString()), // Ensure unique key for each item
       confirmDismiss: (direction) async {
         return await confirmDismiss();
       },
-      onDismissed: (direction) => onDismissed,
+      onDismissed: (direction) {
+        if (direction == DismissDirection.endToStart) {
+          onDismissed;
+        }
+      },
       background: Container(
         color: Colors.red,
         alignment: Alignment.centerLeft,
@@ -38,7 +46,7 @@ class CustomNotificationTile extends StatelessWidget {
       ),
       child: ListTile(
         leading: CircleAvatar(
-          backgroundColor: const Color(0xFF1B0C6B),
+          backgroundColor: userColor,
           child: Text(
             notificationModel.senderName?[0] ?? '',
             style: const TextStyle(

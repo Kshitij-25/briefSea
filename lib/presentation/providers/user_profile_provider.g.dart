@@ -1668,5 +1668,133 @@ class _DeleteAccountProviderElement
   @override
   String get userId => (origin as DeleteAccountProvider).userId;
 }
+
+String _$checkUserNameHash() => r'a6bfccc0e06311ef2f6e390f8ebbf0500e8043ba';
+
+/// See also [checkUserName].
+@ProviderFor(checkUserName)
+const checkUserNameProvider = CheckUserNameFamily();
+
+/// See also [checkUserName].
+class CheckUserNameFamily extends Family<AsyncValue<bool>> {
+  /// See also [checkUserName].
+  const CheckUserNameFamily();
+
+  /// See also [checkUserName].
+  CheckUserNameProvider call({
+    required String userName,
+  }) {
+    return CheckUserNameProvider(
+      userName: userName,
+    );
+  }
+
+  @override
+  CheckUserNameProvider getProviderOverride(
+    covariant CheckUserNameProvider provider,
+  ) {
+    return call(
+      userName: provider.userName,
+    );
+  }
+
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'checkUserNameProvider';
+}
+
+/// See also [checkUserName].
+class CheckUserNameProvider extends AutoDisposeFutureProvider<bool> {
+  /// See also [checkUserName].
+  CheckUserNameProvider({
+    required String userName,
+  }) : this._internal(
+          (ref) => checkUserName(
+            ref as CheckUserNameRef,
+            userName: userName,
+          ),
+          from: checkUserNameProvider,
+          name: r'checkUserNameProvider',
+          debugGetCreateSourceHash:
+              const bool.fromEnvironment('dart.vm.product')
+                  ? null
+                  : _$checkUserNameHash,
+          dependencies: CheckUserNameFamily._dependencies,
+          allTransitiveDependencies:
+              CheckUserNameFamily._allTransitiveDependencies,
+          userName: userName,
+        );
+
+  CheckUserNameProvider._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.userName,
+  }) : super.internal();
+
+  final String userName;
+
+  @override
+  Override overrideWith(
+    FutureOr<bool> Function(CheckUserNameRef provider) create,
+  ) {
+    return ProviderOverride(
+      origin: this,
+      override: CheckUserNameProvider._internal(
+        (ref) => create(ref as CheckUserNameRef),
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        userName: userName,
+      ),
+    );
+  }
+
+  @override
+  AutoDisposeFutureProviderElement<bool> createElement() {
+    return _CheckUserNameProviderElement(this);
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is CheckUserNameProvider && other.userName == userName;
+  }
+
+  @override
+  int get hashCode {
+    var hash = _SystemHash.combine(0, runtimeType.hashCode);
+    hash = _SystemHash.combine(hash, userName.hashCode);
+
+    return _SystemHash.finish(hash);
+  }
+}
+
+mixin CheckUserNameRef on AutoDisposeFutureProviderRef<bool> {
+  /// The parameter `userName` of this provider.
+  String get userName;
+}
+
+class _CheckUserNameProviderElement
+    extends AutoDisposeFutureProviderElement<bool> with CheckUserNameRef {
+  _CheckUserNameProviderElement(super.provider);
+
+  @override
+  String get userName => (origin as CheckUserNameProvider).userName;
+}
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member

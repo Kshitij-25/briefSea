@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-import '../../common/screen_size.dart';
+import '../../common/app_utils/screen_size.dart';
 import '../state_providers/briefs_state_provider.dart';
 
 class CustomTabBar extends ConsumerStatefulWidget {

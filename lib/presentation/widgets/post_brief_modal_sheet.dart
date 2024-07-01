@@ -4,8 +4,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../common/industry_data.dart';
-import '../../common/screen_size.dart';
+import '../../common/app_utils/screen_size.dart';
+import '../../common/static_data/industry_data.dart';
 
 Future<void> customPostBriefModalSheet(
   BuildContext context, {
@@ -112,7 +112,7 @@ Future<void> customPostBriefModalSheet(
                                   controller: postTextCont,
                                   decoration: const InputDecoration(
                                     border: InputBorder.none,
-                                    hintText: "Describe in detail",
+                                    hintText: "Post a brief, Describe in detail",
                                     hintStyle: TextStyle(
                                       color: Colors.grey,
                                     ),
@@ -189,14 +189,14 @@ Future<void> customPostBriefModalSheet(
                             //   // },
                             // ),
                             const SizedBox(width: 10),
-                            IconButton(
-                              icon: const Icon(CupertinoIcons.circle_grid_hex, size: 30),
-                              onPressed: () {
-                                setState(() {
-                                  isCategoryVisible = !isCategoryVisible;
-                                });
-                              },
-                            ),
+                            // IconButton(
+                            //   icon: const Icon(CupertinoIcons.circle_grid_hex, size: 30),
+                            //   onPressed: () {
+                            //     setState(() {
+                            //       isCategoryVisible = !isCategoryVisible;
+                            //     });
+                            //   },
+                            // ),
                             const Spacer(),
                             ElevatedButton(
                               style: ButtonStyle(

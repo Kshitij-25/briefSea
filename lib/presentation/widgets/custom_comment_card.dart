@@ -1,8 +1,10 @@
+import 'dart:math' as math;
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
-import '../../common/screen_size.dart';
+import '../../common/app_utils/screen_size.dart';
 import '../../data/models/comment_model.dart';
 
 class CustomCommentCard extends StatelessWidget {
@@ -27,6 +29,8 @@ class CustomCommentCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    math.Random random = math.Random(commentModel?.userId.hashCode);
+    Color userColor = Color((random.nextDouble() * 0xFFFFFF).toInt()).withOpacity(1.0);
     if (commentModel == null) {
       return const SizedBox();
     }
@@ -42,7 +46,7 @@ class CustomCommentCard extends StatelessWidget {
                   ? Padding(
                       padding: const EdgeInsets.only(right: 0.0),
                       child: CircleAvatar(
-                        backgroundColor: const Color(0xFF1B0C6B),
+                        backgroundColor: userColor,
                         radius: 15,
                         child: Text(
                           commentModel?.name?[0] ?? "",
@@ -67,11 +71,24 @@ class CustomCommentCard extends StatelessWidget {
                         width: ScreenSize.width(context) * 0.77,
                         child: Row(
                           children: [
-                            Text(
-                              commentModel?.name ?? "",
-                              style: const TextStyle(
-                                color: Color(0xFF33BBE7),
-                              ),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  commentModel?.name ?? "",
+                                  style: const TextStyle(
+                                    color: Colors.black,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                Text(
+                                  "Posting as ${commentModel?.type ?? ""}",
+                                  style: const TextStyle(
+                                    color: Color(0xFF4A26FE),
+                                    fontSize: 11,
+                                  ),
+                                ),
+                              ],
                             ),
                             const Spacer(),
                             Text(
@@ -110,7 +127,7 @@ class CustomCommentCard extends StatelessWidget {
                   ? Padding(
                       padding: const EdgeInsets.only(left: 0.0),
                       child: CircleAvatar(
-                        backgroundColor: const Color(0xFF1B0C6B),
+                        backgroundColor: userColor,
                         radius: 15,
                         child: Text(
                           commentModel?.name?[0] ?? "",

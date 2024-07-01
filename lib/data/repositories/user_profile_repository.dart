@@ -182,4 +182,15 @@ class UserProfileRepository {
       return Left(AppError(errorMessage: e.toString()));
     }
   }
+
+  Future<Either<AppError, bool>> checkUserName(String userName) async {
+    try {
+      final userNameExists = await _userProfileRemoteDataSource.checkUserName(userName);
+      return Right(userNameExists);
+    } on AppError catch (e) {
+      return Left(e);
+    } on Exception catch (e) {
+      return Left(AppError(errorMessage: e.toString()));
+    }
+  }
 }

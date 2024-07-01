@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_otp_text_field/flutter_otp_text_field.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../common/screen_size.dart';
+import '../../../common/app_utils/screen_size.dart';
 import '../../widgets/custom_back_button.dart';
 import '../../widgets/custom_elevated_button.dart';
 import '../../widgets/custom_shape_widget.dart';

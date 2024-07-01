@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import '../../common/device_type.dart';
-import '../../common/enums.dart';
-import '../../common/screen_size.dart';
+import '../../common/app_utils/device_type.dart';
+import '../../common/app_utils/screen_size.dart';
+import '../../common/enums/enums.dart';
 
 class CustomElevatedButton extends StatelessWidget {
   const CustomElevatedButton({

@@ -10,6 +10,7 @@ class CustomTextFormField extends StatelessWidget {
     this.border,
     this.obscureText,
     this.validator,
+    this.onEditingComplete,
   });
 
   final String? hintText;
@@ -19,6 +20,7 @@ class CustomTextFormField extends StatelessWidget {
   final InputBorder? border;
   final bool? obscureText;
   final String? Function(String?)? validator;
+  final Function()? onEditingComplete;
 
   @override
   Widget build(BuildContext context) {
@@ -28,6 +30,7 @@ class CustomTextFormField extends StatelessWidget {
       readOnly: readOnly ?? false,
       obscureText: obscureText ?? false,
       validator: validator,
+      onEditingComplete: onEditingComplete,
       decoration: InputDecoration(
         border: border ??
             OutlineInputBorder(

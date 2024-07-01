@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'common/routes.dart';
+import 'common/others/routes.dart';
 
 class MainApp extends StatelessWidget {
   const MainApp({super.key});

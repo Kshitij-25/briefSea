@@ -16,41 +16,44 @@ import '../models/user_profile_model.dart';
 abstract class UserProfileRemoteDataSource {
   Future<UserProfileModel?>? getUserProfile();
   Future<UserProfileModel?>? getOtherProfile(String? otherUserId);
-  Future<String?>? verifyProfile(
-      {String? userId,
-      String? name,
-      int? countryCode,
-      int? contact,
-      String? jobTitle,
-      String? company,
-      List<String>? industry,
-      List<String>? expertise,
-      String? location,
-      String? avatarSrc,
-      String? bannerSrc,
-      String? jwtToken,
-      String? postingAs,
-      String? gender});
-  Future<String?>? editProfile(
-      {String? userId,
-      String? name,
-      int? countryCode,
-      int? contact,
-      String? jobTitle,
-      String? company,
-      List<String>? industry,
-      List<String>? expertise,
-      String? location,
-      String? avatarSrc,
-      String? bannerSrc,
-      String? jwtToken,
-      String? postingAs,
-      String? gender});
+  Future<String?>? verifyProfile({
+    String? userId,
+    String? name,
+    int? countryCode,
+    int? contact,
+    String? jobTitle,
+    String? company,
+    List<String>? industry,
+    List<String>? expertise,
+    String? location,
+    String? avatarSrc,
+    String? bannerSrc,
+    String? jwtToken,
+    String? postingAs,
+    String? gender,
+  });
+  Future<String?>? editProfile({
+    String? userId,
+    String? name,
+    int? countryCode,
+    int? contact,
+    String? jobTitle,
+    String? company,
+    List<String>? industry,
+    List<String>? expertise,
+    String? location,
+    String? avatarSrc,
+    String? bannerSrc,
+    String? jwtToken,
+    String? postingAs,
+    String? gender,
+  });
   Future<AvatarModel?>? uploadAvatar(String? fileName, String? fileType, String? userId, String? userType);
   Future<BannerModel?>? uploadBanner(String? fileName, String? fileType, String? userId, String? userType);
   Future<bool> uploadToAWS(String? url, String? fileName, File file, String? fileType);
   Future<ImageModel> getImage(String? src);
   Future<bool> deleteAccount(String? userId);
+  Future<bool> checkUserName(String? userName);
 }
 
 class UserProfileRemoteDataSourceImpl implements UserProfileRemoteDataSource {
@@ -383,6 +386,33 @@ class UserProfileRemoteDataSourceImpl implements UserProfileRemoteDataSource {
       }
     } catch (e) {
       log("deleteAccount Error", error: e);
+      throw AppError(errorMessage: e.toString());
+    }
+  }
+
+  @override
+  Future<bool> checkUserName(String? userName) async {
+    var jwtToken = await getJwtToken();
+
+    try {
+      Response? response = await _apiClient.getReq(
+        url: "${ApiConstants.checkUsername}$userName",
+        jwtToken: jwtToken,
+      );
+
+      if (response?.data != null && response?.statusCode != null) {
+        if (response!.statusCode == 200) {
+          var responseJson = response.data;
+          log(responseJson.toString());
+          return true;
+        } else {
+          throw AppError(statusCode: response.statusCode);
+        }
+      } else {
+        throw AppError();
+      }
+    } catch (e) {
+      log("checkUserName Error", error: e);
       throw AppError(errorMessage: e.toString());
     }
   }
