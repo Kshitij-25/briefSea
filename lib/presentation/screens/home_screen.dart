@@ -59,14 +59,28 @@ class HomeScreen extends ConsumerWidget {
                   color: Colors.white,
                 ),
               )
-            : Text(
-                currentIndex == 1
-                    ? "Briefsea Chat"
-                    : currentIndex == 2
-                        ? "Notifications"
-                        : "Profile",
-                style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
-              ),
+            : currentIndex == 1
+                ? Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 0),
+                        child: Image.asset(
+                          Assets.logoSmall,
+                          height: 35,
+                          color: Colors.white,
+                        ),
+                      ),
+                      const Text(
+                        "Chat",
+                        style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
+                      ),
+                    ],
+                  )
+                : Text(
+                    currentIndex == 2 ? "Notifications" : "Profile",
+                    style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
+                  ),
         centerTitle: true,
         elevation: 0,
         leadingWidth: ScreenSize.width(context) * 0.3,
@@ -107,7 +121,7 @@ class HomeScreen extends ConsumerWidget {
         children: [
           MyFeedNavigator(homePageController: pageController),
           const MessagesScreenNavigator(),
-          const NotificationScreen(),
+          NotificationScreen(notificationPageController: pageController),
           ProfileScreen(),
         ],
       ),

@@ -23,6 +23,8 @@ class UserProfileModel with _$UserProfileModel {
     @JsonKey(name: 'updatedAt') String? updatedAt,
     @JsonKey(name: 'postingAs') String? postingAs,
     @JsonKey(name: 'gender') String? gender,
+    @JsonKey(name: 'viewAccess') bool? viewAccess,
+    @JsonKey(name: 'userName') String? userName,
 
     // @JsonKey(name: '') String? id,
   }) = _UserProfileModel;

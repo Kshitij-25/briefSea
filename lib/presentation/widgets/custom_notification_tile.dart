@@ -11,11 +11,13 @@ class CustomNotificationTile extends StatelessWidget {
     required this.notificationModel,
     required this.confirmDismiss,
     this.onDismissed,
+    this.onTap,
   });
 
   final NotificationModel notificationModel;
   final Future<bool> Function() confirmDismiss;
   final VoidCallback? onDismissed;
+  final void Function()? onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -45,6 +47,7 @@ class CustomNotificationTile extends StatelessWidget {
         child: const Icon(Icons.delete, color: Colors.white),
       ),
       child: ListTile(
+        onTap: onTap,
         leading: CircleAvatar(
           backgroundColor: userColor,
           child: Text(

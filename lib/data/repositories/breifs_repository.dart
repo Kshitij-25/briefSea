@@ -91,9 +91,39 @@ class BreifsRepository {
     }
   }
 
-  Future<Either<AppError, bool>>? editBrief({String? briefId, bool? isVisible}) async {
+  Future<Either<AppError, bool>>? editBrief({
+    String? briefId,
+    bool? isVisible,
+    String? userId,
+    String? name,
+    String? type,
+    String? category,
+    String? postText,
+    String? imgSrc,
+    String? avatarSrc,
+    String? createdAt,
+    String? updatedAt,
+    int? likesCount,
+    int? replyCount,
+    int? postedAt,
+  }) async {
     try {
-      final editedBrief = await _briefsRemoteDataSource.editBrief(briefId: briefId, isVisible: isVisible);
+      final editedBrief = await _briefsRemoteDataSource.editBrief(
+        briefId: briefId,
+        isVisible: isVisible,
+        avatarSrc: avatarSrc,
+        category: category,
+        createdAt: createdAt,
+        likesCount: likesCount,
+        name: name,
+        postText: postText,
+        replyCount: replyCount,
+        postedAt: postedAt,
+        type: type,
+        updatedAt: updatedAt,
+        userId: userId,
+        imgSrc: imgSrc,
+      );
       return Right(editedBrief);
     } on AppError catch (e) {
       return Left(e);

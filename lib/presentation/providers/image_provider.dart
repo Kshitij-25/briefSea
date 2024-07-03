@@ -63,22 +63,28 @@ Future<String> uploadImage(
     bannerKey = uploadedBanner.key;
   }
 
-  var verifyMessage = await ref.read(editProfileProvider(
-    userId: userDetails['user_id'],
-    uName: userDetails['user_name']!,
-    countryCode: userProfileData!.countryCode,
-    contact: userProfileData.contact,
-    company: userProfileData.worksAt,
-    jobTitle: userProfileData.post,
-    industry: userProfileData.industry!,
-    location: userProfileData.location,
-    avatarSrc: avatarKey ?? '',
-    bannerSrc: bannerKey ?? '',
-    jwtToken: userDetails['jwtToken'],
-    expertise: userProfileData.expertise!,
-    postingAs: userDetails['type'],
-    gender: "",
-  ).future);
+  var verifyMessage = await ref.read(
+    editProfileProvider(
+      userId: userDetails['user_id'],
+      uName: userDetails['user_name']!,
+      countryCode: userProfileData!.countryCode,
+      contact: userProfileData.contact,
+      company: userProfileData.worksAt,
+      jobTitle: userProfileData.post,
+      industry: userProfileData.industry!,
+      location: userProfileData.location,
+      avatarSrc: avatarKey ?? '',
+      bannerSrc: bannerKey ?? '',
+      jwtToken: userDetails['jwtToken'],
+      expertise: userProfileData.expertise!,
+      postingAs: userDetails['type'],
+      gender: userProfileData.gender,
+      createdAt: userProfileData.createdAt,
+      updatedAt: userProfileData.updatedAt,
+      userName: userProfileData.userName,
+      viewAccess: userProfileData.viewAccess,
+    ).future,
+  );
   log("IMAGE_PROVIDER ===> $verifyMessage");
 
   ref.invalidate(getUserProfileProvider);

@@ -126,10 +126,10 @@ class CustomBriefsCard extends StatelessWidget {
                         ),
                         itemBuilder: (context) {
                           return <PopupMenuEntry<String>>[
-                            // const PopupMenuItem<String>(
-                            //   value: 'edit',
-                            //   child: Text('Edit Brief'),
-                            // ),
+                            const PopupMenuItem<String>(
+                              value: 'edit',
+                              child: Text('Edit Brief'),
+                            ),
                             PopupMenuItem<String>(
                               value: 'visible',
                               child: Text(brief?.isVisible == true ? 'Make it Private' : 'Make it Public'),

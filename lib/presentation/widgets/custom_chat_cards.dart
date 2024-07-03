@@ -18,7 +18,7 @@ class CustomChatCards extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    math.Random random = math.Random(chatMessage?.hashCode);
+    math.Random random = math.Random(chatName?.hashCode);
     Color userColor = Color((random.nextDouble() * 0xFFFFFF).toInt()).withOpacity(1.0);
     return Card(
       color: Colors.white,
@@ -67,14 +67,13 @@ class CustomChatCards extends StatelessWidget {
           chatName ?? '',
           style: const TextStyle(
             color: Colors.black,
+            fontWeight: FontWeight.w500,
           ),
         ),
         subtitle: Text(
           chatMessage ?? '...',
           overflow: TextOverflow.ellipsis,
-          style: const TextStyle(
-            color: Color(0xFF4A26FE),
-          ),
+          style: const TextStyle(),
         ),
       ),
     );

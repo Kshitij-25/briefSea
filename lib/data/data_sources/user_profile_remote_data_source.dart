@@ -4,7 +4,7 @@ import 'dart:typed_data';
 
 import 'package:dio/dio.dart';
 
-import '../../main.dart';
+import '../../common/app_utils/shared_prefs_helper.dart';
 import '../core/api_client.dart';
 import '../core/api_constants.dart';
 import '../core/app_error.dart';
@@ -31,6 +31,7 @@ abstract class UserProfileRemoteDataSource {
     String? jwtToken,
     String? postingAs,
     String? gender,
+    String? username,
   });
   Future<String?>? editProfile({
     String? userId,
@@ -47,6 +48,10 @@ abstract class UserProfileRemoteDataSource {
     String? jwtToken,
     String? postingAs,
     String? gender,
+    String? createdAt,
+    String? updatedAt,
+    String? userName,
+    bool? viewAccess,
   });
   Future<AvatarModel?>? uploadAvatar(String? fileName, String? fileType, String? userId, String? userType);
   Future<BannerModel?>? uploadBanner(String? fileName, String? fileType, String? userId, String? userType);
@@ -62,7 +67,7 @@ class UserProfileRemoteDataSourceImpl implements UserProfileRemoteDataSource {
   UserProfileRemoteDataSourceImpl(this._apiClient);
 
   Future<String> getJwtToken() async {
-    String? jwtToken = prefs!.getString('jwtToken');
+    String? jwtToken = await SharedPreferencesHelper.getString('jwtToken');
     return jwtToken ?? "";
   }
 
@@ -136,6 +141,7 @@ class UserProfileRemoteDataSourceImpl implements UserProfileRemoteDataSource {
     String? jwtToken,
     String? postingAs,
     String? gender,
+    String? username,
   }) async {
     var jwtToken = await getJwtToken();
     try {
@@ -154,6 +160,7 @@ class UserProfileRemoteDataSourceImpl implements UserProfileRemoteDataSource {
         'bannerSrc': bannerSrc,
         "postingAs": postingAs,
         'gender': gender,
+        "userName": username,
       };
 
       Response? response = await _apiClient.postReq(
@@ -199,6 +206,10 @@ class UserProfileRemoteDataSourceImpl implements UserProfileRemoteDataSource {
     String? jwtToken,
     String? postingAs,
     String? gender,
+    String? createdAt,
+    String? updatedAt,
+    String? userName,
+    bool? viewAccess,
   }) async {
     var jwtToken = await getJwtToken();
     try {
@@ -217,6 +228,10 @@ class UserProfileRemoteDataSourceImpl implements UserProfileRemoteDataSource {
         'bannerSrc': bannerSrc,
         "postingAs": postingAs,
         'gender': gender,
+        'createdAt': createdAt,
+        'updatedAt': updatedAt,
+        'userName': userName,
+        'viewAccess': viewAccess,
       };
 
       Response? response = await _apiClient.patchReq(

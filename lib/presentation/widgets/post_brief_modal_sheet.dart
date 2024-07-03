@@ -17,6 +17,8 @@ Future<void> customPostBriefModalSheet(
   Function()? photoOnTap,
   Function(String, String)? postOnTap,
 }) {
+  final FocusNode textFieldFocusNode = FocusNode();
+
   return showModalBottomSheet(
     backgroundColor: Colors.grey[300]!,
     isScrollControlled: true,
@@ -24,11 +26,18 @@ Future<void> customPostBriefModalSheet(
     builder: (context) {
       bool isCategoryVisible = false;
       String? selectedCategory = "";
+
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        textFieldFocusNode.requestFocus();
+        // FocusScope.of(context).requestFocus(textFieldFocusNode);
+      });
+
       return PopScope(
         canPop: true,
         onPopInvoked: (didPop) {
           postTextCont?.clear();
           selectedImage?.delete();
+          textFieldFocusNode.dispose();
         },
         child: StatefulBuilder(
           builder: (BuildContext context, StateSetter setState) {
@@ -39,7 +48,7 @@ Future<void> customPostBriefModalSheet(
                 body: Column(
                   children: [
                     SizedBox(
-                      height: isCategoryVisible == true ? ScreenSize.height(context) * 0.415 : ScreenSize.height(context) * 0.51,
+                      height: isCategoryVisible == true ? ScreenSize.height(context) * 0.4 : ScreenSize.height(context) * 0.51,
                       child: SingleChildScrollView(
                         keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
                         child: Column(
@@ -64,10 +73,16 @@ Future<void> customPostBriefModalSheet(
                               padding: const EdgeInsets.symmetric(horizontal: 15),
                               child: Row(
                                 children: [
-                                  const Icon(
-                                    CupertinoIcons.person_crop_circle_fill,
-                                    color: Colors.grey,
-                                    size: 40,
+                                  CircleAvatar(
+                                    radius: 20,
+                                    backgroundColor: const Color(0xFF4B26FD),
+                                    child: Text(
+                                      postingAs?[0].toUpperCase() ?? '',
+                                      style: const TextStyle(
+                                        color: Colors.white,
+                                      ),
+                                      textScaler: const TextScaler.linear(1.3),
+                                    ),
                                   ),
                                   GestureDetector(
                                     onTap: () {
@@ -102,7 +117,7 @@ Future<void> customPostBriefModalSheet(
                               padding: const EdgeInsets.all(15.0),
                               child: ConstrainedBox(
                                 constraints: BoxConstraints(
-                                  maxHeight: isCategoryVisible != true ? ScreenSize.height(context) * 0.4 : ScreenSize.height(context) * 0.3,
+                                  maxHeight: isCategoryVisible != true ? ScreenSize.height(context) * 0.37 : ScreenSize.height(context) * 0.29,
                                 ),
                                 child: TextField(
                                   autofocus: true,
@@ -110,6 +125,8 @@ Future<void> customPostBriefModalSheet(
                                   expands: true,
                                   maxLength: 500,
                                   controller: postTextCont,
+                                  focusNode: textFieldFocusNode,
+                                  keyboardType: TextInputType.multiline,
                                   decoration: const InputDecoration(
                                     border: InputBorder.none,
                                     hintText: "Post a brief, Describe in detail",

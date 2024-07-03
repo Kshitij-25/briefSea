@@ -735,7 +735,7 @@ class _DeleteBriefProviderElement extends AutoDisposeFutureProviderElement<bool>
   String? get briefId => (origin as DeleteBriefProvider).briefId;
 }
 
-String _$editBriefHash() => r'49dbb8ea4acc263511e5dc49703233609f982165';
+String _$editBriefHash() => r'063881d96ffdf885981b2bc8d3ea3af25129cc7b';
 
 /// See also [editBrief].
 @ProviderFor(editBrief)
@@ -748,12 +748,36 @@ class EditBriefFamily extends Family<AsyncValue<bool>> {
 
   /// See also [editBrief].
   EditBriefProvider call({
-    required String? briefId,
-    required bool? isVisible,
+    required String briefId,
+    required bool isVisible,
+    required String userId,
+    required String uname,
+    required String type,
+    required String category,
+    required String postText,
+    required String imgSrc,
+    required String avatarSrc,
+    required String createdAt,
+    required String updatedAt,
+    required int likesCount,
+    required int replyCount,
+    required int postedAt,
   }) {
     return EditBriefProvider(
       briefId: briefId,
       isVisible: isVisible,
+      userId: userId,
+      uname: uname,
+      type: type,
+      category: category,
+      postText: postText,
+      imgSrc: imgSrc,
+      avatarSrc: avatarSrc,
+      createdAt: createdAt,
+      updatedAt: updatedAt,
+      likesCount: likesCount,
+      replyCount: replyCount,
+      postedAt: postedAt,
     );
   }
 
@@ -764,6 +788,18 @@ class EditBriefFamily extends Family<AsyncValue<bool>> {
     return call(
       briefId: provider.briefId,
       isVisible: provider.isVisible,
+      userId: provider.userId,
+      uname: provider.uname,
+      type: provider.type,
+      category: provider.category,
+      postText: provider.postText,
+      imgSrc: provider.imgSrc,
+      avatarSrc: provider.avatarSrc,
+      createdAt: provider.createdAt,
+      updatedAt: provider.updatedAt,
+      likesCount: provider.likesCount,
+      replyCount: provider.replyCount,
+      postedAt: provider.postedAt,
     );
   }
 
@@ -786,13 +822,37 @@ class EditBriefFamily extends Family<AsyncValue<bool>> {
 class EditBriefProvider extends AutoDisposeFutureProvider<bool> {
   /// See also [editBrief].
   EditBriefProvider({
-    required String? briefId,
-    required bool? isVisible,
+    required String briefId,
+    required bool isVisible,
+    required String userId,
+    required String uname,
+    required String type,
+    required String category,
+    required String postText,
+    required String imgSrc,
+    required String avatarSrc,
+    required String createdAt,
+    required String updatedAt,
+    required int likesCount,
+    required int replyCount,
+    required int postedAt,
   }) : this._internal(
           (ref) => editBrief(
             ref as EditBriefRef,
             briefId: briefId,
             isVisible: isVisible,
+            userId: userId,
+            uname: uname,
+            type: type,
+            category: category,
+            postText: postText,
+            imgSrc: imgSrc,
+            avatarSrc: avatarSrc,
+            createdAt: createdAt,
+            updatedAt: updatedAt,
+            likesCount: likesCount,
+            replyCount: replyCount,
+            postedAt: postedAt,
           ),
           from: editBriefProvider,
           name: r'editBriefProvider',
@@ -804,6 +864,18 @@ class EditBriefProvider extends AutoDisposeFutureProvider<bool> {
           allTransitiveDependencies: EditBriefFamily._allTransitiveDependencies,
           briefId: briefId,
           isVisible: isVisible,
+          userId: userId,
+          uname: uname,
+          type: type,
+          category: category,
+          postText: postText,
+          imgSrc: imgSrc,
+          avatarSrc: avatarSrc,
+          createdAt: createdAt,
+          updatedAt: updatedAt,
+          likesCount: likesCount,
+          replyCount: replyCount,
+          postedAt: postedAt,
         );
 
   EditBriefProvider._internal(
@@ -815,10 +887,34 @@ class EditBriefProvider extends AutoDisposeFutureProvider<bool> {
     required super.from,
     required this.briefId,
     required this.isVisible,
+    required this.userId,
+    required this.uname,
+    required this.type,
+    required this.category,
+    required this.postText,
+    required this.imgSrc,
+    required this.avatarSrc,
+    required this.createdAt,
+    required this.updatedAt,
+    required this.likesCount,
+    required this.replyCount,
+    required this.postedAt,
   }) : super.internal();
 
-  final String? briefId;
-  final bool? isVisible;
+  final String briefId;
+  final bool isVisible;
+  final String userId;
+  final String uname;
+  final String type;
+  final String category;
+  final String postText;
+  final String imgSrc;
+  final String avatarSrc;
+  final String createdAt;
+  final String updatedAt;
+  final int likesCount;
+  final int replyCount;
+  final int postedAt;
 
   @override
   Override overrideWith(
@@ -835,6 +931,18 @@ class EditBriefProvider extends AutoDisposeFutureProvider<bool> {
         debugGetCreateSourceHash: null,
         briefId: briefId,
         isVisible: isVisible,
+        userId: userId,
+        uname: uname,
+        type: type,
+        category: category,
+        postText: postText,
+        imgSrc: imgSrc,
+        avatarSrc: avatarSrc,
+        createdAt: createdAt,
+        updatedAt: updatedAt,
+        likesCount: likesCount,
+        replyCount: replyCount,
+        postedAt: postedAt,
       ),
     );
   }
@@ -848,7 +956,19 @@ class EditBriefProvider extends AutoDisposeFutureProvider<bool> {
   bool operator ==(Object other) {
     return other is EditBriefProvider &&
         other.briefId == briefId &&
-        other.isVisible == isVisible;
+        other.isVisible == isVisible &&
+        other.userId == userId &&
+        other.uname == uname &&
+        other.type == type &&
+        other.category == category &&
+        other.postText == postText &&
+        other.imgSrc == imgSrc &&
+        other.avatarSrc == avatarSrc &&
+        other.createdAt == createdAt &&
+        other.updatedAt == updatedAt &&
+        other.likesCount == likesCount &&
+        other.replyCount == replyCount &&
+        other.postedAt == postedAt;
   }
 
   @override
@@ -856,6 +976,18 @@ class EditBriefProvider extends AutoDisposeFutureProvider<bool> {
     var hash = _SystemHash.combine(0, runtimeType.hashCode);
     hash = _SystemHash.combine(hash, briefId.hashCode);
     hash = _SystemHash.combine(hash, isVisible.hashCode);
+    hash = _SystemHash.combine(hash, userId.hashCode);
+    hash = _SystemHash.combine(hash, uname.hashCode);
+    hash = _SystemHash.combine(hash, type.hashCode);
+    hash = _SystemHash.combine(hash, category.hashCode);
+    hash = _SystemHash.combine(hash, postText.hashCode);
+    hash = _SystemHash.combine(hash, imgSrc.hashCode);
+    hash = _SystemHash.combine(hash, avatarSrc.hashCode);
+    hash = _SystemHash.combine(hash, createdAt.hashCode);
+    hash = _SystemHash.combine(hash, updatedAt.hashCode);
+    hash = _SystemHash.combine(hash, likesCount.hashCode);
+    hash = _SystemHash.combine(hash, replyCount.hashCode);
+    hash = _SystemHash.combine(hash, postedAt.hashCode);
 
     return _SystemHash.finish(hash);
   }
@@ -863,10 +995,46 @@ class EditBriefProvider extends AutoDisposeFutureProvider<bool> {
 
 mixin EditBriefRef on AutoDisposeFutureProviderRef<bool> {
   /// The parameter `briefId` of this provider.
-  String? get briefId;
+  String get briefId;
 
   /// The parameter `isVisible` of this provider.
-  bool? get isVisible;
+  bool get isVisible;
+
+  /// The parameter `userId` of this provider.
+  String get userId;
+
+  /// The parameter `uname` of this provider.
+  String get uname;
+
+  /// The parameter `type` of this provider.
+  String get type;
+
+  /// The parameter `category` of this provider.
+  String get category;
+
+  /// The parameter `postText` of this provider.
+  String get postText;
+
+  /// The parameter `imgSrc` of this provider.
+  String get imgSrc;
+
+  /// The parameter `avatarSrc` of this provider.
+  String get avatarSrc;
+
+  /// The parameter `createdAt` of this provider.
+  String get createdAt;
+
+  /// The parameter `updatedAt` of this provider.
+  String get updatedAt;
+
+  /// The parameter `likesCount` of this provider.
+  int get likesCount;
+
+  /// The parameter `replyCount` of this provider.
+  int get replyCount;
+
+  /// The parameter `postedAt` of this provider.
+  int get postedAt;
 }
 
 class _EditBriefProviderElement extends AutoDisposeFutureProviderElement<bool>
@@ -874,9 +1042,33 @@ class _EditBriefProviderElement extends AutoDisposeFutureProviderElement<bool>
   _EditBriefProviderElement(super.provider);
 
   @override
-  String? get briefId => (origin as EditBriefProvider).briefId;
+  String get briefId => (origin as EditBriefProvider).briefId;
   @override
-  bool? get isVisible => (origin as EditBriefProvider).isVisible;
+  bool get isVisible => (origin as EditBriefProvider).isVisible;
+  @override
+  String get userId => (origin as EditBriefProvider).userId;
+  @override
+  String get uname => (origin as EditBriefProvider).uname;
+  @override
+  String get type => (origin as EditBriefProvider).type;
+  @override
+  String get category => (origin as EditBriefProvider).category;
+  @override
+  String get postText => (origin as EditBriefProvider).postText;
+  @override
+  String get imgSrc => (origin as EditBriefProvider).imgSrc;
+  @override
+  String get avatarSrc => (origin as EditBriefProvider).avatarSrc;
+  @override
+  String get createdAt => (origin as EditBriefProvider).createdAt;
+  @override
+  String get updatedAt => (origin as EditBriefProvider).updatedAt;
+  @override
+  int get likesCount => (origin as EditBriefProvider).likesCount;
+  @override
+  int get replyCount => (origin as EditBriefProvider).replyCount;
+  @override
+  int get postedAt => (origin as EditBriefProvider).postedAt;
 }
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member

@@ -3,7 +3,7 @@ import 'dart:developer';
 import 'package:dio/dio.dart';
 import 'package:http_parser/http_parser.dart';
 
-import '../../main.dart';
+import '../../common/app_utils/shared_prefs_helper.dart';
 import '../core/api_client.dart';
 import '../core/api_constants.dart';
 import '../core/app_error.dart';
@@ -14,10 +14,37 @@ abstract class BriefsRemoteDataSource {
   Future<List<BriefsModel?>?> getAllBriefs();
   Future<List<BriefsModel?>?> getUserBriefs();
   Future<BriefsModel> getSingleBrief(String? briefId);
-  Future<bool> postBrief({String? userId, String? name, String? type, String? category, String? postText, String? imgSrc});
-  Future<ThreadImageModel?>? uploadThreadImage(String? fileName, MediaType fileType, String? userId, String? userType);
+  Future<bool> postBrief({
+    String? userId,
+    String? name,
+    String? type,
+    String? category,
+    String? postText,
+    String? imgSrc,
+  });
+  Future<ThreadImageModel?>? uploadThreadImage(
+    String? fileName,
+    MediaType fileType,
+    String? userId,
+    String? userType,
+  );
   Future<bool> deleteBrief({String? briefId});
-  Future<bool> editBrief({String? briefId, bool? isVisible});
+  Future<bool> editBrief({
+    String? briefId,
+    bool? isVisible,
+    String? userId,
+    String? name,
+    String? type,
+    String? category,
+    String? postText,
+    String? imgSrc,
+    String? avatarSrc,
+    String? createdAt,
+    String? updatedAt,
+    int? likesCount,
+    int? replyCount,
+    int? postedAt,
+  });
 }
 
 class BriefsRemoteDataSourceImpl implements BriefsRemoteDataSource {
@@ -26,7 +53,7 @@ class BriefsRemoteDataSourceImpl implements BriefsRemoteDataSource {
   BriefsRemoteDataSourceImpl(this._apiClient);
 
   Future<String> getJwtToken() async {
-    String? jwtToken = prefs!.getString('jwtToken');
+    String? jwtToken = await SharedPreferencesHelper.getString('jwtToken');
     return jwtToken ?? "";
   }
 
@@ -221,11 +248,40 @@ class BriefsRemoteDataSourceImpl implements BriefsRemoteDataSource {
   }
 
   @override
-  Future<bool> editBrief({String? briefId, bool? isVisible}) async {
+  Future<bool> editBrief({
+    String? briefId,
+    bool? isVisible,
+    String? userId,
+    String? name,
+    String? type,
+    String? category,
+    String? postText,
+    String? imgSrc,
+    String? avatarSrc,
+    String? createdAt,
+    String? updatedAt,
+    int? likesCount,
+    int? replyCount,
+    int? postedAt,
+  }) async {
     var jwtToken = await getJwtToken();
     try {
       var body = {
         'isVisible': isVisible,
+        'avatarSrc': avatarSrc,
+        'category': category,
+        'createdAt': createdAt,
+        'imgSrc': imgSrc,
+        'likesCount': likesCount,
+        'name': name,
+        'postText': postText,
+        'postedAt': postedAt,
+        'replyCount': replyCount,
+        'type': type,
+        'updatedAt': updatedAt,
+        'user_id': userId,
+        '_id': briefId,
+        '__v': 0,
       };
 
       Response? response = await _apiClient.patchReq(

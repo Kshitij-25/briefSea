@@ -7,6 +7,7 @@ import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../common/app_utils/screen_size.dart';
+import '../../../common/app_utils/validation_utils.dart';
 import '../../../common/enums/enums.dart';
 import '../../providers/auth_provider.dart';
 import '../../widgets/custom_back_button.dart';
@@ -62,6 +63,7 @@ class AgencyRegisterScreen extends ConsumerWidget {
                           CustomTextFormField(
                             hintText: "Enter your First Name",
                             controller: agencyFirstName,
+                            textInputAction: TextInputAction.next,
                             validator: (value) {
                               if (value == null || value.isEmpty) {
                                 return 'First Name is required';
@@ -73,6 +75,7 @@ class AgencyRegisterScreen extends ConsumerWidget {
                           CustomTextFormField(
                             hintText: "Enter your Last Name",
                             controller: agencyLastName,
+                            textInputAction: TextInputAction.next,
                             validator: (value) {
                               if (value == null || value.isEmpty) {
                                 return 'Last Name is required';
@@ -84,11 +87,13 @@ class AgencyRegisterScreen extends ConsumerWidget {
                           CustomTextFormField(
                             hintText: "Enter your Email",
                             controller: agencyEmail,
+                            textInputAction: TextInputAction.next,
+                            keyboardType: TextInputType.emailAddress,
                             validator: (value) {
                               if (value == null || value.isEmpty) {
                                 return 'Email is required';
                               }
-                              if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value)) {
+                              if (!ValidationUtils.isValidEmail(value)) {
                                 return 'Enter a valid email';
                               }
                               return null;
@@ -99,18 +104,13 @@ class AgencyRegisterScreen extends ConsumerWidget {
                             hintText: "Enter Password",
                             controller: agencyPass,
                             obscureText: true,
+                            textInputAction: TextInputAction.next,
                             validator: (value) {
                               if (value == null || value.isEmpty) {
                                 return 'Password is required';
                               }
-                              if (value.length < 8) {
-                                return 'Password should be at least 8 characters';
-                              }
-                              if (!value.contains(RegExp(r'[0-9]'))) {
-                                return 'Password should contain at least one number';
-                              }
-                              if (!value.contains(RegExp(r'[!@#$%^&*(),.?":{}|<>]'))) {
-                                return 'Password should contain at least one special character';
+                              if (!ValidationUtils.isValidPassword(value)) {
+                                return 'Password should be at least 8 characters, contain at least one letter, one number, and one special character';
                               }
                               return null;
                             },
@@ -120,6 +120,7 @@ class AgencyRegisterScreen extends ConsumerWidget {
                             hintText: "Confirm Password",
                             controller: agencyConfirmPass,
                             obscureText: true,
+                            textInputAction: TextInputAction.done,
                             validator: (value) {
                               if (value == null || value.isEmpty) {
                                 return 'Please confirm your password';

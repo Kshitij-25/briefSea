@@ -145,10 +145,10 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                       ),
                       child: Row(
                         children: [
-                          IconButton(
-                            onPressed: () {},
-                            icon: const Icon(CupertinoIcons.photo),
-                          ),
+                          // IconButton(
+                          //   onPressed: () {},
+                          //   icon: const Icon(CupertinoIcons.photo),
+                          // ),
                           Expanded(
                             child: TextField(
                               controller: sendMessage,

@@ -98,7 +98,7 @@ class MyFeedNavigator extends ConsumerWidget {
                           context,
                           selectedImage: selectedImage,
                           postTextCont: postTextCont,
-                          postingAs: userData['type'],
+                          postingAs: userData['firstName'],
                           photoOnTap: () async {
                             final ImagePicker picker = ImagePicker();
                             final XFile? image = await picker.pickImage(source: ImageSource.gallery);

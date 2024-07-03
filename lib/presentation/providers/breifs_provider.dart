@@ -124,9 +124,40 @@ Future<bool> deleteBrief(DeleteBriefRef ref, {required String? briefId}) async {
 }
 
 @riverpod
-Future<bool> editBrief(EditBriefRef ref, {required String? briefId, required bool? isVisible}) async {
+Future<bool> editBrief(
+  EditBriefRef ref, {
+  required String briefId,
+  required bool isVisible,
+  required String userId,
+  required String uname,
+  required String type,
+  required String category,
+  required String postText,
+  required String imgSrc,
+  required String avatarSrc,
+  required String createdAt,
+  required String updatedAt,
+  required int likesCount,
+  required int replyCount,
+  required int postedAt,
+}) async {
   final breifsRepository = ref.watch(briefsRepositoryProvider);
-  final eitherBriefsOrError = await breifsRepository.editBrief(briefId: briefId, isVisible: isVisible);
+  final eitherBriefsOrError = await breifsRepository.editBrief(
+    briefId: briefId,
+    isVisible: isVisible,
+    avatarSrc: avatarSrc,
+    category: category,
+    createdAt: createdAt,
+    imgSrc: imgSrc,
+    likesCount: likesCount,
+    name: uname,
+    postedAt: postedAt,
+    replyCount: replyCount,
+    type: type,
+    updatedAt: updatedAt,
+    userId: userId,
+    postText: postText,
+  );
   return eitherBriefsOrError!.fold(
     (error) {
       throw error; // Throw the error for Riverpod to handle

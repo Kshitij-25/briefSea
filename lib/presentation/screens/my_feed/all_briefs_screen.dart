@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:share_plus/share_plus.dart';
 
+import '../../../common/app_utils/app_utility.dart';
 import '../../../data/core/api_constants.dart';
 import '../../../data/models/briefs_model.dart';
 import '../../../data/models/image_model.dart';
@@ -13,13 +14,16 @@ import '../../providers/breifs_provider.dart';
 import '../../providers/likes_provider.dart';
 import '../../providers/notification_provider.dart';
 import '../../providers/user_profile_provider.dart';
+import '../../state_providers/image_picker_provider.dart';
 import '../../widgets/custom_briefs_card.dart';
+import '../../widgets/post_brief_modal_sheet.dart';
 import 'feed_screen.dart';
 
 class AllBriefsScreen extends ConsumerWidget {
-  const AllBriefsScreen({super.key, this.pageController});
+  AllBriefsScreen({super.key, this.pageController});
 
   final PageController? pageController;
+  final TextEditingController postEditController = TextEditingController();
 
   Future<BriefsModel?> _initializeImageProviders(WidgetRef ref, BriefsModel briefModel) async {
     try {
@@ -47,6 +51,7 @@ class AllBriefsScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final userDetails = ref.watch(userDetailsProvider);
+    final selectedImage = ref.watch(selectedPostImageProvider);
     return ref.watch(getAllBriefsProvider).when(
           data: (briefs) {
             if (briefs == null || briefs.isEmpty) {
@@ -72,16 +77,92 @@ class AllBriefsScreen extends ConsumerWidget {
                         postImage: snapshot.data?.imgSrc,
                         avatarName: snapshot.data?.avatarSrc,
                         onSelected: (value) async {
-                          if (value == "delete") {
+                          if (value == 'edit') {
+                            postEditController.text = briefs[index]!.postText ?? '';
+                            customPostBriefModalSheet(
+                              context,
+                              selectedImage: selectedImage,
+                              postTextCont: postEditController,
+                              postingAs: briefs[index]?.name,
+                              photoOnTap: () async {
+                                // final ImagePicker picker = ImagePicker();
+                                // final XFile? image = await picker.pickImage(source: ImageSource.gallery);
+                                // if (image != null) {
+                                //   var uploadedThreadImage = await ref.read(uploadThreadImageProvider(
+                                //     fileName: image.name,
+                                //     fileType: lookupMimeType(image.path),
+                                //     userId: userData['user_id'],
+                                //     userType: userData['type'],
+                                //   ).future);
+                                //   ref.read(uploadToAWSProvider(
+                                //     url: uploadedThreadImage.url,
+                                //     fileName: image.name,
+                                //     file: File(image.path),
+                                //     fileType: lookupMimeType(image.path),
+                                //   ).future);
+                                //   ref.read(uploadedThreadImageKeyProvider.notifier).state = uploadedThreadImage.key;
+
+                                //   ref.read(selectedPostImageProvider.notifier).state = File(image.path);
+                                // }
+                              },
+                              postOnTap: (postText, selectedCategory) async {
+                                if (postEditController.text.isNotEmpty) {
+                                  if (selectedCategory != '') {
+                                    var status = await ref.watch(
+                                      editBriefProvider(
+                                        briefId: briefs[index]!.id!,
+                                        isVisible: briefs[index]!.isVisible!,
+                                        avatarSrc: briefs[index]!.avatarSrc!,
+                                        category: selectedCategory,
+                                        createdAt: briefs[index]!.createdAt!,
+                                        updatedAt: briefs[index]!.updatedAt!,
+                                        imgSrc: briefs[index]!.imgSrc!,
+                                        postText: postText,
+                                        userId: briefs[index]!.userId!,
+                                        uname: briefs[index]!.name!,
+                                        type: briefs[index]!.type!,
+                                        likesCount: briefs[index]!.likesCount!,
+                                        replyCount: briefs[index]!.replyCount!,
+                                        postedAt: briefs[index]!.postedAt!,
+                                      ).future,
+                                    );
+
+                                    if (status == true) {
+                                      postEditController.clear();
+                                      GoRouter.of(context).pop();
+                                    }
+                                    ref.invalidate(getAllBriefsProvider);
+                                    ref.invalidate(getUserBriefsProvider);
+                                  } else {
+                                    AppUtility(context).error('Choose a category first.');
+                                  }
+                                }
+                              },
+                            );
+                          } else if (value == "delete") {
                             var isDeleted = await ref.watch(deleteBriefProvider(briefId: briefs[index]?.id).future);
                             if (isDeleted == true) {
                               ref.invalidate(getAllBriefsProvider);
                             }
                           } else if (value == "visible") {
-                            var isVisible =
-                                await ref.watch(editBriefProvider(briefId: briefs[index]?.id, isVisible: !briefs[index]!.isVisible!).future);
+                            var isVisible = await ref.watch(editBriefProvider(
+                              briefId: briefs[index]!.id!,
+                              isVisible: !briefs[index]!.isVisible!,
+                              avatarSrc: briefs[index]!.avatarSrc!,
+                              category: briefs[index]!.category!,
+                              createdAt: briefs[index]!.createdAt!,
+                              updatedAt: briefs[index]!.updatedAt!,
+                              imgSrc: briefs[index]!.imgSrc!,
+                              postText: briefs[index]!.postText!,
+                              userId: briefs[index]!.userId!,
+                              uname: briefs[index]!.name!,
+                              type: briefs[index]!.type!,
+                              likesCount: briefs[index]!.likesCount!,
+                              replyCount: briefs[index]!.replyCount!,
+                              postedAt: briefs[index]!.postedAt!,
+                            ).future);
                             if (isVisible == true) {
-                              ref.invalidate(getAllBriefsProvider);
+                              ref.invalidate(getUserBriefsProvider);
                             }
                           }
                         },

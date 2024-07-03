@@ -1,3 +1,4 @@
+import 'package:briefsea/common/app_utils/shared_prefs_helper.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -10,7 +11,6 @@ import '../../data/di/get_it.dart';
 import '../../data/models/login_model.dart';
 import '../../data/models/register_model.dart';
 import '../../data/repositories/auth_repository.dart';
-import '../../main.dart';
 import '../screens/auth_screens/verify_profile_screen.dart';
 import '../screens/home_screen.dart';
 import 'notification_provider.dart';
@@ -56,8 +56,8 @@ class LoginNotifier extends StateNotifier<LoginState> {
       );
       if (loginModel.message == 'Login sucessfull') {
         var isLoginSuccess = true;
-        await prefs!.setBool('isLogin', isLoginSuccess);
-        await prefs!.setBool('profile', loginModel.profile!);
+        await SharedPreferencesHelper.saveBoolean('isLogin', isLoginSuccess);
+        await SharedPreferencesHelper.saveBoolean('profile', loginModel.profile!);
         // Navigate based on profile status
         loginModel.profile == false ? GoRouter.of(context).push(VerifyProfileScreen.routeName) : GoRouter.of(context).go(HomeScreen.routeName);
         state = LoginState.success;
@@ -175,12 +175,15 @@ class UserDetailsNotifier extends StateNotifier<Map<String, String>> {
 
   Future<void> _loadUserDetails() async {
     state = {
-      'jwtToken': prefs!.getString('jwtToken') ?? '',
-      'user_id': prefs!.getString('user_id') ?? '',
-      'user_name': prefs!.getString('user_name') ?? '',
-      'email': prefs!.getString('email') ?? '',
-      'type': prefs!.getString('type') ?? '',
-      'subtype': prefs!.getString('subtype') ?? '',
+      'jwtToken': await SharedPreferencesHelper.getString('jwtToken') ?? '',
+      'user_id': await SharedPreferencesHelper.getString('user_id') ?? '',
+      'user_name': await SharedPreferencesHelper.getString('user_name') ?? '',
+      'firstName': await SharedPreferencesHelper.getString('firstName') ?? '',
+      'lastName': await SharedPreferencesHelper.getString('lastName') ?? '',
+      'name': await SharedPreferencesHelper.getString('userName') ?? '',
+      'email': await SharedPreferencesHelper.getString('email') ?? '',
+      'type': await SharedPreferencesHelper.getString('type') ?? '',
+      'subtype': await SharedPreferencesHelper.getString('subtype') ?? '',
     };
   }
 }

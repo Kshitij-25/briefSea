@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../common/app_utils/screen_size.dart';
+import '../../../common/app_utils/validation_utils.dart';
 import '../../../common/enums/enums.dart';
 import '../../../common/others/strings.dart';
 import '../../providers/auth_provider.dart';
@@ -62,6 +63,7 @@ class ProfessionalRegisterScreen extends ConsumerWidget {
                           CustomTextFormField(
                             hintText: "Enter your First Name",
                             controller: professionalFirstName,
+                            textInputAction: TextInputAction.next,
                             validator: (value) {
                               if (value == null || value.isEmpty) {
                                 return 'First Name is required';
@@ -73,6 +75,7 @@ class ProfessionalRegisterScreen extends ConsumerWidget {
                           CustomTextFormField(
                             hintText: "Enter your Last Name",
                             controller: professionalLastName,
+                            textInputAction: TextInputAction.next,
                             validator: (value) {
                               if (value == null || value.isEmpty) {
                                 return 'Last Name is required';
@@ -84,11 +87,13 @@ class ProfessionalRegisterScreen extends ConsumerWidget {
                           CustomTextFormField(
                             hintText: "Enter your Email",
                             controller: professionalEmail,
+                            textInputAction: TextInputAction.next,
+                            keyboardType: TextInputType.emailAddress,
                             validator: (value) {
                               if (value == null || value.isEmpty) {
                                 return 'Email is required';
                               }
-                              if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value)) {
+                              if (!ValidationUtils.isValidEmail(value)) {
                                 return 'Enter a valid email';
                               }
                               return null;
@@ -98,19 +103,14 @@ class ProfessionalRegisterScreen extends ConsumerWidget {
                           CustomTextFormField(
                             hintText: "Enter Password",
                             controller: professionalPass,
+                            textInputAction: TextInputAction.next,
                             obscureText: true,
                             validator: (value) {
                               if (value == null || value.isEmpty) {
                                 return 'Password is required';
                               }
-                              if (value.length < 8) {
-                                return 'Password should be at least 8 characters';
-                              }
-                              if (!value.contains(RegExp(r'[0-9]'))) {
-                                return 'Password should contain at least one number';
-                              }
-                              if (!value.contains(RegExp(r'[!@#$%^&*(),.?":{}|<>]'))) {
-                                return 'Password should contain at least one special character';
+                              if (!ValidationUtils.isValidPassword(value)) {
+                                return 'Password should be at least 8 characters, contain at least one letter, one number, and one special character';
                               }
                               return null;
                             },
@@ -119,6 +119,7 @@ class ProfessionalRegisterScreen extends ConsumerWidget {
                           CustomTextFormField(
                             hintText: "Confirm Password",
                             controller: professionalConfirmPass,
+                            textInputAction: TextInputAction.done,
                             obscureText: true,
                             validator: (value) {
                               if (value == null || value.isEmpty) {

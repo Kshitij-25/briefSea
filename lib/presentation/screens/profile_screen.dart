@@ -156,7 +156,7 @@ class ProfileScreen extends ConsumerWidget {
                                         ),
                                         Text(
                                           userDetails.postingAs?.isNotEmpty == true
-                                              ? "Using Briefsea as:${userDetails.postingAs?[0].toUpperCase()}${userDetails.postingAs?.substring(1)}"
+                                              ? "Using Briefsea as: ${userDetails.postingAs?[0].toUpperCase()}${userDetails.postingAs?.substring(1)}"
                                               : "Using Briefsea as:",
                                           style: const TextStyle(
                                             fontWeight: FontWeight.bold,
@@ -538,7 +538,7 @@ class _AvatarWidget extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final selectedAvatar = ref.watch(selectedAvatarImageProvider);
 
-    math.Random random = math.Random(userProfileData?.id.hashCode);
+    math.Random random = math.Random(userProfileData?.userId.hashCode);
     Color userColor = Color((random.nextDouble() * 0xFFFFFF).toInt()).withOpacity(1.0);
 
     return Align(
@@ -571,7 +571,7 @@ class _AvatarWidget extends ConsumerWidget {
           child: Stack(
             children: [
               CircleAvatar(
-                backgroundColor: userProfileData?.gender == "Male" ? Colors.transparent : userColor,
+                backgroundColor: userColor,
                 radius: 70,
                 backgroundImage: selectedAvatar != "" && selectedAvatar != null && userProfileData?.avatarSrc != ""
                     ? CachedNetworkImageProvider(selectedAvatar)

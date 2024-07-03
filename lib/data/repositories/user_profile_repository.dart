@@ -51,6 +51,7 @@ class UserProfileRepository {
     String? jwtToken,
     String? postingAs,
     String? gender,
+    String? username,
   }) async {
     try {
       final verifyProfile = await _userProfileRemoteDataSource.verifyProfile(
@@ -68,6 +69,7 @@ class UserProfileRepository {
         jwtToken: jwtToken,
         postingAs: postingAs,
         gender: gender,
+        username: username,
       );
       return Right(verifyProfile!);
     } on AppError catch (e) {
@@ -92,6 +94,10 @@ class UserProfileRepository {
     String? jwtToken,
     String? postingAs,
     String? gender,
+    String? createdAt,
+    String? updatedAt,
+    String? userName,
+    bool? viewAccess,
   }) async {
     try {
       final verifyProfile = await _userProfileRemoteDataSource.editProfile(
@@ -109,6 +115,10 @@ class UserProfileRepository {
         jwtToken: jwtToken,
         postingAs: postingAs,
         gender: gender,
+        createdAt: createdAt,
+        updatedAt: updatedAt,
+        userName: userName,
+        viewAccess: viewAccess,
       );
       return Right(verifyProfile!);
     } on AppError catch (e) {

@@ -5,6 +5,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../common/app_utils/app_utility.dart';
 import '../../../common/app_utils/screen_size.dart';
+import '../../../common/app_utils/validation_utils.dart';
 import '../../../common/enums/enums.dart';
 import '../../providers/auth_provider.dart';
 import '../../widgets/custom_back_button.dart';
@@ -73,11 +74,13 @@ class ExistingLoginScreen extends ConsumerWidget {
                           CustomTextFormField(
                             hintText: "Enter your Email",
                             controller: emailCont,
+                            textInputAction: TextInputAction.next,
+                            keyboardType: TextInputType.emailAddress,
                             validator: (value) {
                               if (value == null || value.isEmpty) {
                                 return 'Email is required';
                               }
-                              if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value)) {
+                              if (!ValidationUtils.isValidEmail(value)) {
                                 return 'Enter a valid email';
                               }
                               return null;
@@ -87,6 +90,7 @@ class ExistingLoginScreen extends ConsumerWidget {
                           CustomTextFormField(
                             hintText: "Enter Password",
                             controller: passCont,
+                            textInputAction: TextInputAction.done,
                             obscureText: true,
                             validator: (value) {
                               if (value == null || value.isEmpty) {
@@ -130,7 +134,7 @@ class ExistingLoginScreen extends ConsumerWidget {
                                                   if (value == null || value.isEmpty) {
                                                     return 'Email is required';
                                                   }
-                                                  if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value)) {
+                                                  if (!ValidationUtils.isValidEmail(value)) {
                                                     return 'Enter a valid email';
                                                   }
                                                   return null;

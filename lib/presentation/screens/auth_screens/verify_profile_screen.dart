@@ -3,18 +3,21 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart' show rootBundle;
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:mime/mime.dart';
 import 'package:multi_select_flutter/multi_select_flutter.dart';
+import 'package:path_provider/path_provider.dart';
 
 import '../../../common/app_utils/app_utility.dart';
 import '../../../common/app_utils/debouncer.dart';
 import '../../../common/app_utils/screen_size.dart';
+import '../../../common/app_utils/shared_prefs_helper.dart';
+import '../../../common/app_utils/validation_utils.dart';
 import '../../../common/others/assets.dart';
 import '../../../common/static_data/industry_data.dart';
-import '../../../main.dart';
 import '../../providers/auth_provider.dart';
 import '../../providers/user_profile_provider.dart';
 import '../../state_providers/image_picker_provider.dart';
@@ -70,14 +73,17 @@ class VerifyProfileScreen extends ConsumerWidget {
         actions: [
           TextButton(
             onPressed: () async {
-              final uploadedAvatarKey = ref.watch(uploadedAvatarKeyProvider.notifier).state;
+              var uploadedAvatarKey = ref.watch(uploadedAvatarKeyProvider.notifier).state;
               var uploadedBannerKey = ref.watch(uploadedBannerKeyProvider.notifier).state;
               final selectedIndustry = ref.watch(selectedIndustriesProvider.notifier).state;
               final selectedExpertise = ref.watch(selectedExpertiseProvider.notifier).state;
               final selectedGender = ref.watch(selectedGenderProvider).selectedGender;
-              // if (uploadedBannerKey == '' || uploadedBannerKey == null) {
-              //   uploadedBannerKey = await sendDefaultBanner(ref: ref, userDetails: userDetails);
-              // }
+              if (uploadedBannerKey == '' || uploadedBannerKey == null) {
+                uploadedBannerKey = await sendDefaultBanner(ref: ref, userDetails: userDetails);
+              }
+              if (uploadedAvatarKey == '' || uploadedAvatarKey == null) {
+                uploadedAvatarKey = await sendDefaultAvatar(ref: ref, userDetails: userDetails);
+              }
               if (phoneNumberCont.text.isNotEmpty && locationCont.text.isNotEmpty && countryCodeCont.text.isNotEmpty) {
                 var verifyMessage = await ref.read(verifyProfileProvider(
                   userId: userDetails['user_id']!,
@@ -94,6 +100,7 @@ class VerifyProfileScreen extends ConsumerWidget {
                   expertise: selectedExpertise,
                   postingAs: userDetails['type']!,
                   gender: selectedGender,
+                  username: userNameCont.text,
                 ).future);
                 if (verifyMessage == "Profile added successfully") {
                   AppUtility(context).message(verifyMessage);
@@ -175,27 +182,17 @@ class VerifyProfileScreen extends ConsumerWidget {
               CustomTextFormField(
                 controller: userNameCont,
                 // readOnly: true,
+                textInputAction: TextInputAction.next,
                 hintText: "Enter your username",
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Username is required';
                   }
-                  // Regular expression to match only lowercase letters, numbers, and dots
-                  final regex = RegExp(r'^[a-z0-9.]+$');
-                  if (!regex.hasMatch(value)) {
+                  if (!ValidationUtils.isValidUsername(value)) {
                     return 'Username can only contain lowercase letters, numbers, and dots';
                   }
                   return null;
                 },
-                // onEditingComplete: () async {
-                //   if (_formKey.currentState!.validate()) {
-                //     var doesUsernameExist = await ref.watch(checkUserNameProvider(userName: userNameCont.text).future);
-
-                //     if (doesUsernameExist) {
-                //       AppUtility(context).message("Username already exists.");
-                //     }
-                //   }
-                // },
               ),
               CupertinoIcons.person_2,
             ),
@@ -208,12 +205,11 @@ class VerifyProfileScreen extends ConsumerWidget {
                   menuMaxHeight: 300,
                   value: ref.watch(selectedGenderProvider).selectedGender,
                   onChanged: (String? newValue) async {
-                    print(prefs!.getString('userGener'));
                     log("NEW VALUE=====> $newValue");
 
                     ref.read(selectedGenderProvider).setGender(newValue!);
 
-                    await prefs!.setString('userGener', newValue ?? "");
+                    await SharedPreferencesHelper.saveString('userGener', newValue ?? "");
                   },
                   items: ref.watch(selectedGenderProvider).genders.map<DropdownMenuItem<String>>((item) {
                     return DropdownMenuItem(
@@ -236,9 +232,14 @@ class VerifyProfileScreen extends ConsumerWidget {
                       hintText: "91",
                       border: const OutlineInputBorder(),
                       controller: countryCodeCont,
+                      textInputAction: TextInputAction.next,
+                      keyboardType: TextInputType.number,
                       validator: (value) {
-                        if (value!.length > 3) {
-                          return;
+                        if (value == null || value.isEmpty) {
+                          return 'Country code is required';
+                        }
+                        if (!ValidationUtils.isValidCountryCode(value)) {
+                          return 'Enter a valid country code (1 to 3 digits)';
                         }
                         return null;
                       },
@@ -250,7 +251,18 @@ class VerifyProfileScreen extends ConsumerWidget {
                     child: CustomTextFormField(
                       hintText: "Phone Number",
                       controller: phoneNumberCont,
+                      textInputAction: TextInputAction.next,
+                      keyboardType: TextInputType.number,
                       border: const OutlineInputBorder(),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Phone number is required';
+                        }
+                        if (!ValidationUtils.isValidPhoneNumber(value)) {
+                          return 'Enter a valid phone number';
+                        }
+                        return null;
+                      },
                     ),
                   ),
                 ],
@@ -278,6 +290,7 @@ class VerifyProfileScreen extends ConsumerWidget {
                 CustomTextFormField(
                   hintText: "Enter your Designation",
                   controller: jobTitleCont,
+                  textInputAction: TextInputAction.next,
                 ),
                 Icons.work_outline_rounded,
               ),
@@ -288,6 +301,7 @@ class VerifyProfileScreen extends ConsumerWidget {
                 CustomTextFormField(
                   hintText: "Enter Company Name",
                   controller: companyCont,
+                  textInputAction: TextInputAction.next,
                 ),
                 CupertinoIcons.building_2_fill,
               ),
@@ -297,6 +311,7 @@ class VerifyProfileScreen extends ConsumerWidget {
               CustomTextFormField(
                 hintText: "Enter your Location",
                 controller: locationCont,
+                textInputAction: TextInputAction.done,
               ),
               CupertinoIcons.location_solid,
             ),
@@ -317,22 +332,71 @@ class VerifyProfileScreen extends ConsumerWidget {
   }
 
   Future<String?> sendDefaultBanner({WidgetRef? ref, Map<String, String>? userDetails}) async {
+    final byteData = await rootBundle.load(Assets.BANNER);
+
+    final tempDir = await getTemporaryDirectory();
+    final file = File('${tempDir.path}/placeholderBanner.jpg');
+    await file.writeAsBytes(byteData.buffer.asUint8List());
+
+    // Get the file path
+    final filePath = file.path;
+
     var uploadedBanner = await ref!.read(
       uploadBannerProvider(
-        fileName: "Placeholder Image",
-        fileType: lookupMimeType(Assets.BANNER),
+        fileName: "placeholderBanner.jpg",
+        fileType: lookupMimeType(filePath),
         userId: userDetails!['user_id'],
         userType: userDetails['type'],
       ).future,
     );
     ref.read(uploadToAWSProvider(
       url: uploadedBanner.url,
-      fileName: "Placeholder Image",
-      file: File(Assets.BANNER),
-      fileType: lookupMimeType(Assets.BANNER),
+      fileName: "placeholderBanner.jpg",
+      file: file,
+      fileType: lookupMimeType(filePath),
     ));
     // ref.read(uploadedBannerKeyProvider.notifier).state = uploadedBanner.key;
     return uploadedBanner.key;
+  }
+
+  Future<String?> sendDefaultAvatar({WidgetRef? ref, Map<String, String>? userDetails}) async {
+    final gender = ref!.watch(selectedGenderProvider).selectedGender;
+    String assetPath;
+
+    if (gender == null) {
+      assetPath = Assets.PERSON;
+    } else if (gender == "Male") {
+      assetPath = Assets.MALE;
+    } else if (gender == "Female") {
+      assetPath = Assets.FEMALE;
+    } else {
+      assetPath = Assets.OTHERS;
+    }
+
+    final byteData = await rootBundle.load(assetPath);
+
+    final tempDir = await getTemporaryDirectory();
+    final file = File('${tempDir.path}/placeholderAvatar.png');
+    await file.writeAsBytes(byteData.buffer.asUint8List());
+
+    // Get the file path
+    final filePath = file.path;
+
+    var uploadedAvatar = await ref.read(
+      uploadAvatarProvider(
+        fileName: "placeholderAvatar.png",
+        fileType: lookupMimeType(filePath),
+        userId: userDetails!['user_id'],
+        userType: userDetails['type'],
+      ).future,
+    );
+    ref.read(uploadToAWSProvider(
+      url: uploadedAvatar.url,
+      fileName: "placeholderAvatar.png",
+      file: file,
+      fileType: lookupMimeType(filePath),
+    ));
+    return uploadedAvatar.key;
   }
 }
 

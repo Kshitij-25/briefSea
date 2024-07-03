@@ -16,4 +16,5 @@ class Assets {
   static const PERSON = 'assets/icons/person.png';
   static const BANNER = 'assets/logos/default-banner.jpg';
   static const COMPANY_ICON = 'assets/icons/company.svg';
+  static const logoSmall = 'assets/logos/logo_small.png';
 }

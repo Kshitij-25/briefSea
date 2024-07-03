@@ -1,7 +1,9 @@
 import 'dart:io';
 
+import 'package:briefsea/data/models/login_model.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
+import '../../common/app_utils/shared_prefs_helper.dart';
 import '../../data/core/api_client.dart';
 import '../../data/data_sources/user_profile_remote_data_source.dart';
 import '../../data/di/get_it.dart';
@@ -66,6 +68,7 @@ Future<String> verifyProfile(
   required String? jwtToken,
   required String? postingAs,
   required String? gender,
+  required String? username,
 }) async {
   final userProfileRepository = ref.read(userProfileRepositoryProvider);
   final eitherVerifyProfilenOrError = await userProfileRepository.verifyProfile(
@@ -83,12 +86,20 @@ Future<String> verifyProfile(
     jwtToken: jwtToken,
     postingAs: postingAs,
     gender: gender,
+    username: username,
   );
   return eitherVerifyProfilenOrError!.fold(
     (error) {
       throw error; // Throw the error for Riverpod to handle
     },
-    (verifyProfile) => verifyProfile,
+    (verifyProfile) async {
+      // ignore: unused_result
+      LoginModel().copyWith(
+        profile: true,
+      );
+      await SharedPreferencesHelper.saveBoolean('profile', true);
+      return verifyProfile;
+    },
   );
 }
 
@@ -109,6 +120,10 @@ Future<String> editProfile(
   required String? jwtToken,
   required String? postingAs,
   required String? gender,
+  required String? createdAt,
+  required String? updatedAt,
+  required String? userName,
+  required bool? viewAccess,
 }) async {
   final userProfileRepository = ref.read(userProfileRepositoryProvider);
   final eitherEditProfileOrError = await userProfileRepository.editProfile(
@@ -126,6 +141,10 @@ Future<String> editProfile(
     jwtToken: jwtToken,
     postingAs: postingAs,
     gender: gender,
+    createdAt: createdAt,
+    updatedAt: updatedAt,
+    userName: userName,
+    viewAccess: viewAccess,
   );
   return eitherEditProfileOrError!.fold(
     (error) {

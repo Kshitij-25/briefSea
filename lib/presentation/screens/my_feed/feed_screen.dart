@@ -43,7 +43,7 @@ class FeedScreen extends ConsumerWidget {
       appBar: AppBar(
         backgroundColor: const Color(0xFF4B26FD),
         title: Text(
-          brief!.name ?? "",
+          brief?.name ?? "",
           style: const TextStyle(
             fontWeight: FontWeight.bold,
             color: Colors.white,

@@ -5,7 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
 
-import '../../main.dart';
+import '../../common/app_utils/shared_prefs_helper.dart';
 import '../core/api_client.dart';
 import '../core/api_constants.dart';
 import '../core/app_error.dart';
@@ -49,14 +49,14 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
             Map<String, dynamic> accessTokenPayload = JwtDecoder.decode(jwtToken);
 
             // Save the payload to shared preferences
-            await prefs?.setString('jwtToken', jwtToken);
-            await prefs?.setString('user_id', accessTokenPayload['user_detail']['user_id']) ?? '';
-            await prefs?.setString('userName', accessTokenPayload['user_detail']['userName'] ?? '');
-            await prefs?.setString('firstName', accessTokenPayload['user_detail']['firstName'] ?? '');
-            await prefs?.setString('user_name', accessTokenPayload['user_detail']['user_name'] ?? '');
-            await prefs?.setString('lastName', accessTokenPayload['user_detail']['lastName'] ?? '');
-            await prefs?.setString('email', accessTokenPayload['user_detail']['email'] ?? '');
-            await prefs?.setString('type', accessTokenPayload['user_detail']['type'] ?? '');
+            SharedPreferencesHelper.saveString('jwtToken', jwtToken);
+            SharedPreferencesHelper.saveString('user_id', accessTokenPayload['user_detail']['user_id']) ?? '';
+            SharedPreferencesHelper.saveString('userName', accessTokenPayload['user_detail']['userName'] ?? '');
+            SharedPreferencesHelper.saveString('firstName', accessTokenPayload['user_detail']['firstName'] ?? '');
+            SharedPreferencesHelper.saveString('user_name', accessTokenPayload['user_detail']['user_name'] ?? '');
+            SharedPreferencesHelper.saveString('lastName', accessTokenPayload['user_detail']['lastName'] ?? '');
+            SharedPreferencesHelper.saveString('email', accessTokenPayload['user_detail']['email'] ?? '');
+            SharedPreferencesHelper.saveString('type', accessTokenPayload['user_detail']['type'] ?? '');
             // await prefs?.setString('subtype', accessTokenPayload['user_detail']['subtype']);
 
             return LoginModel.fromJson(responseJson);

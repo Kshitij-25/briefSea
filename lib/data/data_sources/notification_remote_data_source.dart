@@ -2,7 +2,7 @@ import 'dart:developer';
 
 import 'package:dio/dio.dart';
 
-import '../../main.dart';
+import '../../common/app_utils/shared_prefs_helper.dart';
 import '../core/api_client.dart';
 import '../core/api_constants.dart';
 import '../core/app_error.dart';
@@ -22,7 +22,7 @@ class NotificationRemoteDataSourceImpl implements NotificationRemoteDataSource {
   NotificationRemoteDataSourceImpl(this._apiClient);
 
   Future<String> getJwtToken() async {
-    String? jwtToken = prefs!.getString('jwtToken');
+    String? jwtToken = await SharedPreferencesHelper.getString('jwtToken');
     return jwtToken ?? "";
   }
 
