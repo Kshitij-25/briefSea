@@ -209,7 +209,7 @@ class _GetOtherProfileProviderElement
   String? get otherUserId => (origin as GetOtherProfileProvider).otherUserId;
 }
 
-String _$verifyProfileHash() => r'6c6c9d1df63be4799fd8a7a55b41ed5153430936';
+String _$verifyProfileHash() => r'5323d2e00f9f63f56d1ee1e74407dcfcf08d6d06';
 
 /// See also [verifyProfile].
 @ProviderFor(verifyProfile)
@@ -562,14 +562,14 @@ class _VerifyProfileProviderElement
   String? get username => (origin as VerifyProfileProvider).username;
 }
 
-String _$editProfileHash() => r'8b8c7af631f5fac9e12415a33da831c7b6fc71b6';
+String _$editProfileHash() => r'7df947431a2ab0d2138b7379d0c5a8d6b49dfb92';
 
 /// See also [editProfile].
 @ProviderFor(editProfile)
 const editProfileProvider = EditProfileFamily();
 
 /// See also [editProfile].
-class EditProfileFamily extends Family<AsyncValue<String>> {
+class EditProfileFamily extends Family<AsyncValue<EditProfileModel>> {
   /// See also [editProfile].
   const EditProfileFamily();
 
@@ -658,7 +658,7 @@ class EditProfileFamily extends Family<AsyncValue<String>> {
 }
 
 /// See also [editProfile].
-class EditProfileProvider extends AutoDisposeFutureProvider<String> {
+class EditProfileProvider extends AutoDisposeFutureProvider<EditProfileModel> {
   /// See also [editProfile].
   EditProfileProvider({
     required String? userId,
@@ -778,7 +778,7 @@ class EditProfileProvider extends AutoDisposeFutureProvider<String> {
 
   @override
   Override overrideWith(
-    FutureOr<String> Function(EditProfileRef provider) create,
+    FutureOr<EditProfileModel> Function(EditProfileRef provider) create,
   ) {
     return ProviderOverride(
       origin: this,
@@ -812,7 +812,7 @@ class EditProfileProvider extends AutoDisposeFutureProvider<String> {
   }
 
   @override
-  AutoDisposeFutureProviderElement<String> createElement() {
+  AutoDisposeFutureProviderElement<EditProfileModel> createElement() {
     return _EditProfileProviderElement(this);
   }
 
@@ -865,7 +865,7 @@ class EditProfileProvider extends AutoDisposeFutureProvider<String> {
   }
 }
 
-mixin EditProfileRef on AutoDisposeFutureProviderRef<String> {
+mixin EditProfileRef on AutoDisposeFutureProviderRef<EditProfileModel> {
   /// The parameter `userId` of this provider.
   String? get userId;
 
@@ -922,7 +922,8 @@ mixin EditProfileRef on AutoDisposeFutureProviderRef<String> {
 }
 
 class _EditProfileProviderElement
-    extends AutoDisposeFutureProviderElement<String> with EditProfileRef {
+    extends AutoDisposeFutureProviderElement<EditProfileModel>
+    with EditProfileRef {
   _EditProfileProviderElement(super.provider);
 
   @override

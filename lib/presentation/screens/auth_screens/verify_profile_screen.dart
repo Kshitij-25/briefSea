@@ -185,7 +185,7 @@ class VerifyProfileScreen extends ConsumerWidget {
                 textInputAction: TextInputAction.next,
                 hintText: "Enter your username",
                 validator: (value) {
-                  if (value == null || value.isEmpty) {
+                  if (!ValidationUtils.isNotEmpty(value!)) {
                     return 'Username is required';
                   }
                   if (!ValidationUtils.isValidUsername(value)) {
@@ -235,7 +235,7 @@ class VerifyProfileScreen extends ConsumerWidget {
                       textInputAction: TextInputAction.next,
                       keyboardType: TextInputType.number,
                       validator: (value) {
-                        if (value == null || value.isEmpty) {
+                        if (!ValidationUtils.isNotEmpty(value!)) {
                           return 'Country code is required';
                         }
                         if (!ValidationUtils.isValidCountryCode(value)) {
@@ -255,7 +255,7 @@ class VerifyProfileScreen extends ConsumerWidget {
                       keyboardType: TextInputType.number,
                       border: const OutlineInputBorder(),
                       validator: (value) {
-                        if (value == null || value.isEmpty) {
+                        if (!ValidationUtils.isNotEmpty(value!)) {
                           return 'Phone number is required';
                         }
                         if (!ValidationUtils.isValidPhoneNumber(value)) {

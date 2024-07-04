@@ -65,7 +65,7 @@ class AgencyRegisterScreen extends ConsumerWidget {
                             controller: agencyFirstName,
                             textInputAction: TextInputAction.next,
                             validator: (value) {
-                              if (value == null || value.isEmpty) {
+                              if (!ValidationUtils.isNotEmpty(value!)) {
                                 return 'First Name is required';
                               }
                               return null;
@@ -77,7 +77,7 @@ class AgencyRegisterScreen extends ConsumerWidget {
                             controller: agencyLastName,
                             textInputAction: TextInputAction.next,
                             validator: (value) {
-                              if (value == null || value.isEmpty) {
+                              if (!ValidationUtils.isNotEmpty(value!)) {
                                 return 'Last Name is required';
                               }
                               return null;
@@ -90,7 +90,7 @@ class AgencyRegisterScreen extends ConsumerWidget {
                             textInputAction: TextInputAction.next,
                             keyboardType: TextInputType.emailAddress,
                             validator: (value) {
-                              if (value == null || value.isEmpty) {
+                              if (!ValidationUtils.isNotEmpty(value!)) {
                                 return 'Email is required';
                               }
                               if (!ValidationUtils.isValidEmail(value)) {
@@ -106,7 +106,7 @@ class AgencyRegisterScreen extends ConsumerWidget {
                             obscureText: true,
                             textInputAction: TextInputAction.next,
                             validator: (value) {
-                              if (value == null || value.isEmpty) {
+                              if (!ValidationUtils.isNotEmpty(value!)) {
                                 return 'Password is required';
                               }
                               if (!ValidationUtils.isValidPassword(value)) {
@@ -122,7 +122,7 @@ class AgencyRegisterScreen extends ConsumerWidget {
                             obscureText: true,
                             textInputAction: TextInputAction.done,
                             validator: (value) {
-                              if (value == null || value.isEmpty) {
+                              if (!ValidationUtils.isNotEmpty(value!)) {
                                 return 'Please confirm your password';
                               }
                               if (value != agencyPass.text) {

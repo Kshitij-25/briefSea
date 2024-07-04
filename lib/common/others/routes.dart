@@ -1,8 +1,9 @@
-import 'package:briefsea/main.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../data/models/briefs_model.dart';
 import '../../data/models/chat_user_model.dart';
+import '../../data/models/user_profile_model.dart';
+import '../../main.dart';
 import '../../presentation/screens/auth_screens/agency_register_screen.dart';
 import '../../presentation/screens/auth_screens/existing_login_screen.dart';
 import '../../presentation/screens/auth_screens/freelancer_register_screen.dart';
@@ -10,6 +11,7 @@ import '../../presentation/screens/auth_screens/otp_screen.dart';
 import '../../presentation/screens/auth_screens/professional_register_screen.dart';
 import '../../presentation/screens/auth_screens/verify_profile_screen.dart';
 import '../../presentation/screens/auth_screens/welcome_screen.dart';
+import '../../presentation/screens/edit_profile_screen.dart';
 import '../../presentation/screens/home_screen.dart';
 import '../../presentation/screens/messages/chat_screen.dart';
 import '../../presentation/screens/messages/messages_screen_navigator.dart';
@@ -20,11 +22,7 @@ import '../../presentation/screens/profile_screen.dart';
 class AppRouter {
   AppRouter._();
   static final router = GoRouter(
-    initialLocation: prefs!.getBool('isLogin') != true
-        ? WelcomeScreen.routeName
-        : prefs!.getBool('profile') != true
-            ? WelcomeScreen.routeName
-            : HomeScreen.routeName,
+    initialLocation: getInitialRoute(),
     routes: [
       GoRoute(
         path: WelcomeScreen.routeName,
@@ -88,6 +86,12 @@ class AppRouter {
           final BriefsModel brief = extras['singleBrief'] ?? BriefsModel();
           return FeedScreen(brief: brief);
         },
+      ),
+      GoRoute(
+        path: EditProfileScreen.routeName,
+        builder: (context, state) => EditProfileScreen(
+          userProfileModel: state.extra as UserProfileModel,
+        ),
       ),
     ],
   );

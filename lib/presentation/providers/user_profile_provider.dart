@@ -9,6 +9,7 @@ import '../../data/data_sources/user_profile_remote_data_source.dart';
 import '../../data/di/get_it.dart';
 import '../../data/models/avatar_model.dart';
 import '../../data/models/banner_model.dart';
+import '../../data/models/edit_profile_model.dart';
 import '../../data/models/image_model.dart';
 import '../../data/models/user_profile_model.dart';
 import '../../data/repositories/user_profile_repository.dart';
@@ -104,7 +105,7 @@ Future<String> verifyProfile(
 }
 
 @riverpod
-Future<String> editProfile(
+Future<EditProfileModel> editProfile(
   EditProfileRef ref, {
   required String? userId,
   required String? uName,

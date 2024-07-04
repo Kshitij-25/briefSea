@@ -1,4 +1,3 @@
-import 'dart:developer';
 import 'dart:io';
 
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -20,9 +19,8 @@ Future<String> uploadImage(
   bool isAvatar = false,
   bool isBanner = false,
 }) async {
-  String? avatarUrl;
   String? avatarKey = userProfileData?.avatarSrc;
-  String? bannerUrl;
+
   String? bannerKey = userProfileData?.bannerSrc;
 
   if (isAvatar) {
@@ -40,7 +38,6 @@ Future<String> uploadImage(
       fileType: fileType,
     ).future);
 
-    avatarUrl = uploadedAvatar.url;
     avatarKey = uploadedAvatar.key;
   }
 
@@ -59,44 +56,43 @@ Future<String> uploadImage(
       fileType: fileType,
     ).future);
 
-    bannerUrl = uploadedBanner.url;
     bannerKey = uploadedBanner.key;
   }
 
-  var verifyMessage = await ref.read(
-    editProfileProvider(
-      userId: userDetails['user_id'],
-      uName: userDetails['user_name']!,
-      countryCode: userProfileData!.countryCode,
-      contact: userProfileData.contact,
-      company: userProfileData.worksAt,
-      jobTitle: userProfileData.post,
-      industry: userProfileData.industry!,
-      location: userProfileData.location,
-      avatarSrc: avatarKey ?? '',
-      bannerSrc: bannerKey ?? '',
-      jwtToken: userDetails['jwtToken'],
-      expertise: userProfileData.expertise!,
-      postingAs: userDetails['type'],
-      gender: userProfileData.gender,
-      createdAt: userProfileData.createdAt,
-      updatedAt: userProfileData.updatedAt,
-      userName: userProfileData.userName,
-      viewAccess: userProfileData.viewAccess,
-    ).future,
-  );
-  log("IMAGE_PROVIDER ===> $verifyMessage");
+  // var verifyMessage = await ref.read(
+  //   editProfileProvider(
+  //     userId: userDetails['user_id'],
+  //     uName: userDetails['user_name']!,
+  //     countryCode: userProfileData!.countryCode,
+  //     contact: userProfileData.contact,
+  //     company: userProfileData.worksAt,
+  //     jobTitle: userProfileData.post,
+  //     industry: userProfileData.industry!,
+  //     location: userProfileData.location,
+  //     avatarSrc: avatarKey ?? '',
+  //     bannerSrc: bannerKey ?? '',
+  //     jwtToken: userDetails['jwtToken'],
+  //     expertise: userProfileData.expertise!,
+  //     postingAs: userDetails['type'],
+  //     gender: userProfileData.gender,
+  //     createdAt: userProfileData.createdAt,
+  //     updatedAt: userProfileData.updatedAt,
+  //     userName: userProfileData.userName,
+  //     viewAccess: userProfileData.viewAccess,
+  //   ).future,
+  // );
+  // log("IMAGE_PROVIDER ===> $verifyMessage");
 
-  ref.invalidate(getUserProfileProvider);
+  // ref.invalidate(getUserProfileProvider);
 
-  final updatedUserProfile = await ref.watch(getUserProfileProvider.future);
+  // final updatedUserProfile = await ref.watch(getUserProfileProvider.future);
 
   if (isAvatar) {
-    ImageModel avatarModel = await ref.watch(getImageProvider(src: updatedUserProfile.avatarSrc!).future);
-    return avatarModel.url ?? "";
+    // ImageModel avatarModel = await ref.watch(getImageProvider(src: updatedUserProfile.avatarSrc!).future);
+    return avatarKey ?? "";
   } else if (isBanner) {
-    ImageModel bannerModel = await ref.watch(getImageProvider(src: updatedUserProfile.bannerSrc!).future);
-    return bannerModel.url ?? "";
+    // ImageModel bannerModel = await ref.watch(getImageProvider(src: updatedUserProfile.bannerSrc!).future);
+    return bannerKey ?? "";
   }
 
   throw Exception('No valid image type specified');

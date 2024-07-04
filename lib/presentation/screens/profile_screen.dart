@@ -1,32 +1,28 @@
-import 'dart:developer';
-import 'dart:io';
 import 'dart:math' as math;
 
-import 'package:briefsea/common/others/strings.dart';
-import 'package:briefsea/data/core/api_constants.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:mime/mime.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
 import '../../common/app_utils/app_utility.dart';
 import '../../common/app_utils/screen_size.dart';
 import '../../common/others/assets.dart';
+import '../../common/others/strings.dart';
+import '../../data/core/api_constants.dart';
 import '../../data/models/image_model.dart';
 import '../../data/models/user_profile_model.dart';
 import '../../main.dart';
 import '../providers/auth_provider.dart';
-import '../providers/image_provider.dart';
 import '../providers/user_profile_provider.dart';
 import '../state_providers/bottom_nav_bar_state_provider.dart';
 import '../state_providers/image_picker_provider.dart';
 import 'auth_screens/welcome_screen.dart';
+import 'edit_profile_screen.dart';
 
 class ProfileScreen extends ConsumerWidget {
   ProfileScreen({
@@ -217,11 +213,28 @@ class ProfileScreen extends ConsumerWidget {
                                   isOtherProfile != true
                                       ? Padding(
                                           padding: const EdgeInsets.all(10),
-                                          child: GestureDetector(
-                                            onTap: () async {
-                                              await handleLogout(context, prefs, ref, false);
-                                            },
-                                            child: const Text("Logout"),
+                                          child: Row(
+                                            mainAxisAlignment: MainAxisAlignment.center,
+                                            children: [
+                                              GestureDetector(
+                                                onTap: () {
+                                                  GoRouter.of(context).push(
+                                                    EditProfileScreen.routeName,
+                                                    extra: userDetails,
+                                                  );
+                                                },
+                                                child: const Text("Edit Profile"),
+                                              ),
+                                              const SizedBox(
+                                                width: 10,
+                                              ),
+                                              GestureDetector(
+                                                onTap: () async {
+                                                  await handleLogout(context, prefs, ref, false);
+                                                },
+                                                child: const Text("Logout"),
+                                              ),
+                                            ],
                                           ),
                                         )
                                       : const SizedBox(height: 20),
@@ -394,8 +407,8 @@ class _BannerWidget extends ConsumerWidget {
   final ImagePicker _picker = ImagePicker();
   final bool isOtherProfile;
 
-  Map<String, String>? userDetails;
-  UserProfileModel? userProfileData;
+  final Map<String, String>? userDetails;
+  final UserProfileModel? userProfileData;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -438,37 +451,6 @@ class _BannerWidget extends ConsumerWidget {
                     ),
                   ),
                 ),
-                Align(
-                  alignment: Alignment.topRight,
-                  child: isOtherProfile != true
-                      ? IconButton(
-                          onPressed: () async {
-                            try {
-                              final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
-                              final imageUrl = await ref.read(
-                                uploadImageProvider(
-                                  fileName: pickedFile!.name,
-                                  fileType: lookupMimeType(pickedFile.path),
-                                  userDetails: userDetails!,
-                                  userProfileData: userProfileData,
-                                  file: File(pickedFile.path),
-                                  isBanner: true,
-                                  isAvatar: false,
-                                ).future,
-                              );
-                              ref.read(selectedBannerImageProvider.notifier).state = imageUrl;
-                              log("PROFILE_SCREEN BANNERURL =====> $imageUrl");
-                            } catch (e) {
-                              log("Banner Not Uploaded", error: e);
-                            }
-                          },
-                          icon: const Icon(
-                            CupertinoIcons.camera_fill,
-                            color: Colors.white,
-                          ),
-                        )
-                      : const SizedBox.shrink(),
-                ),
               ],
             )
           : Stack(
@@ -483,37 +465,6 @@ class _BannerWidget extends ConsumerWidget {
                     fit: BoxFit.cover,
                     width: ScreenSize.width(context),
                   ),
-                ),
-                Align(
-                  alignment: Alignment.topRight,
-                  child: isOtherProfile != true
-                      ? IconButton(
-                          onPressed: () async {
-                            try {
-                              final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
-                              final imageUrl = await ref.read(
-                                uploadImageProvider(
-                                  fileName: pickedFile!.name,
-                                  fileType: lookupMimeType(pickedFile.path),
-                                  userDetails: userDetails!,
-                                  userProfileData: userProfileData,
-                                  file: File(pickedFile.path),
-                                  isBanner: true,
-                                  isAvatar: false,
-                                ).future,
-                              );
-                              ref.read(selectedBannerImageProvider.notifier).state = imageUrl;
-                              log("PROFILE_SCREEN BANNERURL =====> $imageUrl");
-                            } catch (e) {
-                              log("Banner Not Uploaded", error: e);
-                            }
-                          },
-                          icon: const Icon(
-                            CupertinoIcons.camera_fill,
-                            color: Colors.white,
-                          ),
-                        )
-                      : const SizedBox.shrink(),
                 ),
               ],
             ),
@@ -531,8 +482,8 @@ class _AvatarWidget extends ConsumerWidget {
   final ImagePicker _picker = ImagePicker();
   final bool isOtherProfile;
 
-  Map<String, String>? userDetails;
-  UserProfileModel? userProfileData;
+  final Map<String, String>? userDetails;
+  final UserProfileModel? userProfileData;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -545,71 +496,29 @@ class _AvatarWidget extends ConsumerWidget {
       alignment: Alignment.center,
       child: Padding(
         padding: const EdgeInsets.all(15.0),
-        child: GestureDetector(
-          onTap: isOtherProfile != true
-              ? () async {
-                  try {
-                    final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
-                    final imageUrl = await ref.read(
-                      uploadImageProvider(
-                        fileName: pickedFile!.name,
-                        fileType: lookupMimeType(pickedFile.path),
-                        userDetails: userDetails!,
-                        userProfileData: userProfileData,
-                        file: File(pickedFile.path),
-                        isBanner: false,
-                        isAvatar: true,
-                      ).future,
-                    );
-                    ref.read(selectedAvatarImageProvider.notifier).state = imageUrl;
-                    log("PROFILE_SCREEN AVATARURL=====> $imageUrl");
-                  } catch (e) {
-                    log("Avatar Not Uploaded", error: e);
-                  }
-                }
-              : null,
-          child: Stack(
-            children: [
-              CircleAvatar(
-                backgroundColor: userColor,
-                radius: 70,
-                backgroundImage: selectedAvatar != "" && selectedAvatar != null && userProfileData?.avatarSrc != ""
-                    ? CachedNetworkImageProvider(selectedAvatar)
-                    : userProfileData?.gender == "Male"
-                        ? const AssetImage(Assets.MALE)
-                        : userProfileData?.gender == "Female"
-                            ? const AssetImage(Assets.FEMALE)
-                            : userProfileData?.gender == "Others"
-                                ? const AssetImage(Assets.OTHERS)
-                                : null,
-                child: selectedAvatar == null && userProfileData?.gender == null
-                    ? Text(
-                        userProfileData?.name?[0].toUpperCase() ?? "",
-                        style: const TextStyle(color: Colors.white),
-                        textScaler: const TextScaler.linear(3),
-                      )
-                    : const SizedBox.shrink(),
-              ),
-              isOtherProfile != true
-                  ? Positioned(
-                      right: 0,
-                      top: 0,
-                      child: Container(
-                        width: 35,
-                        height: 35,
-                        decoration: BoxDecoration(
-                          color: Colors.grey[300],
-                          shape: BoxShape.circle,
-                        ),
-                        child: const Icon(
-                          CupertinoIcons.camera_fill,
-                          color: Colors.black,
-                        ),
-                      ),
+        child: Stack(
+          children: [
+            CircleAvatar(
+              backgroundColor: userColor,
+              radius: 70,
+              backgroundImage: selectedAvatar != "" && selectedAvatar != null && userProfileData?.avatarSrc != ""
+                  ? CachedNetworkImageProvider(selectedAvatar)
+                  : userProfileData?.gender == "Male"
+                      ? const AssetImage(Assets.MALE)
+                      : userProfileData?.gender == "Female"
+                          ? const AssetImage(Assets.FEMALE)
+                          : userProfileData?.gender == "Others"
+                              ? const AssetImage(Assets.OTHERS)
+                              : null,
+              child: selectedAvatar == null && userProfileData?.gender == null
+                  ? Text(
+                      userProfileData?.name?[0].toUpperCase() ?? "",
+                      style: const TextStyle(color: Colors.white),
+                      textScaler: const TextScaler.linear(3),
                     )
                   : const SizedBox.shrink(),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

@@ -10,6 +10,7 @@ import '../core/api_constants.dart';
 import '../core/app_error.dart';
 import '../models/avatar_model.dart';
 import '../models/banner_model.dart';
+import '../models/edit_profile_model.dart';
 import '../models/image_model.dart';
 import '../models/user_profile_model.dart';
 
@@ -33,7 +34,7 @@ abstract class UserProfileRemoteDataSource {
     String? gender,
     String? username,
   });
-  Future<String?>? editProfile({
+  Future<EditProfileModel?>? editProfile({
     String? userId,
     String? name,
     int? countryCode,
@@ -191,7 +192,7 @@ class UserProfileRemoteDataSourceImpl implements UserProfileRemoteDataSource {
   }
 
   @override
-  Future<String?>? editProfile({
+  Future<EditProfileModel?>? editProfile({
     String? userId,
     String? name,
     int? countryCode,
@@ -242,7 +243,7 @@ class UserProfileRemoteDataSourceImpl implements UserProfileRemoteDataSource {
 
       var responseJson = response?.data;
       log(responseJson.toString());
-      return "Success";
+      return EditProfileModel.fromJson(responseJson);
     } catch (e) {
       log("EditProfile Error", error: e);
       throw AppError(errorMessage: e.toString());

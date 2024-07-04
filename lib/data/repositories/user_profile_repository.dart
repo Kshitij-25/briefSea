@@ -6,6 +6,7 @@ import '../core/app_error.dart';
 import '../data_sources/user_profile_remote_data_source.dart';
 import '../models/avatar_model.dart';
 import '../models/banner_model.dart';
+import '../models/edit_profile_model.dart';
 import '../models/image_model.dart';
 import '../models/user_profile_model.dart';
 
@@ -79,7 +80,7 @@ class UserProfileRepository {
     }
   }
 
-  Future<Either<AppError, String>>? editProfile({
+  Future<Either<AppError, EditProfileModel>>? editProfile({
     String? userId,
     String? name,
     int? countryCode,

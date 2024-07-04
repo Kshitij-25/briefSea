@@ -63,7 +63,7 @@ class FreelancerRegisterScreen extends ConsumerWidget {
                             controller: freelanceFirstName,
                             textInputAction: TextInputAction.next,
                             validator: (value) {
-                              if (value == null || value.isEmpty) {
+                              if (!ValidationUtils.isNotEmpty(value!)) {
                                 return 'First Name is required';
                               }
                               return null;
@@ -75,7 +75,7 @@ class FreelancerRegisterScreen extends ConsumerWidget {
                             controller: freelanceLastName,
                             textInputAction: TextInputAction.next,
                             validator: (value) {
-                              if (value == null || value.isEmpty) {
+                              if (!ValidationUtils.isNotEmpty(value!)) {
                                 return 'Last Name is required';
                               }
                               return null;
@@ -88,7 +88,7 @@ class FreelancerRegisterScreen extends ConsumerWidget {
                             textInputAction: TextInputAction.next,
                             keyboardType: TextInputType.emailAddress,
                             validator: (value) {
-                              if (value == null || value.isEmpty) {
+                              if (!ValidationUtils.isNotEmpty(value!)) {
                                 return 'Email is required';
                               }
                               if (!ValidationUtils.isValidEmail(value)) {
@@ -104,7 +104,7 @@ class FreelancerRegisterScreen extends ConsumerWidget {
                             textInputAction: TextInputAction.next,
                             obscureText: true,
                             validator: (value) {
-                              if (value == null || value.isEmpty) {
+                              if (!ValidationUtils.isNotEmpty(value!)) {
                                 return 'Password is required';
                               }
                               if (!ValidationUtils.isValidPassword(value)) {
@@ -120,7 +120,7 @@ class FreelancerRegisterScreen extends ConsumerWidget {
                             textInputAction: TextInputAction.done,
                             obscureText: true,
                             validator: (value) {
-                              if (value == null || value.isEmpty) {
+                              if (!ValidationUtils.isNotEmpty(value!)) {
                                 return 'Please confirm your password';
                               }
                               if (value != freelancePass.text) {
