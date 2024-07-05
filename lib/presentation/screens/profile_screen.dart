@@ -1,5 +1,6 @@
 import 'dart:math' as math;
 
+import 'package:briefsea/presentation/widgets/custom_elevated_button.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -25,15 +26,15 @@ import 'auth_screens/welcome_screen.dart';
 import 'edit_profile_screen.dart';
 
 class ProfileScreen extends ConsumerWidget {
-  ProfileScreen({
+  const ProfileScreen({
     super.key,
     this.isOtherProfile = false,
     this.otherUserId,
   });
 
   static const routeName = "/profileScreen";
-  bool isOtherProfile;
-  String? otherUserId;
+  final bool isOtherProfile;
+  final String? otherUserId;
 
   Future<void> _initializeImageProviders(WidgetRef ref, UserProfileModel userDetails) async {
     ImageModel avatarUrl = userDetails.avatarSrc != null && userDetails.avatarSrc! != ""
@@ -56,7 +57,6 @@ class ProfileScreen extends ConsumerWidget {
     final userDetails = isOtherProfile == true ? ref.watch(getOtherProfileProvider(otherUserId: otherUserId)) : ref.watch(getUserProfileProvider);
     final userData = ref.watch(userDetailsProvider);
     return Scaffold(
-      backgroundColor: Colors.white,
       appBar: isOtherProfile == true
           ? AppBar(
               backgroundColor: const Color(0xFF4B26FD),
@@ -80,12 +80,12 @@ class ProfileScreen extends ConsumerWidget {
             Container(
               height: ScreenSize.height(context),
               width: ScreenSize.width(context),
-              decoration: const BoxDecoration(
-                borderRadius: BorderRadius.only(
+              decoration: BoxDecoration(
+                borderRadius: const BorderRadius.only(
                   topLeft: Radius.circular(40),
                   topRight: Radius.circular(40),
                 ),
-                color: Colors.white,
+                color: Colors.grey[300]!,
               ),
               child: userDetails.when(
                 data: (userDetails) {
@@ -102,7 +102,7 @@ class ProfileScreen extends ConsumerWidget {
                         return Column(
                           children: [
                             Card(
-                              elevation: 5,
+                              elevation: 1,
                               color: Colors.white,
                               shape: const RoundedRectangleBorder(
                                 borderRadius: BorderRadius.only(
@@ -137,97 +137,121 @@ class ProfileScreen extends ConsumerWidget {
                                         bottomRight: Radius.circular(10),
                                       ),
                                     ),
-                                    child: Column(
-                                      children: [
-                                        Text(
-                                          userDetails.name?.isNotEmpty == true
-                                              ? userDetails.name![0].toUpperCase() + userDetails.name!.substring(1)
-                                              : '',
-                                          style: const TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                            color: Colors.black,
-                                          ),
-                                          textScaler:
-                                              const TextScaler.linear(1.7), // Note: textScaler is not a valid property, replaced with textScaleFactor
-                                        ),
-                                        Text(
-                                          userDetails.postingAs?.isNotEmpty == true
-                                              ? "Using Briefsea as: ${userDetails.postingAs?[0].toUpperCase()}${userDetails.postingAs?.substring(1)}"
-                                              : "Using Briefsea as:",
-                                          style: const TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                            color: Colors.black,
-                                          ),
-                                          textScaler: const TextScaler.linear(1),
-                                        ),
-                                        Text(
-                                          userDetails.industry?.isNotEmpty == true ? "Industry: ${userDetails.industry?.join(', ')}" : "",
-                                          style: const TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                            color: Colors.black,
-                                          ),
-                                          textScaler: const TextScaler.linear(1),
-                                        ),
-                                        // Text(
-                                        //   userDetails.expertise?.isNotEmpty == true ? "Expertise: ${userDetails.expertise?[0]}" : "",
-                                        //   style: const TextStyle(
-                                        //     fontWeight: FontWeight.bold,
-                                        //     color: Colors.black,
-                                        //   ),
-                                        //   textScaler: const TextScaler.linear(1),
-                                        // ),
-                                        Row(
-                                          mainAxisAlignment: MainAxisAlignment.center,
-                                          children: [
-                                            SizedBox(
-                                              height: ScreenSize.height(context) * 0.04,
-                                              width: ScreenSize.width(context) * 0.12,
-                                              child: SvgPicture.asset(Assets.COMPANY_ICON),
+                                    child: Padding(
+                                      padding: const EdgeInsets.only(left: 20),
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            userDetails.name?.isNotEmpty == true
+                                                ? userDetails.name![0].toUpperCase() + userDetails.name!.substring(1)
+                                                : '',
+                                            style: const TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.black,
+                                              fontSize: 20,
                                             ),
-                                            Column(
-                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                          ),
+                                          Text(
+                                            userDetails.postingAs?.isNotEmpty == true
+                                                ? "Using Briefsea as: ${userDetails.postingAs?[0].toUpperCase()}${userDetails.postingAs?.substring(1)}"
+                                                : "Using Briefsea as:",
+                                            style: const TextStyle(
+                                              color: Colors.black,
+                                              fontSize: 13,
+                                            ),
+                                          ),
+                                          Text(
+                                            userDetails.industry?.isNotEmpty == true ? "Industry: ${userDetails.industry?.join(', ')}" : "",
+                                            style: const TextStyle(
+                                              color: Colors.black,
+                                              fontSize: 13,
+                                            ),
+                                          ),
+                                          // Text(
+                                          //   userDetails.expertise?.isNotEmpty == true ? "Expertise: ${userDetails.expertise?[0]}" : "",
+                                          //   style: const TextStyle(
+                                          //     fontWeight: FontWeight.bold,
+                                          //     color: Colors.black,
+                                          //   ),
+                                          //   textScaler: const TextScaler.linear(1),
+                                          // ),
+                                          if (userDetails.postingAs != 'freelancer')
+                                            Row(
+                                              mainAxisAlignment: MainAxisAlignment.start,
                                               children: [
-                                                Text(
-                                                  userDetails.post ?? "",
-                                                  style: const TextStyle(
-                                                    fontWeight: FontWeight.bold,
-                                                    color: Colors.black,
+                                                SizedBox(
+                                                  height: ScreenSize.height(context) * 0.04,
+                                                  width: ScreenSize.width(context) * 0.12,
+                                                  child: SvgPicture.asset(
+                                                    Assets.COMPANY_ICON,
+                                                    alignment: Alignment.centerLeft,
                                                   ),
-                                                  textScaler: const TextScaler.linear(1),
                                                 ),
-                                                Text(
-                                                  userDetails.worksAt ?? "",
-                                                  style: const TextStyle(
-                                                    fontWeight: FontWeight.bold,
-                                                    color: Colors.black,
-                                                  ),
-                                                  textScaler: const TextScaler.linear(1),
-                                                ),
+                                                Column(
+                                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                                  children: [
+                                                    Text(
+                                                      userDetails.post ?? "",
+                                                      style: const TextStyle(
+                                                        fontWeight: FontWeight.bold,
+                                                        color: Colors.black,
+                                                      ),
+                                                      textScaler: const TextScaler.linear(1),
+                                                    ),
+                                                    Text(
+                                                      userDetails.worksAt ?? "",
+                                                      style: const TextStyle(
+                                                        fontWeight: FontWeight.bold,
+                                                        color: Colors.black,
+                                                      ),
+                                                      textScaler: const TextScaler.linear(1),
+                                                    ),
+                                                  ],
+                                                )
                                               ],
-                                            )
-                                          ],
-                                        ),
-                                      ],
+                                            ),
+                                        ],
+                                      ),
                                     ),
                                   ),
+                                  if (isOtherProfile != true)
+                                    const SizedBox(
+                                      height: 20,
+                                    ),
+                                  if (isOtherProfile != true)
+                                    CustomElevatedButton(
+                                      width: ScreenSize.width(context) * 0.7,
+                                      onPressed: () {
+                                        GoRouter.of(context).push(
+                                          EditProfileScreen.routeName,
+                                          extra: userDetails,
+                                        );
+                                      },
+                                      buttonLabel: 'Edit Profile',
+                                    ),
+                                  if (isOtherProfile != true)
+                                    const SizedBox(
+                                      height: 10,
+                                    ),
                                   isOtherProfile != true
                                       ? Padding(
                                           padding: const EdgeInsets.all(10),
                                           child: Row(
                                             mainAxisAlignment: MainAxisAlignment.center,
                                             children: [
-                                              GestureDetector(
-                                                onTap: () {
-                                                  GoRouter.of(context).push(
-                                                    EditProfileScreen.routeName,
-                                                    extra: userDetails,
-                                                  );
-                                                },
-                                                child: const Text("Edit Profile"),
-                                              ),
-                                              const SizedBox(
-                                                width: 10,
-                                              ),
+                                              // GestureDetector(
+                                              //   onTap: () {
+                                              //     GoRouter.of(context).push(
+                                              //       EditProfileScreen.routeName,
+                                              //       extra: userDetails,
+                                              //     );
+                                              //   },
+                                              //   child: const Text("Edit Profile"),
+                                              // ),
+                                              // const SizedBox(
+                                              //   width: 10,
+                                              // ),
                                               GestureDetector(
                                                 onTap: () async {
                                                   await handleLogout(context, prefs, ref, false);
@@ -493,32 +517,35 @@ class _AvatarWidget extends ConsumerWidget {
     Color userColor = Color((random.nextDouble() * 0xFFFFFF).toInt()).withOpacity(1.0);
 
     return Align(
-      alignment: Alignment.center,
+      alignment: Alignment.centerLeft,
       child: Padding(
-        padding: const EdgeInsets.all(15.0),
-        child: Stack(
-          children: [
-            CircleAvatar(
-              backgroundColor: userColor,
-              radius: 70,
-              backgroundImage: selectedAvatar != "" && selectedAvatar != null && userProfileData?.avatarSrc != ""
-                  ? CachedNetworkImageProvider(selectedAvatar)
-                  : userProfileData?.gender == "Male"
-                      ? const AssetImage(Assets.MALE)
-                      : userProfileData?.gender == "Female"
-                          ? const AssetImage(Assets.FEMALE)
-                          : userProfileData?.gender == "Others"
-                              ? const AssetImage(Assets.OTHERS)
-                              : null,
-              child: selectedAvatar == null && userProfileData?.gender == null
-                  ? Text(
-                      userProfileData?.name?[0].toUpperCase() ?? "",
-                      style: const TextStyle(color: Colors.white),
-                      textScaler: const TextScaler.linear(3),
-                    )
-                  : const SizedBox.shrink(),
-            ),
-          ],
+        padding: const EdgeInsets.only(top: 65, left: 20),
+        child: Container(
+          padding: const EdgeInsets.all(5),
+          decoration: BoxDecoration(
+            color: Theme.of(context).cardColor,
+            borderRadius: BorderRadius.circular(120),
+          ),
+          child: CircleAvatar(
+            backgroundColor: userColor,
+            radius: 65,
+            backgroundImage: selectedAvatar != "" && selectedAvatar != null && userProfileData?.avatarSrc != ""
+                ? CachedNetworkImageProvider(selectedAvatar)
+                : userProfileData?.gender == "Male"
+                    ? const AssetImage(Assets.MALE)
+                    : userProfileData?.gender == "Female"
+                        ? const AssetImage(Assets.FEMALE)
+                        : userProfileData?.gender == "Others"
+                            ? const AssetImage(Assets.OTHERS)
+                            : null,
+            child: selectedAvatar == null && userProfileData?.gender == null
+                ? Text(
+                    userProfileData?.name?[0].toUpperCase() ?? "",
+                    style: const TextStyle(color: Colors.white),
+                    textScaler: const TextScaler.linear(3),
+                  )
+                : const SizedBox.shrink(),
+          ),
         ),
       ),
     );

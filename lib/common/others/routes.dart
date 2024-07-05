@@ -1,6 +1,5 @@
 import 'package:go_router/go_router.dart';
 
-import '../../data/models/briefs_model.dart';
 import '../../data/models/chat_user_model.dart';
 import '../../data/models/user_profile_model.dart';
 import '../../main.dart';
@@ -83,8 +82,8 @@ class AppRouter {
         path: FeedScreen.routeName,
         builder: (context, state) {
           final Map<String, dynamic> extras = state.extra as Map<String, dynamic>;
-          final BriefsModel brief = extras['singleBrief'] ?? BriefsModel();
-          return FeedScreen(brief: brief);
+          final String? briefId = extras['briefId'] ?? "";
+          return FeedScreen(briefId: briefId);
         },
       ),
       GoRoute(

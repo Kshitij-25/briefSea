@@ -25,6 +25,7 @@ class CustomNotificationTile extends StatelessWidget {
     math.Random random = math.Random(notificationModel.senderId?.hashCode);
     Color userColor = Color((random.nextDouble() * 0xFFFFFF).toInt()).withOpacity(1.0);
     return Dismissible(
+      direction: DismissDirection.endToStart,
       key: Key(notificationModel.createdAt ?? DateTime.now().toString()), // Ensure unique key for each item
       confirmDismiss: (direction) async {
         return await confirmDismiss();
@@ -35,7 +36,7 @@ class CustomNotificationTile extends StatelessWidget {
         }
       },
       background: Container(
-        color: Colors.red,
+        color: Colors.white,
         alignment: Alignment.centerLeft,
         padding: const EdgeInsets.only(left: 20.0),
         child: const Icon(Icons.delete, color: Colors.white),
@@ -47,6 +48,7 @@ class CustomNotificationTile extends StatelessWidget {
         child: const Icon(Icons.delete, color: Colors.white),
       ),
       child: ListTile(
+        tileColor: Colors.white,
         onTap: onTap,
         leading: CircleAvatar(
           backgroundColor: userColor,

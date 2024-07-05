@@ -17,6 +17,7 @@ class CustomCommentCard extends StatelessWidget {
     this.loggedInUserId,
     this.isReplies,
     required this.isUserTrue,
+    this.avatarName,
   });
 
   final Function(CommentModel?) onCommentTap;
@@ -26,6 +27,7 @@ class CustomCommentCard extends StatelessWidget {
   final String? loggedInUserId;
   final bool? isReplies;
   final bool isUserTrue;
+  final String? avatarName;
 
   @override
   Widget build(BuildContext context) {
@@ -47,15 +49,16 @@ class CustomCommentCard extends StatelessWidget {
                       padding: const EdgeInsets.only(right: 0.0),
                       child: CircleAvatar(
                         backgroundColor: userColor,
+                        backgroundImage: avatarName != null && avatarName != '' ? NetworkImage(avatarName!) : null,
                         radius: 15,
-                        child: Text(
-                          commentModel?.name?[0] ?? "",
-                          style: const TextStyle(
-                            color: Colors.white,
-                          ),
-                          textScaler: const TextScaler.linear(0.8),
-                        ),
-                        // backgroundImage: NetworkImage('${ApiConstants.BASE_URL}/$imgSrc'),
+                        child: avatarName == null || avatarName == ''
+                            ? Text(
+                                commentModel?.name?[0] ?? "",
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                ),
+                              )
+                            : const SizedBox.shrink(),
                       ),
                     )
                   : const SizedBox.shrink(),
@@ -125,18 +128,19 @@ class CustomCommentCard extends StatelessWidget {
               ),
               commentModel!.userId == loggedInUserId
                   ? Padding(
-                      padding: const EdgeInsets.only(left: 0.0),
+                      padding: const EdgeInsets.only(right: 0.0),
                       child: CircleAvatar(
                         backgroundColor: userColor,
+                        backgroundImage: avatarName != null && avatarName != '' ? NetworkImage(avatarName!) : null,
                         radius: 15,
-                        child: Text(
-                          commentModel?.name?[0] ?? "",
-                          style: const TextStyle(
-                            color: Colors.white,
-                          ),
-                          textScaler: const TextScaler.linear(0.8),
-                        ),
-                        // backgroundImage: NetworkImage('${ApiConstants.BASE_URL}/$imgSrc'),
+                        child: avatarName == null || avatarName == ''
+                            ? Text(
+                                commentModel?.name?[0] ?? "",
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                ),
+                              )
+                            : const SizedBox.shrink(),
                       ),
                     )
                   : const SizedBox.shrink(),

@@ -85,7 +85,7 @@ Future<void> customReplyModalSheet(
                                 ),
                                 ElevatedButton(
                                   style: ButtonStyle(
-                                    backgroundColor: WidgetStateProperty.all<Color>(const Color(0xFF212121)),
+                                    backgroundColor: WidgetStateProperty.all<Color>(const Color(0xFF4B26FD)),
                                     elevation: WidgetStateProperty.all<double>(0),
                                   ),
                                   onPressed: () async {
@@ -119,7 +119,7 @@ Future<void> customReplyModalSheet(
                                   child: const Text(
                                     "Reply",
                                     style: TextStyle(
-                                      color: Colors.grey,
+                                      color: Colors.white,
                                       fontWeight: FontWeight.bold,
                                     ),
                                   ),

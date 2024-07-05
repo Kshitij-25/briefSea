@@ -122,7 +122,7 @@ class HomeScreen extends ConsumerWidget {
           MyFeedNavigator(homePageController: pageController),
           const MessagesScreenNavigator(),
           NotificationScreen(notificationPageController: pageController),
-          ProfileScreen(),
+          const ProfileScreen(),
         ],
       ),
       bottomNavigationBar: BottomNavigationBar(

@@ -233,10 +233,9 @@ class MyBriefsScreen extends ConsumerWidget {
                                         }
                                       },
                                       onCommentTap: (brief) async {
-                                        var singleBrief = await ref.read(getSingleBriefProvider(briefId: filteredBriefs[index]!.id).future);
                                         context.push(
                                           FeedScreen.routeName,
-                                          extra: {'singleBrief': singleBrief},
+                                          extra: {'briefId': filteredBriefs[index]!.id},
                                         );
                                       },
                                       onLikeTap: (brief) async {
@@ -262,10 +261,9 @@ class MyBriefsScreen extends ConsumerWidget {
                                       },
                                       onShareTap: (brief) {},
                                       onTap: () async {
-                                        var singleBrief = await ref.read(getSingleBriefProvider(briefId: filteredBriefs[index]!.id).future);
                                         context.push(
                                           FeedScreen.routeName,
-                                          extra: {'singleBrief': singleBrief},
+                                          extra: {'briefId': filteredBriefs[index]!.id},
                                         );
                                       },
                                     );

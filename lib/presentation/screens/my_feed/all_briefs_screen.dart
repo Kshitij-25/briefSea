@@ -167,10 +167,9 @@ class AllBriefsScreen extends ConsumerWidget {
                           }
                         },
                         onCommentTap: (brief) async {
-                          var singleBrief = await ref.read(getSingleBriefProvider(briefId: briefs[index]!.id).future);
                           context.push(
                             FeedScreen.routeName,
-                            extra: {'singleBrief': singleBrief},
+                            extra: {'briefId': briefs[index]!.id},
                           );
                         },
                         onLikeTap: (brief) async {
@@ -210,10 +209,9 @@ class AllBriefsScreen extends ConsumerWidget {
                           shareBrief(brief!);
                         },
                         onTap: () async {
-                          var singleBrief = await ref.read(getSingleBriefProvider(briefId: briefs[index]!.id).future);
                           context.push(
                             FeedScreen.routeName,
-                            extra: {'singleBrief': singleBrief},
+                            extra: {'briefId': briefs[index]!.id},
                           );
                         },
                       );
