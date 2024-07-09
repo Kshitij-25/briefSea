@@ -21,19 +21,18 @@ abstract class AuthRemoteDataSource {
 }
 
 class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
-  final ApiClient? _apiClient;
-
   AuthRemoteDataSourceImpl(this._apiClient);
+  final ApiClient? _apiClient;
 
   @override
   Future<LoginModel?>? loginUser(String? email, String? password) async {
     try {
-      var body = {
+      final body = {
         'email': email,
         'password': password,
       };
 
-      Response? response = await _apiClient?.postReq(
+      final response = await _apiClient?.postReq(
         url: ApiConstants.loginUrl,
         body: body,
       );
@@ -42,11 +41,11 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
           final responseJson = response.data;
           log(responseJson.toString());
 
-          var loginMessage = responseJson['message'] ?? responseJson['msg'];
-          var jwtToken = responseJson['token'];
+          final loginMessage = responseJson['message'] ?? responseJson['msg'];
+          final jwtToken = responseJson['token'];
 
           if (loginMessage == 'Login sucessfull' && jwtToken != null) {
-            Map<String, dynamic> accessTokenPayload = JwtDecoder.decode(jwtToken);
+            final accessTokenPayload = JwtDecoder.decode(jwtToken);
 
             // Save the payload to shared preferences
             SharedPreferencesHelper.saveString('jwtToken', jwtToken);
@@ -60,11 +59,11 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
             // await prefs?.setString('subtype', accessTokenPayload['user_detail']['subtype']);
 
             return LoginModel.fromJson(responseJson);
-          } else if (loginMessage == "Email sent") {
+          } else if (loginMessage == 'Email sent') {
             return LoginModel(message: loginMessage);
-          } else if (loginMessage == "Login failed") {
+          } else if (loginMessage == 'Login failed') {
             return LoginModel(message: loginMessage);
-          } else if (loginMessage == "Invalid Email") {
+          } else if (loginMessage == 'Invalid Email') {
             return LoginModel(message: loginMessage);
           } else {
             throw AppError(errorMessage: loginMessage);
@@ -74,18 +73,18 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
         }
       }
     } catch (e) {
-      log("Login User Error", error: e);
+      log('Login User Error', error: e);
       throw AppError(errorMessage: e.toString());
     }
-    throw AppError(errorMessage: "Unknown error occurred during login");
+    throw AppError(errorMessage: 'Unknown error occurred during login');
   }
 
   @override
   Future loginWithGoogle() async {
     try {
-      final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+      final googleUser = await GoogleSignIn().signIn();
 
-      final GoogleSignInAuthentication? googleAuth = await googleUser?.authentication;
+      final googleAuth = await googleUser?.authentication;
 
       final credential = GoogleAuthProvider.credential(
         accessToken: googleAuth?.accessToken,
@@ -110,7 +109,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   @override
   Future<RegisterModel> registerUser(String? firstName, String? lastName, String? email, String? password, String? type, String? subType) async {
     try {
-      var body = {
+      final body = {
         'firstName': firstName,
         'lastName': lastName,
         'email': email,
@@ -119,7 +118,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
         'subtype': subType,
       };
 
-      Response? response = await _apiClient?.postReq(
+      final response = await _apiClient?.postReq(
         url: ApiConstants.registerUrl,
         body: body,
       );
@@ -138,20 +137,20 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
         }
       }
     } catch (e) {
-      log("Register User Error", error: e);
+      log('Register User Error', error: e);
       throw AppError(errorMessage: e.toString());
     }
-    throw AppError(errorMessage: "Unknown error occurred during registration");
+    throw AppError(errorMessage: 'Unknown error occurred during registration');
   }
 
   @override
   Future<bool> forgetPassword(String? email) async {
     try {
-      var body = {
+      final body = {
         'email': email,
       };
 
-      Response? response = await _apiClient?.postReq(
+      final response = await _apiClient?.postReq(
         url: ApiConstants.forgetPassword,
         body: body,
       );
@@ -171,9 +170,9 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
         }
       }
     } catch (e) {
-      log("forgetPassword Error", error: e);
+      log('forgetPassword Error', error: e);
       throw AppError(errorMessage: e.toString());
     }
-    throw AppError(errorMessage: "Unknown error occurred");
+    throw AppError(errorMessage: 'Unknown error occurred');
   }
 }

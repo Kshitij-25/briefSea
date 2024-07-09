@@ -2,28 +2,26 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 
 class DioRequestException implements Exception {
-  final String message;
-
   DioRequestException(this.message);
+  final String message;
 
   @override
   String toString() => 'DioRequestException: $message';
 }
 
 class ApiClient {
+  ApiClient(this._dio);
   final Dio _dio;
 
-  ApiClient(this._dio);
-
-  Future<Response<dynamic>?> getReq({url, body, jwtToken}) async {
+  Future<Response<dynamic>?> getReq({String? url, Object? body, String? jwtToken}) async {
     try {
-      var headers = {
+      final headers = {
         'Accept': 'application/json, text/plain, */*',
         'Content-Type': 'application/json',
         'Authorization': 'Bearer $jwtToken',
       };
       final response = await _dio.get(
-        url,
+        url!,
         data: body,
         options: Options(
           headers: headers,
@@ -33,7 +31,7 @@ class ApiClient {
       if (response.statusCode == 200) {
         return response;
       } else {
-        throw DioRequestException("HTTP error: ${response.statusCode}");
+        throw DioRequestException('HTTP error: ${response.statusCode}');
       }
     } catch (e) {
       handleDioError(e);
@@ -41,15 +39,15 @@ class ApiClient {
     return null;
   }
 
-  Future<Response<dynamic>?> postReq({url, body, jwtToken}) async {
+  Future<Response<dynamic>?> postReq({String? url, Object? body, String? jwtToken}) async {
     try {
-      var headers = {
+      final headers = {
         'Accept': 'application/json, text/plain, */*',
         'Content-Type': 'application/json',
         'Authorization': 'Bearer $jwtToken',
       };
       final response = await _dio.post(
-        url,
+        url!,
         data: body,
         options: Options(
           headers: headers,
@@ -59,7 +57,7 @@ class ApiClient {
       if (response.statusCode == 200 || response.statusCode == 201) {
         return response;
       } else {
-        throw DioRequestException("HTTP error: ${response.statusCode}");
+        throw DioRequestException('HTTP error: ${response.statusCode}');
       }
     } catch (e) {
       handleDioError(e);
@@ -67,16 +65,16 @@ class ApiClient {
     return null;
   }
 
-  Future<Response<dynamic>?> putReq({url, body, jwtToken, contentType, mimeType}) async {
+  Future<Response<dynamic>?> putReq({String? url, Object? body, String? jwtToken, int? contentType, String? mimeType}) async {
     try {
-      var headers = {
+      final headers = {
         'Accept': 'application/json, text/plain, */*',
         'Content-Type': contentType ?? 'application/json',
         if (jwtToken != null) 'Authorization': 'Bearer $jwtToken',
       };
 
       final response = await _dio.put(
-        url,
+        url!,
         data: body,
         options: Options(
           contentType: mimeType,
@@ -87,7 +85,7 @@ class ApiClient {
       if (response.statusCode == 200) {
         return response;
       } else {
-        throw DioRequestException("HTTP error: ${response.statusCode}");
+        throw DioRequestException('HTTP error: ${response.statusCode}');
       }
     } catch (e) {
       handleDioError(e);
@@ -95,15 +93,15 @@ class ApiClient {
     return null;
   }
 
-  Future<Response<dynamic>?> deleteReq({url, body, jwtToken}) async {
+  Future<Response<dynamic>?> deleteReq({String? url, Object? body, String? jwtToken}) async {
     try {
-      var headers = {
+      final headers = {
         'Accept': 'application/json, text/plain, */*',
         'Content-Type': 'application/json',
         'Authorization': 'Bearer $jwtToken',
       };
       final response = await _dio.delete(
-        url,
+        url!,
         data: body,
         options: Options(
           headers: headers,
@@ -113,7 +111,7 @@ class ApiClient {
       if (response.statusCode == 200) {
         return response;
       } else {
-        throw DioRequestException("HTTP error: ${response.statusCode}");
+        throw DioRequestException('HTTP error: ${response.statusCode}');
       }
     } catch (e) {
       handleDioError(e);
@@ -121,15 +119,15 @@ class ApiClient {
     return null;
   }
 
-  Future<Response<dynamic>?> patchReq({url, body, jwtToken}) async {
+  Future<Response<dynamic>?> patchReq({String? url, Object? body, String? jwtToken}) async {
     try {
-      var headers = {
+      final headers = {
         'Accept': 'application/json, text/plain, */*',
         'Content-Type': 'application/json',
         'Authorization': 'Bearer $jwtToken',
       };
       final response = await _dio.patch(
-        url,
+        url!,
         data: body,
         options: Options(
           headers: headers,
@@ -139,7 +137,7 @@ class ApiClient {
       if (response.statusCode == 200) {
         return response;
       } else {
-        throw DioRequestException("HTTP error: ${response.statusCode}");
+        throw DioRequestException('HTTP error: ${response.statusCode}');
       }
     } catch (e) {
       handleDioError(e);
@@ -150,10 +148,10 @@ class ApiClient {
   void handleDioError(dynamic e) {
     // Handle Dio errors
     if (e is DioException) {
-      throw DioRequestException("Dio error: ${e.message}");
+      throw DioRequestException('Dio error: ${e.message}');
     }
 
     // Handle other unexpected errors
-    debugPrint("Unexpected error in DioRequest: $e");
+    debugPrint('Unexpected error in DioRequest: $e');
   }
 }

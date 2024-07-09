@@ -2,23 +2,25 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 
+import '../../data/models/chat_user_model.dart';
+
 class CustomChatCards extends StatelessWidget {
   const CustomChatCards({
     super.key,
     this.onTap,
-    this.chatName,
-    this.chatMessage,
+    this.chatUserModel,
     this.isUserOnline,
   });
 
   final void Function()? onTap;
-  final String? chatName;
-  final String? chatMessage;
+  // final String? chatName;
+  // final String? chatMessage;
   final bool? isUserOnline;
+  final ChatUserModel? chatUserModel;
 
   @override
   Widget build(BuildContext context) {
-    math.Random random = math.Random(chatName?.hashCode);
+    math.Random random = math.Random(chatUserModel?.id?.hashCode);
     Color userColor = Color((random.nextDouble() * 0xFFFFFF).toInt()).withOpacity(1.0);
     return Card(
       color: Colors.white,
@@ -30,7 +32,7 @@ class CustomChatCards extends StatelessWidget {
               radius: 25,
               backgroundColor: userColor,
               child: Text(
-                chatName?[0].toUpperCase() ?? "",
+                chatUserModel?.name?[0].toUpperCase() ?? "",
                 style: const TextStyle(
                   color: Colors.white,
                 ),
@@ -64,14 +66,14 @@ class CustomChatCards extends StatelessWidget {
         //   ),
         // ),
         title: Text(
-          chatName ?? '',
+          chatUserModel?.name ?? '',
           style: const TextStyle(
             color: Colors.black,
             fontWeight: FontWeight.w500,
           ),
         ),
         subtitle: Text(
-          chatMessage ?? '...',
+          chatUserModel?.lastMsg ?? '...',
           overflow: TextOverflow.ellipsis,
           style: const TextStyle(),
         ),

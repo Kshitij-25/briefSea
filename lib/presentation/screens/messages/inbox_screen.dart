@@ -107,8 +107,7 @@ class _InboxScreenState extends ConsumerState<InboxScreen> {
                             extra: filteredChatUsers[index],
                           );
                         },
-                        chatName: filteredChatUsers[index].name,
-                        chatMessage: filteredChatUsers[index].lastMsg,
+                        chatUserModel: filteredChatUsers[index],
                         isUserOnline: isOnline,
                       );
                     },

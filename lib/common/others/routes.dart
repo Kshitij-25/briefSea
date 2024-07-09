@@ -46,10 +46,10 @@ class AppRouter {
       GoRoute(
         path: ProfileScreen.routeName,
         builder: (context, state) {
-          final Map<String, dynamic> extras = state.extra as Map<String, dynamic>;
-          final bool isOtherProfile = extras['isOtherProfile'];
-          final String otherUserId = extras['otherUserId'] ?? "";
-          return ProfileScreen(isOtherProfile: isOtherProfile, otherUserId: otherUserId);
+          final extras = state.extra! as Map<String, dynamic>;
+          final isOtherProfile = extras['isOtherProfile'] as bool;
+          final otherUserId = extras['otherUserId'] ?? '';
+          return ProfileScreen(isOtherProfile: isOtherProfile, otherUserId: otherUserId.toString());
         },
       ),
       GoRoute(
@@ -75,29 +75,29 @@ class AppRouter {
       GoRoute(
         path: ChatScreen.routeName,
         builder: (context, state) => ChatScreen(
-          chatUser: state.extra as ChatUserModel,
+          chatUser: state.extra! as ChatUserModel,
         ),
       ),
       GoRoute(
         path: FeedScreen.routeName,
         builder: (context, state) {
-          final Map<String, dynamic> extras = state.extra as Map<String, dynamic>;
-          final String? briefId = extras['briefId'] ?? "";
-          return FeedScreen(briefId: briefId);
+          final extras = state.extra! as Map<String, dynamic>;
+          final briefId = extras['briefId'] ?? '';
+          return FeedScreen(briefId: briefId.toString());
         },
       ),
       GoRoute(
         path: EditProfileScreen.routeName,
         builder: (context, state) => EditProfileScreen(
-          userProfileModel: state.extra as UserProfileModel,
+          userProfileModel: state.extra! as UserProfileModel,
         ),
       ),
     ],
   );
 
   static String getInitialRoute() {
-    bool isLogin = prefs!.getBool('isLogin') ?? false;
-    bool profile = prefs!.getBool('profile') ?? false;
+    final isLogin = prefs!.getBool('isLogin') ?? false;
+    final profile = prefs!.getBool('profile') ?? false;
 
     if (!isLogin) {
       return WelcomeScreen.routeName;

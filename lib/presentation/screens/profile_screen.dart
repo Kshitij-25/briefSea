@@ -1,5 +1,20 @@
+import 'dart:developer';
 import 'dart:math' as math;
 
+import 'package:briefsea/common/app_utils/app_utility.dart';
+import 'package:briefsea/common/app_utils/screen_size.dart';
+import 'package:briefsea/common/others/assets.dart';
+import 'package:briefsea/common/others/strings.dart';
+import 'package:briefsea/data/core/api_constants.dart';
+import 'package:briefsea/data/models/image_model.dart';
+import 'package:briefsea/data/models/user_profile_model.dart';
+import 'package:briefsea/main.dart';
+import 'package:briefsea/presentation/providers/auth_provider.dart';
+import 'package:briefsea/presentation/providers/user_profile_provider.dart';
+import 'package:briefsea/presentation/screens/auth_screens/welcome_screen.dart';
+import 'package:briefsea/presentation/screens/edit_profile_screen.dart';
+import 'package:briefsea/presentation/state_providers/bottom_nav_bar_state_provider.dart';
+import 'package:briefsea/presentation/state_providers/image_picker_provider.dart';
 import 'package:briefsea/presentation/widgets/custom_elevated_button.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -10,21 +25,6 @@ import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
-import '../../common/app_utils/app_utility.dart';
-import '../../common/app_utils/screen_size.dart';
-import '../../common/others/assets.dart';
-import '../../common/others/strings.dart';
-import '../../data/core/api_constants.dart';
-import '../../data/models/image_model.dart';
-import '../../data/models/user_profile_model.dart';
-import '../../main.dart';
-import '../providers/auth_provider.dart';
-import '../providers/user_profile_provider.dart';
-import '../state_providers/bottom_nav_bar_state_provider.dart';
-import '../state_providers/image_picker_provider.dart';
-import 'auth_screens/welcome_screen.dart';
-import 'edit_profile_screen.dart';
-
 class ProfileScreen extends ConsumerWidget {
   const ProfileScreen({
     super.key,
@@ -32,22 +32,22 @@ class ProfileScreen extends ConsumerWidget {
     this.otherUserId,
   });
 
-  static const routeName = "/profileScreen";
+  static const routeName = '/profileScreen';
   final bool isOtherProfile;
   final String? otherUserId;
 
   Future<void> _initializeImageProviders(WidgetRef ref, UserProfileModel userDetails) async {
-    ImageModel avatarUrl = userDetails.avatarSrc != null && userDetails.avatarSrc! != ""
+    var avatarUrl = userDetails.avatarSrc != null && userDetails.avatarSrc! != ''
         ? await ref.watch(getImageProvider(src: userDetails.avatarSrc!).future)
         : ImageModel();
-    ImageModel bannerUrl = userDetails.bannerSrc != null && userDetails.bannerSrc != ""
+    var bannerUrl = userDetails.bannerSrc != null && userDetails.bannerSrc != ''
         ? await ref.watch(getImageProvider(src: userDetails.bannerSrc!).future)
         : ImageModel();
 
-    if (avatarUrl.url != null && avatarUrl.url != "") {
+    if (avatarUrl.url != null && avatarUrl.url != '') {
       ref.read(selectedAvatarImageProvider.notifier).state = avatarUrl.url;
     }
-    if (bannerUrl.url != null && bannerUrl.url != "") {
+    if (bannerUrl.url != null && bannerUrl.url != '') {
       ref.read(selectedBannerImageProvider.notifier).state = bannerUrl.url;
     }
   }
@@ -57,11 +57,12 @@ class ProfileScreen extends ConsumerWidget {
     final userDetails = isOtherProfile == true ? ref.watch(getOtherProfileProvider(otherUserId: otherUserId)) : ref.watch(getUserProfileProvider);
     final userData = ref.watch(userDetailsProvider);
     return Scaffold(
+      backgroundColor: Colors.grey[300],
       appBar: isOtherProfile == true
           ? AppBar(
               backgroundColor: const Color(0xFF4B26FD),
               title: const Text(
-                "Profile",
+                'Profile',
                 style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
               ),
               centerTitle: true,
@@ -77,298 +78,205 @@ class ProfileScreen extends ConsumerWidget {
               height: 70,
               color: const Color(0xFF4B26FD),
             ),
-            Container(
-              height: ScreenSize.height(context),
-              width: ScreenSize.width(context),
-              decoration: BoxDecoration(
-                borderRadius: const BorderRadius.only(
-                  topLeft: Radius.circular(40),
-                  topRight: Radius.circular(40),
+            SingleChildScrollView(
+              child: Container(
+                height: ScreenSize.height(context) * 0.8,
+                width: ScreenSize.width(context),
+                decoration: BoxDecoration(
+                  borderRadius: const BorderRadius.only(
+                    topLeft: Radius.circular(40),
+                    topRight: Radius.circular(40),
+                  ),
+                  color: Colors.grey[300],
                 ),
-                color: Colors.grey[300]!,
-              ),
-              child: userDetails.when(
-                data: (userDetails) {
-                  return FutureBuilder(
-                    future: _initializeImageProviders(ref, userDetails),
-                    builder: (context, snapshot) {
-                      if (snapshot.connectionState == ConnectionState.waiting) {
-                        return const Center(
-                          child: CircularProgressIndicator.adaptive(),
-                        );
-                      } else if (snapshot.hasError) {
-                        return Center(child: Text('Error: ${snapshot.error}'));
-                      } else {
-                        return Column(
-                          children: [
-                            Card(
-                              elevation: 1,
-                              color: Colors.white,
-                              shape: const RoundedRectangleBorder(
-                                borderRadius: BorderRadius.only(
-                                  topLeft: Radius.circular(40),
-                                  topRight: Radius.circular(40),
-                                  bottomLeft: Radius.circular(10),
-                                  bottomRight: Radius.circular(10),
+                child: userDetails.when(
+                  data: (userDetails) {
+                    return FutureBuilder(
+                      future: _initializeImageProviders(ref, userDetails),
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState == ConnectionState.waiting) {
+                          return const Center(
+                            child: CircularProgressIndicator.adaptive(),
+                          );
+                        } else if (snapshot.hasError) {
+                          return Center(child: Text('Error: ${snapshot.error}'));
+                        } else {
+                          return Column(
+                            children: [
+                              Card(
+                                elevation: 1,
+                                color: Colors.white,
+                                shape: const RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.only(
+                                    topLeft: Radius.circular(40),
+                                    topRight: Radius.circular(40),
+                                    bottomLeft: Radius.circular(10),
+                                    bottomRight: Radius.circular(10),
+                                  ),
+                                ),
+                                child: Column(
+                                  children: [
+                                    Stack(
+                                      children: [
+                                        _BannerWidget(
+                                          userDetails: userData,
+                                          userProfileData: userDetails,
+                                          isOtherProfile: isOtherProfile,
+                                        ),
+                                        _AvatarWidget(
+                                          userDetails: userData,
+                                          userProfileData: userDetails,
+                                          isOtherProfile: isOtherProfile,
+                                        ),
+                                      ],
+                                    ),
+                                    _UserInfoDetails(
+                                      userProfileData: userDetails,
+                                    ),
+                                    if (isOtherProfile != true)
+                                      const SizedBox(
+                                        height: 20,
+                                      ),
+                                    if (isOtherProfile != true)
+                                      CustomElevatedButton(
+                                        width: ScreenSize.width(context) * 0.7,
+                                        onPressed: () {
+                                          GoRouter.of(context).push(
+                                            EditProfileScreen.routeName,
+                                            extra: userDetails,
+                                          );
+                                        },
+                                        buttonLabel: 'Edit Profile',
+                                      ),
+                                    if (isOtherProfile != true)
+                                      const SizedBox(
+                                        height: 10,
+                                      ),
+                                    if (isOtherProfile != true)
+                                      Padding(
+                                        padding: const EdgeInsets.all(10),
+                                        child: Row(
+                                          mainAxisAlignment: MainAxisAlignment.center,
+                                          children: [
+                                            GestureDetector(
+                                              onTap: () async {
+                                                await handleLogout(context, prefs, ref, false);
+                                              },
+                                              child: const Text('Logout'),
+                                            ),
+                                          ],
+                                        ),
+                                      )
+                                    else
+                                      const SizedBox(height: 20),
+                                  ],
                                 ),
                               ),
-                              child: Column(
+                              _AboutCard(),
+                              if (userDetails.postingAs != 'freelancer') _CompanyCard(userDetails),
+                              const Spacer(),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  Stack(
-                                    children: [
-                                      _BannerWidget(
-                                        userDetails: userData,
-                                        userProfileData: userDetails,
-                                        isOtherProfile: isOtherProfile,
-                                      ),
-                                      _AvatarWidget(
-                                        userDetails: userData,
-                                        userProfileData: userDetails,
-                                        isOtherProfile: isOtherProfile,
-                                      ),
-                                    ],
-                                  ),
-                                  Container(
-                                    width: ScreenSize.width(context),
-                                    decoration: const BoxDecoration(
-                                      color: Colors.white,
-                                      borderRadius: BorderRadius.only(
-                                        bottomLeft: Radius.circular(10),
-                                        bottomRight: Radius.circular(10),
-                                      ),
-                                    ),
-                                    child: Padding(
-                                      padding: const EdgeInsets.only(left: 20),
-                                      child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            userDetails.name?.isNotEmpty == true
-                                                ? userDetails.name![0].toUpperCase() + userDetails.name!.substring(1)
-                                                : '',
-                                            style: const TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                              color: Colors.black,
-                                              fontSize: 20,
-                                            ),
-                                          ),
-                                          Text(
-                                            userDetails.postingAs?.isNotEmpty == true
-                                                ? "Using Briefsea as: ${userDetails.postingAs?[0].toUpperCase()}${userDetails.postingAs?.substring(1)}"
-                                                : "Using Briefsea as:",
-                                            style: const TextStyle(
-                                              color: Colors.black,
-                                              fontSize: 13,
-                                            ),
-                                          ),
-                                          Text(
-                                            userDetails.industry?.isNotEmpty == true ? "Industry: ${userDetails.industry?.join(', ')}" : "",
-                                            style: const TextStyle(
-                                              color: Colors.black,
-                                              fontSize: 13,
-                                            ),
-                                          ),
-                                          // Text(
-                                          //   userDetails.expertise?.isNotEmpty == true ? "Expertise: ${userDetails.expertise?[0]}" : "",
-                                          //   style: const TextStyle(
-                                          //     fontWeight: FontWeight.bold,
-                                          //     color: Colors.black,
-                                          //   ),
-                                          //   textScaler: const TextScaler.linear(1),
-                                          // ),
-                                          if (userDetails.postingAs != 'freelancer')
-                                            Row(
-                                              mainAxisAlignment: MainAxisAlignment.start,
-                                              children: [
-                                                SizedBox(
-                                                  height: ScreenSize.height(context) * 0.04,
-                                                  width: ScreenSize.width(context) * 0.12,
-                                                  child: SvgPicture.asset(
-                                                    Assets.COMPANY_ICON,
-                                                    alignment: Alignment.centerLeft,
-                                                  ),
-                                                ),
-                                                Column(
-                                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                                  children: [
-                                                    Text(
-                                                      userDetails.post ?? "",
-                                                      style: const TextStyle(
-                                                        fontWeight: FontWeight.bold,
-                                                        color: Colors.black,
-                                                      ),
-                                                      textScaler: const TextScaler.linear(1),
-                                                    ),
-                                                    Text(
-                                                      userDetails.worksAt ?? "",
-                                                      style: const TextStyle(
-                                                        fontWeight: FontWeight.bold,
-                                                        color: Colors.black,
-                                                      ),
-                                                      textScaler: const TextScaler.linear(1),
-                                                    ),
-                                                  ],
-                                                )
-                                              ],
-                                            ),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                  if (isOtherProfile != true)
-                                    const SizedBox(
-                                      height: 20,
-                                    ),
-                                  if (isOtherProfile != true)
-                                    CustomElevatedButton(
-                                      width: ScreenSize.width(context) * 0.7,
-                                      onPressed: () {
-                                        GoRouter.of(context).push(
-                                          EditProfileScreen.routeName,
-                                          extra: userDetails,
-                                        );
-                                      },
-                                      buttonLabel: 'Edit Profile',
-                                    ),
-                                  if (isOtherProfile != true)
-                                    const SizedBox(
-                                      height: 10,
-                                    ),
-                                  isOtherProfile != true
-                                      ? Padding(
-                                          padding: const EdgeInsets.all(10),
-                                          child: Row(
-                                            mainAxisAlignment: MainAxisAlignment.center,
-                                            children: [
-                                              // GestureDetector(
-                                              //   onTap: () {
-                                              //     GoRouter.of(context).push(
-                                              //       EditProfileScreen.routeName,
-                                              //       extra: userDetails,
-                                              //     );
-                                              //   },
-                                              //   child: const Text("Edit Profile"),
-                                              // ),
-                                              // const SizedBox(
-                                              //   width: 10,
-                                              // ),
-                                              GestureDetector(
-                                                onTap: () async {
-                                                  await handleLogout(context, prefs, ref, false);
-                                                },
-                                                child: const Text("Logout"),
-                                              ),
-                                            ],
-                                          ),
-                                        )
-                                      : const SizedBox(height: 20),
-                                ],
-                              ),
-                            ),
-                            const Spacer(),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                _socialMedia(
-                                  context,
-                                  Assets.INSTA_LOGO,
-                                  () async {
-                                    if (await launchUrlString(
-                                      ApiConstants.instaUrl,
-                                      mode: LaunchMode.externalApplication,
-                                    )) {
-                                      await launchUrlString(
-                                        ApiConstants.instaUrl,
-                                        mode: LaunchMode.externalApplication,
-                                      );
-                                    } else {
-                                      throw 'There was a problem to open the url: ${ApiConstants.instaUrl}';
-                                    }
-                                  },
-                                ),
-                                const SizedBox(width: 15),
-                                Padding(
-                                  padding: const EdgeInsets.only(bottom: 5.0),
-                                  child: _socialMedia(
-                                    context,
-                                    Assets.PROFILE_LINKEDIN,
+                                  _socialMedia(
+                                    Assets.INSTA_LOGO,
                                     () async {
                                       if (await launchUrlString(
-                                        ApiConstants.linkedInUrl,
+                                        ApiConstants.instaUrl,
                                         mode: LaunchMode.externalApplication,
                                       )) {
                                         await launchUrlString(
-                                          ApiConstants.linkedInUrl,
+                                          ApiConstants.instaUrl,
                                           mode: LaunchMode.externalApplication,
                                         );
                                       } else {
-                                        throw 'There was a problem to open the url: ${ApiConstants.linkedInUrl}';
+                                        throw 'There was a problem to open the url: ${ApiConstants.instaUrl}';
                                       }
                                     },
                                   ),
-                                ),
-                              ],
-                            ),
-                            const SizedBox(height: 5),
-                            const Text(
-                              Strings.copyrightText,
-                              style: TextStyle(fontSize: 12),
-                            ),
-                            if (isOtherProfile != true)
-                              Padding(
-                                padding: const EdgeInsets.only(top: 10),
-                                child: GestureDetector(
-                                  onTap: () async {
-                                    final deleteResponse = await showAdaptiveDialog<bool>(
-                                      context: context,
-                                      builder: (context) {
-                                        return AlertDialog.adaptive(
-                                          content: const Text(
-                                            Strings.deleteContent,
-                                          ),
-                                          title: const Text(Strings.deleteWarning),
-                                          actions: [
-                                            TextButton(
-                                              onPressed: () {
-                                                context.pop(false);
-                                              },
-                                              child: const Text('Cancel'),
-                                            ),
-                                            TextButton(
-                                              onPressed: () async {
-                                                var isAccountDeleted = await ref.read(deleteAccountProvider(userId: userDetails.userId!).future);
-                                                if (isAccountDeleted == true) {
-                                                  context.pop(true);
-                                                }
-                                              },
-                                              child: const Text('Delete'),
-                                            ),
-                                          ],
-                                        );
+                                  const SizedBox(width: 15),
+                                  Padding(
+                                    padding: const EdgeInsets.only(bottom: 5),
+                                    child: _socialMedia(
+                                      Assets.PROFILE_LINKEDIN,
+                                      () async {
+                                        if (await launchUrlString(
+                                          ApiConstants.linkedInUrl,
+                                          mode: LaunchMode.externalApplication,
+                                        )) {
+                                          await launchUrlString(
+                                            ApiConstants.linkedInUrl,
+                                            mode: LaunchMode.externalApplication,
+                                          );
+                                        } else {
+                                          throw 'There was a problem to open the url: ${ApiConstants.linkedInUrl}';
+                                        }
                                       },
-                                    );
-                                    print(deleteResponse);
-                                    if (deleteResponse == true) {
-                                      await handleLogout(context, prefs, ref, true);
-                                    }
-                                  },
-                                  child: const Text(
-                                    "Delete Account",
-                                    style: TextStyle(fontSize: 10),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(height: 5),
+                              const Text(
+                                Strings.copyrightText,
+                                style: TextStyle(fontSize: 12),
+                              ),
+                              if (isOtherProfile != true)
+                                Padding(
+                                  padding: const EdgeInsets.only(top: 10),
+                                  child: GestureDetector(
+                                    onTap: () async {
+                                      final deleteResponse = await showAdaptiveDialog<bool>(
+                                        context: context,
+                                        builder: (context) {
+                                          return AlertDialog.adaptive(
+                                            content: const Text(
+                                              Strings.deleteContent,
+                                            ),
+                                            title: const Text(Strings.deleteWarning),
+                                            actions: [
+                                              TextButton(
+                                                onPressed: () {
+                                                  context.pop(false);
+                                                },
+                                                child: const Text('Cancel'),
+                                              ),
+                                              TextButton(
+                                                onPressed: () async {
+                                                  final isAccountDeleted = await ref.read(deleteAccountProvider(userId: userDetails.userId!).future);
+                                                  if (isAccountDeleted == true) {
+                                                    context.pop(true);
+                                                  }
+                                                },
+                                                child: const Text('Delete'),
+                                              ),
+                                            ],
+                                          );
+                                        },
+                                      );
+                                      log(deleteResponse.toString());
+                                      if (deleteResponse == true) {
+                                        await handleLogout(context, prefs, ref, true);
+                                      }
+                                    },
+                                    child: const Text(
+                                      'Delete Account',
+                                      style: TextStyle(fontSize: 10),
+                                    ),
                                   ),
                                 ),
-                              ),
-                          ],
-                        );
-                      }
-                    },
-                  );
-                },
-                error: (error, stackTrace) {
-                  return Center(child: Text('Error: $error'));
-                },
-                loading: () => const Center(
-                  child: CircularProgressIndicator.adaptive(),
+                            ],
+                          );
+                        }
+                      },
+                    );
+                  },
+                  error: (error, stackTrace) {
+                    return Center(child: Text('Error: $error'));
+                  },
+                  loading: () => const Center(
+                    child: CircularProgressIndicator.adaptive(),
+                  ),
                 ),
               ),
             ),
@@ -378,7 +286,7 @@ class ProfileScreen extends ConsumerWidget {
     );
   }
 
-  Widget _socialMedia(context, imagePath, onTap) {
+  Widget _socialMedia(String imagePath, void Function()? onTap) {
     return GestureDetector(
       onTap: onTap,
       child: SizedBox(
@@ -421,6 +329,201 @@ class ProfileScreen extends ConsumerWidget {
   }
 }
 
+class _CompanyCard extends StatelessWidget {
+  const _CompanyCard(this.userProfileData);
+
+  final UserProfileModel? userProfileData;
+
+  @override
+  Widget build(BuildContext context) {
+    final random = math.Random(userProfileData?.worksAt.hashCode);
+    final userColor = Color((random.nextDouble() * 0xFFFFFF).toInt()).withOpacity(1);
+    return Card(
+      elevation: 1,
+      color: Colors.white,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Company',
+              style: const TextStyle(
+                fontWeight: FontWeight.bold,
+                color: Colors.black,
+                fontSize: 18,
+              ),
+            ),
+            Row(
+              children: [
+                CircleAvatar(
+                  backgroundColor: userColor,
+                  radius: 25,
+                  child: Text(
+                    userProfileData!.worksAt![0].toUpperCase(),
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 22,
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 10),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      userProfileData?.post ?? '',
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black,
+                        fontSize: 13,
+                      ),
+                    ),
+                    Text(
+                      userProfileData?.worksAt ?? '',
+                      style: const TextStyle(
+                        color: Colors.black,
+                        fontSize: 13,
+                      ),
+                    ),
+                  ],
+                )
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _AboutCard extends StatelessWidget {
+  const _AboutCard();
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      elevation: 1,
+      color: Colors.white,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'About',
+              style: const TextStyle(
+                fontWeight: FontWeight.bold,
+                color: Colors.black,
+                fontSize: 18,
+              ),
+            ),
+            Text(
+              "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
+              maxLines: 3,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(fontSize: 12),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _UserInfoDetails extends StatelessWidget {
+  const _UserInfoDetails({
+    this.userProfileData,
+  });
+
+  final UserProfileModel? userProfileData;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: ScreenSize.width(context),
+      decoration: const BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.only(
+          bottomLeft: Radius.circular(10),
+          bottomRight: Radius.circular(10),
+        ),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.only(left: 20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              userProfileData?.name?.isNotEmpty == true ? userProfileData!.name![0].toUpperCase() + userProfileData!.name!.substring(1) : '',
+              style: const TextStyle(
+                fontWeight: FontWeight.bold,
+                color: Colors.black,
+                fontSize: 20,
+              ),
+            ),
+            Row(
+              children: [
+                const Text(
+                  'Using Briefsea as:',
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 13,
+                  ),
+                ),
+                const SizedBox(
+                  width: 5,
+                ),
+                Text(
+                  userProfileData?.postingAs?.isNotEmpty == true
+                      ? "${userProfileData?.postingAs?[0].toUpperCase()}${userProfileData?.postingAs?.substring(1)}"
+                      : '',
+                  style: const TextStyle(
+                    color: Colors.black,
+                    fontSize: 13,
+                  ),
+                ),
+              ],
+            ),
+            Row(
+              children: [
+                const Text(
+                  'Industry:',
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 13,
+                  ),
+                ),
+                const SizedBox(
+                  width: 5,
+                ),
+                Text(
+                  userProfileData?.industry?.isNotEmpty == true ? "${userProfileData?.industry?.join(', ')}" : '',
+                  style: const TextStyle(
+                    color: Colors.black,
+                    fontSize: 13,
+                  ),
+                ),
+              ],
+            ),
+            Text(
+              userProfileData?.location?.isNotEmpty == true
+                  ? "${userProfileData?.location?[0].toUpperCase()}${userProfileData?.location?.substring(1)}"
+                  : '',
+              style: const TextStyle(
+                color: Colors.black,
+                fontSize: 13,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
 class _BannerWidget extends ConsumerWidget {
   _BannerWidget({
     this.userDetails,
@@ -441,13 +544,13 @@ class _BannerWidget extends ConsumerWidget {
       width: ScreenSize.width(context),
       height: ScreenSize.height(context) * 0.15,
       decoration: BoxDecoration(
-        color: Colors.pink[100]!,
+        color: Colors.pink[100],
         borderRadius: const BorderRadius.only(
           topLeft: Radius.circular(40),
           topRight: Radius.circular(40),
         ),
       ),
-      child: selectedBanner != null && userProfileData?.bannerSrc != ""
+      child: selectedBanner != null && userProfileData?.bannerSrc != ''
           ? Stack(
               children: [
                 ClipRRect(
@@ -466,7 +569,6 @@ class _BannerWidget extends ConsumerWidget {
                       ),
                       errorWidget: (context, url, error) => const Row(
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           Icon(Icons.error),
                           Icon(Icons.error),
@@ -513,8 +615,8 @@ class _AvatarWidget extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final selectedAvatar = ref.watch(selectedAvatarImageProvider);
 
-    math.Random random = math.Random(userProfileData?.userId.hashCode);
-    Color userColor = Color((random.nextDouble() * 0xFFFFFF).toInt()).withOpacity(1.0);
+    final random = math.Random(userProfileData?.userId.hashCode);
+    final userColor = Color((random.nextDouble() * 0xFFFFFF).toInt()).withOpacity(1);
 
     return Align(
       alignment: Alignment.centerLeft,
@@ -529,18 +631,18 @@ class _AvatarWidget extends ConsumerWidget {
           child: CircleAvatar(
             backgroundColor: userColor,
             radius: 65,
-            backgroundImage: selectedAvatar != "" && selectedAvatar != null && userProfileData?.avatarSrc != ""
+            backgroundImage: selectedAvatar != '' && selectedAvatar != null && userProfileData?.avatarSrc != ''
                 ? CachedNetworkImageProvider(selectedAvatar)
-                : userProfileData?.gender == "Male"
+                : userProfileData?.gender == 'Male'
                     ? const AssetImage(Assets.MALE)
-                    : userProfileData?.gender == "Female"
+                    : userProfileData?.gender == 'Female'
                         ? const AssetImage(Assets.FEMALE)
-                        : userProfileData?.gender == "Others"
+                        : userProfileData?.gender == 'Others'
                             ? const AssetImage(Assets.OTHERS)
                             : null,
             child: selectedAvatar == null && userProfileData?.gender == null
                 ? Text(
-                    userProfileData?.name?[0].toUpperCase() ?? "",
+                    userProfileData?.name?[0].toUpperCase() ?? '',
                     style: const TextStyle(color: Colors.white),
                     textScaler: const TextScaler.linear(3),
                   )

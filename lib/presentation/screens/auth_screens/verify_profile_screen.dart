@@ -39,6 +39,7 @@ class VerifyProfileScreen extends ConsumerWidget {
   final TextEditingController jobTitleCont = TextEditingController();
   final TextEditingController industryCont = TextEditingController();
   final TextEditingController locationCont = TextEditingController();
+  final TextEditingController aboutCont = TextEditingController();
   final _formKey = GlobalKey<FormState>();
 
   final Debouncer _debouncer = Debouncer(milliseconds: 500);
@@ -161,20 +162,18 @@ class VerifyProfileScreen extends ConsumerWidget {
               'Name',
               CustomTextFormField(
                 readOnly: true,
-                hintText: "${userDetails['user_name']?[0].toUpperCase()}${userDetails['user_name']!.substring(1)}",
+                hintText: "${userDetails['user_name']?[0].toUpperCase()}${userDetails['user_name']?.substring(1)}",
                 hintColor: Colors.black,
               ),
-              CupertinoIcons.person,
             ),
             customFields(
               context,
               'Posting as',
               CustomTextFormField(
                 readOnly: true,
-                hintText: "${userDetails['type']?[0].toUpperCase()}${userDetails['type']!.substring(1)}",
+                hintText: "${userDetails['type']?[0].toUpperCase()}${userDetails['type']?.substring(1)}",
                 hintColor: Colors.black,
               ),
-              CupertinoIcons.person_2,
             ),
             customFields(
               context,
@@ -194,7 +193,6 @@ class VerifyProfileScreen extends ConsumerWidget {
                   return null;
                 },
               ),
-              CupertinoIcons.person_2,
             ),
             customFields(
               context,
@@ -219,7 +217,6 @@ class VerifyProfileScreen extends ConsumerWidget {
                   }).toList(),
                 ),
               ),
-              Icons.female,
             ),
             customFields(
               context,
@@ -267,21 +264,30 @@ class VerifyProfileScreen extends ConsumerWidget {
                   ),
                 ],
               ),
-              CupertinoIcons.phone_fill,
             ),
             customFields(
               context,
               'Industry',
-              MultiSelectDialogField(
-                items: industries.map((item) => MultiSelectItem<String>(item['value']!, item['label']!)).toList(),
+              // MultiSelectDialogField(
+              //   items: industries.map((item) => MultiSelectItem<String>(item['value']!, item['label']!)).toList(),
+              //   initialValue: selectedIndustries,
+              //   listType: MultiSelectListType.CHIP,
+              //   onConfirm: (values) {
+              //     ref.read(selectedIndustriesProvider.notifier).state = values;
+              //   },
+              //   title: const Text('Select Industries'),
+              // ),
+              MultiSelectChipField<String?>(
+                items: industries.map((item) => MultiSelectItem<String?>(item['value'], item['label']!)).toList(),
                 initialValue: selectedIndustries,
-                listType: MultiSelectListType.CHIP,
-                onConfirm: (values) {
-                  ref.read(selectedIndustriesProvider.notifier).state = values;
+                onTap: (List<String?> values) {
+                  ref.read(selectedIndustriesProvider.notifier).state = values.whereType<String>().toList();
                 },
-                title: const Text('Select Industries'),
+                showHeader: false,
+                decoration: BoxDecoration(),
+                // selectedChipColor: const Color(0xFF4C27FF),
+                // selectedTextStyle: TextStyle(color: Colors.white),
               ),
-              CupertinoIcons.square_list_fill,
             ),
             if (userDetails['type'] != 'freelancer')
               customFields(
@@ -292,7 +298,6 @@ class VerifyProfileScreen extends ConsumerWidget {
                   controller: jobTitleCont,
                   textInputAction: TextInputAction.next,
                 ),
-                Icons.work_outline_rounded,
               ),
             if (userDetails['type'] != 'freelancer')
               customFields(
@@ -303,7 +308,6 @@ class VerifyProfileScreen extends ConsumerWidget {
                   controller: companyCont,
                   textInputAction: TextInputAction.next,
                 ),
-                CupertinoIcons.building_2_fill,
               ),
             customFields(
               context,
@@ -313,7 +317,16 @@ class VerifyProfileScreen extends ConsumerWidget {
                 controller: locationCont,
                 textInputAction: TextInputAction.done,
               ),
-              CupertinoIcons.location_solid,
+            ),
+            customFields(
+              context,
+              'About',
+              CustomTextFormField(
+                hintText: "Tell us something about yourself...",
+                controller: aboutCont,
+                textInputAction: TextInputAction.done,
+                keyboardType: TextInputType.multiline,
+              ),
             ),
           ],
         ),
@@ -321,13 +334,16 @@ class VerifyProfileScreen extends ConsumerWidget {
     );
   }
 
-  customFields(context, title, subtitle, icon) {
-    return ListTile(
-      dense: true,
-      leading: Icon(icon),
-      title: Text(title),
-      subtitle: subtitle,
-      // onTap: onTap!,
+  customFields(context, title, subtitle) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 20),
+      child: Row(
+        children: [
+          Text(title),
+          SizedBox(width: 10),
+          Expanded(child: subtitle),
+        ],
+      ),
     );
   }
 
