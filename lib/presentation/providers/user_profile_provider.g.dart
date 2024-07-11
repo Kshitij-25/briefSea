@@ -209,7 +209,7 @@ class _GetOtherProfileProviderElement
   String? get otherUserId => (origin as GetOtherProfileProvider).otherUserId;
 }
 
-String _$verifyProfileHash() => r'5323d2e00f9f63f56d1ee1e74407dcfcf08d6d06';
+String _$verifyProfileHash() => r'5bd2091b0177fffb3807cd7aee89440679060263';
 
 /// See also [verifyProfile].
 @ProviderFor(verifyProfile)
@@ -237,6 +237,7 @@ class VerifyProfileFamily extends Family<AsyncValue<String>> {
     required String? postingAs,
     required String? gender,
     required String? username,
+    required String? aboutMe,
   }) {
     return VerifyProfileProvider(
       userId: userId,
@@ -254,6 +255,7 @@ class VerifyProfileFamily extends Family<AsyncValue<String>> {
       postingAs: postingAs,
       gender: gender,
       username: username,
+      aboutMe: aboutMe,
     );
   }
 
@@ -277,6 +279,7 @@ class VerifyProfileFamily extends Family<AsyncValue<String>> {
       postingAs: provider.postingAs,
       gender: provider.gender,
       username: provider.username,
+      aboutMe: provider.aboutMe,
     );
   }
 
@@ -314,6 +317,7 @@ class VerifyProfileProvider extends AutoDisposeFutureProvider<String> {
     required String? postingAs,
     required String? gender,
     required String? username,
+    required String? aboutMe,
   }) : this._internal(
           (ref) => verifyProfile(
             ref as VerifyProfileRef,
@@ -332,6 +336,7 @@ class VerifyProfileProvider extends AutoDisposeFutureProvider<String> {
             postingAs: postingAs,
             gender: gender,
             username: username,
+            aboutMe: aboutMe,
           ),
           from: verifyProfileProvider,
           name: r'verifyProfileProvider',
@@ -357,6 +362,7 @@ class VerifyProfileProvider extends AutoDisposeFutureProvider<String> {
           postingAs: postingAs,
           gender: gender,
           username: username,
+          aboutMe: aboutMe,
         );
 
   VerifyProfileProvider._internal(
@@ -381,6 +387,7 @@ class VerifyProfileProvider extends AutoDisposeFutureProvider<String> {
     required this.postingAs,
     required this.gender,
     required this.username,
+    required this.aboutMe,
   }) : super.internal();
 
   final String? userId;
@@ -398,6 +405,7 @@ class VerifyProfileProvider extends AutoDisposeFutureProvider<String> {
   final String? postingAs;
   final String? gender;
   final String? username;
+  final String? aboutMe;
 
   @override
   Override overrideWith(
@@ -427,6 +435,7 @@ class VerifyProfileProvider extends AutoDisposeFutureProvider<String> {
         postingAs: postingAs,
         gender: gender,
         username: username,
+        aboutMe: aboutMe,
       ),
     );
   }
@@ -453,7 +462,8 @@ class VerifyProfileProvider extends AutoDisposeFutureProvider<String> {
         other.jwtToken == jwtToken &&
         other.postingAs == postingAs &&
         other.gender == gender &&
-        other.username == username;
+        other.username == username &&
+        other.aboutMe == aboutMe;
   }
 
   @override
@@ -474,6 +484,7 @@ class VerifyProfileProvider extends AutoDisposeFutureProvider<String> {
     hash = _SystemHash.combine(hash, postingAs.hashCode);
     hash = _SystemHash.combine(hash, gender.hashCode);
     hash = _SystemHash.combine(hash, username.hashCode);
+    hash = _SystemHash.combine(hash, aboutMe.hashCode);
 
     return _SystemHash.finish(hash);
   }
@@ -524,6 +535,9 @@ mixin VerifyProfileRef on AutoDisposeFutureProviderRef<String> {
 
   /// The parameter `username` of this provider.
   String? get username;
+
+  /// The parameter `aboutMe` of this provider.
+  String? get aboutMe;
 }
 
 class _VerifyProfileProviderElement
@@ -560,9 +574,11 @@ class _VerifyProfileProviderElement
   String? get gender => (origin as VerifyProfileProvider).gender;
   @override
   String? get username => (origin as VerifyProfileProvider).username;
+  @override
+  String? get aboutMe => (origin as VerifyProfileProvider).aboutMe;
 }
 
-String _$editProfileHash() => r'7df947431a2ab0d2138b7379d0c5a8d6b49dfb92';
+String _$editProfileHash() => r'98d3b13d83f87159b2295dc4d6aa264e9d918bb9';
 
 /// See also [editProfile].
 @ProviderFor(editProfile)
@@ -593,6 +609,7 @@ class EditProfileFamily extends Family<AsyncValue<EditProfileModel>> {
     required String? updatedAt,
     required String? userName,
     required bool? viewAccess,
+    required String? aboutMe,
   }) {
     return EditProfileProvider(
       userId: userId,
@@ -613,6 +630,7 @@ class EditProfileFamily extends Family<AsyncValue<EditProfileModel>> {
       updatedAt: updatedAt,
       userName: userName,
       viewAccess: viewAccess,
+      aboutMe: aboutMe,
     );
   }
 
@@ -639,6 +657,7 @@ class EditProfileFamily extends Family<AsyncValue<EditProfileModel>> {
       updatedAt: provider.updatedAt,
       userName: provider.userName,
       viewAccess: provider.viewAccess,
+      aboutMe: provider.aboutMe,
     );
   }
 
@@ -679,6 +698,7 @@ class EditProfileProvider extends AutoDisposeFutureProvider<EditProfileModel> {
     required String? updatedAt,
     required String? userName,
     required bool? viewAccess,
+    required String? aboutMe,
   }) : this._internal(
           (ref) => editProfile(
             ref as EditProfileRef,
@@ -700,6 +720,7 @@ class EditProfileProvider extends AutoDisposeFutureProvider<EditProfileModel> {
             updatedAt: updatedAt,
             userName: userName,
             viewAccess: viewAccess,
+            aboutMe: aboutMe,
           ),
           from: editProfileProvider,
           name: r'editProfileProvider',
@@ -728,6 +749,7 @@ class EditProfileProvider extends AutoDisposeFutureProvider<EditProfileModel> {
           updatedAt: updatedAt,
           userName: userName,
           viewAccess: viewAccess,
+          aboutMe: aboutMe,
         );
 
   EditProfileProvider._internal(
@@ -755,6 +777,7 @@ class EditProfileProvider extends AutoDisposeFutureProvider<EditProfileModel> {
     required this.updatedAt,
     required this.userName,
     required this.viewAccess,
+    required this.aboutMe,
   }) : super.internal();
 
   final String? userId;
@@ -775,6 +798,7 @@ class EditProfileProvider extends AutoDisposeFutureProvider<EditProfileModel> {
   final String? updatedAt;
   final String? userName;
   final bool? viewAccess;
+  final String? aboutMe;
 
   @override
   Override overrideWith(
@@ -807,6 +831,7 @@ class EditProfileProvider extends AutoDisposeFutureProvider<EditProfileModel> {
         updatedAt: updatedAt,
         userName: userName,
         viewAccess: viewAccess,
+        aboutMe: aboutMe,
       ),
     );
   }
@@ -836,7 +861,8 @@ class EditProfileProvider extends AutoDisposeFutureProvider<EditProfileModel> {
         other.createdAt == createdAt &&
         other.updatedAt == updatedAt &&
         other.userName == userName &&
-        other.viewAccess == viewAccess;
+        other.viewAccess == viewAccess &&
+        other.aboutMe == aboutMe;
   }
 
   @override
@@ -860,6 +886,7 @@ class EditProfileProvider extends AutoDisposeFutureProvider<EditProfileModel> {
     hash = _SystemHash.combine(hash, updatedAt.hashCode);
     hash = _SystemHash.combine(hash, userName.hashCode);
     hash = _SystemHash.combine(hash, viewAccess.hashCode);
+    hash = _SystemHash.combine(hash, aboutMe.hashCode);
 
     return _SystemHash.finish(hash);
   }
@@ -919,6 +946,9 @@ mixin EditProfileRef on AutoDisposeFutureProviderRef<EditProfileModel> {
 
   /// The parameter `viewAccess` of this provider.
   bool? get viewAccess;
+
+  /// The parameter `aboutMe` of this provider.
+  String? get aboutMe;
 }
 
 class _EditProfileProviderElement
@@ -962,6 +992,8 @@ class _EditProfileProviderElement
   String? get userName => (origin as EditProfileProvider).userName;
   @override
   bool? get viewAccess => (origin as EditProfileProvider).viewAccess;
+  @override
+  String? get aboutMe => (origin as EditProfileProvider).aboutMe;
 }
 
 String _$uploadAvatarHash() => r'77d74af3c84698c8b1a0895e9a8230d3db34a264';

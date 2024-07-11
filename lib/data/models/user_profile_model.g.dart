@@ -32,6 +32,7 @@ _$UserProfileModelImpl _$$UserProfileModelImplFromJson(
       gender: json['gender'] as String?,
       viewAccess: json['viewAccess'] as bool?,
       userName: json['userName'] as String?,
+      aboutMe: json['about'] as String?,
     );
 
 Map<String, dynamic> _$$UserProfileModelImplToJson(
@@ -56,4 +57,5 @@ Map<String, dynamic> _$$UserProfileModelImplToJson(
       'gender': instance.gender,
       'viewAccess': instance.viewAccess,
       'userName': instance.userName,
+      'about': instance.aboutMe,
     };

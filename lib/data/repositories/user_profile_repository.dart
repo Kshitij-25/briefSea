@@ -53,6 +53,7 @@ class UserProfileRepository {
     String? postingAs,
     String? gender,
     String? username,
+    String? aboutMe,
   }) async {
     try {
       final verifyProfile = await _userProfileRemoteDataSource.verifyProfile(
@@ -71,6 +72,7 @@ class UserProfileRepository {
         postingAs: postingAs,
         gender: gender,
         username: username,
+        aboutMe: aboutMe,
       );
       return Right(verifyProfile!);
     } on AppError catch (e) {
@@ -99,6 +101,7 @@ class UserProfileRepository {
     String? updatedAt,
     String? userName,
     bool? viewAccess,
+    String? aboutMe,
   }) async {
     try {
       final verifyProfile = await _userProfileRemoteDataSource.editProfile(
@@ -120,6 +123,7 @@ class UserProfileRepository {
         updatedAt: updatedAt,
         userName: userName,
         viewAccess: viewAccess,
+        aboutMe: aboutMe,
       );
       return Right(verifyProfile!);
     } on AppError catch (e) {

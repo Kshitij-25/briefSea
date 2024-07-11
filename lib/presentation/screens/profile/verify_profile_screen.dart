@@ -1,6 +1,7 @@
 import 'dart:developer';
 import 'dart:io';
 
+import 'package:briefsea/common/static_data/expertise_data.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show rootBundle;
@@ -86,26 +87,29 @@ class VerifyProfileScreen extends ConsumerWidget {
                 uploadedAvatarKey = await sendDefaultAvatar(ref: ref, userDetails: userDetails);
               }
               if (phoneNumberCont.text.isNotEmpty && locationCont.text.isNotEmpty && countryCodeCont.text.isNotEmpty) {
-                var verifyMessage = await ref.read(verifyProfileProvider(
-                  userId: userDetails['user_id']!,
-                  uName: userDetails['user_name']!,
-                  countryCode: int.tryParse(countryCodeCont.text),
-                  contact: int.tryParse(phoneNumberCont.text),
-                  company: companyCont.text,
-                  jobTitle: jobTitleCont.text,
-                  industry: selectedIndustry,
-                  location: locationCont.text,
-                  avatarSrc: uploadedAvatarKey ?? '',
-                  bannerSrc: uploadedBannerKey ?? '',
-                  jwtToken: userDetails['jwtToken'],
-                  expertise: selectedExpertise,
-                  postingAs: userDetails['type']!,
-                  gender: selectedGender,
-                  username: userNameCont.text,
-                ).future);
+                var verifyMessage = await ref.read(
+                  verifyProfileProvider(
+                    userId: userDetails['user_id']!,
+                    uName: userDetails['user_name']!,
+                    countryCode: int.tryParse(countryCodeCont.text),
+                    contact: int.tryParse(phoneNumberCont.text),
+                    company: companyCont.text,
+                    jobTitle: jobTitleCont.text,
+                    industry: selectedIndustry,
+                    location: locationCont.text,
+                    avatarSrc: uploadedAvatarKey ?? '',
+                    bannerSrc: uploadedBannerKey ?? '',
+                    jwtToken: userDetails['jwtToken'],
+                    expertise: selectedExpertise,
+                    postingAs: userDetails['type']!,
+                    gender: selectedGender,
+                    username: userNameCont.text,
+                    aboutMe: aboutCont.text,
+                  ).future,
+                );
                 if (verifyMessage == "Profile added successfully") {
                   AppUtility(context).message(verifyMessage);
-                  context.go(HomeScreen.routeName);
+                  context.pushReplacementNamed(HomeScreen.routeName);
                 }
               } else {
                 AppUtility(context).message("Please complete the profile first.");
@@ -128,6 +132,15 @@ class VerifyProfileScreen extends ConsumerWidget {
     final verifyBanner = ref.watch(verifyBannerImageProvider);
     final selectedIndustries = ref.watch(selectedIndustriesProvider.notifier).state;
     final selectedExpertise = ref.watch(selectedExpertiseProvider.notifier).state;
+
+    List<Map<String, String>> filteredExpertiseData = [];
+
+    if (selectedIndustries.contains('Tech')) {
+      filteredExpertiseData.addAll(techExpertiseData);
+    }
+    if (selectedIndustries.contains('Marketing')) {
+      filteredExpertiseData.addAll(marketingExpertiseData);
+    }
 
     return SingleChildScrollView(
       child: Form(
@@ -231,15 +244,15 @@ class VerifyProfileScreen extends ConsumerWidget {
                       controller: countryCodeCont,
                       textInputAction: TextInputAction.next,
                       keyboardType: TextInputType.number,
-                      validator: (value) {
-                        if (!ValidationUtils.isNotEmpty(value!)) {
-                          return 'Country code is required';
-                        }
-                        if (!ValidationUtils.isValidCountryCode(value)) {
-                          return 'Enter a valid country code (1 to 3 digits)';
-                        }
-                        return null;
-                      },
+                      // validator: (value) {
+                      //   if (ValidationUtils.isNotEmpty(value!)) {
+                      //     return 'Country code is required';
+                      //   }
+                      //   if (ValidationUtils.isValidCountryCode(value)) {
+                      //     return 'Enter a valid country code (1 to 3 digits)';
+                      //   }
+                      //   return null;
+                      // },
                     ),
                   ),
                   const SizedBox(width: 10),
@@ -251,15 +264,15 @@ class VerifyProfileScreen extends ConsumerWidget {
                       textInputAction: TextInputAction.next,
                       keyboardType: TextInputType.number,
                       border: const OutlineInputBorder(),
-                      validator: (value) {
-                        if (!ValidationUtils.isNotEmpty(value!)) {
-                          return 'Phone number is required';
-                        }
-                        if (!ValidationUtils.isValidPhoneNumber(value)) {
-                          return 'Enter a valid phone number';
-                        }
-                        return null;
-                      },
+                      // validator: (value) {
+                      //   if (!ValidationUtils.isNotEmpty(value!)) {
+                      //     return 'Phone number is required';
+                      //   }
+                      //   if (!ValidationUtils.isValidPhoneNumber(value)) {
+                      //     return 'Enter a valid phone number';
+                      //   }
+                      //   return null;
+                      // },
                     ),
                   ),
                 ],
@@ -268,20 +281,28 @@ class VerifyProfileScreen extends ConsumerWidget {
             customFields(
               context,
               'Industry',
-              // MultiSelectDialogField(
-              //   items: industries.map((item) => MultiSelectItem<String>(item['value']!, item['label']!)).toList(),
-              //   initialValue: selectedIndustries,
-              //   listType: MultiSelectListType.CHIP,
-              //   onConfirm: (values) {
-              //     ref.read(selectedIndustriesProvider.notifier).state = values;
-              //   },
-              //   title: const Text('Select Industries'),
-              // ),
               MultiSelectChipField<String?>(
                 items: industries.map((item) => MultiSelectItem<String?>(item['value'], item['label']!)).toList(),
                 initialValue: selectedIndustries,
                 onTap: (List<String?> values) {
                   ref.read(selectedIndustriesProvider.notifier).state = values.whereType<String>().toList();
+                  // ref.invalidate(selectedIndustriesProvider);
+                  ref.invalidate(selectedExpertiseProvider);
+                },
+                showHeader: false,
+                decoration: BoxDecoration(),
+                // selectedChipColor: const Color(0xFF4C27FF),
+                // selectedTextStyle: TextStyle(color: Colors.white),
+              ),
+            ),
+            customFields(
+              context,
+              'Expertise',
+              MultiSelectChipField<String?>(
+                items: filteredExpertiseData.map((item) => MultiSelectItem<String?>(item['value'], item['label']!)).toList(),
+                initialValue: selectedExpertise,
+                onTap: (List<String?> values) {
+                  ref.read(selectedExpertiseProvider.notifier).state = values.whereType<String>().toList();
                 },
                 showHeader: false,
                 decoration: BoxDecoration(),

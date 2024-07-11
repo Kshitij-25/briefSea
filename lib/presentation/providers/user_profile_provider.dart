@@ -70,6 +70,7 @@ Future<String> verifyProfile(
   required String? postingAs,
   required String? gender,
   required String? username,
+  required String? aboutMe,
 }) async {
   final userProfileRepository = ref.read(userProfileRepositoryProvider);
   final eitherVerifyProfilenOrError = await userProfileRepository.verifyProfile(
@@ -88,6 +89,7 @@ Future<String> verifyProfile(
     postingAs: postingAs,
     gender: gender,
     username: username,
+    aboutMe: aboutMe,
   );
   return eitherVerifyProfilenOrError!.fold(
     (error) {
@@ -125,6 +127,7 @@ Future<EditProfileModel> editProfile(
   required String? updatedAt,
   required String? userName,
   required bool? viewAccess,
+  required String? aboutMe,
 }) async {
   final userProfileRepository = ref.read(userProfileRepositoryProvider);
   final eitherEditProfileOrError = await userProfileRepository.editProfile(
@@ -146,6 +149,7 @@ Future<EditProfileModel> editProfile(
     updatedAt: updatedAt,
     userName: userName,
     viewAccess: viewAccess,
+    aboutMe: aboutMe,
   );
   return eitherEditProfileOrError!.fold(
     (error) {

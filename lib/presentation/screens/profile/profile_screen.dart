@@ -11,19 +11,16 @@ import 'package:briefsea/data/models/user_profile_model.dart';
 import 'package:briefsea/main.dart';
 import 'package:briefsea/presentation/providers/auth_provider.dart';
 import 'package:briefsea/presentation/providers/user_profile_provider.dart';
-import 'package:briefsea/presentation/screens/auth_screens/welcome_screen.dart';
-import 'package:briefsea/presentation/screens/edit_profile_screen.dart';
-import 'package:briefsea/presentation/state_providers/bottom_nav_bar_state_provider.dart';
 import 'package:briefsea/presentation/state_providers/image_picker_provider.dart';
-import 'package:briefsea/presentation/widgets/custom_elevated_button.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher_string.dart';
+
+import 'edit_profile_screen.dart';
 
 class ProfileScreen extends ConsumerWidget {
   const ProfileScreen({
@@ -57,7 +54,7 @@ class ProfileScreen extends ConsumerWidget {
     final userDetails = isOtherProfile == true ? ref.watch(getOtherProfileProvider(otherUserId: otherUserId)) : ref.watch(getUserProfileProvider);
     final userData = ref.watch(userDetailsProvider);
     return Scaffold(
-      backgroundColor: Colors.grey[300],
+      backgroundColor: Colors.white,
       appBar: isOtherProfile == true
           ? AppBar(
               backgroundColor: const Color(0xFF4B26FD),
@@ -75,19 +72,19 @@ class ProfileScreen extends ConsumerWidget {
           children: [
             Container(
               width: double.infinity,
-              height: 70,
+              height: 370,
               color: const Color(0xFF4B26FD),
             ),
             SingleChildScrollView(
               child: Container(
-                height: ScreenSize.height(context) * 0.8,
+                height: ScreenSize.height(context),
                 width: ScreenSize.width(context),
                 decoration: BoxDecoration(
                   borderRadius: const BorderRadius.only(
                     topLeft: Radius.circular(40),
                     topRight: Radius.circular(40),
                   ),
-                  color: Colors.grey[300],
+                  color: Colors.white,
                 ),
                 child: userDetails.when(
                   data: (userDetails) {
@@ -99,82 +96,74 @@ class ProfileScreen extends ConsumerWidget {
                             child: CircularProgressIndicator.adaptive(),
                           );
                         } else if (snapshot.hasError) {
-                          return Center(child: Text('Error: ${snapshot.error}'));
+                          return Center(
+                            child: Text('Error: ${snapshot.error}'),
+                          );
                         } else {
                           return Column(
                             children: [
-                              Card(
-                                elevation: 1,
-                                color: Colors.white,
-                                shape: const RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.only(
-                                    topLeft: Radius.circular(40),
-                                    topRight: Radius.circular(40),
-                                    bottomLeft: Radius.circular(10),
-                                    bottomRight: Radius.circular(10),
+                              Column(
+                                children: [
+                                  Stack(
+                                    children: [
+                                      _BannerWidget(
+                                        userDetails: userData,
+                                        userProfileData: userDetails,
+                                        isOtherProfile: isOtherProfile,
+                                      ),
+                                      _AvatarWidget(
+                                        userDetails: userData,
+                                        userProfileData: userDetails,
+                                        isOtherProfile: isOtherProfile,
+                                      ),
+                                    ],
                                   ),
-                                ),
-                                child: Column(
-                                  children: [
-                                    Stack(
-                                      children: [
-                                        _BannerWidget(
-                                          userDetails: userData,
-                                          userProfileData: userDetails,
-                                          isOtherProfile: isOtherProfile,
-                                        ),
-                                        _AvatarWidget(
-                                          userDetails: userData,
-                                          userProfileData: userDetails,
-                                          isOtherProfile: isOtherProfile,
-                                        ),
-                                      ],
-                                    ),
-                                    _UserInfoDetails(
-                                      userProfileData: userDetails,
-                                    ),
-                                    if (isOtherProfile != true)
-                                      const SizedBox(
-                                        height: 20,
-                                      ),
-                                    if (isOtherProfile != true)
-                                      CustomElevatedButton(
-                                        width: ScreenSize.width(context) * 0.7,
-                                        onPressed: () {
-                                          GoRouter.of(context).push(
-                                            EditProfileScreen.routeName,
-                                            extra: userDetails,
-                                          );
-                                        },
-                                        buttonLabel: 'Edit Profile',
-                                      ),
-                                    if (isOtherProfile != true)
-                                      const SizedBox(
-                                        height: 10,
-                                      ),
-                                    if (isOtherProfile != true)
-                                      Padding(
-                                        padding: const EdgeInsets.all(10),
-                                        child: Row(
-                                          mainAxisAlignment: MainAxisAlignment.center,
-                                          children: [
-                                            GestureDetector(
-                                              onTap: () async {
-                                                await handleLogout(context, prefs, ref, false);
-                                              },
-                                              child: const Text('Logout'),
-                                            ),
-                                          ],
-                                        ),
-                                      )
-                                    else
-                                      const SizedBox(height: 20),
-                                  ],
-                                ),
+                                  _UserInfoDetails(
+                                    userProfileData: userDetails,
+                                  ),
+
+                                  // if (isOtherProfile != true)
+                                  //   const SizedBox(
+                                  //     height: 20,
+                                  //   ),
+                                  // if (isOtherProfile != true)
+                                  //   CustomElevatedButton(
+                                  //     width: ScreenSize.width(context) * 0.7,
+                                  //     onPressed: () {
+                                  //       GoRouter.of(context).push(
+                                  //         EditProfileScreen.routeName,
+                                  //         extra: userDetails,
+                                  //       );
+                                  //     },
+                                  //     buttonLabel: 'Edit Profile',
+                                  //   ),
+                                  // if (isOtherProfile != true)
+                                  //   const SizedBox(
+                                  //     height: 10,
+                                  //   ),
+                                  // if (isOtherProfile != true)
+                                  //   Padding(
+                                  //     padding: const EdgeInsets.all(10),
+                                  //     child: Row(
+                                  //       mainAxisAlignment: MainAxisAlignment.center,
+                                  //       children: [
+                                  //         GestureDetector(
+                                  //           onTap: () async {
+                                  //             await handleLogout(context, prefs, ref, false);
+                                  //           },
+                                  //           child: const Text('Logout'),
+                                  //         ),
+                                  //       ],
+                                  //     ),
+                                  //   )
+                                  // else
+                                  //   const SizedBox(height: 20),
+                                ],
                               ),
-                              _AboutCard(),
+                              if (userDetails.aboutMe?.isNotEmpty == true) _AboutCard(userProfileData: userDetails),
                               if (userDetails.postingAs != 'freelancer') _CompanyCard(userDetails),
-                              const Spacer(),
+                              if (userDetails.expertise?.isNotEmpty == true) _ExpertiseCard(userProfileData: userDetails),
+                              const SizedBox(height: 20),
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
@@ -256,7 +245,7 @@ class ProfileScreen extends ConsumerWidget {
                                       );
                                       log(deleteResponse.toString());
                                       if (deleteResponse == true) {
-                                        await handleLogout(context, prefs, ref, true);
+                                        await AppUtility(context).handleLogout(context, prefs, ref, true);
                                       }
                                     },
                                     child: const Text(
@@ -292,10 +281,6 @@ class ProfileScreen extends ConsumerWidget {
       child: SizedBox(
         height: 25,
         width: 25,
-        // decoration: BoxDecoration(
-        //   color: Colors.grey[200],
-        //   borderRadius: BorderRadius.circular(5),
-        // ),
         child: SvgPicture.asset(
           imagePath,
           fit: BoxFit.fill,
@@ -303,29 +288,60 @@ class ProfileScreen extends ConsumerWidget {
       ),
     );
   }
+}
 
-  Future<void> handleLogout(BuildContext context, SharedPreferences? prefs, WidgetRef ref, bool isDelete) async {
-    try {
-      // Ensure prefs is initialized
-      if (prefs != null) {
-        // Set isLogin to false
-        await prefs.setBool('isLogin', false);
-        // Clear all preferences if needed
-        // await prefs.clear();
-        // Navigate to WelcomeScreen
-        context.go(WelcomeScreen.routeName);
-        // Show logout successful message
-        AppUtility(context).message(!isDelete ? 'Logout Successful' : 'Account Deleted');
-        // Reset the current index provider
-        ref.read(currentIndexProvider.notifier).state = 0;
-      } else {
-        // Handle the case where prefs is null
-        AppUtility(context).message('Error: Shared preferences not initialized');
-      }
-    } catch (e) {
-      // Handle any errors
-      AppUtility(context).message('Error during logout: $e');
-    }
+class _ExpertiseCard extends StatelessWidget {
+  const _ExpertiseCard({this.userProfileData});
+
+  final UserProfileModel? userProfileData;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Text(
+            'Industries & Expertise',
+            style: const TextStyle(
+              fontWeight: FontWeight.bold,
+              color: Colors.black,
+              fontSize: 18,
+            ),
+          ),
+          Text(
+            'Tech',
+            style: const TextStyle(
+              fontWeight: FontWeight.w500,
+              color: Colors.black,
+              fontSize: 15,
+            ),
+          ),
+          Wrap(
+            spacing: 5,
+            alignment: WrapAlignment.start,
+            children: userProfileData?.expertise
+                    ?.map(
+                      (expertise) => Chip(
+                        visualDensity: VisualDensity.compact,
+                        label: Text(
+                          expertise,
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 10,
+                          ),
+                        ),
+                        backgroundColor: const Color(0xFF4B26FD),
+                        padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
+                      ),
+                    )
+                    .toList() ??
+                [],
+          )
+        ],
+      ),
+    );
   }
 }
 
@@ -338,94 +354,89 @@ class _CompanyCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final random = math.Random(userProfileData?.worksAt.hashCode);
     final userColor = Color((random.nextDouble() * 0xFFFFFF).toInt()).withOpacity(1);
-    return Card(
-      elevation: 1,
-      color: Colors.white,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Company',
-              style: const TextStyle(
-                fontWeight: FontWeight.bold,
-                color: Colors.black,
-                fontSize: 18,
-              ),
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'Company',
+            style: const TextStyle(
+              fontWeight: FontWeight.bold,
+              color: Colors.black,
+              fontSize: 18,
             ),
-            Row(
-              children: [
-                CircleAvatar(
-                  backgroundColor: userColor,
-                  radius: 25,
-                  child: Text(
-                    userProfileData!.worksAt![0].toUpperCase(),
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 22,
-                    ),
+          ),
+          Row(
+            children: [
+              CircleAvatar(
+                backgroundColor: userColor,
+                radius: 25,
+                child: Text(
+                  userProfileData!.worksAt![0].toUpperCase(),
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 22,
                   ),
                 ),
-                const SizedBox(width: 10),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      userProfileData?.post ?? '',
-                      style: const TextStyle(
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black,
-                        fontSize: 13,
-                      ),
+              ),
+              const SizedBox(width: 10),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    userProfileData?.post ?? '',
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black,
+                      fontSize: 13,
                     ),
-                    Text(
-                      userProfileData?.worksAt ?? '',
-                      style: const TextStyle(
-                        color: Colors.black,
-                        fontSize: 13,
-                      ),
+                  ),
+                  Text(
+                    userProfileData?.worksAt ?? '',
+                    style: const TextStyle(
+                      color: Colors.black,
+                      fontSize: 13,
                     ),
-                  ],
-                )
-              ],
-            ),
-          ],
-        ),
+                  ),
+                ],
+              )
+            ],
+          ),
+        ],
       ),
     );
   }
 }
 
 class _AboutCard extends StatelessWidget {
-  const _AboutCard();
+  const _AboutCard({this.userProfileData});
+
+  final UserProfileModel? userProfileData;
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      elevation: 1,
-      color: Colors.white,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'About',
-              style: const TextStyle(
-                fontWeight: FontWeight.bold,
-                color: Colors.black,
-                fontSize: 18,
-              ),
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Text(
+            'About',
+            style: const TextStyle(
+              fontWeight: FontWeight.bold,
+              color: Colors.black,
+              fontSize: 18,
             ),
-            Text(
-              "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
-              maxLines: 3,
-              overflow: TextOverflow.ellipsis,
-              style: TextStyle(fontSize: 12),
-            ),
-          ],
-        ),
+          ),
+          Text(
+            // "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
+            userProfileData?.aboutMe ?? '',
+            maxLines: 1000,
+            overflow: TextOverflow.ellipsis,
+            style: TextStyle(fontSize: 12),
+          ),
+        ],
       ),
     );
   }
@@ -486,28 +497,28 @@ class _UserInfoDetails extends StatelessWidget {
                 ),
               ],
             ),
-            Row(
-              children: [
-                const Text(
-                  'Industry:',
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 13,
-                  ),
-                ),
-                const SizedBox(
-                  width: 5,
-                ),
-                Text(
-                  userProfileData?.industry?.isNotEmpty == true ? "${userProfileData?.industry?.join(', ')}" : '',
-                  style: const TextStyle(
-                    color: Colors.black,
-                    fontSize: 13,
-                  ),
-                ),
-              ],
-            ),
+            // Row(
+            //   children: [
+            //     const Text(
+            //       'Industry:',
+            //       style: TextStyle(
+            //         color: Colors.black,
+            //         fontWeight: FontWeight.bold,
+            //         fontSize: 13,
+            //       ),
+            //     ),
+            //     const SizedBox(
+            //       width: 5,
+            //     ),
+            //     Text(
+            //       userProfileData?.industry?.isNotEmpty == true ? "${userProfileData?.industry?.join(', ')}" : '',
+            //       style: const TextStyle(
+            //         color: Colors.black,
+            //         fontSize: 13,
+            //       ),
+            //     ),
+            //   ],
+            // ),
             Text(
               userProfileData?.location?.isNotEmpty == true
                   ? "${userProfileData?.location?[0].toUpperCase()}${userProfileData?.location?.substring(1)}"
@@ -622,32 +633,65 @@ class _AvatarWidget extends ConsumerWidget {
       alignment: Alignment.centerLeft,
       child: Padding(
         padding: const EdgeInsets.only(top: 65, left: 20),
-        child: Container(
-          padding: const EdgeInsets.all(5),
-          decoration: BoxDecoration(
-            color: Theme.of(context).cardColor,
-            borderRadius: BorderRadius.circular(120),
-          ),
-          child: CircleAvatar(
-            backgroundColor: userColor,
-            radius: 65,
-            backgroundImage: selectedAvatar != '' && selectedAvatar != null && userProfileData?.avatarSrc != ''
-                ? CachedNetworkImageProvider(selectedAvatar)
-                : userProfileData?.gender == 'Male'
-                    ? const AssetImage(Assets.MALE)
-                    : userProfileData?.gender == 'Female'
-                        ? const AssetImage(Assets.FEMALE)
-                        : userProfileData?.gender == 'Others'
-                            ? const AssetImage(Assets.OTHERS)
-                            : null,
-            child: selectedAvatar == null && userProfileData?.gender == null
-                ? Text(
-                    userProfileData?.name?[0].toUpperCase() ?? '',
-                    style: const TextStyle(color: Colors.white),
-                    textScaler: const TextScaler.linear(3),
-                  )
-                : const SizedBox.shrink(),
-          ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Container(
+              padding: const EdgeInsets.all(5),
+              decoration: BoxDecoration(
+                color: Theme.of(context).cardColor,
+                borderRadius: BorderRadius.circular(120),
+              ),
+              child: CircleAvatar(
+                backgroundColor: userColor,
+                radius: 65,
+                backgroundImage: selectedAvatar != '' && selectedAvatar != null && userProfileData?.avatarSrc != ''
+                    ? CachedNetworkImageProvider(selectedAvatar)
+                    : userProfileData?.gender == 'Male'
+                        ? const AssetImage(Assets.MALE)
+                        : userProfileData?.gender == 'Female'
+                            ? const AssetImage(Assets.FEMALE)
+                            : userProfileData?.gender == 'Others'
+                                ? const AssetImage(Assets.OTHERS)
+                                : null,
+                child: selectedAvatar == null && userProfileData?.gender == null
+                    ? Text(
+                        userProfileData?.name?[0].toUpperCase() ?? '',
+                        style: const TextStyle(color: Colors.white),
+                        textScaler: const TextScaler.linear(3),
+                      )
+                    : const SizedBox.shrink(),
+              ),
+            ),
+            if (isOtherProfile != true)
+              Padding(
+                padding: const EdgeInsets.only(right: 10.0),
+                child: Column(
+                  children: [
+                    SizedBox(
+                      height: 70,
+                    ),
+                    ElevatedButton.icon(
+                      onPressed: () {
+                        GoRouter.of(context).push(
+                          EditProfileScreen.routeName,
+                          extra: userProfileData,
+                        );
+                      },
+                      icon: Icon(
+                        Icons.mode_edit,
+                      ),
+                      label: Text('Edit Profile'),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.white,
+                        foregroundColor: const Color(0xFF4B26FD),
+                        elevation: 0,
+                      ),
+                    ),
+                  ],
+                ),
+              )
+          ],
         ),
       ),
     );

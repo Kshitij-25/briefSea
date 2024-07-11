@@ -188,7 +188,7 @@ class AgencyRegisterScreen extends ConsumerWidget {
                                         lastName: agencyLastName.text,
                                         email: agencyEmail.text,
                                         password: agencyPass.text,
-                                        type: "agency",
+                                        type: "Agency",
                                         subType: "",
                                         ref: ref,
                                         context: context,

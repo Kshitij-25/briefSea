@@ -8,15 +8,15 @@ import '../../presentation/screens/auth_screens/existing_login_screen.dart';
 import '../../presentation/screens/auth_screens/freelancer_register_screen.dart';
 import '../../presentation/screens/auth_screens/otp_screen.dart';
 import '../../presentation/screens/auth_screens/professional_register_screen.dart';
-import '../../presentation/screens/auth_screens/verify_profile_screen.dart';
 import '../../presentation/screens/auth_screens/welcome_screen.dart';
-import '../../presentation/screens/edit_profile_screen.dart';
 import '../../presentation/screens/home_screen.dart';
 import '../../presentation/screens/messages/chat_screen.dart';
 import '../../presentation/screens/messages/messages_screen_navigator.dart';
 import '../../presentation/screens/my_feed/feed_screen.dart';
 import '../../presentation/screens/notification_screen.dart';
-import '../../presentation/screens/profile_screen.dart';
+import '../../presentation/screens/profile/edit_profile_screen.dart';
+import '../../presentation/screens/profile/profile_screen.dart';
+import '../../presentation/screens/profile/verify_profile_screen.dart';
 
 class AppRouter {
   AppRouter._();
@@ -24,26 +24,32 @@ class AppRouter {
     initialLocation: getInitialRoute(),
     routes: [
       GoRoute(
+        name: WelcomeScreen.routeName,
         path: WelcomeScreen.routeName,
         builder: (context, state) => const WelcomeScreen(),
       ),
       GoRoute(
+        name: AgencyRegisterScreen.routeName,
         path: AgencyRegisterScreen.routeName,
         builder: (context, state) => AgencyRegisterScreen(),
       ),
       GoRoute(
+        name: FreelancerRegisterScreen.routeName,
         path: FreelancerRegisterScreen.routeName,
         builder: (context, state) => FreelancerRegisterScreen(),
       ),
       GoRoute(
+        name: ProfessionalRegisterScreen.routeName,
         path: ProfessionalRegisterScreen.routeName,
         builder: (context, state) => ProfessionalRegisterScreen(),
       ),
       GoRoute(
+        name: ExistingLoginScreen.routeName,
         path: ExistingLoginScreen.routeName,
         builder: (context, state) => ExistingLoginScreen(),
       ),
       GoRoute(
+        name: ProfileScreen.routeName,
         path: ProfileScreen.routeName,
         builder: (context, state) {
           final extras = state.extra! as Map<String, dynamic>;
@@ -53,32 +59,39 @@ class AppRouter {
         },
       ),
       GoRoute(
+        name: OtpScreen.routeName,
         path: OtpScreen.routeName,
         builder: (context, state) => const OtpScreen(),
       ),
       GoRoute(
+        name: VerifyProfileScreen.routeName,
         path: VerifyProfileScreen.routeName,
         builder: (context, state) => VerifyProfileScreen(),
       ),
       GoRoute(
+        name: HomeScreen.routeName,
         path: HomeScreen.routeName,
         builder: (context, state) => const HomeScreen(),
       ),
       GoRoute(
+        name: MessagesScreenNavigator.routeName,
         path: MessagesScreenNavigator.routeName,
         builder: (context, state) => const MessagesScreenNavigator(),
       ),
       GoRoute(
+        name: NotificationScreen.routeName,
         path: NotificationScreen.routeName,
         builder: (context, state) => const NotificationScreen(),
       ),
       GoRoute(
+        name: ChatScreen.routeName,
         path: ChatScreen.routeName,
         builder: (context, state) => ChatScreen(
           chatUser: state.extra! as ChatUserModel,
         ),
       ),
       GoRoute(
+        name: FeedScreen.routeName,
         path: FeedScreen.routeName,
         builder: (context, state) {
           final extras = state.extra! as Map<String, dynamic>;
@@ -87,6 +100,7 @@ class AppRouter {
         },
       ),
       GoRoute(
+        name: EditProfileScreen.routeName,
         path: EditProfileScreen.routeName,
         builder: (context, state) => EditProfileScreen(
           userProfileModel: state.extra! as UserProfileModel,

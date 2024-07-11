@@ -102,7 +102,7 @@ class _InboxScreenState extends ConsumerState<InboxScreen> {
                       final isOnline = onlineIds.contains(filteredChatUsers[index].id);
                       return CustomChatCards(
                         onTap: () {
-                          context.push(
+                          context.pushNamed(
                             ChatScreen.routeName,
                             extra: filteredChatUsers[index],
                           );

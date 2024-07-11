@@ -33,6 +33,7 @@ abstract class UserProfileRemoteDataSource {
     String? postingAs,
     String? gender,
     String? username,
+    String? aboutMe,
   });
   Future<EditProfileModel?>? editProfile({
     String? userId,
@@ -53,6 +54,7 @@ abstract class UserProfileRemoteDataSource {
     String? updatedAt,
     String? userName,
     bool? viewAccess,
+    String? aboutMe,
   });
   Future<AvatarModel?>? uploadAvatar(String? fileName, String? fileType, String? userId, String? userType);
   Future<BannerModel?>? uploadBanner(String? fileName, String? fileType, String? userId, String? userType);
@@ -143,6 +145,7 @@ class UserProfileRemoteDataSourceImpl implements UserProfileRemoteDataSource {
     String? postingAs,
     String? gender,
     String? username,
+    String? aboutMe,
   }) async {
     var jwtToken = await getJwtToken();
     try {
@@ -162,6 +165,7 @@ class UserProfileRemoteDataSourceImpl implements UserProfileRemoteDataSource {
         "postingAs": postingAs,
         'gender': gender,
         "userName": username,
+        'about': aboutMe,
       };
 
       Response? response = await _apiClient.postReq(
@@ -211,6 +215,7 @@ class UserProfileRemoteDataSourceImpl implements UserProfileRemoteDataSource {
     String? updatedAt,
     String? userName,
     bool? viewAccess,
+    String? aboutMe,
   }) async {
     var jwtToken = await getJwtToken();
     try {
@@ -233,6 +238,7 @@ class UserProfileRemoteDataSourceImpl implements UserProfileRemoteDataSource {
         'updatedAt': updatedAt,
         'userName': userName,
         'viewAccess': viewAccess,
+        'about': aboutMe,
       };
 
       Response? response = await _apiClient.patchReq(

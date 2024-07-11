@@ -4,15 +4,17 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
+import '../../common/app_utils/app_utility.dart';
 import '../../common/app_utils/screen_size.dart';
 import '../../common/others/assets.dart';
+import '../../main.dart';
 import '../providers/auth_provider.dart';
 import '../providers/socket_provider.dart';
 import '../state_providers/bottom_nav_bar_state_provider.dart';
 import 'messages/messages_screen_navigator.dart';
 import 'my_feed/my_feed_navigator.dart';
 import 'notification_screen.dart';
-import 'profile_screen.dart';
+import 'profile/profile_screen.dart';
 
 class HomeScreen extends ConsumerWidget {
   const HomeScreen({super.key});
@@ -104,15 +106,19 @@ class HomeScreen extends ConsumerWidget {
         //     // )
         //   ],
         // ),
-        // actions: [
-        //   IconButton(
-        //     icon: const Icon(
-        //       CupertinoIcons.search,
-        //       color: Colors.white,
-        //     ),
-        //     onPressed: () {},
-        //   )
-        // ],
+        actions: [
+          if (currentIndex == 3)
+            IconButton(
+              tooltip: "Logout",
+              icon: const Icon(
+                Icons.logout,
+                color: Colors.white,
+              ),
+              onPressed: () async {
+                await AppUtility(context).handleLogout(context, prefs, ref, false);
+              },
+            )
+        ],
       ),
       body: PageView(
         controller: pageController,

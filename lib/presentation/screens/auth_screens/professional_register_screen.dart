@@ -187,7 +187,7 @@ class ProfessionalRegisterScreen extends ConsumerWidget {
                                         lastName: professionalLastName.text,
                                         email: professionalEmail.text,
                                         password: professionalPass.text,
-                                        type: "professional",
+                                        type: "Working Professional",
                                         subType: "",
                                         ref: ref,
                                         context: context,

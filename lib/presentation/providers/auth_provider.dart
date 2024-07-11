@@ -11,8 +11,8 @@ import '../../data/di/get_it.dart';
 import '../../data/models/login_model.dart';
 import '../../data/models/register_model.dart';
 import '../../data/repositories/auth_repository.dart';
-import '../screens/auth_screens/verify_profile_screen.dart';
 import '../screens/home_screen.dart';
+import '../screens/profile/verify_profile_screen.dart';
 import 'notification_provider.dart';
 
 part 'auth_provider.g.dart';
@@ -59,7 +59,9 @@ class LoginNotifier extends StateNotifier<LoginState> {
         await SharedPreferencesHelper.saveBoolean('isLogin', isLoginSuccess);
         await SharedPreferencesHelper.saveBoolean('profile', loginModel.profile!);
         // Navigate based on profile status
-        loginModel.profile == false ? GoRouter.of(context).push(VerifyProfileScreen.routeName) : GoRouter.of(context).go(HomeScreen.routeName);
+        loginModel.profile == false
+            ? GoRouter.of(context).pushNamed(VerifyProfileScreen.routeName)
+            : GoRouter.of(context).pushReplacementNamed(HomeScreen.routeName);
         state = LoginState.success;
       } else if (loginModel.message == 'Email sent') {
         state = LoginState.error;

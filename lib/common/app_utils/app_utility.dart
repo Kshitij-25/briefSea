@@ -1,4 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+import '../../presentation/screens/auth_screens/welcome_screen.dart';
+import '../../presentation/state_providers/bottom_nav_bar_state_provider.dart';
 
 class AppUtility {
   final BuildContext context;
@@ -40,5 +46,20 @@ class AppUtility {
         backgroundColor: _scheme.onPrimary,
       ),
     );
+  }
+
+  Future<void> handleLogout(BuildContext context, SharedPreferences? prefs, WidgetRef ref, bool isDelete) async {
+    try {
+      if (prefs != null) {
+        await prefs.setBool('isLogin', false);
+        context.pushReplacementNamed(WelcomeScreen.routeName);
+        AppUtility(context).message(!isDelete ? 'Logout Successful' : 'Account Deleted');
+        ref.read(currentIndexProvider.notifier).state = 0;
+      } else {
+        AppUtility(context).message('Error: Shared preferences not initialized');
+      }
+    } catch (e) {
+      AppUtility(context).message('Error during logout: $e');
+    }
   }
 }

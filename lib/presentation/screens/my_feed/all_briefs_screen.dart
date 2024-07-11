@@ -167,7 +167,7 @@ class AllBriefsScreen extends ConsumerWidget {
                           }
                         },
                         onCommentTap: (brief) async {
-                          context.push(
+                          context.pushNamed(
                             FeedScreen.routeName,
                             extra: {'briefId': briefs[index]!.id},
                           );
@@ -209,7 +209,7 @@ class AllBriefsScreen extends ConsumerWidget {
                           shareBrief(brief!);
                         },
                         onTap: () async {
-                          context.push(
+                          context.pushNamed(
                             FeedScreen.routeName,
                             extra: {'briefId': briefs[index]!.id},
                           );

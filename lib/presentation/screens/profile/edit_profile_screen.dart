@@ -2,6 +2,7 @@ import 'dart:developer';
 import 'dart:io';
 import 'dart:math' as math;
 
+import 'package:briefsea/common/static_data/expertise_data.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -11,20 +12,20 @@ import 'package:image_picker/image_picker.dart';
 import 'package:mime/mime.dart';
 import 'package:multi_select_flutter/multi_select_flutter.dart';
 
-import '../../common/app_utils/app_utility.dart';
-import '../../common/app_utils/debouncer.dart';
-import '../../common/app_utils/screen_size.dart';
-import '../../common/app_utils/shared_prefs_helper.dart';
-import '../../common/app_utils/validation_utils.dart';
-import '../../common/others/assets.dart';
-import '../../common/static_data/industry_data.dart';
-import '../../data/models/user_profile_model.dart';
-import '../providers/auth_provider.dart';
-import '../providers/image_provider.dart';
-import '../providers/user_profile_provider.dart';
-import '../state_providers/image_picker_provider.dart';
-import '../state_providers/verify_profile_industry_provider.dart';
-import '../widgets/custom_text_form_field.dart';
+import '../../../common/app_utils/app_utility.dart';
+import '../../../common/app_utils/debouncer.dart';
+import '../../../common/app_utils/screen_size.dart';
+import '../../../common/app_utils/shared_prefs_helper.dart';
+import '../../../common/app_utils/validation_utils.dart';
+import '../../../common/others/assets.dart';
+import '../../../common/static_data/industry_data.dart';
+import '../../../data/models/user_profile_model.dart';
+import '../../providers/auth_provider.dart';
+import '../../providers/image_provider.dart';
+import '../../providers/user_profile_provider.dart';
+import '../../state_providers/image_picker_provider.dart';
+import '../../state_providers/verify_profile_industry_provider.dart';
+import '../../widgets/custom_text_form_field.dart';
 
 class EditProfileScreen extends ConsumerWidget {
   EditProfileScreen({super.key, required this.userProfileModel});
@@ -49,13 +50,13 @@ class EditProfileScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    editUserNameCont.text = userProfileModel.userName!;
-    editCompanyCont.text = userProfileModel.worksAt!;
+    editUserNameCont.text = userProfileModel.userName ?? '';
+    editCompanyCont.text = userProfileModel.worksAt ?? '';
     editCountryCodeCont.text = userProfileModel.countryCode.toString();
-    editJobTitleCont.text = userProfileModel.post!;
+    editJobTitleCont.text = userProfileModel.post ?? '';
     editPhoneNumberCont.text = userProfileModel.contact.toString();
-    editLocationCont.text = userProfileModel.location!;
-    // editAboutCont.text = userProfileModel.about!;
+    editLocationCont.text = userProfileModel.location ?? '';
+    editAboutCont.text = userProfileModel.aboutMe ?? '';
 
     editUserNameCont.addListener(() {
       _debouncer.run(() async {
@@ -71,11 +72,20 @@ class EditProfileScreen extends ConsumerWidget {
       });
     });
 
-    final verifyAvatar = ref.watch(verifyAvatarImageProvider);
-    final verifyBanner = ref.watch(verifyBannerImageProvider);
-    final selectedIndustries = ref.watch(selectedIndustriesProvider.notifier).state;
-    final selectedExpertise = ref.watch(selectedExpertiseProvider.notifier).state;
+    // final verifyAvatar = ref.watch(verifyAvatarImageProvider);
+    // final verifyBanner = ref.watch(verifyBannerImageProvider);
+    // final selectedIndustries = ref.watch(selectedIndustriesProvider.notifier).state;
+    // final selectedExpertise = ref.watch(selectedExpertiseProvider.notifier).state;
     final userData = ref.watch(userDetailsProvider);
+
+    List<Map<String, String>> filteredExpertiseData = [];
+
+    if (userProfileModel.industry!.contains('Tech')) {
+      filteredExpertiseData.addAll(techExpertiseData);
+    }
+    if (userProfileModel.industry!.contains('Marketing')) {
+      filteredExpertiseData.addAll(marketingExpertiseData);
+    }
 
     return Scaffold(
       backgroundColor: Colors.grey[200]!,
@@ -128,6 +138,7 @@ class EditProfileScreen extends ConsumerWidget {
                     updatedAt: userProfileModel.updatedAt,
                     userName: userProfileModel.userName,
                     viewAccess: userProfileModel.viewAccess,
+                    aboutMe: editAboutCont.text,
                   ).future,
                 );
                 if (profileEdited.acknowledged == true) {
@@ -289,6 +300,21 @@ class EditProfileScreen extends ConsumerWidget {
                   initialValue: userProfileModel.industry?.whereType<String>().toList() ?? [],
                   onTap: (List<String?> values) {
                     ref.read(selectedIndustriesProvider.notifier).state = values.whereType<String>().toList();
+                  },
+                  showHeader: false,
+                  decoration: BoxDecoration(),
+                  // selectedChipColor: const Color(0xFF4C27FF),
+                  // selectedTextStyle: TextStyle(color: Colors.white),
+                ),
+              ),
+              customFields(
+                context,
+                'Expertise',
+                MultiSelectChipField<String?>(
+                  items: filteredExpertiseData.map((item) => MultiSelectItem<String?>(item['value'], item['label']!)).toList(),
+                  initialValue: userProfileModel.expertise?.whereType<String>().toList() ?? [],
+                  onTap: (List<String?> values) {
+                    ref.read(selectedExpertiseProvider.notifier).state = values.whereType<String>().toList();
                   },
                   showHeader: false,
                   decoration: BoxDecoration(),

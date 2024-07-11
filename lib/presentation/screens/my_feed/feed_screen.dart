@@ -265,7 +265,7 @@ class FeedScreen extends ConsumerWidget {
                                               senderId: userDetails['user_id']!,
                                             ).future,
                                           );
-                                          context.push(
+                                          context.pushNamed(
                                             ChatScreen.routeName,
                                             extra: chatUserModel,
                                           );

@@ -185,7 +185,7 @@ class FreelancerRegisterScreen extends ConsumerWidget {
                                         lastName: freelanceLastName.text,
                                         email: freelanceEmail.text,
                                         password: freelancePass.text,
-                                        type: "freelancer",
+                                        type: "Freelancer",
                                         subType: "",
                                         ref: ref,
                                         context: context,

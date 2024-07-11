@@ -6,7 +6,7 @@ import '../../../common/app_utils/screen_size.dart';
 import '../../widgets/custom_back_button.dart';
 import '../../widgets/custom_elevated_button.dart';
 import '../../widgets/custom_shape_widget.dart';
-import 'verify_profile_screen.dart';
+import '../profile/verify_profile_screen.dart';
 
 class OtpScreen extends StatelessWidget {
   const OtpScreen({super.key});
