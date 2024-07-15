@@ -1,7 +1,6 @@
 import 'dart:developer';
 import 'dart:io';
 
-import 'package:briefsea/common/static_data/expertise_data.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show rootBundle;
@@ -41,6 +40,8 @@ class VerifyProfileScreen extends ConsumerWidget {
   final TextEditingController industryCont = TextEditingController();
   final TextEditingController locationCont = TextEditingController();
   final TextEditingController aboutCont = TextEditingController();
+  final TextEditingController editDevExpertise = TextEditingController();
+  final TextEditingController editMarkExpertise = TextEditingController();
   final _formKey = GlobalKey<FormState>();
 
   final Debouncer _debouncer = Debouncer(milliseconds: 500);
@@ -78,7 +79,8 @@ class VerifyProfileScreen extends ConsumerWidget {
               var uploadedAvatarKey = ref.watch(uploadedAvatarKeyProvider.notifier).state;
               var uploadedBannerKey = ref.watch(uploadedBannerKeyProvider.notifier).state;
               final selectedIndustry = ref.watch(selectedIndustriesProvider.notifier).state;
-              final selectedExpertise = ref.watch(selectedExpertiseProvider.notifier).state;
+              final selectedDevExpertise = ref.watch(selectedDevExpertiseProvider.notifier).state;
+              final selectedMarkExpertise = ref.watch(selectedMarkExpertiseProvider.notifier).state;
               final selectedGender = ref.watch(selectedGenderProvider).selectedGender;
               if (uploadedBannerKey == '' || uploadedBannerKey == null) {
                 uploadedBannerKey = await sendDefaultBanner(ref: ref, userDetails: userDetails);
@@ -100,7 +102,8 @@ class VerifyProfileScreen extends ConsumerWidget {
                     avatarSrc: uploadedAvatarKey ?? '',
                     bannerSrc: uploadedBannerKey ?? '',
                     jwtToken: userDetails['jwtToken'],
-                    expertise: selectedExpertise,
+                    devExpertise: selectedDevExpertise,
+                    markExpertise: selectedMarkExpertise,
                     postingAs: userDetails['type']!,
                     gender: selectedGender,
                     username: userNameCont.text,
@@ -131,16 +134,10 @@ class VerifyProfileScreen extends ConsumerWidget {
     final verifyAvatar = ref.watch(verifyAvatarImageProvider);
     final verifyBanner = ref.watch(verifyBannerImageProvider);
     final selectedIndustries = ref.watch(selectedIndustriesProvider.notifier).state;
-    final selectedExpertise = ref.watch(selectedExpertiseProvider.notifier).state;
-
-    List<Map<String, String>> filteredExpertiseData = [];
-
-    if (selectedIndustries.contains('Tech')) {
-      filteredExpertiseData.addAll(techExpertiseData);
-    }
-    if (selectedIndustries.contains('Marketing')) {
-      filteredExpertiseData.addAll(marketingExpertiseData);
-    }
+    final selectedDevExpertise = ref.watch(selectedDevExpertiseProvider.notifier).state;
+    final selectedMarkExpertise = ref.watch(selectedMarkExpertiseProvider.notifier).state;
+    final devExpertiseItems = ref.watch(devExpertiseItemsProvider.notifier).state;
+    final markExpertiseItems = ref.watch(markExpertiseItemsProvider.notifier).state;
 
     return SingleChildScrollView(
       child: Form(
@@ -287,7 +284,8 @@ class VerifyProfileScreen extends ConsumerWidget {
                 onTap: (List<String?> values) {
                   ref.read(selectedIndustriesProvider.notifier).state = values.whereType<String>().toList();
                   // ref.invalidate(selectedIndustriesProvider);
-                  ref.invalidate(selectedExpertiseProvider);
+                  ref.invalidate(selectedDevExpertiseProvider);
+                  ref.invalidate(selectedMarkExpertiseProvider);
                 },
                 showHeader: false,
                 decoration: BoxDecoration(),
@@ -295,21 +293,90 @@ class VerifyProfileScreen extends ConsumerWidget {
                 // selectedTextStyle: TextStyle(color: Colors.white),
               ),
             ),
-            customFields(
-              context,
-              'Expertise',
-              MultiSelectChipField<String?>(
-                items: filteredExpertiseData.map((item) => MultiSelectItem<String?>(item['value'], item['label']!)).toList(),
-                initialValue: selectedExpertise,
-                onTap: (List<String?> values) {
-                  ref.read(selectedExpertiseProvider.notifier).state = values.whereType<String>().toList();
-                },
-                showHeader: false,
-                decoration: BoxDecoration(),
-                // selectedChipColor: const Color(0xFF4C27FF),
-                // selectedTextStyle: TextStyle(color: Colors.white),
+            if (selectedIndustries.contains('Development & Product'))
+              customFields(
+                context,
+                'Developement\nExpertise',
+                Column(
+                  children: [
+                    MultiSelectChipField<String?>(
+                      items: devExpertiseItems,
+                      initialValue: selectedDevExpertise,
+                      onTap: (List<String?> values) {
+                        ref.read(selectedDevExpertiseProvider.notifier).state = values.whereType<String>().toList();
+                      },
+                      showHeader: false,
+                      decoration: BoxDecoration(),
+                      // selectedChipColor: const Color(0xFF4C27FF),
+                      // selectedTextStyle: TextStyle(color: Colors.white),
+                    ),
+                    CustomTextFormField(
+                      controller: editDevExpertise,
+                      hintText: 'Add more expertise',
+                      border: OutlineInputBorder(),
+                      keyboardType: TextInputType.text,
+                      textInputAction: TextInputAction.done,
+                      onEditingComplete: () {
+                        final newItem = editDevExpertise.text;
+                        if (newItem.isNotEmpty) {
+                          ref.read(devExpertiseItemsProvider.notifier).state = [
+                            ...devExpertiseItems,
+                            MultiSelectItem<String?>(newItem, newItem),
+                          ];
+                          ref.read(selectedDevExpertiseProvider.notifier).state.add(newItem);
+                          final updatedSelectedDevExpertise = List<String>.from(selectedDevExpertise)..add(newItem);
+                          ref.watch(selectedDevExpertiseProvider.notifier).state = updatedSelectedDevExpertise;
+                          ref.invalidate(selectedDevExpertiseProvider);
+                          editDevExpertise.clear();
+                        }
+                        // ref.read(selectedDevExpertiseProvider.notifier).state.add(editDevExpertise.text);
+                        // editDevExpertise.clear();
+                      },
+                    ),
+                  ],
+                ),
               ),
-            ),
+            if (selectedIndustries.contains('Advertising & Marketing'))
+              customFields(
+                context,
+                'Marketing\nExpertise',
+                Column(
+                  children: [
+                    MultiSelectChipField<String?>(
+                      items: markExpertiseItems,
+                      initialValue: selectedMarkExpertise,
+                      onTap: (List<String?> values) {
+                        ref.read(selectedMarkExpertiseProvider.notifier).state = values.whereType<String>().toList();
+                      },
+                      showHeader: false,
+                      decoration: BoxDecoration(),
+                      // selectedChipColor: const Color(0xFF4C27FF),
+                      // selectedTextStyle: TextStyle(color: Colors.white),
+                    ),
+                    CustomTextFormField(
+                      controller: editMarkExpertise,
+                      hintText: 'Add more expertise',
+                      border: OutlineInputBorder(),
+                      keyboardType: TextInputType.text,
+                      textInputAction: TextInputAction.done,
+                      onEditingComplete: () {
+                        final newItem = editMarkExpertise.text;
+                        if (newItem.isNotEmpty) {
+                          ref.read(markExpertiseItemsProvider.notifier).state = [
+                            ...markExpertiseItems,
+                            MultiSelectItem<String?>(newItem, newItem),
+                          ];
+                          ref.read(selectedMarkExpertiseProvider.notifier).state.add(newItem);
+                          final updatedSelectedMarkExpertise = List<String>.from(selectedMarkExpertise)..add(newItem);
+                          ref.watch(selectedMarkExpertiseProvider.notifier).state = updatedSelectedMarkExpertise;
+                          ref.invalidate(selectedDevExpertiseProvider);
+                          editMarkExpertise.clear();
+                        }
+                      },
+                    )
+                  ],
+                ),
+              ),
             if (userDetails['type'] != 'freelancer')
               customFields(
                 context,

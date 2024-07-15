@@ -43,4 +43,15 @@ class AuthRepository {
       return Left(AppError(errorMessage: e.toString()));
     }
   }
+
+  Future<Either<AppError, String?>>? signInWithGoogle() async {
+    try {
+      final signInWithGoogle = await _authRemoteDataSource.signInWithGoogle();
+      return Right(signInWithGoogle);
+    } on AppError catch (e) {
+      return Left(e);
+    } on Exception catch (e) {
+      return Left(AppError(errorMessage: e.toString()));
+    }
+  }
 }

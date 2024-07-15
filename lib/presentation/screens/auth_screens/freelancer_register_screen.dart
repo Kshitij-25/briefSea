@@ -103,6 +103,7 @@ class FreelancerRegisterScreen extends ConsumerWidget {
                             controller: freelancePass,
                             textInputAction: TextInputAction.next,
                             obscureText: true,
+                            maxLines: 1,
                             validator: (value) {
                               if (!ValidationUtils.isNotEmpty(value!)) {
                                 return 'Password is required';

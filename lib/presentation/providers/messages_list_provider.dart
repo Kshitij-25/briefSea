@@ -61,7 +61,8 @@ class ChatMessagesNotifier extends StateNotifier<ChatMessageState> {
   // }
 }
 
-final chatMessagesProvider = StateNotifierProvider.family<ChatMessagesNotifier, ChatMessageState, String?>((ref, String? contversationId) {
+final chatMessagesProvider =
+    StateNotifierProvider.family.autoDispose<ChatMessagesNotifier, ChatMessageState, String?>((ref, String? contversationId) {
   return ChatMessagesNotifier(ref, contversationId);
 });
 

@@ -36,7 +36,7 @@ final socketServiceProvider = Provider((ref) => SocketService());
 
 final socketEventListenerProvider = Provider.family<void, String>((ref, conversationId) {
   final socketService = ref.read(socketServiceProvider);
-  final chatMessagesNotifier = ref.watch(chatMessagesProvider(conversationId).notifier);
+  final chatMessagesNotifier = ref.read(chatMessagesProvider(conversationId).notifier);
 
   socketService.socket.on('receive-message', (data) {
     ChatMessageModel message = ChatMessageModel.fromJson(data);

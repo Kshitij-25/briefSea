@@ -2,7 +2,6 @@ import 'dart:developer';
 import 'dart:io';
 import 'dart:math' as math;
 
-import 'package:briefsea/common/static_data/expertise_data.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -41,7 +40,8 @@ class EditProfileScreen extends ConsumerWidget {
   final TextEditingController editPhoneNumberCont = TextEditingController();
   final TextEditingController editCompanyCont = TextEditingController();
   final TextEditingController editJobTitleCont = TextEditingController();
-  // final TextEditingController industryCont = TextEditingController();
+  final TextEditingController editDevExpertise = TextEditingController();
+  final TextEditingController editMarkExpertise = TextEditingController();
   final TextEditingController editLocationCont = TextEditingController();
   final TextEditingController editAboutCont = TextEditingController();
   final _formKey = GlobalKey<FormState>();
@@ -74,18 +74,13 @@ class EditProfileScreen extends ConsumerWidget {
 
     // final verifyAvatar = ref.watch(verifyAvatarImageProvider);
     // final verifyBanner = ref.watch(verifyBannerImageProvider);
-    // final selectedIndustries = ref.watch(selectedIndustriesProvider.notifier).state;
-    // final selectedExpertise = ref.watch(selectedExpertiseProvider.notifier).state;
+
+    final selectedIndustries = ref.watch(selectedIndustriesProvider.notifier).state;
+    final selectedDevExpertise = ref.watch(selectedDevExpertiseProvider.notifier).state;
+    final selectedMarkExpertise = ref.watch(selectedMarkExpertiseProvider.notifier).state;
+    final devExpertiseItems = ref.watch(devExpertiseItemsProvider.notifier).state;
+    final markExpertiseItems = ref.watch(markExpertiseItemsProvider.notifier).state;
     final userData = ref.watch(userDetailsProvider);
-
-    List<Map<String, String>> filteredExpertiseData = [];
-
-    if (userProfileModel.industry!.contains('Tech')) {
-      filteredExpertiseData.addAll(techExpertiseData);
-    }
-    if (userProfileModel.industry!.contains('Marketing')) {
-      filteredExpertiseData.addAll(marketingExpertiseData);
-    }
 
     return Scaffold(
       backgroundColor: Colors.grey[200]!,
@@ -103,7 +98,8 @@ class EditProfileScreen extends ConsumerWidget {
               var uploadedAvatarKey = ref.watch(uploadedAvatarKeyProvider.notifier).state;
               var uploadedBannerKey = ref.watch(uploadedBannerKeyProvider.notifier).state;
               var selectedIndustry = ref.watch(selectedIndustriesProvider.notifier).state;
-              var selectedExpertise = ref.watch(selectedExpertiseProvider.notifier).state;
+              var selectedDevExpertise = ref.watch(selectedDevExpertiseProvider.notifier).state;
+              var selectedMarkExpertise = ref.watch(selectedMarkExpertiseProvider.notifier).state;
               final selectedGender = ref.watch(selectedGenderProvider).selectedGender;
               if (uploadedBannerKey == '' || uploadedBannerKey == null) {
                 uploadedBannerKey = userProfileModel.bannerSrc;
@@ -114,8 +110,11 @@ class EditProfileScreen extends ConsumerWidget {
               if (selectedIndustry.isEmpty) {
                 selectedIndustry = userProfileModel.industry!.toList();
               }
-              if (selectedExpertise.isEmpty) {
-                selectedExpertise = userProfileModel.expertise!.toList();
+              if (selectedDevExpertise.isEmpty) {
+                selectedDevExpertise = userProfileModel.devExpertise?.toList() ?? [];
+              }
+              if (selectedMarkExpertise.isEmpty) {
+                selectedMarkExpertise = userProfileModel.markExpertise?.toList() ?? [];
               }
               if (editPhoneNumberCont.text.isNotEmpty && editLocationCont.text.isNotEmpty && editCountryCodeCont.text.isNotEmpty) {
                 var profileEdited = await ref.read(
@@ -131,7 +130,8 @@ class EditProfileScreen extends ConsumerWidget {
                     avatarSrc: uploadedAvatarKey ?? '',
                     bannerSrc: uploadedBannerKey ?? '',
                     jwtToken: userData['jwtToken'],
-                    expertise: selectedExpertise,
+                    devExpertise: selectedDevExpertise,
+                    markExpertise: selectedMarkExpertise,
                     postingAs: userData['type'],
                     gender: selectedGender,
                     createdAt: userProfileModel.createdAt,
@@ -158,210 +158,291 @@ class EditProfileScreen extends ConsumerWidget {
           ),
         ],
       ),
-      body: SingleChildScrollView(
-        child: Form(
-          key: _formKey,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Stack(
-                children: [
-                  _BannerWidget(
-                    userDetails: userData,
-                    userProfileData: userProfileModel,
-                  ),
-                  _AvatarWidget(
-                    userDetails: userData,
-                    userProfileData: userProfileModel,
-                  ),
-                ],
-              ),
-              const Text(
-                "Tap a field to edit.",
-                style: TextStyle(
-                  color: Colors.black,
-                ),
-              ),
-              customFields(
-                context,
-                'Name',
-                CustomTextFormField(
-                  readOnly: true,
-                  hintText: userProfileModel.name,
-                  hintColor: Colors.black,
-                ),
-              ),
-              customFields(
-                context,
-                'Posting as',
-                CustomTextFormField(
-                  readOnly: true,
-                  hintText: userProfileModel.postingAs![0].toUpperCase() + userProfileModel.postingAs!.substring(1),
-                  hintColor: Colors.black,
-                ),
-              ),
-              customFields(
-                context,
-                'Username',
-                CustomTextFormField(
-                  controller: editUserNameCont,
-                  // readOnly: true,
-                  textInputAction: TextInputAction.next,
-                  hintText: "Enter your username",
-                  validator: (value) {
-                    if (!ValidationUtils.isNotEmpty(value!)) {
-                      return 'Username is required';
-                    }
-                    if (!ValidationUtils.isValidUsername(value)) {
-                      return 'Username can only contain lowercase letters, numbers, and dots';
-                    }
-                    return null;
-                  },
-                ),
-              ),
-              customFields(
-                context,
-                'Gender',
-                DropdownButtonHideUnderline(
-                  child: DropdownButton<String>(
-                    hint: const Text('Choose your gender'),
-                    menuMaxHeight: 300,
-                    value: ref.watch(selectedGenderProvider).selectedGender = userProfileModel.gender,
-                    onChanged: (String? newValue) async {
-                      log("NEW VALUE=====> $newValue");
-
-                      ref.read(selectedGenderProvider).setGender(newValue!);
-
-                      await SharedPreferencesHelper.saveString('userGener', newValue ?? "");
-                    },
-                    items: ref.watch(selectedGenderProvider).genders.map<DropdownMenuItem<String>>((item) {
-                      return DropdownMenuItem(
-                        value: item,
-                        child: Text(item),
-                      );
-                    }).toList(),
-                  ),
-                ),
-              ),
-              SizedBox(height: 10),
-              customFields(
-                context,
-                'Contact',
-                Row(
+      body: SafeArea(
+        child: SingleChildScrollView(
+          child: Form(
+            key: _formKey,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Stack(
                   children: [
-                    Expanded(
-                      flex: 1,
-                      child: CustomTextFormField(
-                        hintText: "91",
-                        border: const OutlineInputBorder(),
-                        controller: editCountryCodeCont,
-                        textInputAction: TextInputAction.next,
-                        keyboardType: TextInputType.number,
-                        validator: (value) {
-                          if (!ValidationUtils.isNotEmpty(value!)) {
-                            return 'Country code is required';
-                          }
-                          if (!ValidationUtils.isValidCountryCode(value)) {
-                            return 'Enter a valid country code (1 to 3 digits)';
-                          }
-                          return null;
-                        },
-                      ),
+                    _BannerWidget(
+                      userDetails: userData,
+                      userProfileData: userProfileModel,
                     ),
-                    const SizedBox(width: 10),
-                    Expanded(
-                      flex: 3,
-                      child: CustomTextFormField(
-                        hintText: "Phone Number",
-                        controller: editPhoneNumberCont,
-                        textInputAction: TextInputAction.next,
-                        keyboardType: TextInputType.number,
-                        border: const OutlineInputBorder(),
-                        validator: (value) {
-                          if (!ValidationUtils.isNotEmpty(value!)) {
-                            return 'Phone number is required';
-                          }
-                          if (!ValidationUtils.isValidPhoneNumber(value)) {
-                            return 'Enter a valid phone number';
-                          }
-                          return null;
-                        },
-                      ),
+                    _AvatarWidget(
+                      userDetails: userData,
+                      userProfileData: userProfileModel,
                     ),
                   ],
                 ),
-              ),
-              customFields(
-                context,
-                'Industry',
-                MultiSelectChipField<String?>(
-                  items: industries.map((item) => MultiSelectItem<String?>(item['value'], item['label']!)).toList(),
-                  initialValue: userProfileModel.industry?.whereType<String>().toList() ?? [],
-                  onTap: (List<String?> values) {
-                    ref.read(selectedIndustriesProvider.notifier).state = values.whereType<String>().toList();
-                  },
-                  showHeader: false,
-                  decoration: BoxDecoration(),
-                  // selectedChipColor: const Color(0xFF4C27FF),
-                  // selectedTextStyle: TextStyle(color: Colors.white),
-                ),
-              ),
-              customFields(
-                context,
-                'Expertise',
-                MultiSelectChipField<String?>(
-                  items: filteredExpertiseData.map((item) => MultiSelectItem<String?>(item['value'], item['label']!)).toList(),
-                  initialValue: userProfileModel.expertise?.whereType<String>().toList() ?? [],
-                  onTap: (List<String?> values) {
-                    ref.read(selectedExpertiseProvider.notifier).state = values.whereType<String>().toList();
-                  },
-                  showHeader: false,
-                  decoration: BoxDecoration(),
-                  // selectedChipColor: const Color(0xFF4C27FF),
-                  // selectedTextStyle: TextStyle(color: Colors.white),
-                ),
-              ),
-              if (userProfileModel.postingAs != 'freelancer')
-                customFields(
-                  context,
-                  'Designation',
-                  CustomTextFormField(
-                    hintText: "Enter your Designation",
-                    controller: editJobTitleCont,
-                    textInputAction: TextInputAction.next,
+                const Text(
+                  "Tap a field to edit.",
+                  style: TextStyle(
+                    color: Colors.black,
                   ),
                 ),
-              if (userProfileModel.postingAs != 'freelancer')
                 customFields(
                   context,
-                  'Company',
+                  'Name',
                   CustomTextFormField(
-                    hintText: "Enter Company Name",
-                    controller: editCompanyCont,
-                    textInputAction: TextInputAction.next,
+                    readOnly: true,
+                    hintText: userProfileModel.name,
+                    hintColor: Colors.black,
                   ),
                 ),
-              customFields(
-                context,
-                'Location',
-                CustomTextFormField(
-                  hintText: "Enter your Location",
-                  controller: editLocationCont,
-                  textInputAction: TextInputAction.done,
+                customFields(
+                  context,
+                  'Posting as',
+                  CustomTextFormField(
+                    readOnly: true,
+                    hintText: userProfileModel.postingAs![0].toUpperCase() + userProfileModel.postingAs!.substring(1),
+                    hintColor: Colors.black,
+                  ),
                 ),
-              ),
-              customFields(
-                context,
-                'About',
-                CustomTextFormField(
-                  hintText: "Tell us something about yourself...",
-                  controller: editAboutCont,
-                  textInputAction: TextInputAction.done,
-                  keyboardType: TextInputType.multiline,
+                customFields(
+                  context,
+                  'Username',
+                  CustomTextFormField(
+                    controller: editUserNameCont,
+                    // readOnly: true,
+                    textInputAction: TextInputAction.next,
+                    hintText: "Enter your username",
+                    validator: (value) {
+                      if (!ValidationUtils.isNotEmpty(value!)) {
+                        return 'Username is required';
+                      }
+                      if (!ValidationUtils.isValidUsername(value)) {
+                        return 'Username can only contain lowercase letters, numbers, and dots';
+                      }
+                      return null;
+                    },
+                  ),
                 ),
-              ),
-            ],
+                customFields(
+                  context,
+                  'Gender',
+                  DropdownButtonHideUnderline(
+                    child: DropdownButton<String>(
+                      hint: const Text('Choose your gender'),
+                      menuMaxHeight: 300,
+                      value: ref.watch(selectedGenderProvider).selectedGender = userProfileModel.gender,
+                      onChanged: (String? newValue) async {
+                        log("NEW VALUE=====> $newValue");
+
+                        ref.read(selectedGenderProvider).setGender(newValue!);
+
+                        await SharedPreferencesHelper.saveString('userGener', newValue ?? "");
+                      },
+                      items: ref.watch(selectedGenderProvider).genders.map<DropdownMenuItem<String>>((item) {
+                        return DropdownMenuItem(
+                          value: item,
+                          child: Text(item),
+                        );
+                      }).toList(),
+                    ),
+                  ),
+                ),
+                SizedBox(height: 10),
+                customFields(
+                  context,
+                  'Contact',
+                  Row(
+                    children: [
+                      Expanded(
+                        flex: 1,
+                        child: CustomTextFormField(
+                          hintText: "91",
+                          border: const OutlineInputBorder(),
+                          controller: editCountryCodeCont,
+                          textInputAction: TextInputAction.next,
+                          keyboardType: TextInputType.number,
+                          validator: (value) {
+                            if (!ValidationUtils.isNotEmpty(value!)) {
+                              return 'Country code is required';
+                            }
+                            if (!ValidationUtils.isValidCountryCode(value)) {
+                              return 'Enter a valid country code (1 to 3 digits)';
+                            }
+                            return null;
+                          },
+                        ),
+                      ),
+                      const SizedBox(width: 10),
+                      Expanded(
+                        flex: 3,
+                        child: CustomTextFormField(
+                          hintText: "Phone Number",
+                          controller: editPhoneNumberCont,
+                          textInputAction: TextInputAction.next,
+                          keyboardType: TextInputType.number,
+                          border: const OutlineInputBorder(),
+                          validator: (value) {
+                            if (!ValidationUtils.isNotEmpty(value!)) {
+                              return 'Phone number is required';
+                            }
+                            if (!ValidationUtils.isValidPhoneNumber(value)) {
+                              return 'Enter a valid phone number';
+                            }
+                            return null;
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                customFields(
+                  context,
+                  'Industry',
+                  MultiSelectChipField<String?>(
+                    items: industries.map((item) => MultiSelectItem<String?>(item['value'], item['label']!)).toList(),
+                    initialValue: userProfileModel.industry?.whereType<String>().toList() ?? [],
+                    onTap: (List<String?> values) {
+                      ref.read(selectedIndustriesProvider.notifier).state = values.whereType<String>().toList();
+
+                      ref.invalidate(selectedDevExpertiseProvider);
+                      ref.invalidate(selectedMarkExpertiseProvider);
+                    },
+                    showHeader: false,
+                    decoration: BoxDecoration(),
+                    // selectedChipColor: const Color(0xFF4C27FF),
+                    // selectedTextStyle: TextStyle(color: Colors.white),
+                  ),
+                ),
+                if (userProfileModel.industry!.contains('Development & Product'))
+                  customFields(
+                    context,
+                    'Developer\nExpertise',
+                    Column(
+                      children: [
+                        MultiSelectChipField<String?>(
+                          items: devExpertiseItems,
+                          initialValue: userProfileModel.devExpertise?.whereType<String>().toList() ?? [],
+                          onTap: (List<String?> values) {
+                            ref.read(selectedDevExpertiseProvider.notifier).state = values.whereType<String>().toList();
+                          },
+                          showHeader: false,
+                          decoration: BoxDecoration(),
+                          // selectedChipColor: const Color(0xFF4C27FF),
+                          // selectedTextStyle: TextStyle(color: Colors.white),
+                        ),
+                        CustomTextFormField(
+                          controller: editDevExpertise,
+                          hintText: 'Add more expertise',
+                          border: OutlineInputBorder(),
+                          keyboardType: TextInputType.text,
+                          textInputAction: TextInputAction.done,
+                          onEditingComplete: () {
+                            final newItem = editDevExpertise.text;
+                            if (newItem.isNotEmpty) {
+                              ref.read(devExpertiseItemsProvider.notifier).state = [
+                                ...devExpertiseItems,
+                                MultiSelectItem<String?>(newItem, newItem),
+                              ];
+                              ref.read(selectedDevExpertiseProvider.notifier).state.add(newItem);
+                              final updatedSelectedDevExpertise = List<String>.from(selectedDevExpertise)..add(newItem);
+                              ref.watch(selectedDevExpertiseProvider.notifier).state = updatedSelectedDevExpertise;
+                              ref.invalidate(selectedDevExpertiseProvider);
+                              editDevExpertise.clear();
+                            }
+                            // ref.read(selectedDevExpertiseProvider.notifier).state.add(editDevExpertise.text);
+                            // editDevExpertise.clear();
+                          },
+                        ),
+                      ],
+                    ),
+                  ),
+                if (userProfileModel.industry!.contains('Advertising & Marketing'))
+                  customFields(
+                    context,
+                    'Marketing\nExpertise  ',
+                    Column(
+                      children: [
+                        MultiSelectChipField<String?>(
+                          items: markExpertiseItems,
+                          initialValue: userProfileModel.markExpertise?.whereType<String>().toList() ?? [],
+                          onTap: (List<String?> values) {
+                            ref.read(selectedMarkExpertiseProvider.notifier).state = values.whereType<String>().toList();
+                          },
+                          showHeader: false,
+                          decoration: BoxDecoration(),
+                          // selectedChipColor: const Color(0xFF4C27FF),
+                          // selectedTextStyle: TextStyle(color: Colors.white),
+                        ),
+                        CustomTextFormField(
+                          controller: editMarkExpertise,
+                          hintText: 'Add more expertise',
+                          border: OutlineInputBorder(),
+                          keyboardType: TextInputType.text,
+                          textInputAction: TextInputAction.done,
+                          onEditingComplete: () {
+                            final newItem = editMarkExpertise.text;
+                            if (newItem.isNotEmpty) {
+                              ref.read(markExpertiseItemsProvider.notifier).state = [
+                                ...markExpertiseItems,
+                                MultiSelectItem<String?>(newItem, newItem),
+                              ];
+                              ref.read(selectedMarkExpertiseProvider.notifier).state.add(newItem);
+                              final updatedSelectedMarkExpertise = List<String>.from(selectedMarkExpertise)..add(newItem);
+                              ref.watch(selectedMarkExpertiseProvider.notifier).state = updatedSelectedMarkExpertise;
+                              ref.invalidate(selectedDevExpertiseProvider);
+                              editMarkExpertise.clear();
+                            }
+                          },
+                        )
+                      ],
+                    ),
+                  ),
+                if (userProfileModel.postingAs != 'freelancer')
+                  customFields(
+                    context,
+                    'Designation',
+                    CustomTextFormField(
+                      hintText: "Enter your Designation",
+                      controller: editJobTitleCont,
+                      textInputAction: TextInputAction.next,
+                    ),
+                  ),
+                if (userProfileModel.postingAs != 'freelancer')
+                  customFields(
+                    context,
+                    'Company',
+                    CustomTextFormField(
+                      hintText: "Enter Company Name",
+                      controller: editCompanyCont,
+                      textInputAction: TextInputAction.next,
+                    ),
+                  ),
+                customFields(
+                  context,
+                  'Location',
+                  CustomTextFormField(
+                    hintText: "Enter your Location",
+                    controller: editLocationCont,
+                    textInputAction: TextInputAction.done,
+                  ),
+                ),
+                customFields(
+                  context,
+                  'About',
+                  CustomTextFormField(
+                    hintText: "Tell us something about yourself...",
+                    controller: editAboutCont,
+                    textInputAction: TextInputAction.done,
+                    keyboardType: TextInputType.multiline,
+                    maxLines: null,
+                    validator: (value) {
+                      if (value!.length < 100) {
+                        return 'About me must not be more than 100 characters long';
+                      }
+                      return null;
+                    },
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),

@@ -25,7 +25,7 @@ class ProfessionalRegisterScreen extends ConsumerWidget {
   final TextEditingController professionalConfirmPass = TextEditingController();
   final _formKey = GlobalKey<FormState>();
 
-  var dropDownItems = ['Owner', 'Working'];
+  final dropDownItems = ['Owner', 'Working'];
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -105,6 +105,7 @@ class ProfessionalRegisterScreen extends ConsumerWidget {
                             controller: professionalPass,
                             textInputAction: TextInputAction.next,
                             obscureText: true,
+                            maxLines: 1,
                             validator: (value) {
                               if (!ValidationUtils.isNotEmpty(value!)) {
                                 return 'Password is required';

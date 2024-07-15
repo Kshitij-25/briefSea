@@ -209,7 +209,7 @@ class _GetOtherProfileProviderElement
   String? get otherUserId => (origin as GetOtherProfileProvider).otherUserId;
 }
 
-String _$verifyProfileHash() => r'5bd2091b0177fffb3807cd7aee89440679060263';
+String _$verifyProfileHash() => r'edd545737135e283c80537334deaf0631a60fdd2';
 
 /// See also [verifyProfile].
 @ProviderFor(verifyProfile)
@@ -229,7 +229,8 @@ class VerifyProfileFamily extends Family<AsyncValue<String>> {
     required String? jobTitle,
     required String? company,
     required List<String>? industry,
-    required List<String>? expertise,
+    required List<String>? devExpertise,
+    required List<String>? markExpertise,
     required String? location,
     required String? avatarSrc,
     required String? bannerSrc,
@@ -247,7 +248,8 @@ class VerifyProfileFamily extends Family<AsyncValue<String>> {
       jobTitle: jobTitle,
       company: company,
       industry: industry,
-      expertise: expertise,
+      devExpertise: devExpertise,
+      markExpertise: markExpertise,
       location: location,
       avatarSrc: avatarSrc,
       bannerSrc: bannerSrc,
@@ -271,7 +273,8 @@ class VerifyProfileFamily extends Family<AsyncValue<String>> {
       jobTitle: provider.jobTitle,
       company: provider.company,
       industry: provider.industry,
-      expertise: provider.expertise,
+      devExpertise: provider.devExpertise,
+      markExpertise: provider.markExpertise,
       location: provider.location,
       avatarSrc: provider.avatarSrc,
       bannerSrc: provider.bannerSrc,
@@ -309,7 +312,8 @@ class VerifyProfileProvider extends AutoDisposeFutureProvider<String> {
     required String? jobTitle,
     required String? company,
     required List<String>? industry,
-    required List<String>? expertise,
+    required List<String>? devExpertise,
+    required List<String>? markExpertise,
     required String? location,
     required String? avatarSrc,
     required String? bannerSrc,
@@ -328,7 +332,8 @@ class VerifyProfileProvider extends AutoDisposeFutureProvider<String> {
             jobTitle: jobTitle,
             company: company,
             industry: industry,
-            expertise: expertise,
+            devExpertise: devExpertise,
+            markExpertise: markExpertise,
             location: location,
             avatarSrc: avatarSrc,
             bannerSrc: bannerSrc,
@@ -354,7 +359,8 @@ class VerifyProfileProvider extends AutoDisposeFutureProvider<String> {
           jobTitle: jobTitle,
           company: company,
           industry: industry,
-          expertise: expertise,
+          devExpertise: devExpertise,
+          markExpertise: markExpertise,
           location: location,
           avatarSrc: avatarSrc,
           bannerSrc: bannerSrc,
@@ -379,7 +385,8 @@ class VerifyProfileProvider extends AutoDisposeFutureProvider<String> {
     required this.jobTitle,
     required this.company,
     required this.industry,
-    required this.expertise,
+    required this.devExpertise,
+    required this.markExpertise,
     required this.location,
     required this.avatarSrc,
     required this.bannerSrc,
@@ -397,7 +404,8 @@ class VerifyProfileProvider extends AutoDisposeFutureProvider<String> {
   final String? jobTitle;
   final String? company;
   final List<String>? industry;
-  final List<String>? expertise;
+  final List<String>? devExpertise;
+  final List<String>? markExpertise;
   final String? location;
   final String? avatarSrc;
   final String? bannerSrc;
@@ -427,7 +435,8 @@ class VerifyProfileProvider extends AutoDisposeFutureProvider<String> {
         jobTitle: jobTitle,
         company: company,
         industry: industry,
-        expertise: expertise,
+        devExpertise: devExpertise,
+        markExpertise: markExpertise,
         location: location,
         avatarSrc: avatarSrc,
         bannerSrc: bannerSrc,
@@ -455,7 +464,8 @@ class VerifyProfileProvider extends AutoDisposeFutureProvider<String> {
         other.jobTitle == jobTitle &&
         other.company == company &&
         other.industry == industry &&
-        other.expertise == expertise &&
+        other.devExpertise == devExpertise &&
+        other.markExpertise == markExpertise &&
         other.location == location &&
         other.avatarSrc == avatarSrc &&
         other.bannerSrc == bannerSrc &&
@@ -476,7 +486,8 @@ class VerifyProfileProvider extends AutoDisposeFutureProvider<String> {
     hash = _SystemHash.combine(hash, jobTitle.hashCode);
     hash = _SystemHash.combine(hash, company.hashCode);
     hash = _SystemHash.combine(hash, industry.hashCode);
-    hash = _SystemHash.combine(hash, expertise.hashCode);
+    hash = _SystemHash.combine(hash, devExpertise.hashCode);
+    hash = _SystemHash.combine(hash, markExpertise.hashCode);
     hash = _SystemHash.combine(hash, location.hashCode);
     hash = _SystemHash.combine(hash, avatarSrc.hashCode);
     hash = _SystemHash.combine(hash, bannerSrc.hashCode);
@@ -512,8 +523,11 @@ mixin VerifyProfileRef on AutoDisposeFutureProviderRef<String> {
   /// The parameter `industry` of this provider.
   List<String>? get industry;
 
-  /// The parameter `expertise` of this provider.
-  List<String>? get expertise;
+  /// The parameter `devExpertise` of this provider.
+  List<String>? get devExpertise;
+
+  /// The parameter `markExpertise` of this provider.
+  List<String>? get markExpertise;
 
   /// The parameter `location` of this provider.
   String? get location;
@@ -559,7 +573,11 @@ class _VerifyProfileProviderElement
   @override
   List<String>? get industry => (origin as VerifyProfileProvider).industry;
   @override
-  List<String>? get expertise => (origin as VerifyProfileProvider).expertise;
+  List<String>? get devExpertise =>
+      (origin as VerifyProfileProvider).devExpertise;
+  @override
+  List<String>? get markExpertise =>
+      (origin as VerifyProfileProvider).markExpertise;
   @override
   String? get location => (origin as VerifyProfileProvider).location;
   @override
@@ -578,7 +596,7 @@ class _VerifyProfileProviderElement
   String? get aboutMe => (origin as VerifyProfileProvider).aboutMe;
 }
 
-String _$editProfileHash() => r'98d3b13d83f87159b2295dc4d6aa264e9d918bb9';
+String _$editProfileHash() => r'986e51150dcaa6bd88ed6f2fc25f87714136c3cc';
 
 /// See also [editProfile].
 @ProviderFor(editProfile)
@@ -598,7 +616,8 @@ class EditProfileFamily extends Family<AsyncValue<EditProfileModel>> {
     required String? jobTitle,
     required String? company,
     required List<String>? industry,
-    required List<String>? expertise,
+    required List<String>? devExpertise,
+    required List<String>? markExpertise,
     required String? location,
     required String? avatarSrc,
     required String? bannerSrc,
@@ -619,7 +638,8 @@ class EditProfileFamily extends Family<AsyncValue<EditProfileModel>> {
       jobTitle: jobTitle,
       company: company,
       industry: industry,
-      expertise: expertise,
+      devExpertise: devExpertise,
+      markExpertise: markExpertise,
       location: location,
       avatarSrc: avatarSrc,
       bannerSrc: bannerSrc,
@@ -646,7 +666,8 @@ class EditProfileFamily extends Family<AsyncValue<EditProfileModel>> {
       jobTitle: provider.jobTitle,
       company: provider.company,
       industry: provider.industry,
-      expertise: provider.expertise,
+      devExpertise: provider.devExpertise,
+      markExpertise: provider.markExpertise,
       location: provider.location,
       avatarSrc: provider.avatarSrc,
       bannerSrc: provider.bannerSrc,
@@ -687,7 +708,8 @@ class EditProfileProvider extends AutoDisposeFutureProvider<EditProfileModel> {
     required String? jobTitle,
     required String? company,
     required List<String>? industry,
-    required List<String>? expertise,
+    required List<String>? devExpertise,
+    required List<String>? markExpertise,
     required String? location,
     required String? avatarSrc,
     required String? bannerSrc,
@@ -709,7 +731,8 @@ class EditProfileProvider extends AutoDisposeFutureProvider<EditProfileModel> {
             jobTitle: jobTitle,
             company: company,
             industry: industry,
-            expertise: expertise,
+            devExpertise: devExpertise,
+            markExpertise: markExpertise,
             location: location,
             avatarSrc: avatarSrc,
             bannerSrc: bannerSrc,
@@ -738,7 +761,8 @@ class EditProfileProvider extends AutoDisposeFutureProvider<EditProfileModel> {
           jobTitle: jobTitle,
           company: company,
           industry: industry,
-          expertise: expertise,
+          devExpertise: devExpertise,
+          markExpertise: markExpertise,
           location: location,
           avatarSrc: avatarSrc,
           bannerSrc: bannerSrc,
@@ -766,7 +790,8 @@ class EditProfileProvider extends AutoDisposeFutureProvider<EditProfileModel> {
     required this.jobTitle,
     required this.company,
     required this.industry,
-    required this.expertise,
+    required this.devExpertise,
+    required this.markExpertise,
     required this.location,
     required this.avatarSrc,
     required this.bannerSrc,
@@ -787,7 +812,8 @@ class EditProfileProvider extends AutoDisposeFutureProvider<EditProfileModel> {
   final String? jobTitle;
   final String? company;
   final List<String>? industry;
-  final List<String>? expertise;
+  final List<String>? devExpertise;
+  final List<String>? markExpertise;
   final String? location;
   final String? avatarSrc;
   final String? bannerSrc;
@@ -820,7 +846,8 @@ class EditProfileProvider extends AutoDisposeFutureProvider<EditProfileModel> {
         jobTitle: jobTitle,
         company: company,
         industry: industry,
-        expertise: expertise,
+        devExpertise: devExpertise,
+        markExpertise: markExpertise,
         location: location,
         avatarSrc: avatarSrc,
         bannerSrc: bannerSrc,
@@ -851,7 +878,8 @@ class EditProfileProvider extends AutoDisposeFutureProvider<EditProfileModel> {
         other.jobTitle == jobTitle &&
         other.company == company &&
         other.industry == industry &&
-        other.expertise == expertise &&
+        other.devExpertise == devExpertise &&
+        other.markExpertise == markExpertise &&
         other.location == location &&
         other.avatarSrc == avatarSrc &&
         other.bannerSrc == bannerSrc &&
@@ -875,7 +903,8 @@ class EditProfileProvider extends AutoDisposeFutureProvider<EditProfileModel> {
     hash = _SystemHash.combine(hash, jobTitle.hashCode);
     hash = _SystemHash.combine(hash, company.hashCode);
     hash = _SystemHash.combine(hash, industry.hashCode);
-    hash = _SystemHash.combine(hash, expertise.hashCode);
+    hash = _SystemHash.combine(hash, devExpertise.hashCode);
+    hash = _SystemHash.combine(hash, markExpertise.hashCode);
     hash = _SystemHash.combine(hash, location.hashCode);
     hash = _SystemHash.combine(hash, avatarSrc.hashCode);
     hash = _SystemHash.combine(hash, bannerSrc.hashCode);
@@ -914,8 +943,11 @@ mixin EditProfileRef on AutoDisposeFutureProviderRef<EditProfileModel> {
   /// The parameter `industry` of this provider.
   List<String>? get industry;
 
-  /// The parameter `expertise` of this provider.
-  List<String>? get expertise;
+  /// The parameter `devExpertise` of this provider.
+  List<String>? get devExpertise;
+
+  /// The parameter `markExpertise` of this provider.
+  List<String>? get markExpertise;
 
   /// The parameter `location` of this provider.
   String? get location;
@@ -971,7 +1003,11 @@ class _EditProfileProviderElement
   @override
   List<String>? get industry => (origin as EditProfileProvider).industry;
   @override
-  List<String>? get expertise => (origin as EditProfileProvider).expertise;
+  List<String>? get devExpertise =>
+      (origin as EditProfileProvider).devExpertise;
+  @override
+  List<String>? get markExpertise =>
+      (origin as EditProfileProvider).markExpertise;
   @override
   String? get location => (origin as EditProfileProvider).location;
   @override

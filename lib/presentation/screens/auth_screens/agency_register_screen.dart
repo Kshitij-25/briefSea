@@ -105,6 +105,7 @@ class AgencyRegisterScreen extends ConsumerWidget {
                             controller: agencyPass,
                             obscureText: true,
                             textInputAction: TextInputAction.next,
+                            maxLines: 1,
                             validator: (value) {
                               if (!ValidationUtils.isNotEmpty(value!)) {
                                 return 'Password is required';

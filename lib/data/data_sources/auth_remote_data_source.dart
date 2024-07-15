@@ -1,7 +1,5 @@
 import 'dart:developer';
 
-import 'package:dio/dio.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
 
@@ -14,7 +12,7 @@ import '../models/register_model.dart';
 
 abstract class AuthRemoteDataSource {
   Future<LoginModel?>? loginUser(String? email, String? password);
-  Future<dynamic> loginWithGoogle();
+  Future<String?> signInWithGoogle();
   Future<RegisterModel> registerUser(String? firstName, String? lastName, String? email, String? password, String? type, String? subType);
   Future<void> logout();
   Future<bool> forgetPassword(String? email);
@@ -80,24 +78,15 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   }
 
   @override
-  Future loginWithGoogle() async {
-    try {
-      final googleUser = await GoogleSignIn().signIn();
+  Future<String?> signInWithGoogle() async {
+    final GoogleSignIn googleSignIn = GoogleSignIn(scopes: ['email']);
+    final GoogleSignInAccount? signInAccount = await googleSignIn.signIn();
 
-      final googleAuth = await googleUser?.authentication;
-
-      final credential = GoogleAuthProvider.credential(
-        accessToken: googleAuth?.accessToken,
-        idToken: googleAuth?.idToken,
-      );
-
-      await FirebaseAuth.instance.signInWithCredential(credential);
-
-      return true;
-    } on Exception catch (e) {
-      log(e.toString());
-      return false;
+    if (signInAccount == null) {
+      return null; // The user canceled the sign-in
     }
+
+    return signInAccount.email;
   }
 
   @override

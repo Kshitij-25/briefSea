@@ -60,6 +60,10 @@ mixin _$UserProfileModel {
   String? get userName => throw _privateConstructorUsedError;
   @JsonKey(name: 'about')
   String? get aboutMe => throw _privateConstructorUsedError;
+  @JsonKey(name: 'devExpertise')
+  List<String>? get devExpertise => throw _privateConstructorUsedError;
+  @JsonKey(name: 'markExpertise')
+  List<String>? get markExpertise => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -93,7 +97,9 @@ abstract class $UserProfileModelCopyWith<$Res> {
       @JsonKey(name: 'gender') String? gender,
       @JsonKey(name: 'viewAccess') bool? viewAccess,
       @JsonKey(name: 'userName') String? userName,
-      @JsonKey(name: 'about') String? aboutMe});
+      @JsonKey(name: 'about') String? aboutMe,
+      @JsonKey(name: 'devExpertise') List<String>? devExpertise,
+      @JsonKey(name: 'markExpertise') List<String>? markExpertise});
 }
 
 /// @nodoc
@@ -129,6 +135,8 @@ class _$UserProfileModelCopyWithImpl<$Res, $Val extends UserProfileModel>
     Object? viewAccess = freezed,
     Object? userName = freezed,
     Object? aboutMe = freezed,
+    Object? devExpertise = freezed,
+    Object? markExpertise = freezed,
   }) {
     return _then(_value.copyWith(
       id: freezed == id
@@ -211,6 +219,14 @@ class _$UserProfileModelCopyWithImpl<$Res, $Val extends UserProfileModel>
           ? _value.aboutMe
           : aboutMe // ignore: cast_nullable_to_non_nullable
               as String?,
+      devExpertise: freezed == devExpertise
+          ? _value.devExpertise
+          : devExpertise // ignore: cast_nullable_to_non_nullable
+              as List<String>?,
+      markExpertise: freezed == markExpertise
+          ? _value.markExpertise
+          : markExpertise // ignore: cast_nullable_to_non_nullable
+              as List<String>?,
     ) as $Val);
   }
 }
@@ -243,7 +259,9 @@ abstract class _$$UserProfileModelImplCopyWith<$Res>
       @JsonKey(name: 'gender') String? gender,
       @JsonKey(name: 'viewAccess') bool? viewAccess,
       @JsonKey(name: 'userName') String? userName,
-      @JsonKey(name: 'about') String? aboutMe});
+      @JsonKey(name: 'about') String? aboutMe,
+      @JsonKey(name: 'devExpertise') List<String>? devExpertise,
+      @JsonKey(name: 'markExpertise') List<String>? markExpertise});
 }
 
 /// @nodoc
@@ -277,6 +295,8 @@ class __$$UserProfileModelImplCopyWithImpl<$Res>
     Object? viewAccess = freezed,
     Object? userName = freezed,
     Object? aboutMe = freezed,
+    Object? devExpertise = freezed,
+    Object? markExpertise = freezed,
   }) {
     return _then(_$UserProfileModelImpl(
       id: freezed == id
@@ -359,6 +379,14 @@ class __$$UserProfileModelImplCopyWithImpl<$Res>
           ? _value.aboutMe
           : aboutMe // ignore: cast_nullable_to_non_nullable
               as String?,
+      devExpertise: freezed == devExpertise
+          ? _value._devExpertise
+          : devExpertise // ignore: cast_nullable_to_non_nullable
+              as List<String>?,
+      markExpertise: freezed == markExpertise
+          ? _value._markExpertise
+          : markExpertise // ignore: cast_nullable_to_non_nullable
+              as List<String>?,
     ));
   }
 }
@@ -386,9 +414,13 @@ class _$UserProfileModelImpl implements _UserProfileModel {
       @JsonKey(name: 'gender') this.gender,
       @JsonKey(name: 'viewAccess') this.viewAccess,
       @JsonKey(name: 'userName') this.userName,
-      @JsonKey(name: 'about') this.aboutMe})
+      @JsonKey(name: 'about') this.aboutMe,
+      @JsonKey(name: 'devExpertise') final List<String>? devExpertise,
+      @JsonKey(name: 'markExpertise') final List<String>? markExpertise})
       : _industry = industry,
-        _expertise = expertise;
+        _expertise = expertise,
+        _devExpertise = devExpertise,
+        _markExpertise = markExpertise;
 
   factory _$UserProfileModelImpl.fromJson(Map<String, dynamic> json) =>
       _$$UserProfileModelImplFromJson(json);
@@ -469,10 +501,31 @@ class _$UserProfileModelImpl implements _UserProfileModel {
   @override
   @JsonKey(name: 'about')
   final String? aboutMe;
+  final List<String>? _devExpertise;
+  @override
+  @JsonKey(name: 'devExpertise')
+  List<String>? get devExpertise {
+    final value = _devExpertise;
+    if (value == null) return null;
+    if (_devExpertise is EqualUnmodifiableListView) return _devExpertise;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(value);
+  }
+
+  final List<String>? _markExpertise;
+  @override
+  @JsonKey(name: 'markExpertise')
+  List<String>? get markExpertise {
+    final value = _markExpertise;
+    if (value == null) return null;
+    if (_markExpertise is EqualUnmodifiableListView) return _markExpertise;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(value);
+  }
 
   @override
   String toString() {
-    return 'UserProfileModel(id: $id, isVerified: $isVerified, userId: $userId, name: $name, countryCode: $countryCode, contact: $contact, post: $post, worksAt: $worksAt, industry: $industry, expertise: $expertise, location: $location, avatarSrc: $avatarSrc, bannerSrc: $bannerSrc, createdAt: $createdAt, updatedAt: $updatedAt, postingAs: $postingAs, gender: $gender, viewAccess: $viewAccess, userName: $userName, aboutMe: $aboutMe)';
+    return 'UserProfileModel(id: $id, isVerified: $isVerified, userId: $userId, name: $name, countryCode: $countryCode, contact: $contact, post: $post, worksAt: $worksAt, industry: $industry, expertise: $expertise, location: $location, avatarSrc: $avatarSrc, bannerSrc: $bannerSrc, createdAt: $createdAt, updatedAt: $updatedAt, postingAs: $postingAs, gender: $gender, viewAccess: $viewAccess, userName: $userName, aboutMe: $aboutMe, devExpertise: $devExpertise, markExpertise: $markExpertise)';
   }
 
   @override
@@ -510,7 +563,11 @@ class _$UserProfileModelImpl implements _UserProfileModel {
                 other.viewAccess == viewAccess) &&
             (identical(other.userName, userName) ||
                 other.userName == userName) &&
-            (identical(other.aboutMe, aboutMe) || other.aboutMe == aboutMe));
+            (identical(other.aboutMe, aboutMe) || other.aboutMe == aboutMe) &&
+            const DeepCollectionEquality()
+                .equals(other._devExpertise, _devExpertise) &&
+            const DeepCollectionEquality()
+                .equals(other._markExpertise, _markExpertise));
   }
 
   @JsonKey(ignore: true)
@@ -536,7 +593,9 @@ class _$UserProfileModelImpl implements _UserProfileModel {
         gender,
         viewAccess,
         userName,
-        aboutMe
+        aboutMe,
+        const DeepCollectionEquality().hash(_devExpertise),
+        const DeepCollectionEquality().hash(_markExpertise)
       ]);
 
   @JsonKey(ignore: true)
@@ -556,26 +615,29 @@ class _$UserProfileModelImpl implements _UserProfileModel {
 
 abstract class _UserProfileModel implements UserProfileModel {
   factory _UserProfileModel(
-      {@JsonKey(name: '_id') final String? id,
-      @JsonKey(name: 'isVerified') final bool? isVerified,
-      @JsonKey(name: 'user_id') final String? userId,
-      @JsonKey(name: 'name') final String? name,
-      @JsonKey(name: 'countryCode') final int? countryCode,
-      @JsonKey(name: 'contact') final int? contact,
-      @JsonKey(name: 'post') final String? post,
-      @JsonKey(name: 'worksAt') final String? worksAt,
-      @JsonKey(name: 'industry') final List<String>? industry,
-      @JsonKey(name: 'expertise') final List<String>? expertise,
-      @JsonKey(name: 'location') final String? location,
-      @JsonKey(name: 'avatarSrc') final String? avatarSrc,
-      @JsonKey(name: 'bannerSrc') final String? bannerSrc,
-      @JsonKey(name: 'createdAt') final String? createdAt,
-      @JsonKey(name: 'updatedAt') final String? updatedAt,
-      @JsonKey(name: 'postingAs') final String? postingAs,
-      @JsonKey(name: 'gender') final String? gender,
-      @JsonKey(name: 'viewAccess') final bool? viewAccess,
-      @JsonKey(name: 'userName') final String? userName,
-      @JsonKey(name: 'about') final String? aboutMe}) = _$UserProfileModelImpl;
+          {@JsonKey(name: '_id') final String? id,
+          @JsonKey(name: 'isVerified') final bool? isVerified,
+          @JsonKey(name: 'user_id') final String? userId,
+          @JsonKey(name: 'name') final String? name,
+          @JsonKey(name: 'countryCode') final int? countryCode,
+          @JsonKey(name: 'contact') final int? contact,
+          @JsonKey(name: 'post') final String? post,
+          @JsonKey(name: 'worksAt') final String? worksAt,
+          @JsonKey(name: 'industry') final List<String>? industry,
+          @JsonKey(name: 'expertise') final List<String>? expertise,
+          @JsonKey(name: 'location') final String? location,
+          @JsonKey(name: 'avatarSrc') final String? avatarSrc,
+          @JsonKey(name: 'bannerSrc') final String? bannerSrc,
+          @JsonKey(name: 'createdAt') final String? createdAt,
+          @JsonKey(name: 'updatedAt') final String? updatedAt,
+          @JsonKey(name: 'postingAs') final String? postingAs,
+          @JsonKey(name: 'gender') final String? gender,
+          @JsonKey(name: 'viewAccess') final bool? viewAccess,
+          @JsonKey(name: 'userName') final String? userName,
+          @JsonKey(name: 'about') final String? aboutMe,
+          @JsonKey(name: 'devExpertise') final List<String>? devExpertise,
+          @JsonKey(name: 'markExpertise') final List<String>? markExpertise}) =
+      _$UserProfileModelImpl;
 
   factory _UserProfileModel.fromJson(Map<String, dynamic> json) =
       _$UserProfileModelImpl.fromJson;
@@ -640,6 +702,12 @@ abstract class _UserProfileModel implements UserProfileModel {
   @override
   @JsonKey(name: 'about')
   String? get aboutMe;
+  @override
+  @JsonKey(name: 'devExpertise')
+  List<String>? get devExpertise;
+  @override
+  @JsonKey(name: 'markExpertise')
+  List<String>? get markExpertise;
   @override
   @JsonKey(ignore: true)
   _$$UserProfileModelImplCopyWith<_$UserProfileModelImpl> get copyWith =>

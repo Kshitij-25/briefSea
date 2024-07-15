@@ -33,6 +33,12 @@ _$UserProfileModelImpl _$$UserProfileModelImplFromJson(
       viewAccess: json['viewAccess'] as bool?,
       userName: json['userName'] as String?,
       aboutMe: json['about'] as String?,
+      devExpertise: (json['devExpertise'] as List<dynamic>?)
+          ?.map((e) => e as String)
+          .toList(),
+      markExpertise: (json['markExpertise'] as List<dynamic>?)
+          ?.map((e) => e as String)
+          .toList(),
     );
 
 Map<String, dynamic> _$$UserProfileModelImplToJson(
@@ -58,4 +64,6 @@ Map<String, dynamic> _$$UserProfileModelImplToJson(
       'viewAccess': instance.viewAccess,
       'userName': instance.userName,
       'about': instance.aboutMe,
+      'devExpertise': instance.devExpertise,
+      'markExpertise': instance.markExpertise,
     };

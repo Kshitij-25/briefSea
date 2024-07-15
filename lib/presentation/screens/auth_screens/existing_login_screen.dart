@@ -7,6 +7,7 @@ import '../../../common/app_utils/app_utility.dart';
 import '../../../common/app_utils/screen_size.dart';
 import '../../../common/app_utils/validation_utils.dart';
 import '../../../common/enums/enums.dart';
+import '../../../common/others/assets.dart';
 import '../../providers/auth_provider.dart';
 import '../../widgets/custom_back_button.dart';
 import '../../widgets/custom_elevated_button.dart';
@@ -92,6 +93,7 @@ class ExistingLoginScreen extends ConsumerWidget {
                             controller: passCont,
                             textInputAction: TextInputAction.done,
                             obscureText: true,
+                            maxLines: 1,
                             validator: (value) {
                               if (!ValidationUtils.isNotEmpty(value!)) {
                                 return 'Password is required';
@@ -166,7 +168,7 @@ class ExistingLoginScreen extends ConsumerWidget {
                               style: TextStyle(color: Colors.white),
                             ),
                           ),
-                          // SizedBox(height: ScreenSize.height(context) * .05),
+                          // SizedBox(height: ScreenSize.height(context) * .02),
                           // const Text(
                           //   "Or sign up using an option:",
                           //   style: TextStyle(color: Colors.white),
@@ -179,18 +181,20 @@ class ExistingLoginScreen extends ConsumerWidget {
                           //   children: [
                           //     _signUpOptions(
                           //       context,
-                          //       'assets/logos/google-icon.svg',
-                          //       () {},
+                          //       Assets.GOOGLE_LOGO,
+                          //       () async {
+                          //         await ref.read(loginNotifierProvider.notifier).loginWithGoogle(context, ref);
+                          //       },
                           //     ),
-                          //     const SizedBox(width: 20),
-                          //     _signUpOptions(
-                          //       context,
-                          //       'assets/logos/linkedin-icon.svg',
-                          //       () {},
-                          //     ),
+                          //     // const SizedBox(width: 20),
+                          //     // _signUpOptions(
+                          //     //   context,
+                          //     //   'assets/logos/linkedin-icon.svg',
+                          //     //   () {},
+                          //     // ),
                           //   ],
                           // ),
-                          SizedBox(height: ScreenSize.height(context) * .05),
+                          // SizedBox(height: ScreenSize.height(context) * .02),
                           const Text(
                             "Agency, Freelancer or\nWorking Professional?",
                             style: TextStyle(color: Colors.white),

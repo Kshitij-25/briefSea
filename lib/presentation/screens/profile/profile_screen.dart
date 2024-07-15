@@ -162,7 +162,7 @@ class ProfileScreen extends ConsumerWidget {
                               ),
                               if (userDetails.aboutMe?.isNotEmpty == true) _AboutCard(userProfileData: userDetails),
                               if (userDetails.postingAs != 'freelancer') _CompanyCard(userDetails),
-                              if (userDetails.expertise?.isNotEmpty == true) _ExpertiseCard(userProfileData: userDetails),
+                              _ExpertiseCard(userProfileData: userDetails),
                               const SizedBox(height: 20),
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
@@ -310,35 +310,50 @@ class _ExpertiseCard extends StatelessWidget {
               fontSize: 18,
             ),
           ),
-          Text(
-            'Tech',
-            style: const TextStyle(
-              fontWeight: FontWeight.w500,
-              color: Colors.black,
-              fontSize: 15,
-            ),
-          ),
-          Wrap(
-            spacing: 5,
-            alignment: WrapAlignment.start,
-            children: userProfileData?.expertise
-                    ?.map(
-                      (expertise) => Chip(
-                        visualDensity: VisualDensity.compact,
-                        label: Text(
-                          expertise,
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 10,
+          ListView.builder(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            itemCount: userProfileData?.industry?.length,
+            itemBuilder: (context, index) {
+              final industry = userProfileData!.industry![index];
+              final expertiseList = industry == 'Development & Product' ? userProfileData!.devExpertise ?? [] : userProfileData!.markExpertise ?? [];
+
+              return ExpansionTile(
+                shape: RoundedRectangleBorder(side: BorderSide.none),
+                title: Text(
+                  industry,
+                  style: const TextStyle(
+                    fontWeight: FontWeight.w500,
+                    color: Colors.black,
+                    fontSize: 15,
+                  ),
+                ),
+                enableFeedback: true,
+                children: [
+                  Wrap(
+                    spacing: 5,
+                    alignment: WrapAlignment.start,
+                    children: expertiseList
+                        .map(
+                          (expertise) => Chip(
+                            visualDensity: VisualDensity.compact,
+                            label: Text(
+                              expertise,
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 10,
+                              ),
+                            ),
+                            backgroundColor: const Color(0xFF4B26FD),
+                            padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
                           ),
-                        ),
-                        backgroundColor: const Color(0xFF4B26FD),
-                        padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
-                      ),
-                    )
-                    .toList() ??
-                [],
-          )
+                        )
+                        .toList(),
+                  ),
+                ],
+              );
+            },
+          ),
         ],
       ),
     );

@@ -4,6 +4,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:intl/intl.dart';
 
 import '../../../common/app_utils/screen_size.dart';
+import '../../../data/models/chat_message_model.dart';
 import '../../../data/models/chat_user_model.dart';
 import '../../providers/auth_provider.dart';
 import '../../providers/chat_provider.dart';
@@ -162,6 +163,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                             onPressed: () async {
                               DateTime now = DateTime.now();
                               String formattedTime = DateFormat('MM/d/yyyy, hh:mm:ss a').format(now);
+                              final chatNotifier = ref.read(chatMessagesProvider(widget.chatUser.conversationId).notifier);
                               if (sendMessage.text.isNotEmpty) {
                                 sendMsg(
                                   widget.chatUser.conversationId!,
@@ -180,19 +182,28 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                                   ).future,
                                 );
                                 if (isMessageSend == true) {
-                                  sendMessage.clear();
                                   if (widget.chatUser.isUserOnline != true) {
-                                    ref.invalidate(getChatMessagesProvider(conversationId: widget.chatUser.conversationId!));
-                                    await ref.read(postNewNotificationProvider(
-                                      requestBody: {
-                                        "type": 'message received',
-                                        "sender_id": userData['user_id'],
-                                        "sender_name": userData['user_name'],
-                                        "receiver_id": widget.chatUser.id,
-                                        "notification": "New message received from ${userData['user_name']}.",
-                                        "conversation_id": widget.chatUser.conversationId,
-                                      },
-                                    ).future);
+                                    chatNotifier.updateMessage(ChatMessageModel(
+                                      messageText: sendMessage.text,
+                                      conversationId: widget.chatUser.conversationId!,
+                                      receiverId: widget.chatUser.id!,
+                                      typedAt: formattedTime,
+                                      senderId: userData['user_id']!,
+                                    ));
+                                    sendMessage.clear();
+                                    ref.invalidate(getChatUsersListProvider(userId: ref.read(userDetailsProvider)['user_id']!));
+                                    await ref.read(
+                                      postNewNotificationProvider(
+                                        requestBody: {
+                                          "type": 'message received',
+                                          "sender_id": userData['user_id'],
+                                          "sender_name": userData['user_name'],
+                                          "receiver_id": widget.chatUser.id,
+                                          "notification": "New message received from ${userData['user_name']}.",
+                                          "conversation_id": widget.chatUser.conversationId,
+                                        },
+                                      ).future,
+                                    );
                                   }
                                 }
                               }
@@ -255,7 +266,7 @@ class _SentMessage extends StatelessWidget {
       padding: const EdgeInsets.only(right: 18.0, left: 50, top: 5, bottom: 5),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.end,
-        children: <Widget>[
+        children: [
           const SizedBox(height: 30),
           messageTextGroup,
         ],
@@ -302,7 +313,7 @@ class _ReceivedMessage extends StatelessWidget {
       padding: const EdgeInsets.only(right: 50.0, left: 18, top: 5, bottom: 5),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.end,
-        children: <Widget>[
+        children: [
           const SizedBox(height: 30),
           messageTextGroup,
         ],

@@ -13,6 +13,8 @@ class CustomTextFormField extends StatelessWidget {
     this.onEditingComplete,
     this.keyboardType,
     this.textInputAction,
+    this.maxLength,
+    this.maxLines,
   });
 
   final String? hintText;
@@ -21,6 +23,8 @@ class CustomTextFormField extends StatelessWidget {
   final Color? hintColor;
   final InputBorder? border;
   final bool? obscureText;
+  final int? maxLength;
+  final int? maxLines;
   final String? Function(String?)? validator;
   final Function()? onEditingComplete;
   TextInputType? keyboardType;
@@ -36,6 +40,8 @@ class CustomTextFormField extends StatelessWidget {
       validator: validator,
       onEditingComplete: onEditingComplete,
       textInputAction: textInputAction,
+      maxLength: maxLength,
+      maxLines: maxLines,
       decoration: InputDecoration(
         border: border ??
             OutlineInputBorder(

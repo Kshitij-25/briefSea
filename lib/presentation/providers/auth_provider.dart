@@ -1,4 +1,7 @@
+import 'dart:convert';
+
 import 'package:briefsea/common/app_utils/shared_prefs_helper.dart';
+import 'package:crypto/crypto.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -61,7 +64,7 @@ class LoginNotifier extends StateNotifier<LoginState> {
         // Navigate based on profile status
         loginModel.profile == false
             ? GoRouter.of(context).pushNamed(VerifyProfileScreen.routeName)
-            : GoRouter.of(context).pushReplacementNamed(HomeScreen.routeName);
+            : GoRouter.of(context).goNamed(HomeScreen.routeName);
         state = LoginState.success;
       } else if (loginModel.message == 'Email sent') {
         state = LoginState.error;
@@ -78,6 +81,37 @@ class LoginNotifier extends StateNotifier<LoginState> {
     } catch (e) {
       state = LoginState.error;
     }
+  }
+
+  Future<void> loginWithGoogle(context, WidgetRef ref) async {
+    state = LoginState.loading;
+    try {
+      final authRepository = await ref.read(authRepositoryProvider);
+      final eitherUserEmailOrError = await authRepository.signInWithGoogle();
+
+      final userEmail = eitherUserEmailOrError!.fold(
+        (error) {
+          throw error;
+        },
+        (userEmail) => userEmail,
+      );
+
+      if (userEmail == null) {
+        state = LoginState.error;
+        return;
+      }
+
+      final password = generateHashedPassword(userEmail);
+
+      loginUser(userEmail, password, ref, context);
+    } catch (e) {
+      state = LoginState.error;
+    }
+  }
+
+  String generateHashedPassword(String email) {
+    var bytes = utf8.encode(email);
+    return sha256.convert(bytes).toString();
   }
 }
 
