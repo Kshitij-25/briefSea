@@ -103,6 +103,7 @@ class ExistingLoginScreen extends ConsumerWidget {
                           ),
                           TextButton(
                             style: const ButtonStyle(
+                              enableFeedback: true,
                               overlayColor: WidgetStateColor.transparent,
                             ),
                             onPressed: () {
@@ -168,33 +169,33 @@ class ExistingLoginScreen extends ConsumerWidget {
                               style: TextStyle(color: Colors.white),
                             ),
                           ),
-                          // SizedBox(height: ScreenSize.height(context) * .02),
-                          // const Text(
-                          //   "Or sign up using an option:",
-                          //   style: TextStyle(color: Colors.white),
-                          //   textScaler: TextScaler.linear(1),
-                          //   textAlign: TextAlign.center,
-                          // ),
-                          // const SizedBox(height: 20),
-                          // Row(
-                          //   mainAxisAlignment: MainAxisAlignment.center,
-                          //   children: [
-                          //     _signUpOptions(
-                          //       context,
-                          //       Assets.GOOGLE_LOGO,
-                          //       () async {
-                          //         await ref.read(loginNotifierProvider.notifier).loginWithGoogle(context, ref);
-                          //       },
-                          //     ),
-                          //     // const SizedBox(width: 20),
-                          //     // _signUpOptions(
-                          //     //   context,
-                          //     //   'assets/logos/linkedin-icon.svg',
-                          //     //   () {},
-                          //     // ),
-                          //   ],
-                          // ),
-                          // SizedBox(height: ScreenSize.height(context) * .02),
+                          SizedBox(height: ScreenSize.height(context) * .02),
+                          const Text(
+                            "Or sign up using an option:",
+                            style: TextStyle(color: Colors.white),
+                            textScaler: TextScaler.linear(1),
+                            textAlign: TextAlign.center,
+                          ),
+                          const SizedBox(height: 20),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              _signUpOptions(
+                                context,
+                                Assets.GOOGLE_LOGO,
+                                () async {
+                                  await ref.read(loginNotifierProvider.notifier).loginWithGoogle(context, ref);
+                                },
+                              ),
+                              // const SizedBox(width: 20),
+                              // _signUpOptions(
+                              //   context,
+                              //   'assets/logos/linkedin-icon.svg',
+                              //   () {},
+                              // ),
+                            ],
+                          ),
+                          SizedBox(height: ScreenSize.height(context) * .02),
                           const Text(
                             "Agency, Freelancer or\nWorking Professional?",
                             style: TextStyle(color: Colors.white),

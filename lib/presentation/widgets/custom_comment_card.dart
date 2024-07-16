@@ -188,7 +188,8 @@ class _BriefInputButton extends StatelessWidget {
   final String? iconLabel;
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
+    return InkWell(
+      enableFeedback: true,
       onTap: onPressed,
       child: Container(
         child: Row(
@@ -225,7 +226,8 @@ class _BriefLikeButton extends StatelessWidget {
   final bool isLiked;
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
+    return InkWell(
+      enableFeedback: true,
       onTap: onPressed,
       child: Container(
         child: Row(

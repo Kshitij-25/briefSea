@@ -160,6 +160,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                             ),
                           ),
                           IconButton(
+                            enableFeedback: true,
                             onPressed: () async {
                               DateTime now = DateTime.now();
                               String formattedTime = DateFormat('MM/d/yyyy, hh:mm:ss a').format(now);

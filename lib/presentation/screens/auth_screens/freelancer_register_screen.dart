@@ -166,6 +166,7 @@ class FreelancerRegisterScreen extends ConsumerWidget {
                               GoRouter.of(context).pop();
                             },
                             style: const ButtonStyle(
+                              enableFeedback: true,
                               overlayColor: WidgetStateColor.transparent,
                             ),
                             child: const Text(

@@ -80,10 +80,16 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   @override
   Future<String?> signInWithGoogle() async {
     final GoogleSignIn googleSignIn = GoogleSignIn(scopes: ['email']);
-    final GoogleSignInAccount? signInAccount = await googleSignIn.signIn();
+    GoogleSignInAccount? signInAccount;
 
-    if (signInAccount == null) {
-      return null; // The user canceled the sign-in
+    try {
+      signInAccount = await googleSignIn.signIn();
+      if (signInAccount == null) {
+        return null; // The user canceled the sign-in
+      }
+    } catch (error) {
+      log('Google Sign-In Error: $error');
+      rethrow; // Rethrow the error for higher-level error handling
     }
 
     return signInAccount.email;

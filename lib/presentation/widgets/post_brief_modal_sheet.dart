@@ -62,6 +62,7 @@ Future<void> customPostBriefModalSheet(
                             Align(
                               alignment: Alignment.topLeft,
                               child: IconButton(
+                                enableFeedback: true,
                                 onPressed: () {
                                   GoRouter.of(context).pop();
                                   postTextCont?.clear();
@@ -238,9 +239,11 @@ Future<void> customPostBriefModalSheet(
                             const Spacer(),
                             ElevatedButton(
                               style: ButtonStyle(
-                                  backgroundColor: WidgetStateProperty.all<Color>(
-                                const Color(0xFF4B26FD),
-                              )),
+                                enableFeedback: true,
+                                backgroundColor: WidgetStateProperty.all<Color>(
+                                  const Color(0xFF4B26FD),
+                                ),
+                              ),
                               onPressed: () {
                                 if (postOnTap != null) postOnTap(postTextCont?.text ?? "", selectedCategory!);
                               },

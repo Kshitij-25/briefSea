@@ -7,6 +7,7 @@ class CustomBackButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return InkWell(
+      enableFeedback: true,
       onTap: () {
         GoRouter.of(context).pop();
       },

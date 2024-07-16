@@ -225,12 +225,18 @@ class ProfileScreen extends ConsumerWidget {
                                             title: const Text(Strings.deleteWarning),
                                             actions: [
                                               TextButton(
+                                                style: TextButton.styleFrom(
+                                                  enableFeedback: true,
+                                                ),
                                                 onPressed: () {
                                                   context.pop(false);
                                                 },
                                                 child: const Text('Cancel'),
                                               ),
                                               TextButton(
+                                                style: TextButton.styleFrom(
+                                                  enableFeedback: true,
+                                                ),
                                                 onPressed: () async {
                                                   final isAccountDeleted = await ref.read(deleteAccountProvider(userId: userDetails.userId!).future);
                                                   if (isAccountDeleted == true) {
@@ -595,6 +601,7 @@ class _BannerWidget extends ConsumerWidget {
                       ),
                       errorWidget: (context, url, error) => const Row(
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           Icon(Icons.error),
                           Icon(Icons.error),
@@ -698,6 +705,7 @@ class _AvatarWidget extends ConsumerWidget {
                       ),
                       label: Text('Edit Profile'),
                       style: ElevatedButton.styleFrom(
+                        enableFeedback: true,
                         backgroundColor: Colors.white,
                         foregroundColor: const Color(0xFF4B26FD),
                         elevation: 0,

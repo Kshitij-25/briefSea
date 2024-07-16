@@ -1,5 +1,7 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -52,6 +54,8 @@ class AppUtility {
     try {
       if (prefs != null) {
         await prefs.setBool('isLogin', false);
+        await GoogleSignIn().signOut(); // Sign out from GoogleSignIn
+        await FirebaseAuth.instance.signOut();
         context.pushReplacementNamed(WelcomeScreen.routeName);
         AppUtility(context).message(!isDelete ? 'Logout Successful' : 'Account Deleted');
         ref.read(currentIndexProvider.notifier).state = 0;

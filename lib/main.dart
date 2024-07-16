@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:hive_flutter/hive_flutter.dart';
@@ -9,6 +10,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '/data/di/get_it.dart' as getIt;
 import 'app.dart';
+import 'firebase_options.dart';
 
 SharedPreferences? prefs;
 
@@ -18,6 +20,10 @@ void main() async {
   unawaited(SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]));
 
   unawaited(getIt.init());
+
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
 
   prefs = await SharedPreferences.getInstance();
 

@@ -169,6 +169,7 @@ class ProfessionalRegisterScreen extends ConsumerWidget {
                             },
                             style: const ButtonStyle(
                               overlayColor: WidgetStateColor.transparent,
+                              enableFeedback: true,
                             ),
                             child: const Text(
                               "Go back",

@@ -27,6 +27,7 @@ class CustomElevatedButton extends StatelessWidget {
       width: width ?? ScreenSize.width(context),
       child: ElevatedButton.icon(
         style: ButtonStyle(
+          enableFeedback: true,
           backgroundColor: WidgetStateProperty.all<Color>(Colors.grey[200]!),
           shape: WidgetStateProperty.all<OutlinedBorder>(
             RoundedRectangleBorder(

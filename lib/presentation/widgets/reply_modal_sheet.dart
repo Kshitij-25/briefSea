@@ -87,6 +87,7 @@ Future<void> customReplyModalSheet(
                                   style: ButtonStyle(
                                     backgroundColor: WidgetStateProperty.all<Color>(const Color(0xFF4B26FD)),
                                     elevation: WidgetStateProperty.all<double>(0),
+                                    enableFeedback: true,
                                   ),
                                   onPressed: () async {
                                     var replyPosted = await ref.read(

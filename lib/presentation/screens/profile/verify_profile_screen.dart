@@ -75,6 +75,9 @@ class VerifyProfileScreen extends ConsumerWidget {
         ),
         actions: [
           TextButton(
+            style: TextButton.styleFrom(
+              enableFeedback: true,
+            ),
             onPressed: () async {
               var uploadedAvatarKey = ref.watch(uploadedAvatarKeyProvider.notifier).state;
               var uploadedBannerKey = ref.watch(uploadedBannerKeyProvider.notifier).state;
@@ -209,6 +212,7 @@ class VerifyProfileScreen extends ConsumerWidget {
               'Gender',
               DropdownButtonHideUnderline(
                 child: DropdownButton<String>(
+                  enableFeedback: true,
                   hint: const Text('Choose your gender'),
                   menuMaxHeight: 300,
                   value: ref.watch(selectedGenderProvider).selectedGender,
@@ -623,6 +627,7 @@ class _BannerWidget extends ConsumerWidget {
                 Align(
                   alignment: Alignment.topRight,
                   child: IconButton(
+                    enableFeedback: true,
                     onPressed: () async {
                       final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
                       if (pickedFile != null) {
@@ -662,6 +667,7 @@ class _BannerWidget extends ConsumerWidget {
                 Align(
                   alignment: Alignment.topRight,
                   child: IconButton(
+                    enableFeedback: true,
                     onPressed: () async {
                       final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
                       if (pickedFile != null) {

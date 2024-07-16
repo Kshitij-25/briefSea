@@ -109,6 +109,7 @@ class HomeScreen extends ConsumerWidget {
         actions: [
           if (currentIndex == 3)
             IconButton(
+              enableFeedback: true,
               tooltip: "Logout",
               icon: const Icon(
                 Icons.logout,
@@ -132,6 +133,7 @@ class HomeScreen extends ConsumerWidget {
         ],
       ),
       bottomNavigationBar: BottomNavigationBar(
+        enableFeedback: true,
         backgroundColor: Colors.white,
         currentIndex: currentIndex,
         selectedItemColor: const Color(0xFF4B26FD),

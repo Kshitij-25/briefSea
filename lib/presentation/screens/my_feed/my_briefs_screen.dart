@@ -77,6 +77,7 @@ class MyBriefsScreen extends ConsumerWidget {
                   children: [
                     ElevatedButton(
                       style: ButtonStyle(
+                        enableFeedback: true,
                         backgroundColor: WidgetStateProperty.all<Color>(
                           const Color(0xFF4B26FD),
                         ),
@@ -93,9 +94,10 @@ class MyBriefsScreen extends ConsumerWidget {
                     const SizedBox(width: 5),
                     ElevatedButton(
                       style: ButtonStyle(
+                          enableFeedback: true,
                           backgroundColor: WidgetStateProperty.all<Color>(
-                        const Color(0xFF4B26FD),
-                      )),
+                            const Color(0xFF4B26FD),
+                          )),
                       onPressed: () {
                         ref.read(selectedBriefsFilter.notifier).setFilter('Public');
                         ref.invalidate(getUserBriefsProvider);
@@ -108,9 +110,10 @@ class MyBriefsScreen extends ConsumerWidget {
                     const SizedBox(width: 5),
                     ElevatedButton(
                       style: ButtonStyle(
+                          enableFeedback: true,
                           backgroundColor: WidgetStateProperty.all<Color>(
-                        const Color(0xFF4B26FD),
-                      )),
+                            const Color(0xFF4B26FD),
+                          )),
                       onPressed: () {
                         ref.read(selectedBriefsFilter.notifier).setFilter('Private');
                         ref.invalidate(getUserBriefsProvider);

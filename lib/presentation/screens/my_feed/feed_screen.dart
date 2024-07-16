@@ -318,6 +318,7 @@ class FeedScreen extends ConsumerWidget {
                             ),
                             ElevatedButton(
                               style: ButtonStyle(
+                                enableFeedback: true,
                                 backgroundColor: WidgetStateProperty.all<Color>(const Color(0xFF4B26FD)),
                                 elevation: WidgetStateProperty.all<double>(0),
                               ),
