@@ -22,6 +22,7 @@ class BriefsModel with _$BriefsModel {
     String? postLikeId,
     bool? isVisible,
     String? avatarSrc,
+    List<String>? isVisibleTo,
   }) = _BriefsModel;
 
   factory BriefsModel.fromJson(Map<String, dynamic> json) => _$BriefsModelFromJson(json);

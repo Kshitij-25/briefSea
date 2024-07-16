@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:briefsea/data/models/briefs_model.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -145,11 +146,27 @@ class MyBriefsScreen extends ConsumerWidget {
                                       onSelected: (value) async {
                                         if (value == 'edit') {
                                           postEditController.text = filteredBriefs[index]!.postText ?? '';
+                                          List<String>? initialVisibleTo = filteredBriefs[index]!.isVisibleTo;
                                           customPostBriefModalSheet(
                                             context,
                                             selectedImage: selectedImage,
                                             postTextCont: postEditController,
                                             postingAs: filteredBriefs[index]?.name,
+                                            onVisbileSelect: (List<String?> values) {
+                                              // log(values.toString());
+                                              if (!listEquals(values, initialVisibleTo)) {
+                                                List<String>? updatedVisibleTo = List.from(filteredBriefs[index]!.isVisibleTo ?? []);
+                                                updatedVisibleTo.clear();
+                                                updatedVisibleTo.addAll(values.whereType<String>().toList());
+                                                // Remove duplicates by converting to a Set and back to a List
+                                                updatedVisibleTo = updatedVisibleTo.toSet().toList();
+                                                log(updatedVisibleTo.toString());
+                                                log(initialVisibleTo.toString());
+
+                                                filteredBriefs[index] = filteredBriefs[index]!.copyWith(isVisibleTo: updatedVisibleTo);
+                                              }
+                                            },
+                                            selectedVisibleTo: filteredBriefs[index]!.isVisibleTo ?? [],
                                             photoOnTap: () async {
                                               // final ImagePicker picker = ImagePicker();
                                               // final XFile? image = await picker.pickImage(source: ImageSource.gallery);
@@ -190,6 +207,7 @@ class MyBriefsScreen extends ConsumerWidget {
                                                       likesCount: filteredBriefs[index]!.likesCount!,
                                                       replyCount: filteredBriefs[index]!.replyCount!,
                                                       postedAt: filteredBriefs[index]!.postedAt!,
+                                                      isVisibleTo: filteredBriefs[index]!.isVisibleTo,
                                                     ).future,
                                                   );
 
@@ -211,22 +229,25 @@ class MyBriefsScreen extends ConsumerWidget {
                                             ref.invalidate(getUserBriefsProvider);
                                           }
                                         } else if (value == "visible") {
-                                          var isVisible = await ref.watch(editBriefProvider(
-                                            briefId: filteredBriefs[index]!.id!,
-                                            isVisible: !filteredBriefs[index]!.isVisible!,
-                                            avatarSrc: filteredBriefs[index]!.avatarSrc!,
-                                            category: filteredBriefs[index]!.category!,
-                                            createdAt: filteredBriefs[index]!.createdAt!,
-                                            updatedAt: filteredBriefs[index]!.updatedAt!,
-                                            imgSrc: filteredBriefs[index]!.imgSrc!,
-                                            postText: filteredBriefs[index]!.postText!,
-                                            userId: filteredBriefs[index]!.userId!,
-                                            uname: filteredBriefs[index]!.name!,
-                                            type: filteredBriefs[index]!.type!,
-                                            likesCount: filteredBriefs[index]!.likesCount!,
-                                            replyCount: filteredBriefs[index]!.replyCount!,
-                                            postedAt: filteredBriefs[index]!.postedAt!,
-                                          ).future);
+                                          var isVisible = await ref.watch(
+                                            editBriefProvider(
+                                              briefId: filteredBriefs[index]!.id!,
+                                              isVisible: !filteredBriefs[index]!.isVisible!,
+                                              avatarSrc: filteredBriefs[index]!.avatarSrc!,
+                                              category: filteredBriefs[index]!.category!,
+                                              createdAt: filteredBriefs[index]!.createdAt!,
+                                              updatedAt: filteredBriefs[index]!.updatedAt!,
+                                              imgSrc: filteredBriefs[index]!.imgSrc!,
+                                              postText: filteredBriefs[index]!.postText!,
+                                              userId: filteredBriefs[index]!.userId!,
+                                              uname: filteredBriefs[index]!.name!,
+                                              type: filteredBriefs[index]!.type!,
+                                              likesCount: filteredBriefs[index]!.likesCount!,
+                                              replyCount: filteredBriefs[index]!.replyCount!,
+                                              postedAt: filteredBriefs[index]!.postedAt!,
+                                              isVisibleTo: filteredBriefs[index]!.isVisibleTo,
+                                            ).future,
+                                          );
                                           if (isVisible == true) {
                                             ref.invalidate(getUserBriefsProvider);
                                           }

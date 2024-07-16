@@ -13,3 +13,5 @@ class SelectedBriefsFilter extends StateNotifier<String> {
 final selectedBriefsFilter = StateNotifierProvider<SelectedBriefsFilter, String>((ref) {
   return SelectedBriefsFilter();
 });
+
+final selectedVisibleToProvider = StateProvider<List<String>>((ref) => []);

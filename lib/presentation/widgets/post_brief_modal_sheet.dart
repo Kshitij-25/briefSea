@@ -1,8 +1,10 @@
 import 'dart:io';
 
+import 'package:briefsea/common/static_data/posting_for_data.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:multi_select_flutter/multi_select_flutter.dart';
 
 import '../../common/app_utils/screen_size.dart';
 import '../../common/static_data/industry_data.dart';
@@ -14,8 +16,10 @@ Future<void> customPostBriefModalSheet(
   String? postingAs,
   // Function()? influencerOnTap,
   // Function()? technologyOnTap,
-  Function()? photoOnTap,
-  Function(String, String)? postOnTap,
+  required Function()? photoOnTap,
+  required Function(String, String)? postOnTap,
+  required Function(List<String?>)? onVisbileSelect,
+  required final List<String>? selectedVisibleTo,
 }) {
   final FocusNode textFieldFocusNode = FocusNode();
 
@@ -48,7 +52,8 @@ Future<void> customPostBriefModalSheet(
                 body: Column(
                   children: [
                     SizedBox(
-                      height: isCategoryVisible == true ? ScreenSize.height(context) * 0.4 : ScreenSize.height(context) * 0.51,
+                      // height: isCategoryVisible == true ? ScreenSize.height(context) * 0.32 :
+                      height: ScreenSize.height(context) * 0.38,
                       child: SingleChildScrollView(
                         keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
                         child: Column(
@@ -114,16 +119,17 @@ Future<void> customPostBriefModalSheet(
                               ),
                             ),
                             Padding(
-                              padding: const EdgeInsets.all(15.0),
+                              padding: const EdgeInsets.only(top: 15, left: 15, right: 15, bottom: 5),
                               child: ConstrainedBox(
                                 constraints: BoxConstraints(
-                                  maxHeight: isCategoryVisible != true ? ScreenSize.height(context) * 0.37 : ScreenSize.height(context) * 0.29,
-                                ),
+                                    // maxHeight: isCategoryVisible != true ? ScreenSize.height(context) * 0.37 : ScreenSize.height(context) * 0.29,
+                                    ),
                                 child: TextField(
                                   autofocus: true,
                                   maxLines: null,
-                                  expands: true,
+                                  // expands: true,
                                   maxLength: 500,
+                                  minLines: 1,
                                   controller: postTextCont,
                                   focusNode: textFieldFocusNode,
                                   keyboardType: TextInputType.multiline,
@@ -151,35 +157,49 @@ Future<void> customPostBriefModalSheet(
                         ),
                       ),
                     ),
-                    Visibility(
-                      visible: isCategoryVisible,
-                      child: SizedBox(
-                        height: 100,
-                        width: ScreenSize.width(context),
-                        child: ListView(
-                          shrinkWrap: true,
-                          padding: const EdgeInsets.all(10),
-                          scrollDirection: Axis.horizontal,
-                          children: industries.map((industry) {
-                            return _CategorySelector(
-                              categoryName: industry['label']!,
-                              selectedCategory: selectedCategory!,
-                              onTap: (industryName) {
-                                setState(() {
-                                  selectedCategory = industryName;
-                                });
-                              },
-                            );
-                          }).toList(),
-                        ),
-                      ),
+                    MultiSelectChipField<String?>(
+                      items: postingAsData.map((item) => MultiSelectItem<String?>(item['value'], item['label']!)).toList(),
+                      initialValue: selectedVisibleTo ?? [],
+                      onTap: onVisbileSelect,
+                      // onTap: (List<String?> values) {
+                      //   ref.read(selectedVisibleToProvider.notifier).state = values.whereType<String>().toList();
+                      // },
+                      showHeader: false,
+                      decoration: BoxDecoration(),
+                      // selectedChipColor: const Color(0xFF4C27FF),
+                      // selectedTextStyle: TextStyle(color: Colors.white),
                     ),
                     Flexible(
                       child: Padding(
-                        padding: const EdgeInsets.only(left: 15, right: 15, bottom: 20),
+                        padding: const EdgeInsets.only(left: 15, right: 15, bottom: 5),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisSize: MainAxisSize.min,
                           children: [
+                            Visibility(
+                              visible: isCategoryVisible,
+                              child: SizedBox(
+                                height: 94,
+                                // width: ScreenSize.width(context),
+                                child: ListView(
+                                  shrinkWrap: true,
+                                  padding: const EdgeInsets.all(10),
+                                  scrollDirection: Axis.horizontal,
+                                  children: industries.map((industry) {
+                                    return _CategorySelector(
+                                      categoryName: industry['label']!,
+                                      selectedCategory: selectedCategory!,
+                                      onTap: (industryName) {
+                                        setState(() {
+                                          selectedCategory = industryName;
+                                        });
+                                      },
+                                    );
+                                  }).toList(),
+                                ),
+                              ),
+                            ),
                             // IconButton(
                             //   icon: const Icon(CupertinoIcons.photo, size: 30),
                             //   onPressed: photoOnTap,
@@ -205,12 +225,13 @@ Future<void> customPostBriefModalSheet(
                             //   //   }
                             //   // },
                             // ),
-                            const SizedBox(width: 10),
+                            // const SizedBox(width: 10),
                             // IconButton(
                             //   icon: const Icon(CupertinoIcons.circle_grid_hex, size: 30),
                             //   onPressed: () {
                             //     setState(() {
-                            //       isCategoryVisible = !isCategoryVisible;
+                            //       // isCategoryVisible = !isCategoryVisible;
+                            //       isPostingForVisible = !isPostingForVisible;
                             //     });
                             //   },
                             // ),
@@ -300,7 +321,7 @@ class _CategorySelector extends StatelessWidget {
           ),
           const SizedBox(height: 5), // Add some space between the CircleAvatar and the text
           SizedBox(
-            width: 50, // Set the width to the same as CircleAvatar's diameter
+            width: 70, // Set the width to the same as CircleAvatar's diameter
             child: Text(
               categoryName,
               style: const TextStyle(color: Colors.black, fontSize: 10),

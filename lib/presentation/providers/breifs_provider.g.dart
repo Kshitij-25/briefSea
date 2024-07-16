@@ -220,7 +220,7 @@ class _GetSingleBriefProviderElement
   String? get briefId => (origin as GetSingleBriefProvider).briefId;
 }
 
-String _$postBriefHash() => r'5e285840e5174397201a04f1262705b96a61d96a';
+String _$postBriefHash() => r'6e59c734154a807cf7820703d8efdc1fb879c87d';
 
 /// See also [postBrief].
 @ProviderFor(postBrief)
@@ -233,12 +233,13 @@ class PostBriefFamily extends Family<AsyncValue<bool>> {
 
   /// See also [postBrief].
   PostBriefProvider call({
-    String? userId,
-    String? uName,
-    String? type,
-    String? category,
-    String? postText,
+    required String? userId,
+    required String? uName,
+    required String? type,
+    required String? category,
+    required String? postText,
     String? imgSrc,
+    required List<String>? isVisibleTo,
   }) {
     return PostBriefProvider(
       userId: userId,
@@ -247,6 +248,7 @@ class PostBriefFamily extends Family<AsyncValue<bool>> {
       category: category,
       postText: postText,
       imgSrc: imgSrc,
+      isVisibleTo: isVisibleTo,
     );
   }
 
@@ -261,6 +263,7 @@ class PostBriefFamily extends Family<AsyncValue<bool>> {
       category: provider.category,
       postText: provider.postText,
       imgSrc: provider.imgSrc,
+      isVisibleTo: provider.isVisibleTo,
     );
   }
 
@@ -283,12 +286,13 @@ class PostBriefFamily extends Family<AsyncValue<bool>> {
 class PostBriefProvider extends AutoDisposeFutureProvider<bool> {
   /// See also [postBrief].
   PostBriefProvider({
-    String? userId,
-    String? uName,
-    String? type,
-    String? category,
-    String? postText,
+    required String? userId,
+    required String? uName,
+    required String? type,
+    required String? category,
+    required String? postText,
     String? imgSrc,
+    required List<String>? isVisibleTo,
   }) : this._internal(
           (ref) => postBrief(
             ref as PostBriefRef,
@@ -298,6 +302,7 @@ class PostBriefProvider extends AutoDisposeFutureProvider<bool> {
             category: category,
             postText: postText,
             imgSrc: imgSrc,
+            isVisibleTo: isVisibleTo,
           ),
           from: postBriefProvider,
           name: r'postBriefProvider',
@@ -313,6 +318,7 @@ class PostBriefProvider extends AutoDisposeFutureProvider<bool> {
           category: category,
           postText: postText,
           imgSrc: imgSrc,
+          isVisibleTo: isVisibleTo,
         );
 
   PostBriefProvider._internal(
@@ -328,6 +334,7 @@ class PostBriefProvider extends AutoDisposeFutureProvider<bool> {
     required this.category,
     required this.postText,
     required this.imgSrc,
+    required this.isVisibleTo,
   }) : super.internal();
 
   final String? userId;
@@ -336,6 +343,7 @@ class PostBriefProvider extends AutoDisposeFutureProvider<bool> {
   final String? category;
   final String? postText;
   final String? imgSrc;
+  final List<String>? isVisibleTo;
 
   @override
   Override overrideWith(
@@ -356,6 +364,7 @@ class PostBriefProvider extends AutoDisposeFutureProvider<bool> {
         category: category,
         postText: postText,
         imgSrc: imgSrc,
+        isVisibleTo: isVisibleTo,
       ),
     );
   }
@@ -373,7 +382,8 @@ class PostBriefProvider extends AutoDisposeFutureProvider<bool> {
         other.type == type &&
         other.category == category &&
         other.postText == postText &&
-        other.imgSrc == imgSrc;
+        other.imgSrc == imgSrc &&
+        other.isVisibleTo == isVisibleTo;
   }
 
   @override
@@ -385,6 +395,7 @@ class PostBriefProvider extends AutoDisposeFutureProvider<bool> {
     hash = _SystemHash.combine(hash, category.hashCode);
     hash = _SystemHash.combine(hash, postText.hashCode);
     hash = _SystemHash.combine(hash, imgSrc.hashCode);
+    hash = _SystemHash.combine(hash, isVisibleTo.hashCode);
 
     return _SystemHash.finish(hash);
   }
@@ -408,6 +419,9 @@ mixin PostBriefRef on AutoDisposeFutureProviderRef<bool> {
 
   /// The parameter `imgSrc` of this provider.
   String? get imgSrc;
+
+  /// The parameter `isVisibleTo` of this provider.
+  List<String>? get isVisibleTo;
 }
 
 class _PostBriefProviderElement extends AutoDisposeFutureProviderElement<bool>
@@ -426,6 +440,8 @@ class _PostBriefProviderElement extends AutoDisposeFutureProviderElement<bool>
   String? get postText => (origin as PostBriefProvider).postText;
   @override
   String? get imgSrc => (origin as PostBriefProvider).imgSrc;
+  @override
+  List<String>? get isVisibleTo => (origin as PostBriefProvider).isVisibleTo;
 }
 
 String _$uploadThreadImageHash() => r'e93d537f39cf32f3017d5538ad054e11bcf83302';
@@ -735,7 +751,7 @@ class _DeleteBriefProviderElement extends AutoDisposeFutureProviderElement<bool>
   String? get briefId => (origin as DeleteBriefProvider).briefId;
 }
 
-String _$editBriefHash() => r'063881d96ffdf885981b2bc8d3ea3af25129cc7b';
+String _$editBriefHash() => r'67891b9790ea9287d4261dd2a3c724af3169c961';
 
 /// See also [editBrief].
 @ProviderFor(editBrief)
@@ -762,6 +778,7 @@ class EditBriefFamily extends Family<AsyncValue<bool>> {
     required int likesCount,
     required int replyCount,
     required int postedAt,
+    required List<String>? isVisibleTo,
   }) {
     return EditBriefProvider(
       briefId: briefId,
@@ -778,6 +795,7 @@ class EditBriefFamily extends Family<AsyncValue<bool>> {
       likesCount: likesCount,
       replyCount: replyCount,
       postedAt: postedAt,
+      isVisibleTo: isVisibleTo,
     );
   }
 
@@ -800,6 +818,7 @@ class EditBriefFamily extends Family<AsyncValue<bool>> {
       likesCount: provider.likesCount,
       replyCount: provider.replyCount,
       postedAt: provider.postedAt,
+      isVisibleTo: provider.isVisibleTo,
     );
   }
 
@@ -836,6 +855,7 @@ class EditBriefProvider extends AutoDisposeFutureProvider<bool> {
     required int likesCount,
     required int replyCount,
     required int postedAt,
+    required List<String>? isVisibleTo,
   }) : this._internal(
           (ref) => editBrief(
             ref as EditBriefRef,
@@ -853,6 +873,7 @@ class EditBriefProvider extends AutoDisposeFutureProvider<bool> {
             likesCount: likesCount,
             replyCount: replyCount,
             postedAt: postedAt,
+            isVisibleTo: isVisibleTo,
           ),
           from: editBriefProvider,
           name: r'editBriefProvider',
@@ -876,6 +897,7 @@ class EditBriefProvider extends AutoDisposeFutureProvider<bool> {
           likesCount: likesCount,
           replyCount: replyCount,
           postedAt: postedAt,
+          isVisibleTo: isVisibleTo,
         );
 
   EditBriefProvider._internal(
@@ -899,6 +921,7 @@ class EditBriefProvider extends AutoDisposeFutureProvider<bool> {
     required this.likesCount,
     required this.replyCount,
     required this.postedAt,
+    required this.isVisibleTo,
   }) : super.internal();
 
   final String briefId;
@@ -915,6 +938,7 @@ class EditBriefProvider extends AutoDisposeFutureProvider<bool> {
   final int likesCount;
   final int replyCount;
   final int postedAt;
+  final List<String>? isVisibleTo;
 
   @override
   Override overrideWith(
@@ -943,6 +967,7 @@ class EditBriefProvider extends AutoDisposeFutureProvider<bool> {
         likesCount: likesCount,
         replyCount: replyCount,
         postedAt: postedAt,
+        isVisibleTo: isVisibleTo,
       ),
     );
   }
@@ -968,7 +993,8 @@ class EditBriefProvider extends AutoDisposeFutureProvider<bool> {
         other.updatedAt == updatedAt &&
         other.likesCount == likesCount &&
         other.replyCount == replyCount &&
-        other.postedAt == postedAt;
+        other.postedAt == postedAt &&
+        other.isVisibleTo == isVisibleTo;
   }
 
   @override
@@ -988,6 +1014,7 @@ class EditBriefProvider extends AutoDisposeFutureProvider<bool> {
     hash = _SystemHash.combine(hash, likesCount.hashCode);
     hash = _SystemHash.combine(hash, replyCount.hashCode);
     hash = _SystemHash.combine(hash, postedAt.hashCode);
+    hash = _SystemHash.combine(hash, isVisibleTo.hashCode);
 
     return _SystemHash.finish(hash);
   }
@@ -1035,6 +1062,9 @@ mixin EditBriefRef on AutoDisposeFutureProviderRef<bool> {
 
   /// The parameter `postedAt` of this provider.
   int get postedAt;
+
+  /// The parameter `isVisibleTo` of this provider.
+  List<String>? get isVisibleTo;
 }
 
 class _EditBriefProviderElement extends AutoDisposeFutureProviderElement<bool>
@@ -1069,6 +1099,8 @@ class _EditBriefProviderElement extends AutoDisposeFutureProviderElement<bool>
   int get replyCount => (origin as EditBriefProvider).replyCount;
   @override
   int get postedAt => (origin as EditBriefProvider).postedAt;
+  @override
+  List<String>? get isVisibleTo => (origin as EditBriefProvider).isVisibleTo;
 }
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member

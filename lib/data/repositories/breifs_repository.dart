@@ -51,6 +51,7 @@ class BreifsRepository {
     String? category,
     String? postText,
     String? imgSrc,
+    List<String>? isVisibleTo,
   }) async {
     try {
       final userBriefs = await _briefsRemoteDataSource.postBrief(
@@ -60,6 +61,7 @@ class BreifsRepository {
         category: category,
         postText: postText,
         imgSrc: imgSrc,
+        isVisibleTo: isVisibleTo,
       );
       return Right(userBriefs);
     } on AppError catch (e) {
@@ -106,6 +108,7 @@ class BreifsRepository {
     int? likesCount,
     int? replyCount,
     int? postedAt,
+    List<String>? isVisibleTo,
   }) async {
     try {
       final editedBrief = await _briefsRemoteDataSource.editBrief(
@@ -123,6 +126,7 @@ class BreifsRepository {
         updatedAt: updatedAt,
         userId: userId,
         imgSrc: imgSrc,
+        isVisibleTo: isVisibleTo,
       );
       return Right(editedBrief);
     } on AppError catch (e) {

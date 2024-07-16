@@ -24,6 +24,9 @@ _$BriefsModelImpl _$$BriefsModelImplFromJson(Map<String, dynamic> json) =>
       postLikeId: json['postLikeId'] as String?,
       isVisible: json['isVisible'] as bool?,
       avatarSrc: json['avatarSrc'] as String?,
+      isVisibleTo: (json['isVisibleTo'] as List<dynamic>?)
+          ?.map((e) => e as String)
+          .toList(),
     );
 
 Map<String, dynamic> _$$BriefsModelImplToJson(_$BriefsModelImpl instance) =>
@@ -44,4 +47,5 @@ Map<String, dynamic> _$$BriefsModelImplToJson(_$BriefsModelImpl instance) =>
       'postLikeId': instance.postLikeId,
       'isVisible': instance.isVisible,
       'avatarSrc': instance.avatarSrc,
+      'isVisibleTo': instance.isVisibleTo,
     };

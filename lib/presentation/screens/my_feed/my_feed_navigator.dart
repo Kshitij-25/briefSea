@@ -33,6 +33,8 @@ class MyFeedNavigator extends ConsumerWidget {
     final selectedImage = ref.watch(selectedPostImageProvider);
     final userData = ref.watch(userDetailsProvider);
 
+    final selectedVisibleTo = ref.watch(selectedVisibleToProvider.notifier).state;
+
     final TextEditingController postTextCont = TextEditingController();
 
     void onPageChanged(int index) {
@@ -99,6 +101,10 @@ class MyFeedNavigator extends ConsumerWidget {
                           selectedImage: selectedImage,
                           postTextCont: postTextCont,
                           postingAs: userData['firstName'],
+                          onVisbileSelect: (List<String?> values) {
+                            ref.read(selectedVisibleToProvider.notifier).state = values.whereType<String>().toList();
+                          },
+                          selectedVisibleTo: selectedVisibleTo,
                           photoOnTap: () async {
                             final ImagePicker picker = ImagePicker();
                             final XFile? image = await picker.pickImage(source: ImageSource.gallery);
@@ -131,6 +137,7 @@ class MyFeedNavigator extends ConsumerWidget {
                                     postText: postText,
                                     imgSrc: ref.read(uploadedThreadImageKeyProvider.notifier).state,
                                     category: selectedCategory,
+                                    isVisibleTo: selectedVisibleTo,
                                   ).future,
                                 );
 

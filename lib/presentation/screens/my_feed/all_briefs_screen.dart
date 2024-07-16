@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -79,11 +80,27 @@ class AllBriefsScreen extends ConsumerWidget {
                         onSelected: (value) async {
                           if (value == 'edit') {
                             postEditController.text = briefs[index]!.postText ?? '';
+                            List<String>? initialVisibleTo = briefs[index]!.isVisibleTo;
                             customPostBriefModalSheet(
                               context,
                               selectedImage: selectedImage,
                               postTextCont: postEditController,
                               postingAs: briefs[index]?.name,
+                              onVisbileSelect: (List<String?> values) {
+                                // log(values.toString());
+                                if (!listEquals(values, initialVisibleTo)) {
+                                  List<String>? updatedVisibleTo = List.from(briefs[index]!.isVisibleTo ?? []);
+                                  updatedVisibleTo.clear();
+                                  updatedVisibleTo.addAll(values.whereType<String>().toList());
+                                  // Remove duplicates by converting to a Set and back to a List
+                                  updatedVisibleTo = updatedVisibleTo.toSet().toList();
+                                  log(updatedVisibleTo.toString());
+                                  log(initialVisibleTo.toString());
+
+                                  briefs[index] = briefs[index]!.copyWith(isVisibleTo: updatedVisibleTo);
+                                }
+                              },
+                              selectedVisibleTo: briefs[index]!.isVisibleTo ?? [],
                               photoOnTap: () async {
                                 // final ImagePicker picker = ImagePicker();
                                 // final XFile? image = await picker.pickImage(source: ImageSource.gallery);
@@ -124,6 +141,7 @@ class AllBriefsScreen extends ConsumerWidget {
                                         likesCount: briefs[index]!.likesCount!,
                                         replyCount: briefs[index]!.replyCount!,
                                         postedAt: briefs[index]!.postedAt!,
+                                        isVisibleTo: briefs[index]!.isVisibleTo,
                                       ).future,
                                     );
 
@@ -145,22 +163,25 @@ class AllBriefsScreen extends ConsumerWidget {
                               ref.invalidate(getAllBriefsProvider);
                             }
                           } else if (value == "visible") {
-                            var isVisible = await ref.watch(editBriefProvider(
-                              briefId: briefs[index]!.id!,
-                              isVisible: !briefs[index]!.isVisible!,
-                              avatarSrc: briefs[index]!.avatarSrc!,
-                              category: briefs[index]!.category!,
-                              createdAt: briefs[index]!.createdAt!,
-                              updatedAt: briefs[index]!.updatedAt!,
-                              imgSrc: briefs[index]!.imgSrc!,
-                              postText: briefs[index]!.postText!,
-                              userId: briefs[index]!.userId!,
-                              uname: briefs[index]!.name!,
-                              type: briefs[index]!.type!,
-                              likesCount: briefs[index]!.likesCount!,
-                              replyCount: briefs[index]!.replyCount!,
-                              postedAt: briefs[index]!.postedAt!,
-                            ).future);
+                            var isVisible = await ref.watch(
+                              editBriefProvider(
+                                briefId: briefs[index]!.id!,
+                                isVisible: !briefs[index]!.isVisible!,
+                                avatarSrc: briefs[index]!.avatarSrc!,
+                                category: briefs[index]!.category!,
+                                createdAt: briefs[index]!.createdAt!,
+                                updatedAt: briefs[index]!.updatedAt!,
+                                imgSrc: briefs[index]!.imgSrc!,
+                                postText: briefs[index]!.postText!,
+                                userId: briefs[index]!.userId!,
+                                uname: briefs[index]!.name!,
+                                type: briefs[index]!.type!,
+                                likesCount: briefs[index]!.likesCount!,
+                                replyCount: briefs[index]!.replyCount!,
+                                postedAt: briefs[index]!.postedAt!,
+                                isVisibleTo: briefs[index]!.isVisibleTo,
+                              ).future,
+                            );
                             if (isVisible == true) {
                               ref.invalidate(getUserBriefsProvider);
                             }

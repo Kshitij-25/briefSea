@@ -21,6 +21,7 @@ abstract class BriefsRemoteDataSource {
     String? category,
     String? postText,
     String? imgSrc,
+    List<String>? isVisibleTo,
   });
   Future<ThreadImageModel?>? uploadThreadImage(
     String? fileName,
@@ -44,6 +45,7 @@ abstract class BriefsRemoteDataSource {
     int? likesCount,
     int? replyCount,
     int? postedAt,
+    List<String>? isVisibleTo,
   });
 }
 
@@ -63,7 +65,7 @@ class BriefsRemoteDataSourceImpl implements BriefsRemoteDataSource {
 
     try {
       Response? response = await _apiClient.getReq(
-        url: ApiConstants.getAllBriefs,
+        url: "${ApiConstants.getAllBriefs}",
         jwtToken: jwtToken,
       );
 
@@ -146,6 +148,7 @@ class BriefsRemoteDataSourceImpl implements BriefsRemoteDataSource {
     String? category,
     String? postText,
     String? imgSrc,
+    List<String>? isVisibleTo,
   }) async {
     var jwtToken = await getJwtToken();
 
@@ -157,6 +160,7 @@ class BriefsRemoteDataSourceImpl implements BriefsRemoteDataSource {
         "category": category,
         "postText": postText,
         "imgSrc": imgSrc ?? "",
+        'isVisibleTo': isVisibleTo,
       };
       Response? response = await _apiClient.postReq(
         url: ApiConstants.postBrief,
@@ -263,6 +267,7 @@ class BriefsRemoteDataSourceImpl implements BriefsRemoteDataSource {
     int? likesCount,
     int? replyCount,
     int? postedAt,
+    List<String>? isVisibleTo,
   }) async {
     var jwtToken = await getJwtToken();
     try {
@@ -282,6 +287,7 @@ class BriefsRemoteDataSourceImpl implements BriefsRemoteDataSource {
         'user_id': userId,
         '_id': briefId,
         '__v': 0,
+        'isVisibleTo': isVisibleTo,
       };
 
       Response? response = await _apiClient.patchReq(

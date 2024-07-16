@@ -93,7 +93,7 @@ class CustomBriefsCard extends StatelessWidget {
                         ),
                       ),
                       Text(
-                        "Posting as ${brief?.type ?? ""}",
+                        "Posting as ${brief?.type?[0].toUpperCase()}${brief?.type?.substring(1) ?? ""}",
                         style: const TextStyle(
                           color: Color(0xFF4A26FE),
                           fontSize: 11,

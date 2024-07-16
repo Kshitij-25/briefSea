@@ -74,12 +74,13 @@ Future<BriefsModel?> getSingleBrief(GetSingleBriefRef ref, {required String? bri
 @riverpod
 Future<bool> postBrief(
   PostBriefRef ref, {
-  String? userId,
-  String? uName,
-  String? type,
-  String? category,
-  String? postText,
+  required String? userId,
+  required String? uName,
+  required String? type,
+  required String? category,
+  required String? postText,
   String? imgSrc,
+  required List<String>? isVisibleTo,
 }) async {
   final breifsRepository = ref.watch(briefsRepositoryProvider);
   final eitherBriefsOrError = await breifsRepository.postBrief(
@@ -89,6 +90,7 @@ Future<bool> postBrief(
     category: category,
     postText: postText,
     imgSrc: imgSrc,
+    isVisibleTo: isVisibleTo,
   );
   return eitherBriefsOrError!.fold(
     (error) {
@@ -140,6 +142,7 @@ Future<bool> editBrief(
   required int likesCount,
   required int replyCount,
   required int postedAt,
+  required List<String>? isVisibleTo,
 }) async {
   final breifsRepository = ref.watch(briefsRepositoryProvider);
   final eitherBriefsOrError = await breifsRepository.editBrief(
@@ -157,6 +160,7 @@ Future<bool> editBrief(
     updatedAt: updatedAt,
     userId: userId,
     postText: postText,
+    isVisibleTo: isVisibleTo,
   );
   return eitherBriefsOrError!.fold(
     (error) {

@@ -39,6 +39,7 @@ mixin _$BriefsModel {
   String? get postLikeId => throw _privateConstructorUsedError;
   bool? get isVisible => throw _privateConstructorUsedError;
   String? get avatarSrc => throw _privateConstructorUsedError;
+  List<String>? get isVisibleTo => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -68,7 +69,8 @@ abstract class $BriefsModelCopyWith<$Res> {
       bool isPostLiked,
       String? postLikeId,
       bool? isVisible,
-      String? avatarSrc});
+      String? avatarSrc,
+      List<String>? isVisibleTo});
 }
 
 /// @nodoc
@@ -100,6 +102,7 @@ class _$BriefsModelCopyWithImpl<$Res, $Val extends BriefsModel>
     Object? postLikeId = freezed,
     Object? isVisible = freezed,
     Object? avatarSrc = freezed,
+    Object? isVisibleTo = freezed,
   }) {
     return _then(_value.copyWith(
       id: freezed == id
@@ -166,6 +169,10 @@ class _$BriefsModelCopyWithImpl<$Res, $Val extends BriefsModel>
           ? _value.avatarSrc
           : avatarSrc // ignore: cast_nullable_to_non_nullable
               as String?,
+      isVisibleTo: freezed == isVisibleTo
+          ? _value.isVisibleTo
+          : isVisibleTo // ignore: cast_nullable_to_non_nullable
+              as List<String>?,
     ) as $Val);
   }
 }
@@ -194,7 +201,8 @@ abstract class _$$BriefsModelImplCopyWith<$Res>
       bool isPostLiked,
       String? postLikeId,
       bool? isVisible,
-      String? avatarSrc});
+      String? avatarSrc,
+      List<String>? isVisibleTo});
 }
 
 /// @nodoc
@@ -224,6 +232,7 @@ class __$$BriefsModelImplCopyWithImpl<$Res>
     Object? postLikeId = freezed,
     Object? isVisible = freezed,
     Object? avatarSrc = freezed,
+    Object? isVisibleTo = freezed,
   }) {
     return _then(_$BriefsModelImpl(
       id: freezed == id
@@ -290,6 +299,10 @@ class __$$BriefsModelImplCopyWithImpl<$Res>
           ? _value.avatarSrc
           : avatarSrc // ignore: cast_nullable_to_non_nullable
               as String?,
+      isVisibleTo: freezed == isVisibleTo
+          ? _value._isVisibleTo
+          : isVisibleTo // ignore: cast_nullable_to_non_nullable
+              as List<String>?,
     ));
   }
 }
@@ -313,7 +326,9 @@ class _$BriefsModelImpl implements _BriefsModel {
       this.isPostLiked = false,
       this.postLikeId,
       this.isVisible,
-      this.avatarSrc});
+      this.avatarSrc,
+      final List<String>? isVisibleTo})
+      : _isVisibleTo = isVisibleTo;
 
   factory _$BriefsModelImpl.fromJson(Map<String, dynamic> json) =>
       _$$BriefsModelImplFromJson(json);
@@ -354,10 +369,19 @@ class _$BriefsModelImpl implements _BriefsModel {
   final bool? isVisible;
   @override
   final String? avatarSrc;
+  final List<String>? _isVisibleTo;
+  @override
+  List<String>? get isVisibleTo {
+    final value = _isVisibleTo;
+    if (value == null) return null;
+    if (_isVisibleTo is EqualUnmodifiableListView) return _isVisibleTo;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(value);
+  }
 
   @override
   String toString() {
-    return 'BriefsModel(id: $id, userId: $userId, name: $name, type: $type, category: $category, postText: $postText, likesCount: $likesCount, replyCount: $replyCount, postedAt: $postedAt, imgSrc: $imgSrc, createdAt: $createdAt, updatedAt: $updatedAt, isPostLiked: $isPostLiked, postLikeId: $postLikeId, isVisible: $isVisible, avatarSrc: $avatarSrc)';
+    return 'BriefsModel(id: $id, userId: $userId, name: $name, type: $type, category: $category, postText: $postText, likesCount: $likesCount, replyCount: $replyCount, postedAt: $postedAt, imgSrc: $imgSrc, createdAt: $createdAt, updatedAt: $updatedAt, isPostLiked: $isPostLiked, postLikeId: $postLikeId, isVisible: $isVisible, avatarSrc: $avatarSrc, isVisibleTo: $isVisibleTo)';
   }
 
   @override
@@ -391,7 +415,9 @@ class _$BriefsModelImpl implements _BriefsModel {
             (identical(other.isVisible, isVisible) ||
                 other.isVisible == isVisible) &&
             (identical(other.avatarSrc, avatarSrc) ||
-                other.avatarSrc == avatarSrc));
+                other.avatarSrc == avatarSrc) &&
+            const DeepCollectionEquality()
+                .equals(other._isVisibleTo, _isVisibleTo));
   }
 
   @JsonKey(ignore: true)
@@ -413,7 +439,8 @@ class _$BriefsModelImpl implements _BriefsModel {
       isPostLiked,
       postLikeId,
       isVisible,
-      avatarSrc);
+      avatarSrc,
+      const DeepCollectionEquality().hash(_isVisibleTo));
 
   @JsonKey(ignore: true)
   @override
@@ -446,7 +473,8 @@ abstract class _BriefsModel implements BriefsModel {
       final bool isPostLiked,
       final String? postLikeId,
       final bool? isVisible,
-      final String? avatarSrc}) = _$BriefsModelImpl;
+      final String? avatarSrc,
+      final List<String>? isVisibleTo}) = _$BriefsModelImpl;
 
   factory _BriefsModel.fromJson(Map<String, dynamic> json) =
       _$BriefsModelImpl.fromJson;
@@ -486,6 +514,8 @@ abstract class _BriefsModel implements BriefsModel {
   bool? get isVisible;
   @override
   String? get avatarSrc;
+  @override
+  List<String>? get isVisibleTo;
   @override
   @JsonKey(ignore: true)
   _$$BriefsModelImplCopyWith<_$BriefsModelImpl> get copyWith =>
