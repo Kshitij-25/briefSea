@@ -7,7 +7,6 @@ import '../../../common/app_utils/app_utility.dart';
 import '../../../common/app_utils/screen_size.dart';
 import '../../../common/app_utils/validation_utils.dart';
 import '../../../common/enums/enums.dart';
-import '../../../common/others/assets.dart';
 import '../../providers/auth_provider.dart';
 import '../../widgets/custom_back_button.dart';
 import '../../widgets/custom_elevated_button.dart';
@@ -49,18 +48,18 @@ class ExistingLoginScreen extends ConsumerWidget {
                         children: [
                           SizedBox(height: ScreenSize.height(context) * .2),
                           GestureDetector(
-                            onTap: () {
-                              emailCont.text = "kshitij@briefsea.com";
-                              passCont.text = 'Test@1234';
-                            },
-                            onLongPress: () {
-                              emailCont.text = "dowaye6258@elahan.com";
-                              passCont.text = 'Test@123';
-                            },
-                            onDoubleTap: () {
-                              emailCont.text = "rahul@briefsea.com";
-                              passCont.text = "Abcd@1234#";
-                            },
+                            // onTap: () {
+                            //   emailCont.text = "kshitij@briefsea.com";
+                            //   passCont.text = 'Test@1234';
+                            // },
+                            // onLongPress: () {
+                            //   emailCont.text = "dowaye6258@elahan.com";
+                            //   passCont.text = 'Test@123';
+                            // },
+                            // onDoubleTap: () {
+                            //   emailCont.text = "rahul@briefsea.com";
+                            //   passCont.text = "Abcd@1234#";
+                            // },
                             child: const Text(
                               "Login as Existing User",
                               style: TextStyle(
@@ -170,31 +169,31 @@ class ExistingLoginScreen extends ConsumerWidget {
                             ),
                           ),
                           SizedBox(height: ScreenSize.height(context) * .02),
-                          const Text(
-                            "Or sign up using an option:",
-                            style: TextStyle(color: Colors.white),
-                            textScaler: TextScaler.linear(1),
-                            textAlign: TextAlign.center,
-                          ),
-                          const SizedBox(height: 20),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              _signUpOptions(
-                                context,
-                                Assets.GOOGLE_LOGO,
-                                () async {
-                                  await ref.read(loginNotifierProvider.notifier).loginWithGoogle(context, ref);
-                                },
-                              ),
-                              // const SizedBox(width: 20),
-                              // _signUpOptions(
-                              //   context,
-                              //   'assets/logos/linkedin-icon.svg',
-                              //   () {},
-                              // ),
-                            ],
-                          ),
+                          // const Text(
+                          //   "Or sign up using an option:",
+                          //   style: TextStyle(color: Colors.white),
+                          //   textScaler: TextScaler.linear(1),
+                          //   textAlign: TextAlign.center,
+                          // ),
+                          // const SizedBox(height: 20),
+                          // Row(
+                          //   mainAxisAlignment: MainAxisAlignment.center,
+                          //   children: [
+                          //     _signUpOptions(
+                          //       context,
+                          //       Assets.GOOGLE_LOGO,
+                          //       () async {
+                          //         await ref.read(loginNotifierProvider.notifier).loginWithGoogle(context, ref);
+                          //       },
+                          //     ),
+                          //     // const SizedBox(width: 20),
+                          //     // _signUpOptions(
+                          //     //   context,
+                          //     //   'assets/logos/linkedin-icon.svg',
+                          //     //   () {},
+                          //     // ),
+                          //   ],
+                          // ),
                           SizedBox(height: ScreenSize.height(context) * .02),
                           const Text(
                             "Agency, Freelancer or\nWorking Professional?",

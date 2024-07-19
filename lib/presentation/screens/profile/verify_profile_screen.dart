@@ -115,7 +115,7 @@ class VerifyProfileScreen extends ConsumerWidget {
                 );
                 if (verifyMessage == "Profile added successfully") {
                   AppUtility(context).message(verifyMessage);
-                  context.pushReplacementNamed(HomeScreen.routeName);
+                  context.go(HomeScreen.routeName);
                 }
               } else {
                 AppUtility(context).message("Please complete the profile first.");

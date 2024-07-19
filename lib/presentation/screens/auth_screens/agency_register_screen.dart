@@ -122,6 +122,7 @@ class AgencyRegisterScreen extends ConsumerWidget {
                             controller: agencyConfirmPass,
                             obscureText: true,
                             textInputAction: TextInputAction.done,
+                            maxLines: 1,
                             validator: (value) {
                               if (!ValidationUtils.isNotEmpty(value!)) {
                                 return 'Please confirm your password';

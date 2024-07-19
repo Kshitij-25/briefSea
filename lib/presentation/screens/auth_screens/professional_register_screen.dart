@@ -122,6 +122,7 @@ class ProfessionalRegisterScreen extends ConsumerWidget {
                             controller: professionalConfirmPass,
                             textInputAction: TextInputAction.done,
                             obscureText: true,
+                            maxLines: 1,
                             validator: (value) {
                               if (!ValidationUtils.isNotEmpty(value!)) {
                                 return 'Please confirm your password';

@@ -120,6 +120,7 @@ class FreelancerRegisterScreen extends ConsumerWidget {
                             controller: freelanceConfirmPass,
                             textInputAction: TextInputAction.done,
                             obscureText: true,
+                            maxLines: 1,
                             validator: (value) {
                               if (!ValidationUtils.isNotEmpty(value!)) {
                                 return 'Please confirm your password';
