@@ -1,5 +1,8 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+
+import '../../common/app_utils/screen_size.dart';
 
 class CustomBackButton extends StatelessWidget {
   const CustomBackButton({super.key});
@@ -14,12 +17,12 @@ class CustomBackButton extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 10),
         child: Container(
-          height: 50,
+          height: 50 * ScaleSize.textScaleFactor(context),
           padding: const EdgeInsets.only(left: 0, top: 10, bottom: 10),
-          child: const Icon(
-            Icons.keyboard_arrow_left,
+          child: Icon(
+            CupertinoIcons.left_chevron,
             color: Color(0xFF01FFF5),
-            size: 40,
+            size: 40 * ScaleSize.textScaleFactor(context),
           ),
         ),
       ),

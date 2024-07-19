@@ -68,6 +68,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
             fontWeight: FontWeight.bold,
             color: Colors.white,
           ),
+          textScaler: TextScaler.linear(ScaleSize.textScaleFactor(context)),
         ),
         centerTitle: true,
         elevation: 0,
@@ -107,11 +108,12 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                       child: Text(chatMessageState.error!),
                     ),
                   if (chatMessageState.chatMessages != null && chatMessageState.chatMessages!.isEmpty)
-                    const Expanded(
+                    Expanded(
                       child: Center(
                         child: Text(
                           "Directly Chat and work with\ntop freelancers, vendors and working professionals.",
                           textAlign: TextAlign.center,
+                          textScaler: TextScaler.linear(ScaleSize.textScaleFactor(context)),
                         ),
                       ),
                     ),
@@ -156,6 +158,9 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                               textCapitalization: TextCapitalization.sentences,
                               decoration: const InputDecoration.collapsed(
                                 hintText: "Send a message...",
+                                hintStyle: TextStyle(
+                                  color: Colors.black26,
+                                ),
                               ),
                             ),
                           ),
@@ -209,9 +214,9 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                                 }
                               }
                             },
-                            icon: const Icon(
+                            icon: Icon(
                               CupertinoIcons.arrow_up_circle_fill,
-                              size: 30,
+                              size: 30 * ScaleSize.textScaleFactor(context),
                               color: Color(0xFF212121),
                             ),
                           ),
@@ -239,29 +244,31 @@ class _SentMessage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final messageTextGroup = Flexible(
-        child: Row(
-      mainAxisAlignment: MainAxisAlignment.end,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Flexible(
-          child: Container(
-            padding: const EdgeInsets.all(14),
-            decoration: BoxDecoration(
-              color: Colors.grey[900],
-              borderRadius: const BorderRadius.only(
-                topLeft: Radius.circular(18),
-                bottomLeft: Radius.circular(18),
-                bottomRight: Radius.circular(18),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.end,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Flexible(
+            child: Container(
+              padding: const EdgeInsets.all(14),
+              decoration: BoxDecoration(
+                color: Colors.grey[900],
+                borderRadius: const BorderRadius.only(
+                  topLeft: Radius.circular(18),
+                  bottomLeft: Radius.circular(18),
+                  bottomRight: Radius.circular(18),
+                ),
+              ),
+              child: Text(
+                message,
+                style: const TextStyle(color: Colors.white, fontSize: 14),
+                textScaler: TextScaler.linear(ScaleSize.textScaleFactor(context)),
               ),
             ),
-            child: Text(
-              message,
-              style: const TextStyle(color: Colors.white, fontSize: 14),
-            ),
           ),
-        ),
-      ],
-    ));
+        ],
+      ),
+    );
 
     return Padding(
       padding: const EdgeInsets.only(right: 18.0, left: 50, top: 5, bottom: 5),
@@ -286,29 +293,31 @@ class _ReceivedMessage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final messageTextGroup = Flexible(
-        child: Row(
-      mainAxisAlignment: MainAxisAlignment.start,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Flexible(
-          child: Container(
-            padding: const EdgeInsets.all(14),
-            decoration: BoxDecoration(
-              color: Colors.grey[300],
-              borderRadius: const BorderRadius.only(
-                topRight: Radius.circular(18),
-                bottomLeft: Radius.circular(18),
-                bottomRight: Radius.circular(18),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Flexible(
+            child: Container(
+              padding: const EdgeInsets.all(14),
+              decoration: BoxDecoration(
+                color: Colors.grey[300],
+                borderRadius: const BorderRadius.only(
+                  topRight: Radius.circular(18),
+                  bottomLeft: Radius.circular(18),
+                  bottomRight: Radius.circular(18),
+                ),
+              ),
+              child: Text(
+                message,
+                style: const TextStyle(color: Colors.black, fontSize: 14),
+                textScaler: TextScaler.linear(ScaleSize.textScaleFactor(context)),
               ),
             ),
-            child: Text(
-              message,
-              style: const TextStyle(color: Colors.black, fontSize: 14),
-            ),
           ),
-        ),
-      ],
-    ));
+        ],
+      ),
+    );
 
     return Padding(
       padding: const EdgeInsets.only(right: 50.0, left: 18, top: 5, bottom: 5),

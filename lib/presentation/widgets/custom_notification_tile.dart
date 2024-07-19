@@ -3,6 +3,7 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
+import '../../common/app_utils/screen_size.dart';
 import '../../data/models/notification_model.dart';
 
 class CustomNotificationTile extends StatelessWidget {
@@ -51,21 +52,28 @@ class CustomNotificationTile extends StatelessWidget {
         tileColor: Colors.white,
         onTap: onTap,
         leading: CircleAvatar(
+          radius: 25 * ScaleSize.textScaleFactor(context),
           backgroundColor: userColor,
           child: Text(
             notificationModel.senderName?[0] ?? '',
             style: const TextStyle(
               color: Colors.white,
             ),
+            textScaler: TextScaler.linear(ScaleSize.textScaleFactor(context)),
           ),
         ),
         title: Text(
           notificationModel.senderName ?? '',
           style: const TextStyle(fontWeight: FontWeight.bold),
+          textScaler: TextScaler.linear(ScaleSize.textScaleFactor(context)),
         ),
-        subtitle: Text(notificationModel.notification ?? ''),
+        subtitle: Text(
+          notificationModel.notification ?? '',
+          textScaler: TextScaler.linear(ScaleSize.textScaleFactor(context)),
+        ),
         trailing: Text(
           timeago.format(dateTime, locale: 'en_short'),
+          textScaler: TextScaler.linear(ScaleSize.textScaleFactor(context)),
         ),
       ),
     );

@@ -48,14 +48,14 @@ class FreelancerRegisterScreen extends ConsumerWidget {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           SizedBox(height: ScreenSize.height(context) * .15),
-                          const Text(
+                          Text(
                             "Briefsea for Freelancers",
                             style: TextStyle(
                               color: Colors.white,
                               fontSize: 20,
                             ),
                             textAlign: TextAlign.center,
-                            // textScaler: TextScaler.linear(1.2),
+                            textScaler: TextScaler.linear(ScaleSize.textScaleFactor(context)),
                           ),
                           SizedBox(height: ScreenSize.height(context) * .05),
                           CustomTextFormField(
@@ -69,7 +69,7 @@ class FreelancerRegisterScreen extends ConsumerWidget {
                               return null;
                             },
                           ),
-                          const SizedBox(height: 20),
+                          const SizedBox(height: 10),
                           CustomTextFormField(
                             hintText: "Enter your Last Name",
                             controller: freelanceLastName,
@@ -81,7 +81,7 @@ class FreelancerRegisterScreen extends ConsumerWidget {
                               return null;
                             },
                           ),
-                          const SizedBox(height: 20),
+                          const SizedBox(height: 10),
                           CustomTextFormField(
                             hintText: "Enter your Email",
                             controller: freelanceEmail,
@@ -97,7 +97,7 @@ class FreelancerRegisterScreen extends ConsumerWidget {
                               return null;
                             },
                           ),
-                          const SizedBox(height: 20),
+                          const SizedBox(height: 10),
                           CustomTextFormField(
                             hintText: "Enter Password",
                             controller: freelancePass,
@@ -114,7 +114,7 @@ class FreelancerRegisterScreen extends ConsumerWidget {
                               return null;
                             },
                           ),
-                          const SizedBox(height: 20),
+                          const SizedBox(height: 10),
                           CustomTextFormField(
                             hintText: "Confirm Password",
                             controller: freelanceConfirmPass,
@@ -138,7 +138,7 @@ class FreelancerRegisterScreen extends ConsumerWidget {
                           //   textScaler: TextScaler.linear(1),
                           //   textAlign: TextAlign.center,
                           // ),
-                          // const SizedBox(height: 20),
+                          // const SizedBox(height: 10),
                           // Row(
                           //   mainAxisAlignment: MainAxisAlignment.center,
                           //   children: [
@@ -156,10 +156,10 @@ class FreelancerRegisterScreen extends ConsumerWidget {
                           //   ],
                           // ),
                           SizedBox(height: ScreenSize.height(context) * .05),
-                          const Text(
+                          Text(
                             "Agency, Working professional or\nExisting User?",
                             style: TextStyle(color: Colors.white),
-                            textScaler: TextScaler.linear(1),
+                            textScaler: TextScaler.linear(ScaleSize.textScaleFactor(context)),
                             textAlign: TextAlign.center,
                           ),
                           TextButton(
@@ -170,11 +170,12 @@ class FreelancerRegisterScreen extends ConsumerWidget {
                               enableFeedback: true,
                               overlayColor: WidgetStateColor.transparent,
                             ),
-                            child: const Text(
+                            child: Text(
                               "Go back",
                               style: TextStyle(
                                 color: Color(0xFF01FFF5),
                               ),
+                              textScaler: TextScaler.linear(ScaleSize.textScaleFactor(context)),
                             ),
                           ),
                           Center(
@@ -198,10 +199,10 @@ class FreelancerRegisterScreen extends ConsumerWidget {
                             ),
                           ),
                           SizedBox(height: ScreenSize.height(context) * .05),
-                          const Text(
+                          Text(
                             Strings.freelancerFooter,
                             style: TextStyle(color: Colors.white),
-                            textScaler: TextScaler.linear(1),
+                            textScaler: TextScaler.linear(ScaleSize.textScaleFactor(context)),
                             textAlign: TextAlign.center,
                           ),
                         ],

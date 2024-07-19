@@ -1,7 +1,9 @@
 import 'package:briefsea/common/others/strings.dart';
+import 'package:briefsea/main.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../common/app_utils/device_type.dart';
 import '../../../common/app_utils/screen_size.dart';
 import '../../../common/others/assets.dart';
 import '../../widgets/custom_elevated_button.dart';
@@ -40,6 +42,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    ScaleSize.textScaleFactor(context).log();
     return Scaffold(
       backgroundColor: const Color(0xFF4C27FF),
       body: SizedBox(
@@ -55,21 +58,27 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    logoImage!,
-                    const Text(
+                    SizedBox(
+                      height: getDeviceType(context) == DeviceType.Tablet ? ScreenSize.height(context) * .4 : null,
+                      child: logoImage!,
+                    ),
+                    Text(
                       Strings.welcomeText,
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 16,
                       ),
-                      // textScaler: TextScaler.linear(1.2),
+                      textScaler: TextScaler.linear(ScaleSize.textScaleFactor(context)),
                       textAlign: TextAlign.center,
                     ),
                     SizedBox(height: ScreenSize.height(context) * .05),
-                    const Text(
+                    Text(
                       Strings.privacyPolicy,
-                      style: TextStyle(color: Colors.white),
-                      textScaler: TextScaler.linear(1),
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 12,
+                      ),
+                      textScaler: TextScaler.linear(ScaleSize.textScaleFactor(context)),
                       textAlign: TextAlign.center,
                     ),
                     const SizedBox(height: 20),

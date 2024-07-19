@@ -58,9 +58,10 @@ class ProfileScreen extends ConsumerWidget {
       appBar: isOtherProfile == true
           ? AppBar(
               backgroundColor: const Color(0xFF4B26FD),
-              title: const Text(
+              title: Text(
                 'Profile',
                 style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
+                textScaler: TextScaler.linear(ScaleSize.textScaleFactor(context)),
               ),
               centerTitle: true,
               elevation: 0,
@@ -168,6 +169,7 @@ class ProfileScreen extends ConsumerWidget {
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
                                   _socialMedia(
+                                    context,
                                     Assets.INSTA_LOGO,
                                     () async {
                                       if (await launchUrlString(
@@ -187,6 +189,7 @@ class ProfileScreen extends ConsumerWidget {
                                   Padding(
                                     padding: const EdgeInsets.only(bottom: 5),
                                     child: _socialMedia(
+                                      context,
                                       Assets.PROFILE_LINKEDIN,
                                       () async {
                                         if (await launchUrlString(
@@ -206,9 +209,10 @@ class ProfileScreen extends ConsumerWidget {
                                 ],
                               ),
                               const SizedBox(height: 5),
-                              const Text(
+                              Text(
                                 Strings.copyrightText,
                                 style: TextStyle(fontSize: 12),
+                                textScaler: TextScaler.linear(ScaleSize.textScaleFactor(context)),
                               ),
                               if (isOtherProfile != true)
                                 Padding(
@@ -254,9 +258,10 @@ class ProfileScreen extends ConsumerWidget {
                                         await AppUtility(context).handleLogout(context, prefs, ref, true);
                                       }
                                     },
-                                    child: const Text(
+                                    child: Text(
                                       'Delete Account',
                                       style: TextStyle(fontSize: 10),
+                                      textScaler: TextScaler.linear(ScaleSize.textScaleFactor(context)),
                                     ),
                                   ),
                                 ),
@@ -281,12 +286,12 @@ class ProfileScreen extends ConsumerWidget {
     );
   }
 
-  Widget _socialMedia(String imagePath, void Function()? onTap) {
+  Widget _socialMedia(context, String imagePath, void Function()? onTap) {
     return GestureDetector(
       onTap: onTap,
       child: SizedBox(
-        height: 25,
-        width: 25,
+        height: 25 * ScaleSize.textScaleFactor(context),
+        width: 25 * ScaleSize.textScaleFactor(context),
         child: SvgPicture.asset(
           imagePath,
           fit: BoxFit.fill,
@@ -315,6 +320,7 @@ class _ExpertiseCard extends StatelessWidget {
               color: Colors.black,
               fontSize: 18,
             ),
+            textScaler: TextScaler.linear(ScaleSize.textScaleFactor(context)),
           ),
           ListView.builder(
             shrinkWrap: true,
@@ -333,6 +339,7 @@ class _ExpertiseCard extends StatelessWidget {
                     color: Colors.black,
                     fontSize: 15,
                   ),
+                  textScaler: TextScaler.linear(ScaleSize.textScaleFactor(context)),
                 ),
                 enableFeedback: true,
                 children: [
@@ -349,6 +356,7 @@ class _ExpertiseCard extends StatelessWidget {
                                 color: Colors.white,
                                 fontSize: 10,
                               ),
+                              textScaler: TextScaler.linear(ScaleSize.textScaleFactor(context)),
                             ),
                             backgroundColor: const Color(0xFF4B26FD),
                             padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
@@ -387,18 +395,20 @@ class _CompanyCard extends StatelessWidget {
               color: Colors.black,
               fontSize: 18,
             ),
+            textScaler: TextScaler.linear(ScaleSize.textScaleFactor(context)),
           ),
           Row(
             children: [
               CircleAvatar(
                 backgroundColor: userColor,
-                radius: 25,
+                radius: 25 * ScaleSize.textScaleFactor(context),
                 child: Text(
                   userProfileData!.worksAt![0].toUpperCase(),
                   style: const TextStyle(
                     color: Colors.white,
                     fontSize: 22,
                   ),
+                  textScaler: TextScaler.linear(ScaleSize.textScaleFactor(context)),
                 ),
               ),
               const SizedBox(width: 10),
@@ -412,6 +422,7 @@ class _CompanyCard extends StatelessWidget {
                       color: Colors.black,
                       fontSize: 13,
                     ),
+                    textScaler: TextScaler.linear(ScaleSize.textScaleFactor(context)),
                   ),
                   Text(
                     userProfileData?.worksAt ?? '',
@@ -419,6 +430,7 @@ class _CompanyCard extends StatelessWidget {
                       color: Colors.black,
                       fontSize: 13,
                     ),
+                    textScaler: TextScaler.linear(ScaleSize.textScaleFactor(context)),
                   ),
                 ],
               )
@@ -449,6 +461,7 @@ class _AboutCard extends StatelessWidget {
               color: Colors.black,
               fontSize: 18,
             ),
+            textScaler: TextScaler.linear(ScaleSize.textScaleFactor(context)),
           ),
           Text(
             // "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
@@ -456,6 +469,7 @@ class _AboutCard extends StatelessWidget {
             maxLines: 1000,
             overflow: TextOverflow.ellipsis,
             style: TextStyle(fontSize: 12),
+            textScaler: TextScaler.linear(ScaleSize.textScaleFactor(context)),
           ),
         ],
       ),
@@ -493,16 +507,18 @@ class _UserInfoDetails extends StatelessWidget {
                 color: Colors.black,
                 fontSize: 20,
               ),
+              textScaler: TextScaler.linear(ScaleSize.textScaleFactor(context)),
             ),
             Row(
               children: [
-                const Text(
+                Text(
                   'Using Briefsea as:',
                   style: TextStyle(
                     color: Colors.black,
                     fontWeight: FontWeight.bold,
                     fontSize: 13,
                   ),
+                  textScaler: TextScaler.linear(ScaleSize.textScaleFactor(context)),
                 ),
                 const SizedBox(
                   width: 5,
@@ -515,6 +531,7 @@ class _UserInfoDetails extends StatelessWidget {
                     color: Colors.black,
                     fontSize: 13,
                   ),
+                  textScaler: TextScaler.linear(ScaleSize.textScaleFactor(context)),
                 ),
               ],
             ),
@@ -548,6 +565,7 @@ class _UserInfoDetails extends StatelessWidget {
                 color: Colors.black,
                 fontSize: 13,
               ),
+              textScaler: TextScaler.linear(ScaleSize.textScaleFactor(context)),
             ),
           ],
         ),
@@ -654,7 +672,7 @@ class _AvatarWidget extends ConsumerWidget {
     return Align(
       alignment: Alignment.centerLeft,
       child: Padding(
-        padding: const EdgeInsets.only(top: 65, left: 20),
+        padding: EdgeInsets.only(top: 65 * ScaleSize.textScaleFactor(context), left: 20),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -666,7 +684,7 @@ class _AvatarWidget extends ConsumerWidget {
               ),
               child: CircleAvatar(
                 backgroundColor: userColor,
-                radius: 65,
+                radius: 65 * ScaleSize.textScaleFactor(context),
                 backgroundImage: selectedAvatar != '' && selectedAvatar != null && userProfileData?.avatarSrc != ''
                     ? CachedNetworkImageProvider(selectedAvatar)
                     : userProfileData?.gender == 'Male'
@@ -680,7 +698,9 @@ class _AvatarWidget extends ConsumerWidget {
                     ? Text(
                         userProfileData?.name?[0].toUpperCase() ?? '',
                         style: const TextStyle(color: Colors.white),
-                        textScaler: const TextScaler.linear(3),
+                        textScaler: TextScaler.linear(
+                          3 * ScaleSize.textScaleFactor(context),
+                        ),
                       )
                     : const SizedBox.shrink(),
               ),
@@ -691,7 +711,7 @@ class _AvatarWidget extends ConsumerWidget {
                 child: Column(
                   children: [
                     SizedBox(
-                      height: 70,
+                      height: 90 * ScaleSize.textScaleFactor(context),
                     ),
                     ElevatedButton.icon(
                       onPressed: () {
@@ -703,7 +723,10 @@ class _AvatarWidget extends ConsumerWidget {
                       icon: Icon(
                         Icons.mode_edit,
                       ),
-                      label: Text('Edit Profile'),
+                      label: Text(
+                        'Edit Profile',
+                        textScaler: TextScaler.linear(ScaleSize.textScaleFactor(context)),
+                      ),
                       style: ElevatedButton.styleFrom(
                         enableFeedback: true,
                         backgroundColor: Colors.white,

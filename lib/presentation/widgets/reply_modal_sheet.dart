@@ -1,3 +1,6 @@
+import 'dart:ui';
+
+import 'package:briefsea/common/app_utils/screen_size.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
@@ -18,6 +21,7 @@ Future<void> customReplyModalSheet(
     backgroundColor: Colors.white,
     isScrollControlled: true,
     context: context,
+    constraints: BoxConstraints.fromViewConstraints(ViewConstraints(minWidth: ScreenSize.width(context))),
     builder: (context) {
       return PopScope(
         canPop: true,
@@ -117,12 +121,13 @@ Future<void> customReplyModalSheet(
                                     ref.invalidate(getAllReplyOnCommentProvider(commentId: comments.id));
                                     ref.invalidate(getAllCommentsProvider(threadId: threadId));
                                   },
-                                  child: const Text(
+                                  child: Text(
                                     "Reply",
                                     style: TextStyle(
                                       color: Colors.white,
                                       fontWeight: FontWeight.bold,
                                     ),
+                                    textScaler: TextScaler.linear(ScaleSize.textScaleFactor(context)),
                                   ),
                                 ),
                               ],

@@ -66,7 +66,7 @@ class MyFeedNavigator extends ConsumerWidget {
           child: Column(
             children: [
               Container(
-                height: 150,
+                height: 155 * ScaleSize.textScaleFactor(context),
                 decoration: BoxDecoration(
                   borderRadius: const BorderRadius.only(
                     topLeft: Radius.circular(40),
@@ -155,7 +155,7 @@ class MyFeedNavigator extends ConsumerWidget {
                         );
                       },
                       child: Container(
-                        height: 50,
+                        height: 50 * ScaleSize.textScaleFactor(context),
                         width: ScreenSize.width(context),
                         decoration: BoxDecoration(
                           color: Colors.white,
@@ -175,7 +175,7 @@ class MyFeedNavigator extends ConsumerWidget {
                             )
                           ],
                         ),
-                        child: const Row(
+                        child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Padding(
@@ -183,7 +183,7 @@ class MyFeedNavigator extends ConsumerWidget {
                               child: Icon(
                                 CupertinoIcons.add_circled_solid,
                                 color: Colors.grey,
-                                size: 35,
+                                size: 35 * ScaleSize.textScaleFactor(context),
                               ),
                             ),
                             Expanded(
@@ -194,6 +194,7 @@ class MyFeedNavigator extends ConsumerWidget {
                                     color: Colors.grey,
                                     fontSize: 12,
                                   ),
+                                  textScaler: TextScaler.linear(ScaleSize.textScaleFactor(context)),
                                   textAlign: TextAlign.center,
                                 ),
                               ),

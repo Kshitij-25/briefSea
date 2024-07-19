@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer' as devtools show log;
 import 'dart:io';
 
 import 'package:firebase_core/firebase_core.dart';
@@ -13,6 +14,10 @@ import 'app.dart';
 import 'firebase_options.dart';
 
 SharedPreferences? prefs;
+
+extension Log on Object {
+  void log() => devtools.log(toString());
+}
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

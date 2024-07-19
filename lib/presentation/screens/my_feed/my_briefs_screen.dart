@@ -7,6 +7,7 @@ import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../common/app_utils/app_utility.dart';
+import '../../../common/app_utils/screen_size.dart';
 import '../../../data/models/image_model.dart';
 import '../../providers/auth_provider.dart';
 import '../../providers/breifs_provider.dart';
@@ -57,8 +58,29 @@ class MyBriefsScreen extends ConsumerWidget {
     return ref.watch(getUserBriefsProvider).when(
           data: (briefs) {
             if (briefs == null || briefs.isEmpty) {
-              return const Center(
-                child: Text('All the briefs you’ve posted will be here'),
+              return Center(
+                child: Container(
+                  decoration: BoxDecoration(
+                    gradient: const LinearGradient(
+                      begin: Alignment(-0.73, 0.68),
+                      end: Alignment(0.73, -0.68),
+                      colors: [Color(0xFF4A26FE), Color(0xFF222CFF)],
+                    ),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(15.0),
+                    child: Text(
+                      'All the briefs you’ve posted will be here',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.w500,
+                        letterSpacing: 0.42,
+                      ),
+                      textScaler: TextScaler.linear(ScaleSize.textScaleFactor(context)),
+                    ),
+                  ),
+                ),
               );
             }
             List<BriefsModel?> filteredBriefs = briefs.where((brief) {
@@ -75,6 +97,7 @@ class MyBriefsScreen extends ConsumerWidget {
               children: [
                 Row(
                   children: [
+                    const SizedBox(width: 5),
                     ElevatedButton(
                       style: ButtonStyle(
                         enableFeedback: true,
@@ -86,9 +109,10 @@ class MyBriefsScreen extends ConsumerWidget {
                         ref.read(selectedBriefsFilter.notifier).setFilter('All');
                         ref.invalidate(getUserBriefsProvider);
                       },
-                      child: const Text(
+                      child: Text(
                         'All',
                         style: TextStyle(color: Colors.white),
+                        textScaler: TextScaler.linear(ScaleSize.textScaleFactor(context)),
                       ),
                     ),
                     const SizedBox(width: 5),
@@ -102,9 +126,10 @@ class MyBriefsScreen extends ConsumerWidget {
                         ref.read(selectedBriefsFilter.notifier).setFilter('Public');
                         ref.invalidate(getUserBriefsProvider);
                       },
-                      child: const Text(
+                      child: Text(
                         'Public',
                         style: TextStyle(color: Colors.white),
+                        textScaler: TextScaler.linear(ScaleSize.textScaleFactor(context)),
                       ),
                     ),
                     const SizedBox(width: 5),
@@ -118,21 +143,64 @@ class MyBriefsScreen extends ConsumerWidget {
                         ref.read(selectedBriefsFilter.notifier).setFilter('Private');
                         ref.invalidate(getUserBriefsProvider);
                       },
-                      child: const Text(
+                      child: Text(
                         'Private',
                         style: TextStyle(color: Colors.white),
+                        textScaler: TextScaler.linear(ScaleSize.textScaleFactor(context)),
                       ),
                     ),
                   ],
                 ),
                 Expanded(
                   child: filteredBriefs.isEmpty && selectedFilter == "Private"
-                      ? const Center(
-                          child: Text('All the private briefs you’ve posted will be here'),
+                      ? Center(
+                          child: Container(
+                            decoration: BoxDecoration(
+                              gradient: const LinearGradient(
+                                begin: Alignment(-0.73, 0.68),
+                                end: Alignment(0.73, -0.68),
+                                colors: [Color(0xFF4A26FE), Color(0xFF222CFF)],
+                              ),
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.all(15.0),
+                              child: Text(
+                                'All the private briefs you’ve posted will be here',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w500,
+                                  letterSpacing: 0.42,
+                                ),
+                                textScaler: TextScaler.linear(ScaleSize.textScaleFactor(context)),
+                              ),
+                            ),
+                          ),
                         )
                       : filteredBriefs.isEmpty
-                          ? const Center(
-                              child: Text('All the public briefs you’ve posted will be here'),
+                          ? Center(
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  gradient: const LinearGradient(
+                                    begin: Alignment(-0.73, 0.68),
+                                    end: Alignment(0.73, -0.68),
+                                    colors: [Color(0xFF4A26FE), Color(0xFF222CFF)],
+                                  ),
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(15.0),
+                                  child: Text(
+                                    'All the public briefs you’ve posted will be here',
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.w500,
+                                      letterSpacing: 0.42,
+                                    ),
+                                    textScaler: TextScaler.linear(ScaleSize.textScaleFactor(context)),
+                                  ),
+                                ),
+                              ),
                             )
                           : ListView.builder(
                               shrinkWrap: true,

@@ -40,11 +40,35 @@ class NotificationScreen extends ConsumerWidget {
               child: allNotifications.when(
                 data: (notification) {
                   if (notification.isEmpty) {
-                    return const Column(
+                    return Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(CupertinoIcons.bell_solid),
-                        Text("No New Notifications"),
+                        Icon(
+                          CupertinoIcons.bell_solid,
+                          size: 20 * ScaleSize.textScaleFactor(context),
+                        ),
+                        Container(
+                          decoration: BoxDecoration(
+                            gradient: const LinearGradient(
+                              begin: Alignment(-0.73, 0.68),
+                              end: Alignment(0.73, -0.68),
+                              colors: [Color(0xFF4A26FE), Color(0xFF222CFF)],
+                            ),
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.all(15.0),
+                            child: Text(
+                              'No New Notifications',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.w500,
+                                letterSpacing: 0.42,
+                              ),
+                              textScaler: TextScaler.linear(ScaleSize.textScaleFactor(context)),
+                            ),
+                          ),
+                        ),
                       ],
                     );
                   }

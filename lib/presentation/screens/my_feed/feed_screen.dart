@@ -123,7 +123,7 @@ class FeedScreen extends ConsumerWidget {
         children: [
           Container(
             width: double.infinity,
-            height: 70,
+            height: 70 * ScaleSize.textScaleFactor(context),
             color: const Color(0xFF4B26FD),
           ),
           Container(
@@ -348,12 +348,13 @@ class FeedScreen extends ConsumerWidget {
                                 ref.invalidate(getUserBriefsProvider);
                                 ref.invalidate(getSingleBriefProvider(briefId: brief.id));
                               },
-                              child: const Text(
+                              child: Text(
                                 "Post",
                                 style: TextStyle(
                                   color: Colors.white,
                                   fontWeight: FontWeight.bold,
                                 ),
+                                textScaler: TextScaler.linear(ScaleSize.textScaleFactor(context)),
                               ),
                             ),
                           ],

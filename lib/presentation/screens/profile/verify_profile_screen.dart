@@ -69,9 +69,10 @@ class VerifyProfileScreen extends ConsumerWidget {
         iconTheme: const IconThemeData(color: Colors.white),
         backgroundColor: const Color(0xFF4C27FF),
         centerTitle: true,
-        title: const Text(
+        title: Text(
           "Complete Profile",
           style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
+          textScaler: TextScaler.linear(ScaleSize.textScaleFactor(context)),
         ),
         actions: [
           TextButton(
@@ -121,10 +122,10 @@ class VerifyProfileScreen extends ConsumerWidget {
                 AppUtility(context).message("Please complete the profile first.");
               }
             },
-            child: const Text(
+            child: Text(
               "Done",
               style: TextStyle(color: Colors.white),
-              textScaler: TextScaler.linear(1.3),
+              textScaler: TextScaler.linear(ScaleSize.textScaleFactor(context)),
             ),
           ),
         ],
@@ -164,11 +165,12 @@ class VerifyProfileScreen extends ConsumerWidget {
                 ),
               ],
             ),
-            const Text(
+            Text(
               "Tap a field to edit.",
               style: TextStyle(
                 color: Colors.black,
               ),
+              textScaler: TextScaler.linear(ScaleSize.textScaleFactor(context)),
             ),
             customFields(
               context,
@@ -226,7 +228,10 @@ class VerifyProfileScreen extends ConsumerWidget {
                   items: ref.watch(selectedGenderProvider).genders.map<DropdownMenuItem<String>>((item) {
                     return DropdownMenuItem(
                       value: item,
-                      child: Text(item),
+                      child: Text(
+                        item,
+                        textScaler: TextScaler.linear(ScaleSize.textScaleFactor(context)),
+                      ),
                     );
                   }).toList(),
                 ),
@@ -293,6 +298,7 @@ class VerifyProfileScreen extends ConsumerWidget {
                 },
                 showHeader: false,
                 decoration: BoxDecoration(),
+                textStyle: TextStyle(fontSize: 14 * ScaleSize.textScaleFactor(context)),
                 // selectedChipColor: const Color(0xFF4C27FF),
                 // selectedTextStyle: TextStyle(color: Colors.white),
               ),
@@ -313,6 +319,7 @@ class VerifyProfileScreen extends ConsumerWidget {
                       decoration: BoxDecoration(),
                       // selectedChipColor: const Color(0xFF4C27FF),
                       // selectedTextStyle: TextStyle(color: Colors.white),
+                      textStyle: TextStyle(fontSize: 14 * ScaleSize.textScaleFactor(context)),
                     ),
                     CustomTextFormField(
                       controller: editDevExpertise,
@@ -356,6 +363,7 @@ class VerifyProfileScreen extends ConsumerWidget {
                       decoration: BoxDecoration(),
                       // selectedChipColor: const Color(0xFF4C27FF),
                       // selectedTextStyle: TextStyle(color: Colors.white),
+                      textStyle: TextStyle(fontSize: 14 * ScaleSize.textScaleFactor(context)),
                     ),
                     CustomTextFormField(
                       controller: editMarkExpertise,
@@ -431,7 +439,10 @@ class VerifyProfileScreen extends ConsumerWidget {
       padding: const EdgeInsets.symmetric(horizontal: 20),
       child: Row(
         children: [
-          Text(title),
+          Text(
+            title,
+            textScaler: TextScaler.linear(ScaleSize.textScaleFactor(context)),
+          ),
           SizedBox(width: 10),
           Expanded(child: subtitle),
         ],

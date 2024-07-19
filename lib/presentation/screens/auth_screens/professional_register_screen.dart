@@ -50,14 +50,14 @@ class ProfessionalRegisterScreen extends ConsumerWidget {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           SizedBox(height: ScreenSize.height(context) * .15),
-                          const Text(
+                          Text(
                             "Briefsea for Working Professionals",
                             style: TextStyle(
                               color: Colors.white,
                               fontSize: 16,
                             ),
                             textAlign: TextAlign.center,
-                            textScaler: TextScaler.linear(1),
+                            textScaler: TextScaler.linear(ScaleSize.textScaleFactor(context)),
                           ),
                           SizedBox(height: ScreenSize.height(context) * .05),
                           CustomTextFormField(
@@ -71,7 +71,7 @@ class ProfessionalRegisterScreen extends ConsumerWidget {
                               return null;
                             },
                           ),
-                          const SizedBox(height: 20),
+                          const SizedBox(height: 10),
                           CustomTextFormField(
                             hintText: "Enter your Last Name",
                             controller: professionalLastName,
@@ -83,7 +83,7 @@ class ProfessionalRegisterScreen extends ConsumerWidget {
                               return null;
                             },
                           ),
-                          const SizedBox(height: 20),
+                          const SizedBox(height: 10),
                           CustomTextFormField(
                             hintText: "Enter your Email",
                             controller: professionalEmail,
@@ -99,7 +99,7 @@ class ProfessionalRegisterScreen extends ConsumerWidget {
                               return null;
                             },
                           ),
-                          const SizedBox(height: 20),
+                          const SizedBox(height: 10),
                           CustomTextFormField(
                             hintText: "Enter Password",
                             controller: professionalPass,
@@ -116,7 +116,7 @@ class ProfessionalRegisterScreen extends ConsumerWidget {
                               return null;
                             },
                           ),
-                          const SizedBox(height: 20),
+                          const SizedBox(height: 10),
                           CustomTextFormField(
                             hintText: "Confirm Password",
                             controller: professionalConfirmPass,
@@ -140,7 +140,7 @@ class ProfessionalRegisterScreen extends ConsumerWidget {
                           //   textScaler: TextScaler.linear(1),
                           //   textAlign: TextAlign.center,
                           // ),
-                          // const SizedBox(height: 20),
+                          // const SizedBox(height: 10),
                           // Row(
                           //   mainAxisAlignment: MainAxisAlignment.center,
                           //   children: [
@@ -158,10 +158,10 @@ class ProfessionalRegisterScreen extends ConsumerWidget {
                           //   ],
                           // ),
                           SizedBox(height: ScreenSize.height(context) * .05),
-                          const Text(
+                          Text(
                             "Agency, Freelancer or Existing User?",
                             style: TextStyle(color: Colors.white),
-                            textScaler: TextScaler.linear(1),
+                            textScaler: TextScaler.linear(ScaleSize.textScaleFactor(context)),
                             textAlign: TextAlign.center,
                           ),
                           TextButton(
@@ -172,11 +172,12 @@ class ProfessionalRegisterScreen extends ConsumerWidget {
                               overlayColor: WidgetStateColor.transparent,
                               enableFeedback: true,
                             ),
-                            child: const Text(
+                            child: Text(
                               "Go back",
                               style: TextStyle(
                                 color: Color(0xFF01FFF5),
                               ),
+                              textScaler: TextScaler.linear(ScaleSize.textScaleFactor(context)),
                             ),
                           ),
                           Center(
@@ -200,10 +201,10 @@ class ProfessionalRegisterScreen extends ConsumerWidget {
                             ),
                           ),
                           SizedBox(height: ScreenSize.height(context) * .05),
-                          const Text(
+                          Text(
                             Strings.professionalFooter,
                             style: TextStyle(color: Colors.white),
-                            textScaler: TextScaler.linear(1),
+                            textScaler: TextScaler.linear(ScaleSize.textScaleFactor(context)),
                             textAlign: TextAlign.center,
                           ),
                         ],

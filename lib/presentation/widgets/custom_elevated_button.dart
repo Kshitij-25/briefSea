@@ -3,7 +3,6 @@ import 'package:google_fonts/google_fonts.dart';
 
 import '../../common/app_utils/device_type.dart';
 import '../../common/app_utils/screen_size.dart';
-import '../../common/enums/enums.dart';
 
 class CustomElevatedButton extends StatelessWidget {
   const CustomElevatedButton({
@@ -22,9 +21,12 @@ class CustomElevatedButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      // height: getDeviceType(context) == DeviceType.Tablet ? 90 : 50,
-      height: height ?? 50,
-      width: width ?? ScreenSize.width(context),
+      height: height != null
+          ? height
+          : getDeviceType(context) == DeviceType.Tablet
+              ? 70
+              : 50,
+      width: width ?? ScreenSize.width(context) / ScaleSize.textScaleFactor(context),
       child: ElevatedButton.icon(
         style: ButtonStyle(
           enableFeedback: true,
@@ -42,9 +44,7 @@ class CustomElevatedButton extends StatelessWidget {
             color: Colors.black,
             fontWeight: FontWeight.bold,
           ),
-          textScaler: TextScaler.linear(
-            getDeviceType(context) == DeviceType.Tablet ? 2 : 1,
-          ),
+          textScaler: TextScaler.linear(ScaleSize.textScaleFactor(context)),
         ),
       ),
     );

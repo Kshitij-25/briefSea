@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 
+import '../../common/app_utils/device_type.dart';
+import '../../common/app_utils/screen_size.dart';
+
 class CustomTextFormField extends StatelessWidget {
   CustomTextFormField({
     super.key,
@@ -32,34 +35,39 @@ class CustomTextFormField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return TextFormField(
-      controller: controller,
-      keyboardType: keyboardType,
-      readOnly: readOnly ?? false,
-      obscureText: obscureText ?? false,
-      validator: validator,
-      onEditingComplete: onEditingComplete,
-      textInputAction: textInputAction,
-      maxLength: maxLength,
-      maxLines: maxLines,
-      decoration: InputDecoration(
-        border: border ??
-            OutlineInputBorder(
-              borderRadius: BorderRadius.circular(10),
-              borderSide: BorderSide.none,
-            ),
-        errorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10),
-          borderSide: const BorderSide(color: Colors.red),
+    return SizedBox(
+      height: getDeviceType(context) == DeviceType.Tablet ? 70 : 60,
+      width: ScreenSize.width(context) / ScaleSize.textScaleFactor(context),
+      child: TextFormField(
+        controller: controller,
+        keyboardType: keyboardType,
+        readOnly: readOnly ?? false,
+        obscureText: obscureText ?? false,
+        validator: validator,
+        onEditingComplete: onEditingComplete,
+        textInputAction: textInputAction,
+        maxLength: maxLength,
+        maxLines: maxLines,
+        decoration: InputDecoration(
+          border: border ??
+              OutlineInputBorder(
+                borderRadius: BorderRadius.circular(10),
+                borderSide: BorderSide.none,
+              ),
+          errorBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10),
+            borderSide: const BorderSide(color: Colors.red),
+          ),
+          focusedErrorBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10),
+            borderSide: const BorderSide(color: Colors.red),
+          ),
+          hintText: hintText,
+          hintStyle: TextStyle(color: hintColor ?? Colors.grey, fontSize: 14 * ScaleSize.textScaleFactor(context)),
+          fillColor: Colors.grey[200],
+          filled: true,
         ),
-        focusedErrorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10),
-          borderSide: const BorderSide(color: Colors.red),
-        ),
-        hintText: hintText,
-        hintStyle: TextStyle(color: hintColor ?? Colors.grey),
-        fillColor: Colors.grey[200],
-        filled: true,
+        style: TextStyle(fontSize: 14 * ScaleSize.textScaleFactor(context)),
       ),
     );
   }

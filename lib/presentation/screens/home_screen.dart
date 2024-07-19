@@ -54,10 +54,10 @@ class HomeScreen extends ConsumerWidget {
         backgroundColor: const Color(0xFF4B26FD),
         title: currentIndex == 0
             ? Padding(
-                padding: const EdgeInsets.only(bottom: 10),
+                padding: EdgeInsets.only(bottom: 10 * ScaleSize.textScaleFactor(context)),
                 child: Image.asset(
                   Assets.APP_LOGO,
-                  height: 150,
+                  height: 150 * ScaleSize.textScaleFactor(context),
                   color: Colors.white,
                 ),
               )
@@ -69,19 +69,27 @@ class HomeScreen extends ConsumerWidget {
                         padding: const EdgeInsets.only(bottom: 0),
                         child: Image.asset(
                           Assets.logoSmall,
-                          height: 35,
+                          height: 35 * ScaleSize.textScaleFactor(context),
                           color: Colors.white,
                         ),
                       ),
-                      const Text(
+                      Text(
                         "Chat",
-                        style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                        ),
+                        textScaler: TextScaler.linear(ScaleSize.textScaleFactor(context)),
                       ),
                     ],
                   )
                 : Text(
                     currentIndex == 2 ? "Notifications" : "Profile",
-                    style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
+                    textScaler: TextScaler.linear(ScaleSize.textScaleFactor(context)),
                   ),
         centerTitle: true,
         elevation: 0,
@@ -111,9 +119,10 @@ class HomeScreen extends ConsumerWidget {
             IconButton(
               enableFeedback: true,
               tooltip: "Logout",
-              icon: const Icon(
+              icon: Icon(
                 Icons.logout,
                 color: Colors.white,
+                size: 20 * ScaleSize.textScaleFactor(context),
               ),
               onPressed: () async {
                 await AppUtility(context).handleLogout(context, prefs, ref, false);
@@ -142,6 +151,9 @@ class HomeScreen extends ConsumerWidget {
         unselectedIconTheme: const CupertinoIconThemeData(color: Colors.black),
         type: BottomNavigationBarType.fixed,
         onTap: onTabTapped,
+        iconSize: 20 * ScaleSize.textScaleFactor(context),
+        selectedFontSize: 12 * ScaleSize.textScaleFactor(context),
+        unselectedFontSize: 12 * ScaleSize.textScaleFactor(context),
         items: const [
           BottomNavigationBarItem(
             icon: Icon(CupertinoIcons.square_list_fill),

@@ -7,6 +7,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:share_plus/share_plus.dart';
 
 import '../../../common/app_utils/app_utility.dart';
+import '../../../common/app_utils/screen_size.dart';
 import '../../../data/core/api_constants.dart';
 import '../../../data/models/briefs_model.dart';
 import '../../../data/models/image_model.dart';
@@ -56,8 +57,29 @@ class AllBriefsScreen extends ConsumerWidget {
     return ref.watch(getAllBriefsProvider).when(
           data: (briefs) {
             if (briefs == null || briefs.isEmpty) {
-              return const Center(
-                child: Text('No Briefs Found'),
+              return Center(
+                child: Container(
+                  decoration: BoxDecoration(
+                    gradient: const LinearGradient(
+                      begin: Alignment(-0.73, 0.68),
+                      end: Alignment(0.73, -0.68),
+                      colors: [Color(0xFF4A26FE), Color(0xFF222CFF)],
+                    ),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(15.0),
+                    child: Text(
+                      'No Briefs Found',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.w500,
+                        letterSpacing: 0.42,
+                      ),
+                      textScaler: TextScaler.linear(ScaleSize.textScaleFactor(context)),
+                    ),
+                  ),
+                ),
               );
             }
             return ListView.builder(

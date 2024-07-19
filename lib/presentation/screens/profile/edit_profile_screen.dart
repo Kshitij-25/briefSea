@@ -88,9 +88,10 @@ class EditProfileScreen extends ConsumerWidget {
         iconTheme: const IconThemeData(color: Colors.white),
         backgroundColor: const Color(0xFF4C27FF),
         centerTitle: true,
-        title: const Text(
+        title: Text(
           "Edit Profile",
           style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
+          textScaler: TextScaler.linear(ScaleSize.textScaleFactor(context)),
         ),
         actions: [
           TextButton(
@@ -153,10 +154,10 @@ class EditProfileScreen extends ConsumerWidget {
                 // AppUtility(context).message("Please complete the profile first.");
               }
             },
-            child: const Text(
+            child: Text(
               "Save",
               style: TextStyle(color: Colors.white),
-              textScaler: TextScaler.linear(1.3),
+              textScaler: TextScaler.linear(ScaleSize.textScaleFactor(context)),
             ),
           ),
         ],
@@ -181,11 +182,12 @@ class EditProfileScreen extends ConsumerWidget {
                     ),
                   ],
                 ),
-                const Text(
+                Text(
                   "Tap a field to edit.",
                   style: TextStyle(
                     color: Colors.black,
                   ),
+                  textScaler: TextScaler.linear(ScaleSize.textScaleFactor(context)),
                 ),
                 customFields(
                   context,
@@ -243,7 +245,10 @@ class EditProfileScreen extends ConsumerWidget {
                       items: ref.watch(selectedGenderProvider).genders.map<DropdownMenuItem<String>>((item) {
                         return DropdownMenuItem(
                           value: item,
-                          child: Text(item),
+                          child: Text(
+                            item,
+                            textScaler: TextScaler.linear(ScaleSize.textScaleFactor(context)),
+                          ),
                         );
                       }).toList(),
                     ),
@@ -313,6 +318,7 @@ class EditProfileScreen extends ConsumerWidget {
                     decoration: BoxDecoration(),
                     // selectedChipColor: const Color(0xFF4C27FF),
                     // selectedTextStyle: TextStyle(color: Colors.white),
+                    textStyle: TextStyle(fontSize: 14 * ScaleSize.textScaleFactor(context)),
                   ),
                 ),
                 if (userProfileModel.industry!.contains('Development & Product'))
@@ -331,6 +337,7 @@ class EditProfileScreen extends ConsumerWidget {
                           decoration: BoxDecoration(),
                           // selectedChipColor: const Color(0xFF4C27FF),
                           // selectedTextStyle: TextStyle(color: Colors.white),
+                          textStyle: TextStyle(fontSize: 14 * ScaleSize.textScaleFactor(context)),
                         ),
                         CustomTextFormField(
                           controller: editDevExpertise,
@@ -365,6 +372,7 @@ class EditProfileScreen extends ConsumerWidget {
                     Column(
                       children: [
                         MultiSelectChipField<String?>(
+                          textStyle: TextStyle(fontSize: 14 * ScaleSize.textScaleFactor(context)),
                           items: markExpertiseItems,
                           initialValue: userProfileModel.markExpertise?.whereType<String>().toList() ?? [],
                           onTap: (List<String?> values) {
@@ -436,7 +444,6 @@ class EditProfileScreen extends ConsumerWidget {
                     controller: editAboutCont,
                     textInputAction: TextInputAction.done,
                     keyboardType: TextInputType.multiline,
-                    maxLines: null,
                     validator: (value) {
                       if (value!.length < 100) {
                         return 'About me must not be more than 100 characters long';
@@ -458,7 +465,10 @@ class EditProfileScreen extends ConsumerWidget {
       padding: const EdgeInsets.symmetric(horizontal: 20),
       child: Row(
         children: [
-          Text(title),
+          Text(
+            title,
+            textScaler: TextScaler.linear(ScaleSize.textScaleFactor(context)),
+          ),
           SizedBox(width: 10),
           Expanded(child: subtitle),
         ],
@@ -493,7 +503,7 @@ class _AvatarWidget extends ConsumerWidget {
           children: [
             CircleAvatar(
               backgroundColor: userColor,
-              radius: 70,
+              radius: 70 * ScaleSize.textScaleFactor(context),
               backgroundImage: selectedAvatar != "" && selectedAvatar != null && userProfileData?.avatarSrc != ""
                   ? CachedNetworkImageProvider(selectedAvatar)
                   : userProfileData?.gender == "Male"
@@ -507,7 +517,7 @@ class _AvatarWidget extends ConsumerWidget {
                   ? Text(
                       userProfileData?.name?[0].toUpperCase() ?? "",
                       style: const TextStyle(color: Colors.white),
-                      textScaler: const TextScaler.linear(3),
+                      textScaler: TextScaler.linear(3 * ScaleSize.textScaleFactor(context)),
                     )
                   : const SizedBox.shrink(),
             ),
@@ -538,8 +548,8 @@ class _AvatarWidget extends ConsumerWidget {
                   }
                 },
                 child: Container(
-                  width: 35,
-                  height: 35,
+                  width: 35 * ScaleSize.textScaleFactor(context),
+                  height: 35 * ScaleSize.textScaleFactor(context),
                   decoration: BoxDecoration(
                     color: Colors.grey[300],
                     shape: BoxShape.circle,

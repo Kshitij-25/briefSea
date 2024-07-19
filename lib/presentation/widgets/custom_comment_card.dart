@@ -42,6 +42,7 @@ class CustomCommentCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Row(
+            mainAxisAlignment: commentModel!.userId == loggedInUserId ? MainAxisAlignment.end : MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               commentModel!.userId != loggedInUserId
@@ -50,13 +51,14 @@ class CustomCommentCard extends StatelessWidget {
                       child: CircleAvatar(
                         backgroundColor: userColor,
                         backgroundImage: avatarName != null && avatarName != '' ? NetworkImage(avatarName!) : null,
-                        radius: 15,
+                        radius: 15 * ScaleSize.textScaleFactor(context),
                         child: avatarName == null || avatarName == ''
                             ? Text(
                                 commentModel?.name?[0] ?? "",
                                 style: const TextStyle(
                                   color: Colors.white,
                                 ),
+                                textScaler: TextScaler.linear(ScaleSize.textScaleFactor(context)),
                               )
                             : const SizedBox.shrink(),
                       ),
@@ -83,6 +85,7 @@ class CustomCommentCard extends StatelessWidget {
                                     color: Colors.black,
                                     fontWeight: FontWeight.bold,
                                   ),
+                                  textScaler: TextScaler.linear(ScaleSize.textScaleFactor(context)),
                                 ),
                                 Text(
                                   "Posting as ${commentModel?.type ?? ""}",
@@ -90,6 +93,7 @@ class CustomCommentCard extends StatelessWidget {
                                     color: Color(0xFF4A26FE),
                                     fontSize: 11,
                                   ),
+                                  textScaler: TextScaler.linear(ScaleSize.textScaleFactor(context)),
                                 ),
                               ],
                             ),
@@ -99,6 +103,7 @@ class CustomCommentCard extends StatelessWidget {
                               style: const TextStyle(
                                 color: Colors.grey,
                               ),
+                              textScaler: TextScaler.linear(ScaleSize.textScaleFactor(context)),
                             ),
                           ],
                         ),
@@ -127,18 +132,19 @@ class CustomCommentCard extends StatelessWidget {
                 ),
               ),
               commentModel!.userId == loggedInUserId
-                  ? Padding(
-                      padding: const EdgeInsets.only(right: 0.0),
+                  ? Align(
+                      alignment: Alignment.centerRight,
                       child: CircleAvatar(
                         backgroundColor: userColor,
                         backgroundImage: avatarName != null && avatarName != '' ? NetworkImage(avatarName!) : null,
-                        radius: 15,
+                        radius: 15 * ScaleSize.textScaleFactor(context),
                         child: avatarName == null || avatarName == ''
                             ? Text(
                                 commentModel?.name?[0] ?? "",
                                 style: const TextStyle(
                                   color: Colors.white,
                                 ),
+                                textScaler: TextScaler.linear(ScaleSize.textScaleFactor(context)),
                               )
                             : const SizedBox.shrink(),
                       ),
@@ -197,7 +203,7 @@ class _BriefInputButton extends StatelessWidget {
             Icon(
               iconData,
               color: Colors.grey,
-              size: 18,
+              size: 18 * ScaleSize.textScaleFactor(context),
             ),
             const SizedBox(width: 5),
             Text(
@@ -206,6 +212,7 @@ class _BriefInputButton extends StatelessWidget {
                 color: Colors.grey,
                 fontSize: 13,
               ),
+              textScaler: TextScaler.linear(ScaleSize.textScaleFactor(context)),
             ),
           ],
         ),
@@ -233,15 +240,15 @@ class _BriefLikeButton extends StatelessWidget {
         child: Row(
           children: [
             !isLiked
-                ? const Icon(
+                ? Icon(
                     CupertinoIcons.heart,
                     color: Colors.grey,
-                    size: 18,
+                    size: 18 * ScaleSize.textScaleFactor(context),
                   )
-                : const Icon(
+                : Icon(
                     CupertinoIcons.heart_fill,
                     color: Colors.red,
-                    size: 18,
+                    size: 18 * ScaleSize.textScaleFactor(context),
                   ),
             const SizedBox(width: 5),
             Text(
@@ -250,6 +257,7 @@ class _BriefLikeButton extends StatelessWidget {
                 color: Colors.grey,
                 fontSize: 13,
               ),
+              textScaler: TextScaler.linear(ScaleSize.textScaleFactor(context)),
             ),
           ],
         ),

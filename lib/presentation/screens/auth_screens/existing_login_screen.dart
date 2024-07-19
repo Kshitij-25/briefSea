@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
@@ -48,25 +50,25 @@ class ExistingLoginScreen extends ConsumerWidget {
                         children: [
                           SizedBox(height: ScreenSize.height(context) * .2),
                           GestureDetector(
-                            // onTap: () {
-                            //   emailCont.text = "kshitij@briefsea.com";
-                            //   passCont.text = 'Test@1234';
-                            // },
-                            // onLongPress: () {
-                            //   emailCont.text = "dowaye6258@elahan.com";
-                            //   passCont.text = 'Test@123';
-                            // },
-                            // onDoubleTap: () {
-                            //   emailCont.text = "rahul@briefsea.com";
-                            //   passCont.text = "Abcd@1234#";
-                            // },
-                            child: const Text(
+                            onTap: () {
+                              emailCont.text = "kshitij@briefsea.com";
+                              passCont.text = 'Test@1234';
+                            },
+                            onLongPress: () {
+                              emailCont.text = "dowaye6258@elahan.com";
+                              passCont.text = 'Test@123';
+                            },
+                            onDoubleTap: () {
+                              emailCont.text = "rahul@briefsea.com";
+                              passCont.text = "Abcd@1234#";
+                            },
+                            child: Text(
                               "Login as Existing User",
                               style: TextStyle(
                                 color: Colors.white,
                                 fontSize: 20,
                               ),
-                              // textScaler: TextScaler.linear(1.2),
+                              textScaler: TextScaler.linear(ScaleSize.textScaleFactor(context)),
                               textAlign: TextAlign.center,
                             ),
                           ),
@@ -86,7 +88,7 @@ class ExistingLoginScreen extends ConsumerWidget {
                               return null;
                             },
                           ),
-                          const SizedBox(height: 20),
+                          const SizedBox(height: 10),
                           CustomTextFormField(
                             hintText: "Enter Password",
                             controller: passCont,
@@ -110,6 +112,7 @@ class ExistingLoginScreen extends ConsumerWidget {
                                 context: context,
                                 backgroundColor: const Color(0xFF4C27FF),
                                 // isScrollControlled: true,
+                                constraints: BoxConstraints.fromViewConstraints(ViewConstraints(minWidth: ScreenSize.width(context))),
                                 useSafeArea: true,
                                 builder: (context) {
                                   return SafeArea(
@@ -122,13 +125,13 @@ class ExistingLoginScreen extends ConsumerWidget {
                                           child: Column(
                                             mainAxisSize: MainAxisSize.min,
                                             children: [
-                                              const Text(
+                                              Text(
                                                 "Reset your password",
                                                 style: TextStyle(color: Colors.white),
-                                                textScaler: TextScaler.linear(1),
+                                                textScaler: TextScaler.linear(ScaleSize.textScaleFactor(context)),
                                                 textAlign: TextAlign.center,
                                               ),
-                                              const SizedBox(height: 20),
+                                              const SizedBox(height: 10),
                                               CustomTextFormField(
                                                 hintText: "Enter Email",
                                                 controller: forgotEmail,
@@ -142,7 +145,7 @@ class ExistingLoginScreen extends ConsumerWidget {
                                                   return null;
                                                 },
                                               ),
-                                              const SizedBox(height: 20),
+                                              const SizedBox(height: 10),
                                               CustomElevatedButton(
                                                 width: ScreenSize.width(context) * 0.5,
                                                 buttonLabel: "Submit",
@@ -163,9 +166,10 @@ class ExistingLoginScreen extends ConsumerWidget {
                                 },
                               );
                             },
-                            child: const Text(
+                            child: Text(
                               "Forgot Password?",
                               style: TextStyle(color: Colors.white),
+                              textScaler: TextScaler.linear(ScaleSize.textScaleFactor(context)),
                             ),
                           ),
                           SizedBox(height: ScreenSize.height(context) * .02),
@@ -175,7 +179,7 @@ class ExistingLoginScreen extends ConsumerWidget {
                           //   textScaler: TextScaler.linear(1),
                           //   textAlign: TextAlign.center,
                           // ),
-                          // const SizedBox(height: 20),
+                          // const SizedBox(height: 10),
                           // Row(
                           //   mainAxisAlignment: MainAxisAlignment.center,
                           //   children: [
@@ -195,10 +199,10 @@ class ExistingLoginScreen extends ConsumerWidget {
                           //   ],
                           // ),
                           SizedBox(height: ScreenSize.height(context) * .02),
-                          const Text(
+                          Text(
                             "Agency, Freelancer or\nWorking Professional?",
                             style: TextStyle(color: Colors.white),
-                            textScaler: TextScaler.linear(1),
+                            textScaler: TextScaler.linear(ScaleSize.textScaleFactor(context)),
                             textAlign: TextAlign.center,
                           ),
                           TextButton(
@@ -208,11 +212,12 @@ class ExistingLoginScreen extends ConsumerWidget {
                             style: const ButtonStyle(
                               overlayColor: WidgetStateColor.transparent,
                             ),
-                            child: const Text(
+                            child: Text(
                               "Go back",
                               style: TextStyle(
                                 color: Color(0xFF01FFF5),
                               ),
+                              textScaler: TextScaler.linear(ScaleSize.textScaleFactor(context)),
                             ),
                           ),
                           Center(

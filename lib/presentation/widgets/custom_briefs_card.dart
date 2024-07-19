@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
+import '../../common/app_utils/screen_size.dart';
 import '../../data/models/briefs_model.dart';
 
 class CustomBriefsCard extends StatelessWidget {
@@ -69,14 +70,14 @@ class CustomBriefsCard extends StatelessWidget {
                     child: CircleAvatar(
                       backgroundColor: userColor,
                       backgroundImage: avatarName != null && avatarName != '' ? NetworkImage(avatarName!) : null,
-                      radius: 25,
+                      radius: 25 * ScaleSize.textScaleFactor(context),
                       child: avatarName == null || avatarName == ''
                           ? Text(
                               brief?.name?[0] ?? "",
                               style: const TextStyle(
                                 color: Colors.white,
                               ),
-                              textScaler: const TextScaler.linear(1.3),
+                              textScaler: TextScaler.linear(ScaleSize.textScaleFactor(context)),
                             )
                           : const SizedBox.shrink(),
                     ),
@@ -91,6 +92,7 @@ class CustomBriefsCard extends StatelessWidget {
                           color: Colors.black,
                           fontWeight: FontWeight.bold,
                         ),
+                        textScaler: TextScaler.linear(ScaleSize.textScaleFactor(context)),
                       ),
                       Text(
                         "Posting as ${brief?.type?[0].toUpperCase()}${brief?.type?.substring(1) ?? ""}",
@@ -98,6 +100,7 @@ class CustomBriefsCard extends StatelessWidget {
                           color: Color(0xFF4A26FE),
                           fontSize: 11,
                         ),
+                        textScaler: TextScaler.linear(ScaleSize.textScaleFactor(context)),
                       ),
                       Text(
                         brief?.category ?? "",
@@ -105,6 +108,7 @@ class CustomBriefsCard extends StatelessWidget {
                           color: Color(0xFF4A26FE),
                           fontSize: 11,
                         ),
+                        textScaler: TextScaler.linear(ScaleSize.textScaleFactor(context)),
                       )
                     ],
                   ),
@@ -114,6 +118,7 @@ class CustomBriefsCard extends StatelessWidget {
                     style: const TextStyle(
                       color: Colors.grey,
                     ),
+                    textScaler: TextScaler.linear(ScaleSize.textScaleFactor(context)),
                   ),
                   if (isUserTrue != false)
                     Padding(
@@ -127,17 +132,26 @@ class CustomBriefsCard extends StatelessWidget {
                         ),
                         itemBuilder: (context) {
                           return <PopupMenuEntry<String>>[
-                            const PopupMenuItem<String>(
+                            PopupMenuItem<String>(
                               value: 'edit',
-                              child: Text('Edit Brief'),
+                              child: Text(
+                                'Edit Brief',
+                                textScaler: TextScaler.linear(ScaleSize.textScaleFactor(context)),
+                              ),
                             ),
                             PopupMenuItem<String>(
                               value: 'visible',
-                              child: Text(brief?.isVisible == true ? 'Make it Private' : 'Make it Public'),
+                              child: Text(
+                                brief?.isVisible == true ? 'Make it Private' : 'Make it Public',
+                                textScaler: TextScaler.linear(ScaleSize.textScaleFactor(context)),
+                              ),
                             ),
-                            const PopupMenuItem<String>(
+                            PopupMenuItem<String>(
                               value: 'delete',
-                              child: Text('Delete Brief'),
+                              child: Text(
+                                'Delete Brief',
+                                textScaler: TextScaler.linear(ScaleSize.textScaleFactor(context)),
+                              ),
                             ),
                           ];
                         },
@@ -154,6 +168,7 @@ class CustomBriefsCard extends StatelessWidget {
                     color: Colors.black,
                   ),
                   maxLines: maxLine ?? 6,
+                  textScaler: TextScaler.linear(ScaleSize.textScaleFactor(context)),
                   overflow: TextOverflow.ellipsis,
                 ),
               ),
@@ -212,7 +227,7 @@ class _BriefInputButton extends StatelessWidget {
             Icon(
               iconData,
               color: Colors.grey,
-              size: 18,
+              size: 18 * ScaleSize.textScaleFactor(context),
             ),
             const SizedBox(width: 5),
             Text(
@@ -221,6 +236,7 @@ class _BriefInputButton extends StatelessWidget {
                 color: Colors.grey,
                 fontSize: 13,
               ),
+              textScaler: TextScaler.linear(ScaleSize.textScaleFactor(context)),
             ),
           ],
         ),
@@ -248,15 +264,15 @@ class _BriefLikeButton extends StatelessWidget {
         child: Row(
           children: [
             !isLiked
-                ? const Icon(
+                ? Icon(
                     CupertinoIcons.heart,
                     color: Colors.grey,
-                    size: 18,
+                    size: 18 * ScaleSize.textScaleFactor(context),
                   )
-                : const Icon(
+                : Icon(
                     CupertinoIcons.heart_fill,
                     color: Colors.red,
-                    size: 18,
+                    size: 18 * ScaleSize.textScaleFactor(context),
                   ),
             const SizedBox(width: 5),
             Text(
@@ -265,6 +281,7 @@ class _BriefLikeButton extends StatelessWidget {
                 color: Colors.grey,
                 fontSize: 13,
               ),
+              textScaler: TextScaler.linear(ScaleSize.textScaleFactor(context)),
             ),
           ],
         ),

@@ -1,5 +1,6 @@
 import 'dart:math' as math;
 
+import 'package:briefsea/common/app_utils/screen_size.dart';
 import 'package:flutter/material.dart';
 
 import '../../data/models/chat_user_model.dart';
@@ -29,21 +30,22 @@ class CustomChatCards extends StatelessWidget {
         leading: Stack(
           children: [
             CircleAvatar(
-              radius: 25,
+              radius: 25 * ScaleSize.textScaleFactor(context),
               backgroundColor: userColor,
               child: Text(
                 chatUserModel?.name?[0].toUpperCase() ?? "",
                 style: const TextStyle(
                   color: Colors.white,
                 ),
+                textScaler: TextScaler.linear(ScaleSize.textScaleFactor(context)),
               ),
             ),
             Positioned(
               right: 0,
               bottom: 0,
               child: Container(
-                width: 15,
-                height: 15,
+                width: 15 * ScaleSize.textScaleFactor(context),
+                height: 15 * ScaleSize.textScaleFactor(context),
                 decoration: BoxDecoration(
                   color: isUserOnline == true ? Colors.green : Colors.red,
                   shape: BoxShape.circle,
@@ -71,11 +73,12 @@ class CustomChatCards extends StatelessWidget {
             color: Colors.black,
             fontWeight: FontWeight.w500,
           ),
+          textScaler: TextScaler.linear(ScaleSize.textScaleFactor(context)),
         ),
         subtitle: Text(
           chatUserModel?.lastMsg ?? '...',
           overflow: TextOverflow.ellipsis,
-          style: const TextStyle(),
+          textScaler: TextScaler.linear(ScaleSize.textScaleFactor(context)),
         ),
       ),
     );

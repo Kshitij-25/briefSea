@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
+import '../../../common/app_utils/screen_size.dart';
 import '../../providers/auth_provider.dart';
 import '../../providers/chat_provider.dart';
 import '../../providers/socket_provider.dart';
@@ -70,8 +71,29 @@ class _InboxScreenState extends ConsumerState<InboxScreen> {
     return ref.watch(getChatUsersListProvider(userId: ref.read(userDetailsProvider)['user_id']!)).when(
           data: (chatUsers) {
             if (chatUsers.isEmpty) {
-              return const Center(
-                child: Text("No Chats"),
+              return Center(
+                child: Container(
+                  decoration: BoxDecoration(
+                    gradient: const LinearGradient(
+                      begin: Alignment(-0.73, 0.68),
+                      end: Alignment(0.73, -0.68),
+                      colors: [Color(0xFF4A26FE), Color(0xFF222CFF)],
+                    ),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(15.0),
+                    child: Text(
+                      'No Chats',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.w500,
+                        letterSpacing: 0.42,
+                      ),
+                      textScaler: TextScaler.linear(ScaleSize.textScaleFactor(context)),
+                    ),
+                  ),
+                ),
               );
             }
             // Filter chat users based on search query

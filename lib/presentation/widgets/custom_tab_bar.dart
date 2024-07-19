@@ -109,6 +109,7 @@ class _CustomTabBarState extends ConsumerState<CustomTabBar> with AutomaticKeepA
             fontWeight: FontWeight.w500,
             letterSpacing: 0.42,
           ),
+          textScaler: TextScaler.linear(ScaleSize.textScaleFactor(context)),
         ),
       ),
     );
