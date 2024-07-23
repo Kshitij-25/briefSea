@@ -67,7 +67,7 @@ class VerifyProfileScreen extends ConsumerWidget {
       backgroundColor: Colors.grey[200]!,
       appBar: AppBar(
         iconTheme: const IconThemeData(color: Colors.white),
-        backgroundColor: const Color(0xFF4C27FF),
+        backgroundColor: Theme.of(context).colorScheme.secondary,
         centerTitle: true,
         title: Text(
           "Complete Profile",
@@ -124,7 +124,7 @@ class VerifyProfileScreen extends ConsumerWidget {
             },
             child: Text(
               "Done",
-              style: TextStyle(color: Colors.white),
+              style: Theme.of(context).textTheme.titleMedium!.copyWith(color: Colors.white),
               textScaler: TextScaler.linear(ScaleSize.textScaleFactor(context)),
             ),
           ),
@@ -230,6 +230,7 @@ class VerifyProfileScreen extends ConsumerWidget {
                       value: item,
                       child: Text(
                         item,
+                        style: TextStyle(color: Colors.black),
                         textScaler: TextScaler.linear(ScaleSize.textScaleFactor(context)),
                       ),
                     );
@@ -441,6 +442,7 @@ class VerifyProfileScreen extends ConsumerWidget {
         children: [
           Text(
             title,
+            style: Theme.of(context).textTheme.titleMedium!.copyWith(color: Colors.black),
             textScaler: TextScaler.linear(ScaleSize.textScaleFactor(context)),
           ),
           SizedBox(width: 10),

@@ -1,5 +1,7 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 
+import 'like_obj.dart';
+
 part 'comment_model.freezed.dart';
 part 'comment_model.g.dart';
 
@@ -21,6 +23,7 @@ class CommentModel with _$CommentModel {
     String? commentLikeId,
     bool? isVisible,
     String? avatarSrc,
+    @JsonKey(name: 'likeObj') LikeObj? likeObj,
   }) = _CommentModel;
 
   factory CommentModel.fromJson(Map<String, dynamic> json) => _$CommentModelFromJson(json);

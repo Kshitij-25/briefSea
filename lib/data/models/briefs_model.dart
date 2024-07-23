@@ -1,3 +1,4 @@
+import 'package:briefsea/data/models/like_obj.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'briefs_model.freezed.dart';
@@ -23,6 +24,7 @@ class BriefsModel with _$BriefsModel {
     bool? isVisible,
     String? avatarSrc,
     List<String>? isVisibleTo,
+    @JsonKey(name: 'likeObj') LikeObj? likeObj,
   }) = _BriefsModel;
 
   factory BriefsModel.fromJson(Map<String, dynamic> json) => _$BriefsModelFromJson(json);

@@ -24,7 +24,7 @@ class CustomChatCards extends StatelessWidget {
     math.Random random = math.Random(chatUserModel?.id?.hashCode);
     Color userColor = Color((random.nextDouble() * 0xFFFFFF).toInt()).withOpacity(1.0);
     return Card(
-      color: Colors.white,
+      color: Theme.of(context).colorScheme.surfaceContainerLowest,
       child: ListTile(
         onTap: onTap,
         leading: Stack(
@@ -58,26 +58,18 @@ class CustomChatCards extends StatelessWidget {
             )
           ],
         ),
-        // leading: CircleAvatar(
-        //   backgroundColor: const Color(0xFF1B0C6B),
-        //   child: Text(
-        //     chatName?[0].toUpperCase() ?? "",
-        //     style: const TextStyle(
-        //       color: Colors.white,
-        //     ),
-        //   ),
-        // ),
         title: Text(
           chatUserModel?.name ?? '',
-          style: const TextStyle(
-            color: Colors.black,
-            fontWeight: FontWeight.w500,
-          ),
+          style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                color: Colors.black,
+                fontWeight: FontWeight.w500,
+              ),
           textScaler: TextScaler.linear(ScaleSize.textScaleFactor(context)),
         ),
         subtitle: Text(
           chatUserModel?.lastMsg ?? '...',
           overflow: TextOverflow.ellipsis,
+          style: Theme.of(context).textTheme.bodySmall!.copyWith(color: Colors.black),
           textScaler: TextScaler.linear(ScaleSize.textScaleFactor(context)),
         ),
       ),

@@ -88,10 +88,10 @@ Future<void> customReplyModalSheet(
                                   ),
                                 ),
                                 ElevatedButton(
-                                  style: ButtonStyle(
-                                    backgroundColor: WidgetStateProperty.all<Color>(const Color(0xFF4B26FD)),
-                                    elevation: WidgetStateProperty.all<double>(0),
+                                  style: ElevatedButton.styleFrom(
                                     enableFeedback: true,
+                                    backgroundColor: Theme.of(context).colorScheme.secondary,
+                                    elevation: 0,
                                   ),
                                   onPressed: () async {
                                     var replyPosted = await ref.read(

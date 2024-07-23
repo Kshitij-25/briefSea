@@ -102,7 +102,7 @@ class MyBriefsScreen extends ConsumerWidget {
                       style: ButtonStyle(
                         enableFeedback: true,
                         backgroundColor: WidgetStateProperty.all<Color>(
-                          const Color(0xFF4B26FD),
+                          Theme.of(context).colorScheme.secondary,
                         ),
                       ),
                       onPressed: () {
@@ -120,7 +120,7 @@ class MyBriefsScreen extends ConsumerWidget {
                       style: ButtonStyle(
                           enableFeedback: true,
                           backgroundColor: WidgetStateProperty.all<Color>(
-                            const Color(0xFF4B26FD),
+                            Theme.of(context).colorScheme.secondary,
                           )),
                       onPressed: () {
                         ref.read(selectedBriefsFilter.notifier).setFilter('Public');
@@ -137,7 +137,7 @@ class MyBriefsScreen extends ConsumerWidget {
                       style: ButtonStyle(
                           enableFeedback: true,
                           backgroundColor: WidgetStateProperty.all<Color>(
-                            const Color(0xFF4B26FD),
+                            Theme.of(context).colorScheme.secondary,
                           )),
                       onPressed: () {
                         ref.read(selectedBriefsFilter.notifier).setFilter('Private');

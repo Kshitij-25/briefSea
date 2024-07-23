@@ -91,7 +91,7 @@ class FeedScreen extends ConsumerWidget {
     final textFieldFocusNode = ref.watch(textFieldFocusNodeProvider);
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: const Color(0xFF4B26FD),
+        backgroundColor: Theme.of(context).colorScheme.secondary,
         // title: Text(
         //   brief.name ?? "",
         //   style: const TextStyle(
@@ -124,7 +124,7 @@ class FeedScreen extends ConsumerWidget {
           Container(
             width: double.infinity,
             height: 70 * ScaleSize.textScaleFactor(context),
-            color: const Color(0xFF4B26FD),
+            color: Theme.of(context).colorScheme.secondary,
           ),
           Container(
             height: ScreenSize.height(context),
@@ -317,10 +317,10 @@ class FeedScreen extends ConsumerWidget {
                               ),
                             ),
                             ElevatedButton(
-                              style: ButtonStyle(
+                              style: ElevatedButton.styleFrom(
                                 enableFeedback: true,
-                                backgroundColor: WidgetStateProperty.all<Color>(const Color(0xFF4B26FD)),
-                                elevation: WidgetStateProperty.all<double>(0),
+                                backgroundColor: Theme.of(context).colorScheme.secondary,
+                                elevation: 0,
                               ),
                               onPressed: () async {
                                 var commentPosted = await ref.read(postReplyProvider(

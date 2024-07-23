@@ -88,7 +88,7 @@ class CustomCommentCard extends StatelessWidget {
                                   textScaler: TextScaler.linear(ScaleSize.textScaleFactor(context)),
                                 ),
                                 Text(
-                                  "Posting as ${commentModel?.type ?? ""}",
+                                  "Posting as ${commentModel?.type?[0].toUpperCase()}${commentModel?.type?.substring(1) ?? ""}",
                                   style: const TextStyle(
                                     color: Color(0xFF4A26FE),
                                     fontSize: 11,
@@ -124,6 +124,7 @@ class CustomCommentCard extends StatelessWidget {
                               color: Colors.black,
                             ),
                             overflow: TextOverflow.ellipsis,
+                            maxLines: 5000,
                           ),
                         ),
                       ),
@@ -157,7 +158,7 @@ class CustomCommentCard extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 _BriefLikeButton(
-                  isLiked: commentModel!.isCommentLiked,
+                  isLiked: commentModel?.likeObj?.id != null ? true : false,
                   iconLabel:
                       (commentModel?.likesCount != null) ? (commentModel!.likesCount == 0 ? 'Like' : "${commentModel!.likesCount} Likes") : '-',
                   onPressed: () => onLikeTap(commentModel),

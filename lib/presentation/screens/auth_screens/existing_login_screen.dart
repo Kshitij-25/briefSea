@@ -30,7 +30,7 @@ class ExistingLoginScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final loginState = ref.watch(loginNotifierProvider);
     return Scaffold(
-      backgroundColor: const Color(0xFF4C27FF),
+      backgroundColor: Theme.of(context).colorScheme.secondary,
       body: Stack(
         children: [
           Form(
@@ -55,8 +55,8 @@ class ExistingLoginScreen extends ConsumerWidget {
                             //   passCont.text = 'Test@1234';
                             // },
                             // onLongPress: () {
-                            //   emailCont.text = "dowaye6258@elahan.com";
-                            //   passCont.text = 'Test@123';
+                            //   emailCont.text = "xalonev795@devncie.com";
+                            //   passCont.text = 'Test@1234';
                             // },
                             // onDoubleTap: () {
                             //   emailCont.text = "rahul@briefsea.com";
@@ -64,10 +64,7 @@ class ExistingLoginScreen extends ConsumerWidget {
                             // },
                             child: Text(
                               "Login as Existing User",
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 20,
-                              ),
+                              style: Theme.of(context).textTheme.titleLarge,
                               textScaler: TextScaler.linear(ScaleSize.textScaleFactor(context)),
                               textAlign: TextAlign.center,
                             ),
@@ -127,7 +124,7 @@ class ExistingLoginScreen extends ConsumerWidget {
                                             children: [
                                               Text(
                                                 "Reset your password",
-                                                style: TextStyle(color: Colors.white),
+                                                style: Theme.of(context).textTheme.titleLarge,
                                                 textScaler: TextScaler.linear(ScaleSize.textScaleFactor(context)),
                                                 textAlign: TextAlign.center,
                                               ),
@@ -201,7 +198,7 @@ class ExistingLoginScreen extends ConsumerWidget {
                           SizedBox(height: ScreenSize.height(context) * .02),
                           Text(
                             "Agency, Freelancer or\nWorking Professional?",
-                            style: TextStyle(color: Colors.white),
+                            style: Theme.of(context).textTheme.bodyLarge,
                             textScaler: TextScaler.linear(ScaleSize.textScaleFactor(context)),
                             textAlign: TextAlign.center,
                           ),
@@ -215,7 +212,7 @@ class ExistingLoginScreen extends ConsumerWidget {
                             child: Text(
                               "Go back",
                               style: TextStyle(
-                                color: Color(0xFF01FFF5),
+                                color: Theme.of(context).colorScheme.tertiaryContainer,
                               ),
                               textScaler: TextScaler.linear(ScaleSize.textScaleFactor(context)),
                             ),

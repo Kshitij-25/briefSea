@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 import '../../common/app_utils/device_type.dart';
 import '../../common/app_utils/screen_size.dart';
@@ -40,11 +39,16 @@ class CustomElevatedButton extends StatelessWidget {
         onPressed: onPressed,
         label: Text(
           buttonLabel!,
-          style: GoogleFonts.raleway(
-            color: Colors.black,
-            fontWeight: FontWeight.bold,
+          // style: GoogleFonts.raleway(
+          //   color: Colors.black,
+          //   fontWeight: FontWeight.bold,
+          // ),
+          style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                color: Colors.black,
+              ),
+          textScaler: TextScaler.linear(
+            ScaleSize.textScaleFactor(context),
           ),
-          textScaler: TextScaler.linear(ScaleSize.textScaleFactor(context)),
         ),
       ),
     );

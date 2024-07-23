@@ -29,7 +29,7 @@ class FreelancerRegisterScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final registerState = ref.watch(registerNotifierProvider);
     return Scaffold(
-      backgroundColor: const Color(0xFF4C27FF),
+      backgroundColor: Theme.of(context).colorScheme.secondary,
       body: Stack(
         children: [
           Form(
@@ -50,10 +50,7 @@ class FreelancerRegisterScreen extends ConsumerWidget {
                           SizedBox(height: ScreenSize.height(context) * .15),
                           Text(
                             "Briefsea for Freelancers",
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 20,
-                            ),
+                            style: Theme.of(context).textTheme.titleLarge,
                             textAlign: TextAlign.center,
                             textScaler: TextScaler.linear(ScaleSize.textScaleFactor(context)),
                           ),
@@ -158,7 +155,7 @@ class FreelancerRegisterScreen extends ConsumerWidget {
                           SizedBox(height: ScreenSize.height(context) * .05),
                           Text(
                             "Agency, Working professional or\nExisting User?",
-                            style: TextStyle(color: Colors.white),
+                            style: Theme.of(context).textTheme.bodyLarge,
                             textScaler: TextScaler.linear(ScaleSize.textScaleFactor(context)),
                             textAlign: TextAlign.center,
                           ),
@@ -173,7 +170,7 @@ class FreelancerRegisterScreen extends ConsumerWidget {
                             child: Text(
                               "Go back",
                               style: TextStyle(
-                                color: Color(0xFF01FFF5),
+                                color: Theme.of(context).colorScheme.tertiaryContainer,
                               ),
                               textScaler: TextScaler.linear(ScaleSize.textScaleFactor(context)),
                             ),
@@ -201,7 +198,7 @@ class FreelancerRegisterScreen extends ConsumerWidget {
                           SizedBox(height: ScreenSize.height(context) * .05),
                           Text(
                             Strings.freelancerFooter,
-                            style: TextStyle(color: Colors.white),
+                            style: Theme.of(context).textTheme.bodyMedium,
                             textScaler: TextScaler.linear(ScaleSize.textScaleFactor(context)),
                             textAlign: TextAlign.center,
                           ),

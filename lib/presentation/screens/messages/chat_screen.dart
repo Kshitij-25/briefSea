@@ -61,7 +61,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: const Color(0xFF4B26FD),
+        backgroundColor: Theme.of(context).colorScheme.secondary,
         title: Text(
           widget.chatUser.name ?? "",
           style: const TextStyle(
@@ -79,17 +79,17 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
           Container(
             width: double.infinity,
             height: 70,
-            color: const Color(0xFF4B26FD),
+            color: Theme.of(context).colorScheme.secondary,
           ),
           Container(
             height: ScreenSize.height(context),
             width: ScreenSize.width(context),
-            decoration: const BoxDecoration(
+            decoration: BoxDecoration(
               borderRadius: BorderRadius.only(
                 topLeft: Radius.circular(40),
                 topRight: Radius.circular(40),
               ),
-              color: Colors.white,
+              color: Theme.of(context).colorScheme.surfaceContainer,
             ),
             child: Padding(
               padding: const EdgeInsets.only(top: 20.0),
@@ -139,8 +139,8 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                     child: Container(
                       padding: const EdgeInsets.symmetric(horizontal: 8),
                       height: 90,
-                      decoration: const BoxDecoration(
-                        color: Colors.white,
+                      decoration: BoxDecoration(
+                        color: Theme.of(context).colorScheme.surfaceContainer,
                         borderRadius: BorderRadius.only(topLeft: Radius.circular(20), topRight: Radius.circular(20)),
                         border: Border(
                           top: BorderSide(color: Colors.black26),
@@ -162,6 +162,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                                   color: Colors.black26,
                                 ),
                               ),
+                              style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: Colors.black),
                             ),
                           ),
                           IconButton(
@@ -252,7 +253,7 @@ class _SentMessage extends StatelessWidget {
             child: Container(
               padding: const EdgeInsets.all(14),
               decoration: BoxDecoration(
-                color: Colors.grey[900],
+                color: Theme.of(context).primaryColor,
                 borderRadius: const BorderRadius.only(
                   topLeft: Radius.circular(18),
                   bottomLeft: Radius.circular(18),
@@ -261,7 +262,10 @@ class _SentMessage extends StatelessWidget {
               ),
               child: Text(
                 message,
-                style: const TextStyle(color: Colors.white, fontSize: 14),
+                style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                      color: Colors.white,
+                      fontSize: 14 * ScaleSize.textScaleFactor(context),
+                    ),
                 textScaler: TextScaler.linear(ScaleSize.textScaleFactor(context)),
               ),
             ),
@@ -301,7 +305,7 @@ class _ReceivedMessage extends StatelessWidget {
             child: Container(
               padding: const EdgeInsets.all(14),
               decoration: BoxDecoration(
-                color: Colors.grey[300],
+                color: Theme.of(context).primaryColorLight,
                 borderRadius: const BorderRadius.only(
                   topRight: Radius.circular(18),
                   bottomLeft: Radius.circular(18),
@@ -310,7 +314,10 @@ class _ReceivedMessage extends StatelessWidget {
               ),
               child: Text(
                 message,
-                style: const TextStyle(color: Colors.black, fontSize: 14),
+                style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                      color: Colors.black,
+                      fontSize: 14 * ScaleSize.textScaleFactor(context),
+                    ),
                 textScaler: TextScaler.linear(ScaleSize.textScaleFactor(context)),
               ),
             ),

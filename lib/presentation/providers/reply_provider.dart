@@ -60,14 +60,14 @@ Future<List<CommentModel>> getAllComments(GetAllCommentsRef ref, {required Strin
   final replyRepository = ref.read(replyRepositoryProvider);
   final eitherReplyLikenOrError = await replyRepository.getAllComments(threadId);
   return eitherReplyLikenOrError!.fold((error) => throw error, (replyLike) async {
-    final updatedcomment = await Future.wait(replyLike.map((comment) async {
-      final likedModel = await ref.watch(getCommentLikeProvider(replyId: comment.id).future);
-      return comment.copyWith(
-        isCommentLiked: likedModel.likeId != null,
-        commentLikeId: likedModel.likeId,
-      );
-    }).toList());
-    return updatedcomment;
+    // final updatedcomment = await Future.wait(replyLike.map((comment) async {
+    //   final likedModel = await ref.watch(getCommentLikeProvider(replyId: comment.id).future);
+    //   return comment.copyWith(
+    //     isCommentLiked: likedModel.likeId != null,
+    //     commentLikeId: likedModel.likeId,
+    //   );
+    // }).toList());
+    return replyLike;
   });
 }
 
@@ -76,13 +76,13 @@ Future<List<CommentModel>> getAllReplyOnComment(GetAllReplyOnCommentRef ref, {re
   final replyRepository = ref.read(replyRepositoryProvider);
   final eitherReplyLikenOrError = await replyRepository.getAllReplyOnComment(commentId);
   return eitherReplyLikenOrError!.fold((error) => throw error, (replyLike) async {
-    final updatedcomment = await Future.wait(replyLike.map((comment) async {
-      final likedModel = await ref.watch(getCommentLikeProvider(replyId: comment.id).future);
-      return comment.copyWith(
-        isCommentLiked: likedModel.likeId != null,
-        commentLikeId: likedModel.likeId,
-      );
-    }).toList());
-    return updatedcomment;
+    // final updatedcomment = await Future.wait(replyLike.map((comment) async {
+    //   final likedModel = await ref.watch(getCommentLikeProvider(replyId: comment.id).future);
+    //   return comment.copyWith(
+    //     isCommentLiked: likedModel.likeId != null,
+    //     commentLikeId: likedModel.likeId,
+    //   );
+    // }).toList());
+    return replyLike;
   });
 }

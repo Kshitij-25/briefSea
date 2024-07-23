@@ -21,7 +21,7 @@ class CustomBackButton extends StatelessWidget {
           padding: const EdgeInsets.only(left: 0, top: 10, bottom: 10),
           child: Icon(
             CupertinoIcons.left_chevron,
-            color: Color(0xFF01FFF5),
+            color: Theme.of(context).colorScheme.tertiaryContainer,
             size: 40 * ScaleSize.textScaleFactor(context),
           ),
         ),

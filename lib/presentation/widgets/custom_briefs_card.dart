@@ -74,9 +74,7 @@ class CustomBriefsCard extends StatelessWidget {
                       child: avatarName == null || avatarName == ''
                           ? Text(
                               brief?.name?[0] ?? "",
-                              style: const TextStyle(
-                                color: Colors.white,
-                              ),
+                              style: Theme.of(context).textTheme.titleMedium,
                               textScaler: TextScaler.linear(ScaleSize.textScaleFactor(context)),
                             )
                           : const SizedBox.shrink(),
@@ -88,47 +86,33 @@ class CustomBriefsCard extends StatelessWidget {
                     children: [
                       Text(
                         '${brief?.name?[0].toUpperCase()}${brief?.name?.substring(1) ?? ""}',
-                        style: const TextStyle(
-                          color: Colors.black,
-                          fontWeight: FontWeight.bold,
-                        ),
+                        style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                              color: Theme.of(context).colorScheme.onSurface,
+                            ),
                         textScaler: TextScaler.linear(ScaleSize.textScaleFactor(context)),
                       ),
                       Text(
                         "Posting as ${brief?.type?[0].toUpperCase()}${brief?.type?.substring(1) ?? ""}",
-                        style: const TextStyle(
-                          color: Color(0xFF4A26FE),
-                          fontSize: 11,
-                        ),
+                        style: Theme.of(context).textTheme.bodySmall!.copyWith(color: Theme.of(context).colorScheme.secondary),
                         textScaler: TextScaler.linear(ScaleSize.textScaleFactor(context)),
                       ),
                       Text(
                         brief?.category ?? "",
-                        style: const TextStyle(
-                          color: Color(0xFF4A26FE),
-                          fontSize: 11,
-                        ),
+                        style: Theme.of(context).textTheme.bodySmall!.copyWith(color: Theme.of(context).colorScheme.secondary),
                         textScaler: TextScaler.linear(ScaleSize.textScaleFactor(context)),
                       )
                     ],
                   ),
                   const Spacer(),
-                  Text(
-                    brief?.postedAt != null ? timeago.format(DateTime.fromMillisecondsSinceEpoch(brief!.postedAt!), locale: 'en_short') : '',
-                    style: const TextStyle(
-                      color: Colors.grey,
-                    ),
-                    textScaler: TextScaler.linear(ScaleSize.textScaleFactor(context)),
-                  ),
                   if (isUserTrue != false)
                     Padding(
                       padding: const EdgeInsets.only(left: 10),
                       child: PopupMenuButton(
                         enableFeedback: true,
-                        color: Colors.white,
-                        icon: const Icon(
+                        color: Theme.of(context).colorScheme.surfaceContainerLowest,
+                        icon: Icon(
                           CupertinoIcons.chevron_down,
-                          color: Colors.grey,
+                          color: Theme.of(context).colorScheme.outline,
                         ),
                         itemBuilder: (context) {
                           return <PopupMenuEntry<String>>[
@@ -157,16 +141,19 @@ class CustomBriefsCard extends StatelessWidget {
                         },
                         onSelected: onSelected,
                       ),
-                    )
+                    ),
+                  Text(
+                    brief?.postedAt != null ? timeago.format(DateTime.fromMillisecondsSinceEpoch(brief!.postedAt!), locale: 'en_short') : '',
+                    style: Theme.of(context).textTheme.bodySmall!.copyWith(color: Theme.of(context).colorScheme.outline),
+                    textScaler: TextScaler.linear(ScaleSize.textScaleFactor(context)),
+                  ),
                 ],
               ),
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 10.0),
                 child: Text(
                   brief?.postText ?? "",
-                  style: const TextStyle(
-                    color: Colors.black,
-                  ),
+                  style: Theme.of(context).textTheme.bodySmall!.copyWith(color: Theme.of(context).colorScheme.onSurface),
                   maxLines: maxLine ?? 6,
                   textScaler: TextScaler.linear(ScaleSize.textScaleFactor(context)),
                   overflow: TextOverflow.ellipsis,
@@ -182,7 +169,7 @@ class CustomBriefsCard extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   _BriefLikeButton(
-                    isLiked: brief!.isPostLiked,
+                    isLiked: brief?.likeObj?.id != null ? true : false,
                     iconLabel: (brief?.likesCount != null) ? (brief!.likesCount == 0 ? 'Like' : "${brief!.likesCount} Likes") : '-',
                     onPressed: () => onLikeTap(brief),
                   ),
@@ -226,16 +213,13 @@ class _BriefInputButton extends StatelessWidget {
           children: [
             Icon(
               iconData,
-              color: Colors.grey,
+              color: Theme.of(context).colorScheme.outline,
               size: 18 * ScaleSize.textScaleFactor(context),
             ),
             const SizedBox(width: 5),
             Text(
               iconLabel ?? "",
-              style: const TextStyle(
-                color: Colors.grey,
-                fontSize: 13,
-              ),
+              style: Theme.of(context).textTheme.bodySmall!.copyWith(color: Theme.of(context).colorScheme.onSurface),
               textScaler: TextScaler.linear(ScaleSize.textScaleFactor(context)),
             ),
           ],
@@ -266,7 +250,7 @@ class _BriefLikeButton extends StatelessWidget {
             !isLiked
                 ? Icon(
                     CupertinoIcons.heart,
-                    color: Colors.grey,
+                    color: Theme.of(context).colorScheme.outline,
                     size: 18 * ScaleSize.textScaleFactor(context),
                   )
                 : Icon(
@@ -277,10 +261,7 @@ class _BriefLikeButton extends StatelessWidget {
             const SizedBox(width: 5),
             Text(
               iconLabel ?? "",
-              style: const TextStyle(
-                color: Colors.grey,
-                fontSize: 13,
-              ),
+              style: Theme.of(context).textTheme.bodySmall!.copyWith(color: Theme.of(context).colorScheme.onSurface),
               textScaler: TextScaler.linear(ScaleSize.textScaleFactor(context)),
             ),
           ],
@@ -303,7 +284,7 @@ class _BriefCard extends StatelessWidget {
   Widget build(BuildContext context) {
     if (isCardVisible) {
       return Card(
-        color: Colors.white,
+        color: Theme.of(context).colorScheme.surfaceContainerLowest,
         child: child,
       );
     } else {

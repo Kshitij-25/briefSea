@@ -23,6 +23,9 @@ _$CommentModelImpl _$$CommentModelImplFromJson(Map<String, dynamic> json) =>
       commentLikeId: json['commentLikeId'] as String?,
       isVisible: json['isVisible'] as bool?,
       avatarSrc: json['avatarSrc'] as String?,
+      likeObj: json['likeObj'] == null
+          ? null
+          : LikeObj.fromJson(json['likeObj'] as Map<String, dynamic>),
     );
 
 Map<String, dynamic> _$$CommentModelImplToJson(_$CommentModelImpl instance) =>
@@ -42,4 +45,5 @@ Map<String, dynamic> _$$CommentModelImplToJson(_$CommentModelImpl instance) =>
       'commentLikeId': instance.commentLikeId,
       'isVisible': instance.isVisible,
       'avatarSrc': instance.avatarSrc,
+      'likeObj': instance.likeObj,
     };

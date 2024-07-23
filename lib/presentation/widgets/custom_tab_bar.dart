@@ -51,7 +51,7 @@ class _CustomTabBarState extends ConsumerState<CustomTabBar> with AutomaticKeepA
       width: ScreenSize.width(context) * 0.7,
       height: ScreenSize.height(context) * 0.05,
       decoration: BoxDecoration(
-        color: Colors.grey[300],
+        color: Theme.of(context).colorScheme.surfaceDim,
         borderRadius: BorderRadius.circular(30),
       ),
       child: Stack(
@@ -103,12 +103,10 @@ class _CustomTabBarState extends ConsumerState<CustomTabBar> with AutomaticKeepA
       child: Center(
         child: Text(
           tabText,
-          style: TextStyle(
-            color: isTabPressed ? Colors.white : const Color(0xFF4B2BF0),
-            fontFamily: 'Roboto',
-            fontWeight: FontWeight.w500,
-            letterSpacing: 0.42,
-          ),
+          style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                color: isTabPressed ? Colors.white : Theme.of(context).colorScheme.secondary,
+                letterSpacing: 0.42,
+              ),
           textScaler: TextScaler.linear(ScaleSize.textScaleFactor(context)),
         ),
       ),

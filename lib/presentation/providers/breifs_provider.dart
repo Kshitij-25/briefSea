@@ -6,7 +6,6 @@ import '../../data/di/get_it.dart';
 import '../../data/models/briefs_model.dart';
 import '../../data/models/thread_image_model.dart';
 import '../../data/repositories/breifs_repository.dart';
-import 'likes_provider.dart';
 
 part 'breifs_provider.g.dart';
 
@@ -27,14 +26,22 @@ Future<List<BriefsModel?>?> getAllBriefs(GetAllBriefsRef ref) async {
   final breifsRepository = ref.watch(briefsRepositoryProvider);
   final eitherBriefsOrError = await breifsRepository.getAllBriefs();
   return eitherBriefsOrError!.fold((error) => throw error, (briefs) async {
-    final updatedBriefs = await Future.wait(briefs!.map((brief) async {
-      final likedModel = await ref.watch(getALikeProvider(threadId: brief!.id).future);
-      return brief.copyWith(
-        isPostLiked: likedModel.likeId != null,
-        postLikeId: likedModel.likeId,
-      );
-    }).toList());
-    return updatedBriefs;
+    // final updatedBriefs = await Future.wait(briefs!.map((brief) async {
+    //   // final likedModel = await ref.watch(getALikeProvider(threadId: brief!.id).future);
+    //   // return brief.copyWith(
+    //   //   isPostLiked: likedModel.likeId != null,
+    //   //   postLikeId: likedModel.likeId,
+    //   // );
+    //   if (brief!.likeObj != null && brief.likeObj!.id != null) {
+    //     return brief.copyWith(
+    //       isPostLiked: brief.id != null,
+    //       postLikeId: brief.likeObj!.id,
+    //     );
+    //   } else {
+    //     return brief;
+    //   }
+    // }).toList());
+    return briefs;
   });
 }
 
@@ -47,14 +54,22 @@ Future<List<BriefsModel?>?> getUserBriefs(GetUserBriefsRef ref) async {
       throw error; // Throw the error for Riverpod to handle
     },
     (briefs) async {
-      final updatedBriefs = await Future.wait(briefs!.map((brief) async {
-        final likedModel = await ref.watch(getALikeProvider(threadId: brief!.id).future);
-        return brief.copyWith(
-          isPostLiked: likedModel.likeId != null,
-          postLikeId: likedModel.likeId,
-        );
-      }).toList());
-      return updatedBriefs;
+      // final updatedBriefs = await Future.wait(briefs!.map((brief) async {
+      //   // final likedModel = await ref.watch(getALikeProvider(threadId: brief!.id).future);
+      //   // return brief.copyWith(
+      //   //   isPostLiked: likedModel.likeId != null,
+      //   //   postLikeId: likedModel.likeId,
+      //   // );
+      //   if (brief!.likeObj != null && brief.likeObj!.id != null) {
+      //     return brief.copyWith(
+      //       isPostLiked: brief.id != null,
+      //       postLikeId: brief.likeObj!.id,
+      //     );
+      //   } else {
+      //     return brief;
+      //   }
+      // }).toList());
+      return briefs;
     },
   );
 }

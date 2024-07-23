@@ -71,11 +71,7 @@ class AllBriefsScreen extends ConsumerWidget {
                     padding: const EdgeInsets.all(15.0),
                     child: Text(
                       'No Briefs Found',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.w500,
-                        letterSpacing: 0.42,
-                      ),
+                      style: Theme.of(context).textTheme.titleMedium,
                       textScaler: TextScaler.linear(ScaleSize.textScaleFactor(context)),
                     ),
                   ),

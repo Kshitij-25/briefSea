@@ -49,7 +49,7 @@ class MessagesScreenNavigator extends ConsumerWidget {
           Container(
             width: double.infinity,
             height: 70,
-            color: const Color(0xFF4B26FD),
+            color: Theme.of(context).colorScheme.secondary,
           ),
           Container(
             height: ScreenSize.height(context),
@@ -59,7 +59,7 @@ class MessagesScreenNavigator extends ConsumerWidget {
                 topLeft: Radius.circular(40),
                 topRight: Radius.circular(40),
               ),
-              color: Colors.grey[300]!,
+              color: Theme.of(context).colorScheme.surfaceContainer,
             ),
             child: Column(
               children: [

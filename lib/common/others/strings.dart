@@ -8,7 +8,7 @@ class Strings {
   static const String privacyPolicy = 'By continuing you agree to\nTerms of Use and Privacy Policy';
 
   static const String agencyFooter = 'Instantly Connect with top freelancers and vendors in Tech and Marketing to get work done.';
-  static const String freelancerFooter = 'Instantly discover and grab\nhot freelancing opportunities\nin Tech and Marketing.';
+  static const String freelancerFooter = 'Instantly discover and grab hot freelancing opportunities in Tech and Marketing.';
   static const String professionalFooter = 'Instantly connect with agencies, freelancers, and vendors in Tech and Marketing.';
 
   static const String postABrief = 'Post a brief to instantly connect with\nagencies, freelancers and working professionals.';

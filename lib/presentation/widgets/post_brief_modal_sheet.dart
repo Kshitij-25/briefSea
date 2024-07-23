@@ -25,7 +25,7 @@ Future<void> customPostBriefModalSheet(
   final FocusNode textFieldFocusNode = FocusNode();
 
   return showModalBottomSheet(
-    backgroundColor: Colors.grey[300]!,
+    backgroundColor: Theme.of(context).colorScheme.surfaceContainer,
     isScrollControlled: true,
     context: context,
     constraints: BoxConstraints.fromViewConstraints(ViewConstraints(minWidth: ScreenSize.width(context))),
@@ -73,9 +73,9 @@ Future<void> customPostBriefModalSheet(
                                       postTextCont?.clear();
                                       selectedImage?.delete();
                                     },
-                                    icon: const Icon(
+                                    icon: Icon(
                                       CupertinoIcons.clear,
-                                      color: Colors.grey,
+                                      color: Theme.of(context).colorScheme.outline,
                                     ),
                                     iconSize: 30 * ScaleSize.textScaleFactor(context),
                                   ),
@@ -86,12 +86,10 @@ Future<void> customPostBriefModalSheet(
                                     children: [
                                       CircleAvatar(
                                         radius: 20 * ScaleSize.textScaleFactor(context),
-                                        backgroundColor: const Color(0xFF4B26FD),
+                                        backgroundColor: Theme.of(context).colorScheme.secondary,
                                         child: Text(
                                           postingAs?[0].toUpperCase() ?? '',
-                                          style: const TextStyle(
-                                            color: Colors.white,
-                                          ),
+                                          style: Theme.of(context).textTheme.titleMedium,
                                           textScaler: TextScaler.linear(ScaleSize.textScaleFactor(context)),
                                         ),
                                       ),
@@ -104,8 +102,8 @@ Future<void> customPostBriefModalSheet(
                                         child: Padding(
                                           padding: const EdgeInsets.only(left: 10.0),
                                           child: Container(
-                                            decoration: const BoxDecoration(
-                                              color: Color(0xFF4B26FD),
+                                            decoration: BoxDecoration(
+                                              color: Theme.of(context).colorScheme.secondary,
                                               borderRadius: BorderRadius.all(
                                                 Radius.circular(10),
                                               ),
@@ -115,7 +113,10 @@ Future<void> customPostBriefModalSheet(
                                               child: Text(
                                                 // "Posting as a ${postingAs!}",
                                                 "Choose a category",
-                                                style: TextStyle(color: Colors.white),
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .labelMedium!
+                                                    .copyWith(color: Theme.of(context).colorScheme.onSecondary),
                                                 textScaler: TextScaler.linear(ScaleSize.textScaleFactor(context)),
                                               ),
                                             ),
@@ -143,10 +144,14 @@ Future<void> customPostBriefModalSheet(
                                       decoration: InputDecoration(
                                         border: InputBorder.none,
                                         hintText: "Post a brief, Describe in detail",
-                                        hintStyle: TextStyle(
-                                          color: Colors.grey,
-                                          fontSize: 14 * ScaleSize.textScaleFactor(context),
-                                        ),
+                                        hintStyle: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                                              color: Theme.of(context).colorScheme.outline,
+                                              fontSize: 14 * ScaleSize.textScaleFactor(context),
+                                            ),
+                                        // hintStyle: TextStyle(
+                                        //   color: Colors.grey,
+                                        //   fontSize: 14 * ScaleSize.textScaleFactor(context),
+                                        // ),
                                       ),
                                       style: const TextStyle(color: Colors.black),
                                     ),
@@ -255,18 +260,18 @@ Future<void> customPostBriefModalSheet(
                                 // ),
                                 const Spacer(),
                                 ElevatedButton(
-                                  style: ButtonStyle(
+                                  style: ElevatedButton.styleFrom(
                                     enableFeedback: true,
-                                    backgroundColor: WidgetStateProperty.all<Color>(
-                                      const Color(0xFF4B26FD),
-                                    ),
+                                    backgroundColor: Theme.of(context).colorScheme.secondary,
                                   ),
                                   onPressed: () {
                                     if (postOnTap != null) postOnTap(postTextCont?.text ?? "", selectedCategory!);
                                   },
                                   child: Text(
                                     'Post',
-                                    style: TextStyle(color: Colors.white),
+                                    style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                                          color: Theme.of(context).colorScheme.onSecondary,
+                                        ),
                                     textScaler: TextScaler.linear(ScaleSize.textScaleFactor(context)),
                                   ),
                                 ),
@@ -309,7 +314,7 @@ class _CategorySelector extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 10),
             child: CircleAvatar(
               radius: 20 * ScaleSize.textScaleFactor(context),
-              backgroundColor: const Color(0xFF4B26FD),
+              backgroundColor: Theme.of(context).colorScheme.secondary,
               child: selectedCategory == categoryName
                   ? const Icon(
                       CupertinoIcons.checkmark,

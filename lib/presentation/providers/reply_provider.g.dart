@@ -364,7 +364,7 @@ class _GetCommentLikeProviderElement
   String? get replyId => (origin as GetCommentLikeProvider).replyId;
 }
 
-String _$getAllCommentsHash() => r'ee789afbff77f5f3b03c93a75d95cbff6520602b';
+String _$getAllCommentsHash() => r'ba53c133768b6d2f3092ce173561cfe08c89f3a1';
 
 /// See also [getAllComments].
 @ProviderFor(getAllComments)
@@ -495,7 +495,7 @@ class _GetAllCommentsProviderElement
 }
 
 String _$getAllReplyOnCommentHash() =>
-    r'059cb31e324821881213447524baf09fc6ad780a';
+    r'1a6fdccff76fc246cd9d0290aa4fa3d8cbe8d98d';
 
 /// See also [getAllReplyOnComment].
 @ProviderFor(getAllReplyOnComment)

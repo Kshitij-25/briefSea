@@ -39,7 +39,7 @@ final briefsRepositoryProvider = AutoDisposeProvider<BreifsRepository>.internal(
 );
 
 typedef BriefsRepositoryRef = AutoDisposeProviderRef<BreifsRepository>;
-String _$getAllBriefsHash() => r'2267c95441f21faf5485b678176cccb32e9eb745';
+String _$getAllBriefsHash() => r'e7589b26600a14a4ce0b934bdeb2f0d7949ff3b0';
 
 /// See also [getAllBriefs].
 @ProviderFor(getAllBriefs)
@@ -54,7 +54,7 @@ final getAllBriefsProvider =
 );
 
 typedef GetAllBriefsRef = AutoDisposeFutureProviderRef<List<BriefsModel?>?>;
-String _$getUserBriefsHash() => r'c9657254a2401374f2465563184ad38d4b1b6e6b';
+String _$getUserBriefsHash() => r'f13325b8a637498a29e8fdd5eb5e86b181adf151';
 
 /// See also [getUserBriefs].
 @ProviderFor(getUserBriefs)

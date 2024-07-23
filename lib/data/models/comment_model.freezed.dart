@@ -39,6 +39,8 @@ mixin _$CommentModel {
   String? get commentLikeId => throw _privateConstructorUsedError;
   bool? get isVisible => throw _privateConstructorUsedError;
   String? get avatarSrc => throw _privateConstructorUsedError;
+  @JsonKey(name: 'likeObj')
+  LikeObj? get likeObj => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -67,7 +69,10 @@ abstract class $CommentModelCopyWith<$Res> {
       bool isCommentLiked,
       String? commentLikeId,
       bool? isVisible,
-      String? avatarSrc});
+      String? avatarSrc,
+      @JsonKey(name: 'likeObj') LikeObj? likeObj});
+
+  $LikeObjCopyWith<$Res>? get likeObj;
 }
 
 /// @nodoc
@@ -98,6 +103,7 @@ class _$CommentModelCopyWithImpl<$Res, $Val extends CommentModel>
     Object? commentLikeId = freezed,
     Object? isVisible = freezed,
     Object? avatarSrc = freezed,
+    Object? likeObj = freezed,
   }) {
     return _then(_value.copyWith(
       id: freezed == id
@@ -160,7 +166,23 @@ class _$CommentModelCopyWithImpl<$Res, $Val extends CommentModel>
           ? _value.avatarSrc
           : avatarSrc // ignore: cast_nullable_to_non_nullable
               as String?,
+      likeObj: freezed == likeObj
+          ? _value.likeObj
+          : likeObj // ignore: cast_nullable_to_non_nullable
+              as LikeObj?,
     ) as $Val);
+  }
+
+  @override
+  @pragma('vm:prefer-inline')
+  $LikeObjCopyWith<$Res>? get likeObj {
+    if (_value.likeObj == null) {
+      return null;
+    }
+
+    return $LikeObjCopyWith<$Res>(_value.likeObj!, (value) {
+      return _then(_value.copyWith(likeObj: value) as $Val);
+    });
   }
 }
 
@@ -187,7 +209,11 @@ abstract class _$$CommentModelImplCopyWith<$Res>
       bool isCommentLiked,
       String? commentLikeId,
       bool? isVisible,
-      String? avatarSrc});
+      String? avatarSrc,
+      @JsonKey(name: 'likeObj') LikeObj? likeObj});
+
+  @override
+  $LikeObjCopyWith<$Res>? get likeObj;
 }
 
 /// @nodoc
@@ -216,6 +242,7 @@ class __$$CommentModelImplCopyWithImpl<$Res>
     Object? commentLikeId = freezed,
     Object? isVisible = freezed,
     Object? avatarSrc = freezed,
+    Object? likeObj = freezed,
   }) {
     return _then(_$CommentModelImpl(
       id: freezed == id
@@ -278,6 +305,10 @@ class __$$CommentModelImplCopyWithImpl<$Res>
           ? _value.avatarSrc
           : avatarSrc // ignore: cast_nullable_to_non_nullable
               as String?,
+      likeObj: freezed == likeObj
+          ? _value.likeObj
+          : likeObj // ignore: cast_nullable_to_non_nullable
+              as LikeObj?,
     ));
   }
 }
@@ -300,7 +331,8 @@ class _$CommentModelImpl implements _CommentModel {
       this.isCommentLiked = false,
       this.commentLikeId,
       this.isVisible,
-      this.avatarSrc});
+      this.avatarSrc,
+      @JsonKey(name: 'likeObj') this.likeObj});
 
   factory _$CommentModelImpl.fromJson(Map<String, dynamic> json) =>
       _$$CommentModelImplFromJson(json);
@@ -340,10 +372,13 @@ class _$CommentModelImpl implements _CommentModel {
   final bool? isVisible;
   @override
   final String? avatarSrc;
+  @override
+  @JsonKey(name: 'likeObj')
+  final LikeObj? likeObj;
 
   @override
   String toString() {
-    return 'CommentModel(id: $id, userId: $userId, name: $name, type: $type, threadId: $threadId, commentText: $commentText, postedAt: $postedAt, likesCount: $likesCount, replyCount: $replyCount, createdAt: $createdAt, updatedAt: $updatedAt, isCommentLiked: $isCommentLiked, commentLikeId: $commentLikeId, isVisible: $isVisible, avatarSrc: $avatarSrc)';
+    return 'CommentModel(id: $id, userId: $userId, name: $name, type: $type, threadId: $threadId, commentText: $commentText, postedAt: $postedAt, likesCount: $likesCount, replyCount: $replyCount, createdAt: $createdAt, updatedAt: $updatedAt, isCommentLiked: $isCommentLiked, commentLikeId: $commentLikeId, isVisible: $isVisible, avatarSrc: $avatarSrc, likeObj: $likeObj)';
   }
 
   @override
@@ -376,7 +411,8 @@ class _$CommentModelImpl implements _CommentModel {
             (identical(other.isVisible, isVisible) ||
                 other.isVisible == isVisible) &&
             (identical(other.avatarSrc, avatarSrc) ||
-                other.avatarSrc == avatarSrc));
+                other.avatarSrc == avatarSrc) &&
+            (identical(other.likeObj, likeObj) || other.likeObj == likeObj));
   }
 
   @JsonKey(ignore: true)
@@ -397,7 +433,8 @@ class _$CommentModelImpl implements _CommentModel {
       isCommentLiked,
       commentLikeId,
       isVisible,
-      avatarSrc);
+      avatarSrc,
+      likeObj);
 
   @JsonKey(ignore: true)
   @override
@@ -429,7 +466,8 @@ abstract class _CommentModel implements CommentModel {
       final bool isCommentLiked,
       final String? commentLikeId,
       final bool? isVisible,
-      final String? avatarSrc}) = _$CommentModelImpl;
+      final String? avatarSrc,
+      @JsonKey(name: 'likeObj') final LikeObj? likeObj}) = _$CommentModelImpl;
 
   factory _CommentModel.fromJson(Map<String, dynamic> json) =
       _$CommentModelImpl.fromJson;
@@ -468,6 +506,9 @@ abstract class _CommentModel implements CommentModel {
   bool? get isVisible;
   @override
   String? get avatarSrc;
+  @override
+  @JsonKey(name: 'likeObj')
+  LikeObj? get likeObj;
   @override
   @JsonKey(ignore: true)
   _$$CommentModelImplCopyWith<_$CommentModelImpl> get copyWith =>

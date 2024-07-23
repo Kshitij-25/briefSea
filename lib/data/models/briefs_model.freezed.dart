@@ -40,6 +40,8 @@ mixin _$BriefsModel {
   bool? get isVisible => throw _privateConstructorUsedError;
   String? get avatarSrc => throw _privateConstructorUsedError;
   List<String>? get isVisibleTo => throw _privateConstructorUsedError;
+  @JsonKey(name: 'likeObj')
+  LikeObj? get likeObj => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -70,7 +72,10 @@ abstract class $BriefsModelCopyWith<$Res> {
       String? postLikeId,
       bool? isVisible,
       String? avatarSrc,
-      List<String>? isVisibleTo});
+      List<String>? isVisibleTo,
+      @JsonKey(name: 'likeObj') LikeObj? likeObj});
+
+  $LikeObjCopyWith<$Res>? get likeObj;
 }
 
 /// @nodoc
@@ -103,6 +108,7 @@ class _$BriefsModelCopyWithImpl<$Res, $Val extends BriefsModel>
     Object? isVisible = freezed,
     Object? avatarSrc = freezed,
     Object? isVisibleTo = freezed,
+    Object? likeObj = freezed,
   }) {
     return _then(_value.copyWith(
       id: freezed == id
@@ -173,7 +179,23 @@ class _$BriefsModelCopyWithImpl<$Res, $Val extends BriefsModel>
           ? _value.isVisibleTo
           : isVisibleTo // ignore: cast_nullable_to_non_nullable
               as List<String>?,
+      likeObj: freezed == likeObj
+          ? _value.likeObj
+          : likeObj // ignore: cast_nullable_to_non_nullable
+              as LikeObj?,
     ) as $Val);
+  }
+
+  @override
+  @pragma('vm:prefer-inline')
+  $LikeObjCopyWith<$Res>? get likeObj {
+    if (_value.likeObj == null) {
+      return null;
+    }
+
+    return $LikeObjCopyWith<$Res>(_value.likeObj!, (value) {
+      return _then(_value.copyWith(likeObj: value) as $Val);
+    });
   }
 }
 
@@ -202,7 +224,11 @@ abstract class _$$BriefsModelImplCopyWith<$Res>
       String? postLikeId,
       bool? isVisible,
       String? avatarSrc,
-      List<String>? isVisibleTo});
+      List<String>? isVisibleTo,
+      @JsonKey(name: 'likeObj') LikeObj? likeObj});
+
+  @override
+  $LikeObjCopyWith<$Res>? get likeObj;
 }
 
 /// @nodoc
@@ -233,6 +259,7 @@ class __$$BriefsModelImplCopyWithImpl<$Res>
     Object? isVisible = freezed,
     Object? avatarSrc = freezed,
     Object? isVisibleTo = freezed,
+    Object? likeObj = freezed,
   }) {
     return _then(_$BriefsModelImpl(
       id: freezed == id
@@ -303,6 +330,10 @@ class __$$BriefsModelImplCopyWithImpl<$Res>
           ? _value._isVisibleTo
           : isVisibleTo // ignore: cast_nullable_to_non_nullable
               as List<String>?,
+      likeObj: freezed == likeObj
+          ? _value.likeObj
+          : likeObj // ignore: cast_nullable_to_non_nullable
+              as LikeObj?,
     ));
   }
 }
@@ -327,7 +358,8 @@ class _$BriefsModelImpl implements _BriefsModel {
       this.postLikeId,
       this.isVisible,
       this.avatarSrc,
-      final List<String>? isVisibleTo})
+      final List<String>? isVisibleTo,
+      @JsonKey(name: 'likeObj') this.likeObj})
       : _isVisibleTo = isVisibleTo;
 
   factory _$BriefsModelImpl.fromJson(Map<String, dynamic> json) =>
@@ -380,8 +412,12 @@ class _$BriefsModelImpl implements _BriefsModel {
   }
 
   @override
+  @JsonKey(name: 'likeObj')
+  final LikeObj? likeObj;
+
+  @override
   String toString() {
-    return 'BriefsModel(id: $id, userId: $userId, name: $name, type: $type, category: $category, postText: $postText, likesCount: $likesCount, replyCount: $replyCount, postedAt: $postedAt, imgSrc: $imgSrc, createdAt: $createdAt, updatedAt: $updatedAt, isPostLiked: $isPostLiked, postLikeId: $postLikeId, isVisible: $isVisible, avatarSrc: $avatarSrc, isVisibleTo: $isVisibleTo)';
+    return 'BriefsModel(id: $id, userId: $userId, name: $name, type: $type, category: $category, postText: $postText, likesCount: $likesCount, replyCount: $replyCount, postedAt: $postedAt, imgSrc: $imgSrc, createdAt: $createdAt, updatedAt: $updatedAt, isPostLiked: $isPostLiked, postLikeId: $postLikeId, isVisible: $isVisible, avatarSrc: $avatarSrc, isVisibleTo: $isVisibleTo, likeObj: $likeObj)';
   }
 
   @override
@@ -417,7 +453,8 @@ class _$BriefsModelImpl implements _BriefsModel {
             (identical(other.avatarSrc, avatarSrc) ||
                 other.avatarSrc == avatarSrc) &&
             const DeepCollectionEquality()
-                .equals(other._isVisibleTo, _isVisibleTo));
+                .equals(other._isVisibleTo, _isVisibleTo) &&
+            (identical(other.likeObj, likeObj) || other.likeObj == likeObj));
   }
 
   @JsonKey(ignore: true)
@@ -440,7 +477,8 @@ class _$BriefsModelImpl implements _BriefsModel {
       postLikeId,
       isVisible,
       avatarSrc,
-      const DeepCollectionEquality().hash(_isVisibleTo));
+      const DeepCollectionEquality().hash(_isVisibleTo),
+      likeObj);
 
   @JsonKey(ignore: true)
   @override
@@ -474,7 +512,8 @@ abstract class _BriefsModel implements BriefsModel {
       final String? postLikeId,
       final bool? isVisible,
       final String? avatarSrc,
-      final List<String>? isVisibleTo}) = _$BriefsModelImpl;
+      final List<String>? isVisibleTo,
+      @JsonKey(name: 'likeObj') final LikeObj? likeObj}) = _$BriefsModelImpl;
 
   factory _BriefsModel.fromJson(Map<String, dynamic> json) =
       _$BriefsModelImpl.fromJson;
@@ -516,6 +555,9 @@ abstract class _BriefsModel implements BriefsModel {
   String? get avatarSrc;
   @override
   List<String>? get isVisibleTo;
+  @override
+  @JsonKey(name: 'likeObj')
+  LikeObj? get likeObj;
   @override
   @JsonKey(ignore: true)
   _$$BriefsModelImplCopyWith<_$BriefsModelImpl> get copyWith =>

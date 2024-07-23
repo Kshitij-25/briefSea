@@ -44,7 +44,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
   Widget build(BuildContext context) {
     ScaleSize.textScaleFactor(context).log();
     return Scaffold(
-      backgroundColor: const Color(0xFF4C27FF),
+      backgroundColor: Theme.of(context).colorScheme.secondary,
       body: SizedBox(
         height: ScreenSize.height(context),
         child: Stack(
@@ -64,20 +64,14 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                     ),
                     Text(
                       Strings.welcomeText,
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 16,
-                      ),
+                      style: Theme.of(context).textTheme.titleLarge,
                       textScaler: TextScaler.linear(ScaleSize.textScaleFactor(context)),
                       textAlign: TextAlign.center,
                     ),
                     SizedBox(height: ScreenSize.height(context) * .05),
                     Text(
                       Strings.privacyPolicy,
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 12,
-                      ),
+                      style: Theme.of(context).textTheme.bodySmall,
                       textScaler: TextScaler.linear(ScaleSize.textScaleFactor(context)),
                       textAlign: TextAlign.center,
                     ),

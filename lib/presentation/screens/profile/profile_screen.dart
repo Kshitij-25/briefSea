@@ -54,10 +54,10 @@ class ProfileScreen extends ConsumerWidget {
     final userDetails = isOtherProfile == true ? ref.watch(getOtherProfileProvider(otherUserId: otherUserId)) : ref.watch(getUserProfileProvider);
     final userData = ref.watch(userDetailsProvider);
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Theme.of(context).colorScheme.surfaceContainer,
       appBar: isOtherProfile == true
           ? AppBar(
-              backgroundColor: const Color(0xFF4B26FD),
+              backgroundColor: Theme.of(context).colorScheme.secondary,
               title: Text(
                 'Profile',
                 style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
@@ -74,7 +74,7 @@ class ProfileScreen extends ConsumerWidget {
             Container(
               width: double.infinity,
               height: 370,
-              color: const Color(0xFF4B26FD),
+              color: Theme.of(context).colorScheme.secondary,
             ),
             SingleChildScrollView(
               child: Container(
@@ -85,7 +85,7 @@ class ProfileScreen extends ConsumerWidget {
                     topLeft: Radius.circular(40),
                     topRight: Radius.circular(40),
                   ),
-                  color: Colors.white,
+                  color: Theme.of(context).colorScheme.surfaceContainer,
                 ),
                 child: userDetails.when(
                   data: (userDetails) {
@@ -211,7 +211,7 @@ class ProfileScreen extends ConsumerWidget {
                               const SizedBox(height: 5),
                               Text(
                                 Strings.copyrightText,
-                                style: TextStyle(fontSize: 12),
+                                style: Theme.of(context).textTheme.bodySmall!.copyWith(color: Colors.black),
                                 textScaler: TextScaler.linear(ScaleSize.textScaleFactor(context)),
                               ),
                               if (isOtherProfile != true)
@@ -247,7 +247,12 @@ class ProfileScreen extends ConsumerWidget {
                                                     context.pop(true);
                                                   }
                                                 },
-                                                child: const Text('Delete'),
+                                                child: Text(
+                                                  'Delete',
+                                                  style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                                                        color: Colors.black,
+                                                      ),
+                                                ),
                                               ),
                                             ],
                                           );
@@ -260,7 +265,10 @@ class ProfileScreen extends ConsumerWidget {
                                     },
                                     child: Text(
                                       'Delete Account',
-                                      style: TextStyle(fontSize: 10),
+                                      style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                                            color: Colors.black,
+                                            fontSize: 10,
+                                          ),
                                       textScaler: TextScaler.linear(ScaleSize.textScaleFactor(context)),
                                     ),
                                   ),
@@ -358,7 +366,7 @@ class _ExpertiseCard extends StatelessWidget {
                               ),
                               textScaler: TextScaler.linear(ScaleSize.textScaleFactor(context)),
                             ),
-                            backgroundColor: const Color(0xFF4B26FD),
+                            backgroundColor: Theme.of(context).colorScheme.secondary,
                             padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
                           ),
                         )
@@ -468,7 +476,7 @@ class _AboutCard extends StatelessWidget {
             userProfileData?.aboutMe ?? '',
             maxLines: 1000,
             overflow: TextOverflow.ellipsis,
-            style: TextStyle(fontSize: 12),
+            style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: Colors.black),
             textScaler: TextScaler.linear(ScaleSize.textScaleFactor(context)),
           ),
         ],
@@ -488,8 +496,8 @@ class _UserInfoDetails extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: ScreenSize.width(context),
-      decoration: const BoxDecoration(
-        color: Colors.white,
+      decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.surfaceContainer,
         borderRadius: BorderRadius.only(
           bottomLeft: Radius.circular(10),
           bottomRight: Radius.circular(10),
@@ -729,8 +737,8 @@ class _AvatarWidget extends ConsumerWidget {
                       ),
                       style: ElevatedButton.styleFrom(
                         enableFeedback: true,
-                        backgroundColor: Colors.white,
-                        foregroundColor: const Color(0xFF4B26FD),
+                        backgroundColor: Theme.of(context).colorScheme.surfaceContainer,
+                        foregroundColor: Theme.of(context).colorScheme.secondary,
                         elevation: 0,
                       ),
                     ),

@@ -23,17 +23,17 @@ class NotificationScreen extends ConsumerWidget {
           Container(
             width: double.infinity,
             height: 70,
-            color: const Color(0xFF4B26FD),
+            color: Theme.of(context).colorScheme.secondary,
           ),
           Container(
             height: ScreenSize.height(context),
             width: ScreenSize.width(context),
-            decoration: const BoxDecoration(
+            decoration: BoxDecoration(
               borderRadius: BorderRadius.only(
                 topLeft: Radius.circular(40),
                 topRight: Radius.circular(40),
               ),
-              color: Colors.white,
+              color: Theme.of(context).colorScheme.surfaceContainer,
             ),
             child: Padding(
               padding: const EdgeInsets.only(top: 15),
@@ -45,7 +45,10 @@ class NotificationScreen extends ConsumerWidget {
                       children: [
                         Icon(
                           CupertinoIcons.bell_solid,
-                          size: 20 * ScaleSize.textScaleFactor(context),
+                          size: 30 * ScaleSize.textScaleFactor(context),
+                        ),
+                        SizedBox(
+                          height: 20 * ScaleSize.textScaleFactor(context),
                         ),
                         Container(
                           decoration: BoxDecoration(

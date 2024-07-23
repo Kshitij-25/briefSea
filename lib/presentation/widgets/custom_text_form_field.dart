@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import '../../common/app_utils/device_type.dart';
 import '../../common/app_utils/screen_size.dart';
 
 class CustomTextFormField extends StatelessWidget {
@@ -36,7 +35,7 @@ class CustomTextFormField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: getDeviceType(context) == DeviceType.Tablet ? 70 : 60,
+      // height: getDeviceType(context) == DeviceType.Tablet ? 70 : 60,
       width: ScreenSize.width(context) / ScaleSize.textScaleFactor(context),
       child: TextFormField(
         controller: controller,
@@ -67,7 +66,10 @@ class CustomTextFormField extends StatelessWidget {
           fillColor: Colors.grey[200],
           filled: true,
         ),
-        style: TextStyle(fontSize: 14 * ScaleSize.textScaleFactor(context)),
+        style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+              color: Colors.black,
+              fontSize: 14 * ScaleSize.textScaleFactor(context),
+            ),
       ),
     );
   }

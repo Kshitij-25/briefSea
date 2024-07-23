@@ -51,7 +51,7 @@ class HomeScreen extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: const Color(0xFF4B26FD),
+        backgroundColor: Theme.of(context).colorScheme.secondary,
         title: currentIndex == 0
             ? Padding(
                 padding: EdgeInsets.only(bottom: 10 * ScaleSize.textScaleFactor(context)),
@@ -69,26 +69,20 @@ class HomeScreen extends ConsumerWidget {
                         padding: const EdgeInsets.only(bottom: 0),
                         child: Image.asset(
                           Assets.logoSmall,
-                          height: 35 * ScaleSize.textScaleFactor(context),
+                          height: 33 * ScaleSize.textScaleFactor(context),
                           color: Colors.white,
                         ),
                       ),
                       Text(
                         "Chat",
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                        ),
+                        style: Theme.of(context).textTheme.headlineSmall,
                         textScaler: TextScaler.linear(ScaleSize.textScaleFactor(context)),
                       ),
                     ],
                   )
                 : Text(
                     currentIndex == 2 ? "Notifications" : "Profile",
-                    style: const TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                    ),
+                    style: Theme.of(context).textTheme.headlineSmall,
                     textScaler: TextScaler.linear(ScaleSize.textScaleFactor(context)),
                   ),
         centerTitle: true,
@@ -147,8 +141,10 @@ class HomeScreen extends ConsumerWidget {
         currentIndex: currentIndex,
         selectedItemColor: const Color(0xFF4B26FD),
         unselectedItemColor: Colors.black,
-        selectedIconTheme: const CupertinoIconThemeData(color: Color(0xFF4B26FD)),
-        unselectedIconTheme: const CupertinoIconThemeData(color: Colors.black),
+        // selectedIconTheme: const CupertinoIconThemeData(color: Color(0xFF4B26FD)),
+        selectedIconTheme: Theme.of(context).bottomNavigationBarTheme.selectedIconTheme,
+        // unselectedIconTheme: const CupertinoIconThemeData(color: Colors.black),
+        unselectedIconTheme: Theme.of(context).bottomNavigationBarTheme.unselectedIconTheme,
         type: BottomNavigationBarType.fixed,
         onTap: onTabTapped,
         iconSize: 20 * ScaleSize.textScaleFactor(context),

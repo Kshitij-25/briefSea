@@ -31,7 +31,7 @@ class ProfessionalRegisterScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final registerState = ref.watch(registerNotifierProvider);
     return Scaffold(
-      backgroundColor: const Color(0xFF4C27FF),
+      backgroundColor: Theme.of(context).colorScheme.secondary,
       body: Stack(
         children: [
           Form(
@@ -52,10 +52,7 @@ class ProfessionalRegisterScreen extends ConsumerWidget {
                           SizedBox(height: ScreenSize.height(context) * .15),
                           Text(
                             "Briefsea for Working Professionals",
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 16,
-                            ),
+                            style: Theme.of(context).textTheme.bodyLarge!.copyWith(fontSize: 20),
                             textAlign: TextAlign.center,
                             textScaler: TextScaler.linear(ScaleSize.textScaleFactor(context)),
                           ),
@@ -160,7 +157,7 @@ class ProfessionalRegisterScreen extends ConsumerWidget {
                           SizedBox(height: ScreenSize.height(context) * .05),
                           Text(
                             "Agency, Freelancer or Existing User?",
-                            style: TextStyle(color: Colors.white),
+                            style: Theme.of(context).textTheme.bodyLarge,
                             textScaler: TextScaler.linear(ScaleSize.textScaleFactor(context)),
                             textAlign: TextAlign.center,
                           ),
@@ -175,7 +172,7 @@ class ProfessionalRegisterScreen extends ConsumerWidget {
                             child: Text(
                               "Go back",
                               style: TextStyle(
-                                color: Color(0xFF01FFF5),
+                                color: Theme.of(context).colorScheme.tertiaryContainer,
                               ),
                               textScaler: TextScaler.linear(ScaleSize.textScaleFactor(context)),
                             ),
@@ -203,7 +200,7 @@ class ProfessionalRegisterScreen extends ConsumerWidget {
                           SizedBox(height: ScreenSize.height(context) * .05),
                           Text(
                             Strings.professionalFooter,
-                            style: TextStyle(color: Colors.white),
+                            style: Theme.of(context).textTheme.bodyMedium,
                             textScaler: TextScaler.linear(ScaleSize.textScaleFactor(context)),
                             textAlign: TextAlign.center,
                           ),

@@ -51,7 +51,7 @@ class MyFeedNavigator extends ConsumerWidget {
         Container(
           width: double.infinity,
           height: 70,
-          color: const Color(0xFF4B26FD),
+          color: Theme.of(context).colorScheme.secondary,
         ),
         Container(
           height: ScreenSize.height(context),
@@ -61,7 +61,7 @@ class MyFeedNavigator extends ConsumerWidget {
               topLeft: Radius.circular(40),
               topRight: Radius.circular(40),
             ),
-            color: Colors.grey[300]!,
+            color: Theme.of(context).colorScheme.surfaceContainer,
           ),
           child: Column(
             children: [
@@ -77,8 +77,8 @@ class MyFeedNavigator extends ConsumerWidget {
                     end: FractionalOffset.bottomCenter,
                     stops: const [0.1, 0.9],
                     colors: [
-                      Colors.white,
-                      Colors.grey[300]!,
+                      Theme.of(context).colorScheme.surface,
+                      Theme.of(context).colorScheme.surfaceContainer,
                     ],
                   ),
                 ),

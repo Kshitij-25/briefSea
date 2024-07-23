@@ -46,9 +46,9 @@
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
 	<key>NSCameraUsageDescription</key>
-    <string>App needs access to the camera to take photos and videos.</string>
-    <key>NSPhotoLibraryUsageDescription</key>
-    <string>App needs access to the photo library to select photos and videos.</string>
+	<string>We use the camera to capture profile pictures and add images in chats.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>We use the photo library to upload profile pictures and add images in chats.</string>
 	<key>LSApplicationQueriesSchemes</key>
 	<array>
 	  	<string>instagram</string>
