@@ -28,9 +28,10 @@ class ApiConstants {
   static const checkUsername = "$BASE_URL/forum/discussion/profile/check?username=";
 
   // Threads and briefs
-  static const getAllBriefs = '$BASE_URL/forum/discussion/threads/pagination';
+  // static const getAllBriefs = '$BASE_URL/forum/discussion/threads/pagination/limit?count=';
+  static const getAllBriefs = '$BASE_URL/forum/discussion/threads/pagination/';
   static const getUserBriefs = '$BASE_URL/forum/discussion/threads';
-  static const getSingleBrief = '$BASE_URL/forum/discussion/threads/single';
+  static const getSingleBrief = '$BASE_URL/forum/discussion/threads/single/user';
   static const postBrief = '$BASE_URL/forum/discussion/threads/new';
   static const deleteBrief = '$BASE_URL/forum/discussion/threads/single';
   static const editBrief = '$BASE_URL/forum/discussion/threads/single';

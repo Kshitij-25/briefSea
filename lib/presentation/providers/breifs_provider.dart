@@ -1,3 +1,6 @@
+import 'dart:async';
+
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../data/core/api_client.dart';
@@ -24,7 +27,7 @@ BreifsRepository briefsRepository(BriefsRepositoryRef ref) {
 @riverpod
 Future<List<BriefsModel?>?> getAllBriefs(GetAllBriefsRef ref) async {
   final breifsRepository = ref.watch(briefsRepositoryProvider);
-  final eitherBriefsOrError = await breifsRepository.getAllBriefs();
+  final eitherBriefsOrError = await breifsRepository.getAllBriefs(0);
   return eitherBriefsOrError!.fold((error) => throw error, (briefs) async {
     // final updatedBriefs = await Future.wait(briefs!.map((brief) async {
     //   // final likedModel = await ref.watch(getALikeProvider(threadId: brief!.id).future);
@@ -41,9 +44,60 @@ Future<List<BriefsModel?>?> getAllBriefs(GetAllBriefsRef ref) async {
     //     return brief;
     //   }
     // }).toList());
-    return briefs;
+    return briefs ?? [];
   });
 }
+
+class BriefsNotifier extends StateNotifier<List<BriefsModel?>> {
+  BriefsNotifier(this.ref) : super([]);
+
+  final Ref ref;
+  bool isLoading = false;
+  bool _hasMore = true;
+  int _page = 0;
+  bool hasFetchedInitial = false;
+  Timer? _debounceTimer;
+
+  Future<void> fetchBriefs() async {
+    if (isLoading || !_hasMore) return;
+    isLoading = true;
+
+    try {
+      final briefsRepository = ref.read(briefsRepositoryProvider);
+      final eitherBriefsOrError = await briefsRepository.getAllBriefs(_page);
+
+      eitherBriefsOrError!.fold(
+        (error) {
+          // Handle error (e.g., show an error message)
+          throw error;
+        },
+        (briefs) {
+          if (briefs!.isEmpty) {
+            _hasMore = false;
+          } else {
+            state = [...state, ...briefs];
+            _page++;
+          }
+        },
+      );
+    } catch (e) {
+      // Handle any unexpected errors
+      print('Error fetching briefs: $e');
+    } finally {
+      isLoading = false; // Reset loading state
+      hasFetchedInitial = true; // Indicate that initial fetch has been done
+    }
+  }
+
+  void debounceFetch() {
+    _debounceTimer?.cancel();
+    _debounceTimer = Timer(const Duration(milliseconds: 300), fetchBriefs);
+  }
+}
+
+final briefsProvider = StateNotifierProvider<BriefsNotifier, List<BriefsModel?>>((ref) {
+  return BriefsNotifier(ref);
+});
 
 @riverpod
 Future<List<BriefsModel?>?> getUserBriefs(GetUserBriefsRef ref) async {
@@ -69,7 +123,7 @@ Future<List<BriefsModel?>?> getUserBriefs(GetUserBriefsRef ref) async {
       //     return brief;
       //   }
       // }).toList());
-      return briefs;
+      return briefs ?? [];
     },
   );
 }

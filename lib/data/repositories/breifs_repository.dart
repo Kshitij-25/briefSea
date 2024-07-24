@@ -11,9 +11,9 @@ class BreifsRepository {
 
   BreifsRepository(this._briefsRemoteDataSource);
 
-  Future<Either<AppError, List<BriefsModel?>?>>? getAllBriefs() async {
+  Future<Either<AppError, List<BriefsModel?>?>>? getAllBriefs(int? count) async {
     try {
-      final allBriefs = await _briefsRemoteDataSource.getAllBriefs();
+      final allBriefs = await _briefsRemoteDataSource.getAllBriefs(count);
       return Right(allBriefs);
     } on AppError catch (e) {
       return Left(e);

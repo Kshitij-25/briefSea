@@ -11,7 +11,7 @@ import '../models/briefs_model.dart';
 import '../models/thread_image_model.dart';
 
 abstract class BriefsRemoteDataSource {
-  Future<List<BriefsModel?>?> getAllBriefs();
+  Future<List<BriefsModel?>?> getAllBriefs(int? count);
   Future<List<BriefsModel?>?> getUserBriefs();
   Future<BriefsModel> getSingleBrief(String? briefId);
   Future<bool> postBrief({
@@ -60,11 +60,12 @@ class BriefsRemoteDataSourceImpl implements BriefsRemoteDataSource {
   }
 
   @override
-  Future<List<BriefsModel?>?> getAllBriefs() async {
+  Future<List<BriefsModel?>?> getAllBriefs(int? count) async {
     var jwtToken = await getJwtToken();
 
     try {
       Response? response = await _apiClient.getReq(
+        // url: "${ApiConstants.getAllBriefs}$count",
         url: "${ApiConstants.getAllBriefs}",
         jwtToken: jwtToken,
       );
