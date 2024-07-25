@@ -201,7 +201,7 @@ class AgencyRegisterScreen extends ConsumerWidget {
                           SizedBox(height: ScreenSize.height(context) * .05),
                           Text(
                             Strings.agencyFooter,
-                            style: Theme.of(context).textTheme.bodyMedium,
+                            style: Theme.of(context).textTheme.bodyMedium!.copyWith(fontSize: 13),
                             textScaler: TextScaler.linear(ScaleSize.textScaleFactor(context)),
                             textAlign: TextAlign.center,
                           ),

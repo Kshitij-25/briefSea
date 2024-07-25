@@ -687,7 +687,7 @@ class _AvatarWidget extends ConsumerWidget {
             Container(
               padding: const EdgeInsets.all(5),
               decoration: BoxDecoration(
-                color: Theme.of(context).cardColor,
+                color: Theme.of(context).colorScheme.surfaceContainer,
                 borderRadius: BorderRadius.circular(120),
               ),
               child: CircleAvatar(

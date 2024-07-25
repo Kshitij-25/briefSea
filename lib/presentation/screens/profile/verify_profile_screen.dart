@@ -64,14 +64,14 @@ class VerifyProfileScreen extends ConsumerWidget {
 
     final userDetails = ref.watch(userDetailsProvider);
     return Scaffold(
-      backgroundColor: Colors.grey[200]!,
+      backgroundColor: Theme.of(context).colorScheme.surfaceContainer,
       appBar: AppBar(
         iconTheme: const IconThemeData(color: Colors.white),
         backgroundColor: Theme.of(context).colorScheme.secondary,
         centerTitle: true,
         title: Text(
           "Complete Profile",
-          style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
+          style: Theme.of(context).textTheme.headlineSmall,
           textScaler: TextScaler.linear(ScaleSize.textScaleFactor(context)),
         ),
         actions: [

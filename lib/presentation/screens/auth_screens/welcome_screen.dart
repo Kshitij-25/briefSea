@@ -64,7 +64,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                     ),
                     Text(
                       Strings.welcomeText,
-                      style: Theme.of(context).textTheme.titleLarge,
+                      style: Theme.of(context).textTheme.titleLarge!.copyWith(fontSize: 20),
                       textScaler: TextScaler.linear(ScaleSize.textScaleFactor(context)),
                       textAlign: TextAlign.center,
                     ),
