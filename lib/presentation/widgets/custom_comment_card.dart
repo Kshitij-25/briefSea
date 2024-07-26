@@ -2,10 +2,13 @@ import 'dart:math' as math;
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
 import '../../common/app_utils/screen_size.dart';
 import '../../data/models/comment_model.dart';
+import '../../data/models/image_model.dart';
+import '../providers/user_profile_provider.dart';
 
 class CustomCommentCard extends StatelessWidget {
   const CustomCommentCard({
@@ -17,7 +20,6 @@ class CustomCommentCard extends StatelessWidget {
     this.loggedInUserId,
     this.isReplies,
     required this.isUserTrue,
-    this.avatarName,
   });
 
   final Function(CommentModel?) onCommentTap;
@@ -27,7 +29,6 @@ class CustomCommentCard extends StatelessWidget {
   final String? loggedInUserId;
   final bool? isReplies;
   final bool isUserTrue;
-  final String? avatarName;
 
   @override
   Widget build(BuildContext context) {
@@ -48,19 +49,9 @@ class CustomCommentCard extends StatelessWidget {
               commentModel!.userId != loggedInUserId
                   ? Padding(
                       padding: const EdgeInsets.only(right: 0.0),
-                      child: CircleAvatar(
-                        backgroundColor: userColor,
-                        backgroundImage: avatarName != null && avatarName != '' ? NetworkImage(avatarName!) : null,
-                        radius: 15 * ScaleSize.textScaleFactor(context),
-                        child: avatarName == null || avatarName == ''
-                            ? Text(
-                                commentModel?.name?[0] ?? "",
-                                style: const TextStyle(
-                                  color: Colors.white,
-                                ),
-                                textScaler: TextScaler.linear(ScaleSize.textScaleFactor(context)),
-                              )
-                            : const SizedBox.shrink(),
+                      child: NetworkCommentAvatar(
+                        userColor: userColor,
+                        commentModel: commentModel,
                       ),
                     )
                   : const SizedBox.shrink(),
@@ -135,19 +126,9 @@ class CustomCommentCard extends StatelessWidget {
               commentModel!.userId == loggedInUserId
                   ? Align(
                       alignment: Alignment.centerRight,
-                      child: CircleAvatar(
-                        backgroundColor: userColor,
-                        backgroundImage: avatarName != null && avatarName != '' ? NetworkImage(avatarName!) : null,
-                        radius: 15 * ScaleSize.textScaleFactor(context),
-                        child: avatarName == null || avatarName == ''
-                            ? Text(
-                                commentModel?.name?[0] ?? "",
-                                style: const TextStyle(
-                                  color: Colors.white,
-                                ),
-                                textScaler: TextScaler.linear(ScaleSize.textScaleFactor(context)),
-                              )
-                            : const SizedBox.shrink(),
+                      child: NetworkCommentAvatar(
+                        userColor: userColor,
+                        commentModel: commentModel,
                       ),
                     )
                   : const SizedBox.shrink(),
@@ -180,6 +161,71 @@ class CustomCommentCard extends StatelessWidget {
         ],
       ),
     );
+  }
+}
+
+class NetworkCommentAvatar extends ConsumerWidget {
+  const NetworkCommentAvatar({
+    super.key,
+    required this.userColor,
+    required this.commentModel,
+  });
+
+  final Color userColor;
+
+  final CommentModel? commentModel;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return FutureBuilder(
+      future: _initializeCommentImageProviders(ref, commentModel!),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const SizedBox.shrink();
+        } else if (snapshot.hasError) {
+          return Center(child: Text('Error: ${snapshot.error}'));
+        } else {
+          final avatarName = snapshot.data?.avatarSrc;
+          return CircleAvatar(
+            backgroundColor: userColor,
+            backgroundImage: avatarName != null && avatarName != '' ? NetworkImage(avatarName) : null,
+            radius: 15 * ScaleSize.textScaleFactor(context),
+            child: avatarName == null || avatarName == ''
+                ? Text(
+                    commentModel?.name?[0] ?? "",
+                    style: const TextStyle(
+                      color: Colors.white,
+                    ),
+                    textScaler: TextScaler.linear(ScaleSize.textScaleFactor(context)),
+                  )
+                : const SizedBox.shrink(),
+          );
+        }
+      },
+    );
+  }
+
+  Future<CommentModel?> _initializeCommentImageProviders(WidgetRef ref, CommentModel commentModel) async {
+    try {
+      if (commentModel.avatarSrc != null && commentModel.avatarSrc != '') {
+        ImageModel avatarUrl = await ref.watch(UserProfileProvider.getImageProvider(commentModel.avatarSrc!).future);
+        if (avatarUrl.url != null && avatarUrl.url != '') {
+          commentModel = commentModel.copyWith(avatarSrc: avatarUrl.url);
+        }
+      }
+
+      // if (commentModel.imgSrc != null && commentModel.imgSrc != '') {
+      //   ImageModel postImage = await ref.watch(getImageProvider(src: commentModel.imgSrc!).future);
+      //   if (postImage.url != null && postImage.url != '') {
+      //     commentModel = commentModel.copyWith(imgSrc: postImage.url);
+      //   }
+      // }
+
+      return commentModel;
+    } catch (e) {
+      print('Error initializing image providers: $e');
+      return null;
+    }
   }
 }
 

@@ -1,9 +1,10 @@
+import 'package:briefsea/data/models/brief_model.dart';
 import 'package:dartz/dartz.dart';
 import 'package:http_parser/http_parser.dart';
 
 import '../core/app_error.dart';
 import '../data_sources/briefs_remote_data_source.dart';
-import '../models/briefs_model.dart';
+import '../models/briefs_result.dart';
 import '../models/thread_image_model.dart';
 
 class BreifsRepository {
@@ -11,7 +12,7 @@ class BreifsRepository {
 
   BreifsRepository(this._briefsRemoteDataSource);
 
-  Future<Either<AppError, List<BriefsModel?>?>>? getAllBriefs(int? count) async {
+  Future<Either<AppError, BriefModel?>>? getAllBriefs(int? count) async {
     try {
       final allBriefs = await _briefsRemoteDataSource.getAllBriefs(count);
       return Right(allBriefs);
@@ -22,7 +23,7 @@ class BreifsRepository {
     }
   }
 
-  Future<Either<AppError, List<BriefsModel?>?>>? getUserBriefs() async {
+  Future<Either<AppError, List<BriefsResult?>?>>? getUserBriefs() async {
     try {
       final userBriefs = await _briefsRemoteDataSource.getUserBriefs();
       return Right(userBriefs);
@@ -33,7 +34,7 @@ class BreifsRepository {
     }
   }
 
-  Future<Either<AppError, BriefsModel?>>? getSingleBrief(String? briefId) async {
+  Future<Either<AppError, BriefsResult?>>? getSingleBrief(String? briefId) async {
     try {
       final singleBrief = await _briefsRemoteDataSource.getSingleBrief(briefId);
       return Right(singleBrief);

@@ -1,96 +1,71 @@
-import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../data/core/api_client.dart';
 import '../../data/data_sources/chat_remote_data_source.dart';
 import '../../data/di/get_it.dart';
 import '../../data/models/chat_user_model.dart';
 import '../../data/repositories/chat_repository.dart';
+import '../params/chat_params.dart';
 
-part 'chat_provider.g.dart';
+class ChatProvider {
+  static final chatRemoteDataSourceProvider = Provider<ChatRemoteDataSource>((ref) {
+    final apiClient = getItInstance<ApiClient>();
+    return ChatRemoteDataSourceImpl(apiClient);
+  });
 
-@riverpod
-ChatRemoteDataSource chatRemoteDataSource(ChatRemoteDataSourceRef ref) {
-  final apiClient = getItInstance<ApiClient>();
-  return ChatRemoteDataSourceImpl(apiClient);
-}
+  static final chatRepositoryProvider = Provider<ChatRepository>((ref) {
+    final chatRemoteDataSource = ref.watch(chatRemoteDataSourceProvider);
+    return ChatRepository(chatRemoteDataSource);
+  });
 
-@riverpod
-ChatRepository chatRepository(ChatRepositoryRef ref) {
-  final chatRemoteDataSource = ref.read(chatRemoteDataSourceProvider);
-  return ChatRepository(chatRemoteDataSource);
-}
+  static final getChatUsersListProvider = FutureProvider.family<List<ChatUserModel>, String>((ref, userId) async {
+    final chatRepository = ref.watch(chatRepositoryProvider);
+    final eitherChatListOrError = await chatRepository.getChatUsersList(userId);
+    return eitherChatListOrError.fold(
+      (error) => throw error,
+      (chatList) => chatList,
+    );
+  });
 
-@riverpod
-Future<List<ChatUserModel>> getChatUsersList(GetChatUsersListRef ref, {required String userId}) async {
-  final chatRepository = ref.watch(chatRepositoryProvider);
-  final eitherChatListOrError = await chatRepository.getChatUsersList(userId);
-  return eitherChatListOrError.fold(
-    (error) {
-      throw error; // Throw the error for Riverpod to handle
-    },
-    (chatList) => chatList,
-  );
-}
+  static final createNewChatProvider = FutureProvider.family<bool, CreateNewChatParams>((ref, params) async {
+    final chatRepository = ref.watch(chatRepositoryProvider);
+    final eitherNewChatOrError = await chatRepository.createNewChat(params.senderId, params.receiverId);
+    return eitherNewChatOrError.fold(
+      (error) => throw error,
+      (newChat) => newChat,
+    );
+  });
 
-@riverpod
-Future<bool> createNewChat(CreateNewChatRef ref, {required String senderId, required String receiverId}) async {
-  final chatRepository = ref.watch(chatRepositoryProvider);
-  final eitherNewChatOrError = await chatRepository.createNewChat(senderId, receiverId);
-  return eitherNewChatOrError.fold(
-    (error) {
-      throw error; // Throw the error for Riverpod to handle
-    },
-    (newChat) => newChat,
-  );
-}
+  static final getChatMessagesProvider = FutureProvider.family<void, String>((ref, conversationId) async {
+    final chatRepository = ref.watch(chatRepositoryProvider);
+    final eitherGetMessagesOrError = await chatRepository.getChatMessages(conversationId);
+    eitherGetMessagesOrError.fold(
+      (error) => throw error,
+      (newChat) => print('Fetched messages: $newChat'),
+    );
+  });
 
-@riverpod
-Future<void> getChatMessages(GetChatMessagesRef ref, {required String conversationId}) async {
-  final chatRepository = ref.watch(chatRepositoryProvider);
-  final eitherGetMessagesOrError = await chatRepository.getChatMessages(conversationId);
-  eitherGetMessagesOrError.fold(
-    (error) {
-      print('Error fetching messages: $error');
-      throw error; // Throw the error for Riverpod to handle
-    },
-    (newChat) {
-      print('Fetched messages: $newChat');
-      // ref.read(chatMessagesProvider.notifier).setMessages(newChat);
-    },
-  );
-}
+  static final sendChatMessagesProvider = FutureProvider.family<bool, SendChatMessagesParams>((ref, params) async {
+    final chatRepository = ref.watch(chatRepositoryProvider);
+    final eitherSendMessageOrError = await chatRepository.sendChatMessage(
+      senderId: params.senderId,
+      receiverId: params.receiverId,
+      conversationId: params.conversationId,
+      messageText: params.messageText,
+      typedAt: params.typedAt,
+    );
+    return eitherSendMessageOrError.fold(
+      (error) => throw error,
+      (newChat) => newChat,
+    );
+  });
 
-@riverpod
-Future<bool> sendChatMessages(SendChatMessagesRef ref,
-    {required String senderId,
-    required String receiverId,
-    required String conversationId,
-    required String messageText,
-    required String typedAt}) async {
-  final chatRepository = ref.watch(chatRepositoryProvider);
-  final eitherSendMessageOrError = await chatRepository.sendChatMessage(
-    senderId: senderId,
-    receiverId: receiverId,
-    conversationId: conversationId,
-    messageText: messageText,
-    typedAt: typedAt,
-  );
-  return eitherSendMessageOrError.fold(
-    (error) {
-      throw error; // Throw the error for Riverpod to handle
-    },
-    (newChat) => newChat,
-  );
-}
-
-@riverpod
-Future<ChatUserModel> getDMUser(GetDMUserRef ref, {required String senderId, required String receiverId}) async {
-  final chatRepository = ref.watch(chatRepositoryProvider);
-  final eitherDMUserOrError = await chatRepository.getDMUser(senderId, receiverId);
-  return eitherDMUserOrError.fold(
-    (error) {
-      throw error; // Throw the error for Riverpod to handle
-    },
-    (user) => user,
-  );
+  static final getDMUserProvider = FutureProvider.family<ChatUserModel, GetDMUserParams>((ref, params) async {
+    final chatRepository = ref.watch(chatRepositoryProvider);
+    final eitherDMUserOrError = await chatRepository.getDMUser(params.senderId, params.receiverId);
+    return eitherDMUserOrError.fold(
+      (error) => throw error,
+      (user) => user,
+    );
+  });
 }

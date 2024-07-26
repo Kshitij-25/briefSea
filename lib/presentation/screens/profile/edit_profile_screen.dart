@@ -2,6 +2,7 @@ import 'dart:developer';
 import 'dart:io';
 import 'dart:math' as math;
 
+import 'package:briefsea/presentation/params/user_profile_params.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -62,7 +63,7 @@ class EditProfileScreen extends ConsumerWidget {
       _debouncer.run(() async {
         if (_formKey.currentState!.validate()) {
           if (editUserNameCont.text.isNotEmpty) {
-            var doesUsernameExist = await ref.read(checkUserNameProvider(userName: editUserNameCont.text).future);
+            var doesUsernameExist = await ref.read(UserProfileProvider.checkUserNameProvider(editUserNameCont.text).future);
 
             if (!doesUsernameExist) {
               AppUtility(context).message("Username already exists.");
@@ -122,31 +123,33 @@ class EditProfileScreen extends ConsumerWidget {
               }
               if (editPhoneNumberCont.text.isNotEmpty && editLocationCont.text.isNotEmpty && editCountryCodeCont.text.isNotEmpty) {
                 var profileEdited = await ref.read(
-                  editProfileProvider(
-                    userId: userData['user_id'],
-                    uName: userData['user_name']!,
-                    countryCode: int.tryParse(editCountryCodeCont.text),
-                    contact: int.tryParse(editPhoneNumberCont.text),
-                    company: editCompanyCont.text,
-                    jobTitle: editJobTitleCont.text,
-                    industry: selectedIndustry,
-                    location: editLocationCont.text,
-                    avatarSrc: uploadedAvatarKey ?? '',
-                    bannerSrc: uploadedBannerKey ?? '',
-                    jwtToken: userData['jwtToken'],
-                    devExpertise: selectedDevExpertise,
-                    markExpertise: selectedMarkExpertise,
-                    postingAs: userData['type'],
-                    gender: selectedGender,
-                    createdAt: userProfileModel.createdAt,
-                    updatedAt: userProfileModel.updatedAt,
-                    userName: userProfileModel.userName,
-                    viewAccess: userProfileModel.viewAccess,
-                    aboutMe: editAboutCont.text,
+                  UserProfileProvider.editProfileProvider(
+                    EditProfileParams(
+                      userId: userData['user_id'],
+                      uName: userData['user_name']!,
+                      countryCode: int.tryParse(editCountryCodeCont.text),
+                      contact: int.tryParse(editPhoneNumberCont.text),
+                      company: editCompanyCont.text,
+                      jobTitle: editJobTitleCont.text,
+                      industry: selectedIndustry,
+                      location: editLocationCont.text,
+                      avatarSrc: uploadedAvatarKey ?? '',
+                      bannerSrc: uploadedBannerKey ?? '',
+                      jwtToken: userData['jwtToken'],
+                      devExpertise: selectedDevExpertise,
+                      markExpertise: selectedMarkExpertise,
+                      postingAs: userData['type'],
+                      gender: selectedGender,
+                      createdAt: userProfileModel.createdAt,
+                      updatedAt: userProfileModel.updatedAt,
+                      userName: userProfileModel.userName,
+                      viewAccess: userProfileModel.viewAccess,
+                      aboutMe: editAboutCont.text,
+                    ),
                   ).future,
                 );
                 if (profileEdited.acknowledged == true) {
-                  ref.invalidate(getUserProfileProvider);
+                  ref.invalidate(UserProfileProvider.getUserProfileProvider);
                   AppUtility(context).message('Profile updated successfully');
                   GoRouter.of(context).pop();
                 }
@@ -604,7 +607,7 @@ class _BannerWidget extends ConsumerWidget {
                     fit: BoxFit.cover,
                     useOldImageOnUrlChange: true,
                     placeholder: (context, url) => const Center(
-                      child: CircularProgressIndicator.adaptive(),
+                      child: CircularProgressIndicator(),
                     ),
                     errorWidget: (context, url, error) => const Row(
                       mainAxisAlignment: MainAxisAlignment.spaceAround,

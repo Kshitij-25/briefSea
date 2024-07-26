@@ -1,240 +1,115 @@
-import 'dart:async';
-
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:http_parser/src/media_type.dart';
 
 import '../../data/core/api_client.dart';
 import '../../data/data_sources/briefs_remote_data_source.dart';
 import '../../data/di/get_it.dart';
-import '../../data/models/briefs_model.dart';
+import '../../data/models/brief_model.dart';
+import '../../data/models/briefs_result.dart';
 import '../../data/models/thread_image_model.dart';
 import '../../data/repositories/breifs_repository.dart';
+import '../params/briefs_params.dart';
 
-part 'breifs_provider.g.dart';
-
-@riverpod
-BriefsRemoteDataSource briefsRemoteDataSource(BriefsRemoteDataSourceRef ref) {
-  final apiClient = getItInstance<ApiClient>();
-  return BriefsRemoteDataSourceImpl(apiClient);
-}
-
-@riverpod
-BreifsRepository briefsRepository(BriefsRepositoryRef ref) {
-  final briefsRemoteDataSource = ref.watch(briefsRemoteDataSourceProvider);
-  return BreifsRepository(briefsRemoteDataSource);
-}
-
-@riverpod
-Future<List<BriefsModel?>?> getAllBriefs(GetAllBriefsRef ref) async {
-  final breifsRepository = ref.watch(briefsRepositoryProvider);
-  final eitherBriefsOrError = await breifsRepository.getAllBriefs(0);
-  return eitherBriefsOrError!.fold((error) => throw error, (briefs) async {
-    // final updatedBriefs = await Future.wait(briefs!.map((brief) async {
-    //   // final likedModel = await ref.watch(getALikeProvider(threadId: brief!.id).future);
-    //   // return brief.copyWith(
-    //   //   isPostLiked: likedModel.likeId != null,
-    //   //   postLikeId: likedModel.likeId,
-    //   // );
-    //   if (brief!.likeObj != null && brief.likeObj!.id != null) {
-    //     return brief.copyWith(
-    //       isPostLiked: brief.id != null,
-    //       postLikeId: brief.likeObj!.id,
-    //     );
-    //   } else {
-    //     return brief;
-    //   }
-    // }).toList());
-    return briefs ?? [];
+class BriefsProviders {
+  static final briefsRemoteDataSourceProvider = Provider<BriefsRemoteDataSource>((ref) {
+    final apiClient = getItInstance<ApiClient>();
+    return BriefsRemoteDataSourceImpl(apiClient);
   });
-}
 
-class BriefsNotifier extends StateNotifier<List<BriefsModel?>> {
-  BriefsNotifier(this.ref) : super([]);
+  static final briefsRepositoryProvider = Provider<BreifsRepository>((ref) {
+    final briefsRemoteDataSource = ref.watch(briefsRemoteDataSourceProvider);
+    return BreifsRepository(briefsRemoteDataSource);
+  });
 
-  final Ref ref;
-  bool isLoading = false;
-  bool _hasMore = true;
-  int _page = 0;
-  bool hasFetchedInitial = false;
-  Timer? _debounceTimer;
+  static final getAllBriefsProvider = FutureProvider.family<BriefModel?, int?>((ref, pageNumber) async {
+    final briefsRepository = ref.watch(briefsRepositoryProvider);
+    final eitherBriefsOrError = await briefsRepository.getAllBriefs(pageNumber);
+    return eitherBriefsOrError!.fold(
+      (error) => throw error,
+      (briefs) => briefs,
+    );
+  });
 
-  Future<void> fetchBriefs() async {
-    if (isLoading || !_hasMore) return;
-    isLoading = true;
+  static final getUserBriefsProvider = FutureProvider<List<BriefsResult?>?>((ref) async {
+    final briefsRepository = ref.watch(briefsRepositoryProvider);
+    final eitherBriefsOrError = await briefsRepository.getUserBriefs();
+    return eitherBriefsOrError!.fold(
+      (error) => throw error,
+      (briefs) => briefs,
+    );
+  });
 
-    try {
-      final briefsRepository = ref.read(briefsRepositoryProvider);
-      final eitherBriefsOrError = await briefsRepository.getAllBriefs(_page);
+  static final getSingleBriefProvider = FutureProvider.family<BriefsResult?, String?>((ref, briefId) async {
+    final briefsRepository = ref.watch(briefsRepositoryProvider);
+    final eitherBriefOrError = await briefsRepository.getSingleBrief(briefId);
+    return eitherBriefOrError!.fold(
+      (error) => throw error,
+      (brief) => brief,
+    );
+  });
 
-      eitherBriefsOrError!.fold(
-        (error) {
-          // Handle error (e.g., show an error message)
-          throw error;
-        },
-        (briefs) {
-          if (briefs!.isEmpty) {
-            _hasMore = false;
-          } else {
-            state = [...state, ...briefs];
-            _page++;
-          }
-        },
-      );
-    } catch (e) {
-      // Handle any unexpected errors
-      print('Error fetching briefs: $e');
-    } finally {
-      isLoading = false; // Reset loading state
-      hasFetchedInitial = true; // Indicate that initial fetch has been done
-    }
-  }
+  static final postBriefProvider = FutureProvider.family<bool, PostBriefParams>((ref, params) async {
+    final briefsRepository = ref.watch(briefsRepositoryProvider);
+    final eitherBriefsOrError = await briefsRepository.postBrief(
+      userId: params.userId,
+      name: params.uName,
+      type: params.type,
+      category: params.category,
+      postText: params.postText,
+      imgSrc: params.imgSrc,
+      isVisibleTo: params.isVisibleTo,
+    );
+    return eitherBriefsOrError!.fold(
+      (error) => throw error,
+      (briefs) => briefs,
+    );
+  });
 
-  void debounceFetch() {
-    _debounceTimer?.cancel();
-    _debounceTimer = Timer(const Duration(milliseconds: 300), fetchBriefs);
-  }
-}
+  static final uploadThreadImageProvider = FutureProvider.family<ThreadImageModel, UploadThreadImageParams>((ref, params) async {
+    final briefsRepository = ref.watch(briefsRepositoryProvider);
+    final eitherBriefsOrError = await briefsRepository.uploadThreadImage(
+      params.fileName,
+      params.fileType as MediaType,
+      params.userId,
+      params.userType,
+    );
+    return eitherBriefsOrError!.fold(
+      (error) => throw error,
+      (briefs) => briefs,
+    );
+  });
 
-final briefsProvider = StateNotifierProvider<BriefsNotifier, List<BriefsModel?>>((ref) {
-  return BriefsNotifier(ref);
-});
+  static final deleteBriefProvider = FutureProvider.family<bool, String?>((ref, briefId) async {
+    final briefsRepository = ref.watch(briefsRepositoryProvider);
+    final eitherBriefsOrError = await briefsRepository.deleteBrief(briefId: briefId);
+    return eitherBriefsOrError!.fold(
+      (error) => throw error,
+      (briefs) => briefs,
+    );
+  });
 
-@riverpod
-Future<List<BriefsModel?>?> getUserBriefs(GetUserBriefsRef ref) async {
-  final breifsRepository = ref.watch(briefsRepositoryProvider);
-  final eitherBriefsOrError = await breifsRepository.getUserBriefs();
-  return eitherBriefsOrError!.fold(
-    (error) {
-      throw error; // Throw the error for Riverpod to handle
-    },
-    (briefs) async {
-      // final updatedBriefs = await Future.wait(briefs!.map((brief) async {
-      //   // final likedModel = await ref.watch(getALikeProvider(threadId: brief!.id).future);
-      //   // return brief.copyWith(
-      //   //   isPostLiked: likedModel.likeId != null,
-      //   //   postLikeId: likedModel.likeId,
-      //   // );
-      //   if (brief!.likeObj != null && brief.likeObj!.id != null) {
-      //     return brief.copyWith(
-      //       isPostLiked: brief.id != null,
-      //       postLikeId: brief.likeObj!.id,
-      //     );
-      //   } else {
-      //     return brief;
-      //   }
-      // }).toList());
-      return briefs ?? [];
-    },
-  );
-}
-
-@riverpod
-Future<BriefsModel?> getSingleBrief(GetSingleBriefRef ref, {required String? briefId}) async {
-  final breifsRepository = ref.watch(briefsRepositoryProvider);
-  final eitherBriefOrError = await breifsRepository.getSingleBrief(briefId);
-  return eitherBriefOrError!.fold(
-    (error) {
-      throw error; // Throw the error for Riverpod to handle
-    },
-    (brief) => brief,
-  );
-}
-
-@riverpod
-Future<bool> postBrief(
-  PostBriefRef ref, {
-  required String? userId,
-  required String? uName,
-  required String? type,
-  required String? category,
-  required String? postText,
-  String? imgSrc,
-  required List<String>? isVisibleTo,
-}) async {
-  final breifsRepository = ref.watch(briefsRepositoryProvider);
-  final eitherBriefsOrError = await breifsRepository.postBrief(
-    userId: userId,
-    name: uName,
-    type: type,
-    category: category,
-    postText: postText,
-    imgSrc: imgSrc,
-    isVisibleTo: isVisibleTo,
-  );
-  return eitherBriefsOrError!.fold(
-    (error) {
-      throw error; // Throw the error for Riverpod to handle
-    },
-    (briefs) => briefs,
-  );
-}
-
-@riverpod
-Future<ThreadImageModel> uploadThreadImage(UploadThreadImageRef ref,
-    {required fileName, required fileType, required userId, required userType}) async {
-  final breifsRepository = ref.watch(briefsRepositoryProvider);
-  final eitherBriefsOrError = await breifsRepository.uploadThreadImage(fileName, fileType, userId, userType);
-  return eitherBriefsOrError!.fold(
-    (error) {
-      throw error; // Throw the error for Riverpod to handle
-    },
-    (briefs) => briefs,
-  );
-}
-
-@riverpod
-Future<bool> deleteBrief(DeleteBriefRef ref, {required String? briefId}) async {
-  final breifsRepository = ref.watch(briefsRepositoryProvider);
-  final eitherBriefsOrError = await breifsRepository.deleteBrief(briefId: briefId);
-  return eitherBriefsOrError!.fold(
-    (error) {
-      throw error; // Throw the error for Riverpod to handle
-    },
-    (briefs) => briefs,
-  );
-}
-
-@riverpod
-Future<bool> editBrief(
-  EditBriefRef ref, {
-  required String briefId,
-  required bool isVisible,
-  required String userId,
-  required String uname,
-  required String type,
-  required String category,
-  required String postText,
-  required String imgSrc,
-  required String avatarSrc,
-  required String createdAt,
-  required String updatedAt,
-  required int likesCount,
-  required int replyCount,
-  required int postedAt,
-  required List<String>? isVisibleTo,
-}) async {
-  final breifsRepository = ref.watch(briefsRepositoryProvider);
-  final eitherBriefsOrError = await breifsRepository.editBrief(
-    briefId: briefId,
-    isVisible: isVisible,
-    avatarSrc: avatarSrc,
-    category: category,
-    createdAt: createdAt,
-    imgSrc: imgSrc,
-    likesCount: likesCount,
-    name: uname,
-    postedAt: postedAt,
-    replyCount: replyCount,
-    type: type,
-    updatedAt: updatedAt,
-    userId: userId,
-    postText: postText,
-    isVisibleTo: isVisibleTo,
-  );
-  return eitherBriefsOrError!.fold(
-    (error) {
-      throw error; // Throw the error for Riverpod to handle
-    },
-    (briefs) => briefs,
-  );
+  static final editBriefProvider = FutureProvider.family<bool, EditBriefParams>((ref, params) async {
+    final briefsRepository = ref.watch(briefsRepositoryProvider);
+    final eitherBriefsOrError = await briefsRepository.editBrief(
+      briefId: params.briefId,
+      isVisible: params.isVisible,
+      avatarSrc: params.avatarSrc,
+      category: params.category,
+      createdAt: params.createdAt,
+      imgSrc: params.imgSrc,
+      likesCount: params.likesCount,
+      name: params.uname,
+      postedAt: params.postedAt,
+      replyCount: params.replyCount,
+      type: params.type,
+      updatedAt: params.updatedAt,
+      userId: params.userId,
+      postText: params.postText,
+      isVisibleTo: params.isVisibleTo,
+    );
+    return eitherBriefsOrError!.fold(
+      (error) => throw error,
+      (briefs) => briefs,
+    );
+  });
 }

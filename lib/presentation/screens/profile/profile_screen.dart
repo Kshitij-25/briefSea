@@ -20,6 +20,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
+import '../../../data/core/app_error.dart';
 import 'edit_profile_screen.dart';
 
 class ProfileScreen extends ConsumerWidget {
@@ -35,10 +36,10 @@ class ProfileScreen extends ConsumerWidget {
 
   Future<void> _initializeImageProviders(WidgetRef ref, UserProfileModel userDetails) async {
     var avatarUrl = userDetails.avatarSrc != null && userDetails.avatarSrc! != ''
-        ? await ref.watch(getImageProvider(src: userDetails.avatarSrc!).future)
+        ? await ref.watch(UserProfileProvider.getImageProvider(userDetails.avatarSrc!).future)
         : ImageModel();
     var bannerUrl = userDetails.bannerSrc != null && userDetails.bannerSrc != ''
-        ? await ref.watch(getImageProvider(src: userDetails.bannerSrc!).future)
+        ? await ref.watch(UserProfileProvider.getImageProvider(userDetails.bannerSrc!).future)
         : ImageModel();
 
     if (avatarUrl.url != null && avatarUrl.url != '') {
@@ -51,7 +52,9 @@ class ProfileScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final userDetails = isOtherProfile == true ? ref.watch(getOtherProfileProvider(otherUserId: otherUserId)) : ref.watch(getUserProfileProvider);
+    final userDetails = isOtherProfile == true
+        ? ref.watch(UserProfileProvider.getOtherProfileProvider(otherUserId))
+        : ref.watch(UserProfileProvider.getUserProfileProvider);
     final userData = ref.watch(userDetailsProvider);
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.surfaceContainer,
@@ -94,7 +97,7 @@ class ProfileScreen extends ConsumerWidget {
                       builder: (context, snapshot) {
                         if (snapshot.connectionState == ConnectionState.waiting) {
                           return const Center(
-                            child: CircularProgressIndicator.adaptive(),
+                            child: CircularProgressIndicator(),
                           );
                         } else if (snapshot.hasError) {
                           return Center(
@@ -242,7 +245,8 @@ class ProfileScreen extends ConsumerWidget {
                                                   enableFeedback: true,
                                                 ),
                                                 onPressed: () async {
-                                                  final isAccountDeleted = await ref.read(deleteAccountProvider(userId: userDetails.userId!).future);
+                                                  final isAccountDeleted =
+                                                      await ref.read(UserProfileProvider.deleteAccountProvider(userDetails.userId!).future);
                                                   if (isAccountDeleted == true) {
                                                     context.pop(true);
                                                   }
@@ -280,10 +284,20 @@ class ProfileScreen extends ConsumerWidget {
                     );
                   },
                   error: (error, stackTrace) {
-                    return Center(child: Text('Error: $error'));
+                    if (error is AppError) {
+                      return Center(
+                        child: Text(
+                          error.errorMessage.toString(),
+                          style: Theme.of(context).textTheme.bodyLarge!.copyWith(color: Colors.black),
+                        ),
+                      );
+                    }
+                    return Center(
+                      child: Text('ERROR : ${error.toString()}'),
+                    );
                   },
                   loading: () => const Center(
-                    child: CircularProgressIndicator.adaptive(),
+                    child: CircularProgressIndicator(),
                   ),
                 ),
               ),
@@ -623,7 +637,7 @@ class _BannerWidget extends ConsumerWidget {
                       fit: BoxFit.cover,
                       useOldImageOnUrlChange: true,
                       placeholder: (context, url) => const Center(
-                        child: CircularProgressIndicator.adaptive(),
+                        child: CircularProgressIndicator(),
                       ),
                       errorWidget: (context, url, error) => const Row(
                         mainAxisAlignment: MainAxisAlignment.spaceAround,

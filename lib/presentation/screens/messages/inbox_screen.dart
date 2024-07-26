@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../common/app_utils/screen_size.dart';
+import '../../../data/core/app_error.dart';
 import '../../providers/auth_provider.dart';
 import '../../providers/chat_provider.dart';
 import '../../providers/socket_provider.dart';
@@ -68,7 +69,7 @@ class _InboxScreenState extends ConsumerState<InboxScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return ref.watch(getChatUsersListProvider(userId: ref.read(userDetailsProvider)['user_id']!)).when(
+    return ref.watch(ChatProvider.getChatUsersListProvider(ref.read(userDetailsProvider)['user_id']!)).when(
           data: (chatUsers) {
             if (chatUsers.isEmpty) {
               return Center(
@@ -139,10 +140,20 @@ class _InboxScreenState extends ConsumerState<InboxScreen> {
             );
           },
           error: (error, stackTrace) {
-            return Center(child: Text('Error: $error'));
+            if (error is AppError) {
+              return Center(
+                child: Text(
+                  error.errorMessage.toString(),
+                  style: Theme.of(context).textTheme.bodyLarge!.copyWith(color: Colors.black),
+                ),
+              );
+            }
+            return Center(
+              child: Text('ERROR : ${error.toString()}'),
+            );
           },
           loading: () => const Center(
-            child: CircularProgressIndicator.adaptive(),
+            child: CircularProgressIndicator(),
           ),
         );
   }

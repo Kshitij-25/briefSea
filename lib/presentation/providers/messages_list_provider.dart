@@ -13,7 +13,7 @@ class ChatMessagesNotifier extends StateNotifier<ChatMessageState> {
 
   Future<void> getChatHistory() async {
     setLoading(true);
-    final chatRepository = ref.read(chatRepositoryProvider);
+    final chatRepository = ref.read(ChatProvider.chatRepositoryProvider);
     final eitherGetMessagesOrError = await chatRepository.getChatMessages(conversationId);
     eitherGetMessagesOrError.fold(
       (error) {

@@ -52,7 +52,7 @@ class ExistingLoginScreen extends ConsumerWidget {
                           GestureDetector(
                             // onTap: () {
                             //   emailCont.text = "kshitij@briefsea.com";
-                            //   passCont.text = 'Test@1234';
+                            //   passCont.text = 'Kshitij@2201';
                             // },
                             // onLongPress: () {
                             //   emailCont.text = "xalonev795@devncie.com";
@@ -245,7 +245,9 @@ class ExistingLoginScreen extends ConsumerWidget {
             Container(
               color: Colors.black54,
               child: const Center(
-                child: CircularProgressIndicator.adaptive(),
+                child: CircularProgressIndicator(
+                  backgroundColor: Colors.white,
+                ),
               ),
             ),
         ],

@@ -1,13 +1,16 @@
-import 'dart:math' as math;
+import 'dart:math' as math hide log;
 
 import 'package:briefsea/presentation/screens/profile/profile_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
 import '../../common/app_utils/screen_size.dart';
-import '../../data/models/briefs_model.dart';
+import '../../data/models/briefs_result.dart';
+import '../../data/models/image_model.dart';
+import '../providers/user_profile_provider.dart';
 
 class CustomBriefsCard extends StatelessWidget {
   const CustomBriefsCard({
@@ -22,19 +25,17 @@ class CustomBriefsCard extends StatelessWidget {
     this.postImage,
     required this.isUserTrue,
     this.onSelected,
-    this.avatarName,
   });
 
-  final Function(BriefsModel?) onCommentTap;
-  final Function(BriefsModel?) onLikeTap;
-  final Function(BriefsModel?) onShareTap;
+  final Function(BriefsResult?) onCommentTap;
+  final Function(BriefsResult?) onLikeTap;
+  final Function(BriefsResult?) onShareTap;
   final Function(String)? onSelected;
   final VoidCallback? onTap;
-  final BriefsModel? brief;
+  final BriefsResult? brief;
   final bool cardVisible;
   final int? maxLine;
   final String? postImage;
-  final String? avatarName;
   final bool isUserTrue;
 
   @override
@@ -44,6 +45,7 @@ class CustomBriefsCard extends StatelessWidget {
     if (brief == null) {
       return const SizedBox();
     }
+    // log("${brief?.likeObj?.userId}" + '${brief?.likeObj?.name}');
     return InkWell(
       onTap: onTap,
       child: _BriefCard(
@@ -67,17 +69,9 @@ class CustomBriefsCard extends StatelessWidget {
                         );
                       }
                     },
-                    child: CircleAvatar(
-                      backgroundColor: userColor,
-                      backgroundImage: avatarName != null && avatarName != '' ? NetworkImage(avatarName!) : null,
-                      radius: 25 * ScaleSize.textScaleFactor(context),
-                      child: avatarName == null || avatarName == ''
-                          ? Text(
-                              brief?.name?[0] ?? "",
-                              style: Theme.of(context).textTheme.titleMedium,
-                              textScaler: TextScaler.linear(ScaleSize.textScaleFactor(context)),
-                            )
-                          : const SizedBox.shrink(),
+                    child: NetworkAvatarWidget(
+                      userColor: userColor,
+                      brief: brief,
                     ),
                   ),
                   const SizedBox(width: 10),
@@ -104,7 +98,7 @@ class CustomBriefsCard extends StatelessWidget {
                     ],
                   ),
                   const Spacer(),
-                  if (isUserTrue != false)
+                  if (isUserTrue != false && cardVisible == true)
                     Padding(
                       padding: const EdgeInsets.only(left: 10),
                       child: PopupMenuButton(
@@ -169,13 +163,13 @@ class CustomBriefsCard extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   _BriefLikeButton(
-                    isLiked: brief?.likeObj?.id != null ? true : false,
-                    iconLabel: (brief?.likesCount != null) ? (brief!.likesCount == 0 ? 'Like' : "${brief!.likesCount} Likes") : '-',
+                    isLiked: brief?.likeObj?.userId != null ? true : false,
+                    iconLabel: (brief?.likesCount != null) ? (brief!.likesCount! < 1 ? 'Like' : "${brief!.likesCount} Likes") : '-',
                     onPressed: () => onLikeTap(brief),
                   ),
                   _BriefInputButton(
                     iconData: CupertinoIcons.chat_bubble,
-                    iconLabel: (brief?.replyCount != null) ? (brief!.replyCount == 0 ? 'Comment' : "${brief!.replyCount} Comments") : '-',
+                    iconLabel: (brief?.replyCount != null) ? (brief!.replyCount! < 1 ? 'Comment' : "${brief!.replyCount} Comments") : '-',
                     onPressed: () => onCommentTap(brief),
                   ),
                   _BriefInputButton(
@@ -193,6 +187,68 @@ class CustomBriefsCard extends StatelessWidget {
   }
 }
 
+class NetworkAvatarWidget extends ConsumerWidget {
+  const NetworkAvatarWidget({
+    super.key,
+    required this.userColor,
+    required this.brief,
+  });
+
+  final Color userColor;
+  final BriefsResult? brief;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return FutureBuilder(
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const SizedBox.shrink();
+        } else if (snapshot.hasError) {
+          return Center(child: Text('Error: ${snapshot.error}'));
+        } else {
+          final avatarName = snapshot.data?.avatarSrc;
+          return CircleAvatar(
+            backgroundColor: userColor,
+            backgroundImage: avatarName != null && avatarName != '' ? NetworkImage(avatarName) : null,
+            radius: 25 * ScaleSize.textScaleFactor(context),
+            child: avatarName == null || avatarName == ''
+                ? Text(
+                    brief?.name?[0] ?? "",
+                    style: Theme.of(context).textTheme.titleMedium,
+                    textScaler: TextScaler.linear(ScaleSize.textScaleFactor(context)),
+                  )
+                : const SizedBox.shrink(),
+          );
+        }
+      },
+      future: _initializeImageProviders(ref, brief!),
+    );
+  }
+
+  Future<BriefsResult?> _initializeImageProviders(WidgetRef ref, BriefsResult briefModel) async {
+    try {
+      if (briefModel.avatarSrc != null && briefModel.avatarSrc != '') {
+        ImageModel avatarUrl = await ref.watch(UserProfileProvider.getImageProvider(briefModel.avatarSrc!).future);
+        if (avatarUrl.url != null && avatarUrl.url != '') {
+          briefModel = briefModel.copyWith(avatarSrc: avatarUrl.url);
+        }
+      }
+
+      if (briefModel.imgSrc != null && briefModel.imgSrc != '') {
+        ImageModel postImage = await ref.watch(UserProfileProvider.getImageProvider(briefModel.imgSrc!).future);
+        if (postImage.url != null && postImage.url != '') {
+          briefModel = briefModel.copyWith(imgSrc: postImage.url);
+        }
+      }
+
+      return briefModel;
+    } catch (e) {
+      print('Error initializing image providers: $e');
+      return null;
+    }
+  }
+}
+
 class _BriefInputButton extends StatelessWidget {
   const _BriefInputButton({
     this.onPressed,
@@ -207,22 +263,26 @@ class _BriefInputButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       enableFeedback: true,
+      borderRadius: BorderRadius.circular(10),
       onTap: onPressed,
-      child: Container(
-        child: Row(
-          children: [
-            Icon(
-              iconData,
-              color: Theme.of(context).colorScheme.outline,
-              size: 18 * ScaleSize.textScaleFactor(context),
-            ),
-            const SizedBox(width: 5),
-            Text(
-              iconLabel ?? "",
-              style: Theme.of(context).textTheme.bodySmall!.copyWith(color: Theme.of(context).colorScheme.onSurface),
-              textScaler: TextScaler.linear(ScaleSize.textScaleFactor(context)),
-            ),
-          ],
+      child: Padding(
+        padding: const EdgeInsets.all(10),
+        child: Container(
+          child: Row(
+            children: [
+              Icon(
+                iconData,
+                color: Theme.of(context).colorScheme.outline,
+                size: 18 * ScaleSize.textScaleFactor(context),
+              ),
+              const SizedBox(width: 5),
+              Text(
+                iconLabel ?? "",
+                style: Theme.of(context).textTheme.bodySmall!.copyWith(color: Theme.of(context).colorScheme.onSurface),
+                textScaler: TextScaler.linear(ScaleSize.textScaleFactor(context)),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -244,27 +304,31 @@ class _BriefLikeButton extends StatelessWidget {
     return InkWell(
       enableFeedback: true,
       onTap: onPressed,
-      child: Container(
-        child: Row(
-          children: [
-            !isLiked
-                ? Icon(
-                    CupertinoIcons.heart,
-                    color: Theme.of(context).colorScheme.outline,
-                    size: 18 * ScaleSize.textScaleFactor(context),
-                  )
-                : Icon(
-                    CupertinoIcons.heart_fill,
-                    color: Colors.red,
-                    size: 18 * ScaleSize.textScaleFactor(context),
-                  ),
-            const SizedBox(width: 5),
-            Text(
-              iconLabel ?? "",
-              style: Theme.of(context).textTheme.bodySmall!.copyWith(color: Theme.of(context).colorScheme.onSurface),
-              textScaler: TextScaler.linear(ScaleSize.textScaleFactor(context)),
-            ),
-          ],
+      borderRadius: BorderRadius.circular(10),
+      child: Padding(
+        padding: const EdgeInsets.all(10.0),
+        child: Container(
+          child: Row(
+            children: [
+              !isLiked
+                  ? Icon(
+                      CupertinoIcons.heart,
+                      color: Theme.of(context).colorScheme.outline,
+                      size: 18 * ScaleSize.textScaleFactor(context),
+                    )
+                  : Icon(
+                      CupertinoIcons.heart_fill,
+                      color: Colors.red,
+                      size: 18 * ScaleSize.textScaleFactor(context),
+                    ),
+              const SizedBox(width: 5),
+              Text(
+                iconLabel ?? "",
+                style: Theme.of(context).textTheme.bodySmall!.copyWith(color: Theme.of(context).colorScheme.onSurface),
+                textScaler: TextScaler.linear(ScaleSize.textScaleFactor(context)),
+              ),
+            ],
+          ),
         ),
       ),
     );

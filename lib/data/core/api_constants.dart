@@ -29,7 +29,8 @@ class ApiConstants {
 
   // Threads and briefs
   // static const getAllBriefs = '$BASE_URL/forum/discussion/threads/pagination/limit?count=';
-  static const getAllBriefs = '$BASE_URL/forum/discussion/threads/pagination/';
+  static const getAllBriefs = '$BASE_URL/forum/discussion/threads/pagination/page?number=';
+  // static const getAllBriefs = '$BASE_URL/forum/discussion/threads/pagination/';
   static const getUserBriefs = '$BASE_URL/forum/discussion/threads';
   static const getSingleBrief = '$BASE_URL/forum/discussion/threads/single/user';
   static const postBrief = '$BASE_URL/forum/discussion/threads/new';
@@ -66,5 +67,5 @@ class ApiConstants {
   static const deleteMessageNotification = '$BASE_URL/forum/discussion/notifs/remove/msg';
 
   // Share Brief
-  static const shareBrief = '$BASE_URL/forum/discussion/thread/share';
+  static const shareBrief = 'https://www.briefsea.com/forum/discussion/thread/share';
 }

@@ -2,10 +2,10 @@ import 'dart:async';
 import 'dart:developer' as devtools show log;
 import 'dart:io';
 
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:hive_flutter/hive_flutter.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -30,11 +30,15 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
+  FirebaseAnalytics analytics = FirebaseAnalytics.instance;
+
+  FirebaseAnalytics.instance.setAnalyticsCollectionEnabled(true);
+  // set observer
+  FirebaseAnalyticsObserver(analytics: FirebaseAnalytics.instance);
+
   prefs = await SharedPreferences.getInstance();
 
   HttpOverrides.global = MyHttpOverrides();
-
-  await Hive.initFlutter();
 
   runApp(const ProviderScope(child: MainApp()));
 }

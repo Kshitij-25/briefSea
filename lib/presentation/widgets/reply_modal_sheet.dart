@@ -1,9 +1,12 @@
 import 'dart:ui';
 
 import 'package:briefsea/common/app_utils/screen_size.dart';
+import 'package:briefsea/presentation/params/notification_params.dart';
+import 'package:briefsea/presentation/params/reply_params.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
+import '../../data/core/app_error.dart';
 import '../../data/models/comment_model.dart';
 import '../providers/notification_provider.dart';
 import '../providers/reply_provider.dart';
@@ -28,7 +31,7 @@ Future<void> customReplyModalSheet(
         onPopInvoked: (didPop) => replyCont?.clear(),
         child: Consumer(
           builder: (context, ref, child) {
-            final getReplies = ref.watch(getAllReplyOnCommentProvider(commentId: comments!.id));
+            final getReplies = ref.watch(ReplyProvider.getAllReplyOnCommentProvider(comments!.id));
             final isReplies = ref.watch(isReplyStateProvider.notifier).state;
             return getReplies.when(
               data: (replies) {
@@ -95,31 +98,34 @@ Future<void> customReplyModalSheet(
                                   ),
                                   onPressed: () async {
                                     var replyPosted = await ref.read(
-                                      postReplyProvider(
-                                        commentText: replyCont!.text,
-                                        threadId: threadId,
-                                        userId: userDetails!['user_id'],
-                                        replyId: comments.id,
+                                      ReplyProvider.postReplyProvider(
+                                        PostReplyParams(
+                                          commentText: replyCont!.text,
+                                          threadId: threadId,
+                                          userId: userDetails!['user_id'],
+                                          replyId: comments.id,
+                                        ),
                                       ).future,
                                     );
                                     if (replyPosted == true) {
                                       if (comments.userId != userDetails['user_id']) {
-                                        await ref.read(postNewNotificationProvider(
-                                          requestBody: {
-                                            "type": 'comment reply',
-                                            "sender_id": userDetails['user_id'],
-                                            "sender_name": userDetails['user_name'],
-                                            "receiver_id": comments.userId,
-                                            "notification": "${userDetails['user_name']} replied on your comment.",
-                                            "thread_id": threadId,
-                                            "reply_id": comments.id,
-                                          },
+                                        var requestBody = {
+                                          "type": 'comment reply',
+                                          "sender_id": userDetails['user_id'],
+                                          "sender_name": userDetails['user_name'],
+                                          "receiver_id": comments.userId,
+                                          "notification": "${userDetails['user_name']} replied on your comment.",
+                                          "thread_id": threadId,
+                                          "reply_id": comments.id,
+                                        };
+                                        await ref.read(NotificationProvider.postNewNotificationProvider(
+                                          PostNewNotificationParams(requestBody: requestBody),
                                         ).future);
                                       }
                                       replyCont.clear();
                                     }
-                                    ref.invalidate(getAllReplyOnCommentProvider(commentId: comments.id));
-                                    ref.invalidate(getAllCommentsProvider(threadId: threadId));
+                                    ref.invalidate(ReplyProvider.getAllReplyOnCommentProvider(comments.id));
+                                    ref.invalidate(ReplyProvider.getAllCommentsProvider(threadId));
                                   },
                                   child: Text(
                                     "Reply",
@@ -140,10 +146,20 @@ Future<void> customReplyModalSheet(
                 );
               },
               error: (error, stackTrace) {
-                return Center(child: Text('Error: $error'));
+                if (error is AppError) {
+                  return Center(
+                    child: Text(
+                      error.errorMessage.toString(),
+                      style: Theme.of(context).textTheme.bodyLarge!.copyWith(color: Colors.black),
+                    ),
+                  );
+                }
+                return Center(
+                  child: Text('ERROR : ${error.toString()}'),
+                );
               },
               loading: () => const Center(
-                child: CircularProgressIndicator.adaptive(),
+                child: CircularProgressIndicator(),
               ),
             );
           },

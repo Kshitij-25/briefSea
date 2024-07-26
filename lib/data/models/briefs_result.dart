@@ -1,12 +1,12 @@
 import 'package:briefsea/data/models/like_obj.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
-part 'briefs_model.freezed.dart';
-part 'briefs_model.g.dart';
+part 'briefs_result.freezed.dart';
+part 'briefs_result.g.dart';
 
 @freezed
-class BriefsModel with _$BriefsModel {
-  factory BriefsModel({
+class BriefsResult with _$BriefsResult {
+  factory BriefsResult({
     @JsonKey(name: '_id') String? id,
     @JsonKey(name: 'user_id') String? userId,
     String? name,
@@ -25,7 +25,7 @@ class BriefsModel with _$BriefsModel {
     String? avatarSrc,
     List<String>? isVisibleTo,
     @JsonKey(name: 'likeObj') LikeObj? likeObj,
-  }) = _BriefsModel;
+  }) = _BriefsResult;
 
-  factory BriefsModel.fromJson(Map<String, dynamic> json) => _$BriefsModelFromJson(json);
+  factory BriefsResult.fromJson(Map<String, dynamic> json) => _$BriefsResultFromJson(json);
 }

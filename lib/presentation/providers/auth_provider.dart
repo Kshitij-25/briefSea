@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:briefsea/common/app_utils/shared_prefs_helper.dart';
+import 'package:briefsea/presentation/params/notification_params.dart';
 import 'package:crypto/crypto.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -175,15 +176,16 @@ class RegisterNotifier extends StateNotifier<RegisterState> {
 
       if (isRegistered.message == "User registered") {
         AppUtility(context).message("Registered Successfully. Check email to Verify Profile and Login.");
+        var requestBody = {
+          "type": 'user account',
+          "sender_id": 'briefseaAdmin9712',
+          "sender_name": 'Briefsea',
+          "receiver_id": isRegistered.userId,
+          "notification": "Welcome to Briefsea.Hire the best freelancers, vendors and professionals for your tech and marketing projects."
+        };
         await ref.read(
-          postNewNotificationProvider(
-            requestBody: {
-              "type": 'user account',
-              "sender_id": 'briefseaAdmin9712',
-              "sender_name": 'Briefsea',
-              "receiver_id": isRegistered.userId,
-              "notification": "Welcome to Briefsea.Hire the best freelancers, vendors and professionals for your tech and marketing projects."
-            },
+          NotificationProvider.postNewNotificationProvider(
+            PostNewNotificationParams(requestBody: requestBody),
           ).future,
         );
         GoRouter.of(context).pop();

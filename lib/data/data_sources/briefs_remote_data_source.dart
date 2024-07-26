@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:briefsea/data/models/brief_model.dart';
 import 'package:dio/dio.dart';
 import 'package:http_parser/http_parser.dart';
 
@@ -7,13 +8,13 @@ import '../../common/app_utils/shared_prefs_helper.dart';
 import '../core/api_client.dart';
 import '../core/api_constants.dart';
 import '../core/app_error.dart';
-import '../models/briefs_model.dart';
+import '../models/briefs_result.dart';
 import '../models/thread_image_model.dart';
 
 abstract class BriefsRemoteDataSource {
-  Future<List<BriefsModel?>?> getAllBriefs(int? count);
-  Future<List<BriefsModel?>?> getUserBriefs();
-  Future<BriefsModel> getSingleBrief(String? briefId);
+  Future<BriefModel?> getAllBriefs(int? count);
+  Future<List<BriefsResult?>?> getUserBriefs();
+  Future<BriefsResult> getSingleBrief(String? briefId);
   Future<bool> postBrief({
     String? userId,
     String? name,
@@ -60,13 +61,13 @@ class BriefsRemoteDataSourceImpl implements BriefsRemoteDataSource {
   }
 
   @override
-  Future<List<BriefsModel?>?> getAllBriefs(int? count) async {
+  Future<BriefModel?> getAllBriefs(int? count) async {
     var jwtToken = await getJwtToken();
 
     try {
       Response? response = await _apiClient.getReq(
-        // url: "${ApiConstants.getAllBriefs}$count",
-        url: "${ApiConstants.getAllBriefs}",
+        url: "${ApiConstants.getAllBriefs}$count",
+        // url: "${ApiConstants.getAllBriefs}",
         jwtToken: jwtToken,
       );
 
@@ -74,7 +75,7 @@ class BriefsRemoteDataSourceImpl implements BriefsRemoteDataSource {
         if (response!.statusCode == 200) {
           final responseJson = response.data ?? [];
           log(responseJson.toString());
-          return (responseJson as List).map((json) => BriefsModel.fromJson(json)).toList();
+          return BriefModel.fromJson(responseJson);
         } else {
           throw AppError(statusCode: response.statusCode);
         }
@@ -88,7 +89,7 @@ class BriefsRemoteDataSourceImpl implements BriefsRemoteDataSource {
   }
 
   @override
-  Future<List<BriefsModel?>?> getUserBriefs() async {
+  Future<List<BriefsResult?>?> getUserBriefs() async {
     var jwtToken = await getJwtToken();
 
     try {
@@ -101,7 +102,7 @@ class BriefsRemoteDataSourceImpl implements BriefsRemoteDataSource {
         if (response!.statusCode == 200) {
           final responseJson = response.data ?? [];
           log(responseJson.toString());
-          return (responseJson as List).map((json) => BriefsModel.fromJson(json)).toList();
+          return (responseJson as List).map((json) => BriefsResult.fromJson(json)).toList();
         } else {
           throw AppError(statusCode: response.statusCode);
         }
@@ -115,7 +116,7 @@ class BriefsRemoteDataSourceImpl implements BriefsRemoteDataSource {
   }
 
   @override
-  Future<BriefsModel> getSingleBrief(String? briefId) async {
+  Future<BriefsResult> getSingleBrief(String? briefId) async {
     var jwtToken = await getJwtToken();
 
     try {
@@ -128,7 +129,7 @@ class BriefsRemoteDataSourceImpl implements BriefsRemoteDataSource {
         if (response!.statusCode == 200) {
           final responseJson = response.data ?? [];
           log(responseJson.toString());
-          return BriefsModel.fromJson(responseJson);
+          return BriefsResult.fromJson(responseJson);
         } else {
           throw AppError(statusCode: response.statusCode);
         }

@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:briefsea/presentation/params/user_profile_params.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../data/models/image_model.dart';
@@ -24,74 +25,52 @@ Future<String> uploadImage(
   String? bannerKey = userProfileData?.bannerSrc;
 
   if (isAvatar) {
-    final uploadedAvatar = await ref.read(uploadAvatarProvider(
-      fileName: fileName,
-      fileType: fileType,
-      userId: userDetails['user_id'],
-      userType: userDetails['type'],
+    final uploadedAvatar = await ref.read(UserProfileProvider.uploadAvatarProvider(
+      UploadAvatarParams(
+        fileName: fileName,
+        fileType: fileType,
+        userId: userDetails['user_id'],
+        userType: userDetails['type'],
+      ),
     ).future);
 
-    await ref.read(uploadToAWSProvider(
-      url: uploadedAvatar.url,
-      fileName: fileName,
-      file: file,
-      fileType: fileType,
+    await ref.read(UserProfileProvider.uploadToAWSProvider(
+      UploadToAWSParams(
+        url: uploadedAvatar.url,
+        fileName: fileName,
+        file: file,
+        fileType: fileType,
+      ),
     ).future);
 
     avatarKey = uploadedAvatar.key;
   }
 
   if (isBanner) {
-    final uploadedBanner = await ref.read(uploadBannerProvider(
-      fileName: fileName,
-      fileType: fileType,
-      userId: userDetails['user_id'],
-      userType: userDetails['type'],
+    final uploadedBanner = await ref.read(UserProfileProvider.uploadBannerProvider(
+      UploadBannerParams(
+        fileName: fileName,
+        fileType: fileType,
+        userId: userDetails['user_id'],
+        userType: userDetails['type'],
+      ),
     ).future);
 
-    await ref.read(uploadToAWSProvider(
-      url: uploadedBanner.url,
-      fileName: fileName,
-      file: file,
-      fileType: fileType,
+    await ref.read(UserProfileProvider.uploadToAWSProvider(
+      UploadToAWSParams(
+        url: uploadedBanner.url,
+        fileName: fileName,
+        file: file,
+        fileType: fileType,
+      ),
     ).future);
 
     bannerKey = uploadedBanner.key;
   }
 
-  // var verifyMessage = await ref.read(
-  //   editProfileProvider(
-  //     userId: userDetails['user_id'],
-  //     uName: userDetails['user_name']!,
-  //     countryCode: userProfileData!.countryCode,
-  //     contact: userProfileData.contact,
-  //     company: userProfileData.worksAt,
-  //     jobTitle: userProfileData.post,
-  //     industry: userProfileData.industry!,
-  //     location: userProfileData.location,
-  //     avatarSrc: avatarKey ?? '',
-  //     bannerSrc: bannerKey ?? '',
-  //     jwtToken: userDetails['jwtToken'],
-  //     expertise: userProfileData.expertise!,
-  //     postingAs: userDetails['type'],
-  //     gender: userProfileData.gender,
-  //     createdAt: userProfileData.createdAt,
-  //     updatedAt: userProfileData.updatedAt,
-  //     userName: userProfileData.userName,
-  //     viewAccess: userProfileData.viewAccess,
-  //   ).future,
-  // );
-  // log("IMAGE_PROVIDER ===> $verifyMessage");
-
-  // ref.invalidate(getUserProfileProvider);
-
-  // final updatedUserProfile = await ref.watch(getUserProfileProvider.future);
-
   if (isAvatar) {
-    // ImageModel avatarModel = await ref.watch(getImageProvider(src: updatedUserProfile.avatarSrc!).future);
     return avatarKey ?? "";
   } else if (isBanner) {
-    // ImageModel bannerModel = await ref.watch(getImageProvider(src: updatedUserProfile.bannerSrc!).future);
     return bannerKey ?? "";
   }
 
@@ -100,14 +79,14 @@ Future<String> uploadImage(
 
 @riverpod
 Future<ImageModel> getAvatarUrl(GetAvatarUrlRef ref) async {
-  final userDetails = await ref.watch(getUserProfileProvider.future);
-  ImageModel avatarUrl = await ref.watch(getImageProvider(src: userDetails.avatarSrc!).future);
+  final userDetails = await ref.watch(UserProfileProvider.getUserProfileProvider.future);
+  ImageModel avatarUrl = await ref.watch(UserProfileProvider.getImageProvider(userDetails.avatarSrc!).future);
   return avatarUrl;
 }
 
 @riverpod
 Future<ImageModel> getBannerUrl(GetBannerUrlRef ref) async {
-  final userDetails = await ref.watch(getUserProfileProvider.future);
-  ImageModel bannerUrl = await ref.watch(getImageProvider(src: userDetails.bannerSrc!).future);
+  final userDetails = await ref.watch(UserProfileProvider.getUserProfileProvider.future);
+  ImageModel bannerUrl = await ref.watch(UserProfileProvider.getImageProvider(userDetails.bannerSrc!).future);
   return bannerUrl;
 }

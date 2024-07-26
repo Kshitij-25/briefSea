@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../common/app_utils/screen_size.dart';
+import '../../data/core/app_error.dart';
 import '../state_providers/bottom_nav_bar_state_provider.dart';
 import '../widgets/custom_notification_tile.dart';
 
@@ -16,7 +17,7 @@ class NotificationScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final allNotifications = ref.watch(getAllNotificationsProvider);
+    final allNotifications = ref.watch(NotificationProvider.getAllNotificationsProvider);
     return Scaffold(
       body: Stack(
         children: [
@@ -105,34 +106,34 @@ class NotificationScreen extends ConsumerWidget {
                                   ref.read(currentIndexProvider.notifier).state = 1;
                                   notificationPageController!.jumpToPage(1);
                                   await ref.read(
-                                    deleteMessageNotificationProvider(conversationId: notification[index].conversationId).future,
+                                    NotificationProvider.deleteMessageNotificationProvider(notification[index].conversationId).future,
                                   );
-                                  ref.invalidate(getAllNotificationsProvider);
+                                  ref.invalidate(NotificationProvider.getAllNotificationsProvider);
                                 } else if (notification[index].type == "user account") {
                                   ref.read(currentIndexProvider.notifier).state = 0;
                                   notificationPageController!.jumpToPage(0);
                                   await ref.read(
-                                    deleteNotificationProvider(notificationId: notification[index].notificationId).future,
+                                    NotificationProvider.deleteNotificationProvider(notification[index].notificationId).future,
                                   );
-                                  ref.invalidate(getAllNotificationsProvider);
+                                  ref.invalidate(NotificationProvider.getAllNotificationsProvider);
                                 }
                               },
                               confirmDismiss: () async {
                                 if (notification[index].type == "message received") {
                                   var isDeleted = await ref.read(
-                                    deleteMessageNotificationProvider(conversationId: notification[index].conversationId).future,
+                                    NotificationProvider.deleteMessageNotificationProvider(notification[index].conversationId).future,
                                   );
-                                  ref.invalidate(getAllNotificationsProvider);
+                                  ref.invalidate(NotificationProvider.getAllNotificationsProvider);
                                   return isDeleted;
                                 } else {
                                   var isDeleted = ref.read(
-                                    deleteNotificationProvider(notificationId: notification[index].notificationId).future,
+                                    NotificationProvider.deleteNotificationProvider(notification[index].notificationId).future,
                                   );
-                                  ref.invalidate(getAllNotificationsProvider);
+                                  ref.invalidate(NotificationProvider.getAllNotificationsProvider);
                                   return isDeleted;
                                 }
                               },
-                              onDismissed: () => ref.invalidate(getAllNotificationsProvider),
+                              onDismissed: () => ref.invalidate(NotificationProvider.getAllNotificationsProvider),
                             );
                           },
                         ),
@@ -141,10 +142,20 @@ class NotificationScreen extends ConsumerWidget {
                   );
                 },
                 error: (error, stackTrace) {
-                  return Center(child: Text('Error: $error'));
+                  if (error is AppError) {
+                    return Center(
+                      child: Text(
+                        error.errorMessage.toString(),
+                        style: Theme.of(context).textTheme.bodyLarge!.copyWith(color: Colors.black),
+                      ),
+                    );
+                  }
+                  return Center(
+                    child: Text('ERROR : ${error.toString()}'),
+                  );
                 },
                 loading: () => const Center(
-                  child: CircularProgressIndicator.adaptive(),
+                  child: CircularProgressIndicator(),
                 ),
               ),
             ),

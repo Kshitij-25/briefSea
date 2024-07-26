@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:briefsea/common/app_utils/app_utility.dart';
 import 'package:briefsea/common/others/strings.dart';
+import 'package:briefsea/presentation/params/user_profile_params.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -10,6 +11,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:mime/mime.dart';
 
 import '../../../common/app_utils/screen_size.dart';
+import '../../params/briefs_params.dart';
 import '../../providers/auth_provider.dart';
 import '../../providers/breifs_provider.dart';
 import '../../providers/user_profile_provider.dart';
@@ -109,17 +111,21 @@ class MyFeedNavigator extends ConsumerWidget {
                             final ImagePicker picker = ImagePicker();
                             final XFile? image = await picker.pickImage(source: ImageSource.gallery);
                             if (image != null) {
-                              var uploadedThreadImage = await ref.read(uploadThreadImageProvider(
-                                fileName: image.name,
-                                fileType: lookupMimeType(image.path),
-                                userId: userData['user_id'],
-                                userType: userData['type'],
+                              var uploadedThreadImage = await ref.read(BriefsProviders.uploadThreadImageProvider(
+                                UploadThreadImageParams(
+                                  fileName: image.name,
+                                  fileType: lookupMimeType(image.path)!,
+                                  userId: userData['user_id']!,
+                                  userType: userData['type']!,
+                                ),
                               ).future);
-                              ref.read(uploadToAWSProvider(
-                                url: uploadedThreadImage.url,
-                                fileName: image.name,
-                                file: File(image.path),
-                                fileType: lookupMimeType(image.path),
+                              ref.read(UserProfileProvider.uploadToAWSProvider(
+                                UploadToAWSParams(
+                                  url: uploadedThreadImage.url,
+                                  fileName: image.name,
+                                  file: File(image.path),
+                                  fileType: lookupMimeType(image.path),
+                                ),
                               ).future);
                               ref.read(uploadedThreadImageKeyProvider.notifier).state = uploadedThreadImage.key;
 
@@ -130,23 +136,24 @@ class MyFeedNavigator extends ConsumerWidget {
                             if (postTextCont.text.isNotEmpty) {
                               if (selectedCategory != '') {
                                 var status = await ref.watch(
-                                  postBriefProvider(
-                                    userId: userData['user_id'],
-                                    uName: userData['user_name'],
-                                    type: userData['type'],
-                                    postText: postText,
-                                    imgSrc: ref.read(uploadedThreadImageKeyProvider.notifier).state,
-                                    category: selectedCategory,
-                                    isVisibleTo: selectedVisibleTo,
+                                  BriefsProviders.postBriefProvider(
+                                    PostBriefParams(
+                                      userId: userData['user_id'],
+                                      uName: userData['user_name'],
+                                      type: userData['type'],
+                                      postText: postText,
+                                      imgSrc: ref.read(uploadedThreadImageKeyProvider.notifier).state,
+                                      category: selectedCategory,
+                                      isVisibleTo: selectedVisibleTo,
+                                    ),
                                   ).future,
                                 );
-
                                 if (status == true) {
                                   postTextCont.clear();
                                   GoRouter.of(context).pop();
                                 }
-                                ref.invalidate(getAllBriefsProvider);
-                                ref.invalidate(getUserBriefsProvider);
+                                ref.invalidate(BriefsProviders.getAllBriefsProvider);
+                                ref.invalidate(BriefsProviders.getUserBriefsProvider);
                               } else {
                                 AppUtility(context).error('Choose a category first.');
                               }

@@ -1,23 +1,25 @@
 import 'dart:developer';
 
 import 'package:briefsea/data/core/api_constants.dart';
-import 'package:briefsea/data/models/comment_model.dart';
+import 'package:briefsea/presentation/params/chat_params.dart';
+import 'package:briefsea/presentation/params/likes_params.dart';
+import 'package:briefsea/presentation/params/notification_params.dart';
+import 'package:briefsea/presentation/params/reply_params.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:share_plus/share_plus.dart';
 
 import '../../../common/app_utils/screen_size.dart';
-import '../../../data/models/briefs_model.dart';
+import '../../../data/core/app_error.dart';
+import '../../../data/models/briefs_result.dart';
 import '../../../data/models/chat_user_model.dart';
-import '../../../data/models/image_model.dart';
 import '../../providers/auth_provider.dart';
 import '../../providers/breifs_provider.dart';
 import '../../providers/chat_provider.dart';
 import '../../providers/likes_provider.dart';
 import '../../providers/notification_provider.dart';
 import '../../providers/reply_provider.dart';
-import '../../providers/user_profile_provider.dart';
 import '../../state_providers/reply_state_provider.dart';
 import '../../widgets/custom_briefs_card.dart';
 import '../../widgets/custom_comment_card.dart';
@@ -37,55 +39,9 @@ class FeedScreen extends ConsumerWidget {
   final TextEditingController commentCont = TextEditingController();
   final TextEditingController replyCont = TextEditingController();
 
-  Future<BriefsModel?> _initializeBriefImageProviders(WidgetRef ref, BriefsModel briefModel) async {
-    try {
-      if (briefModel.avatarSrc != null && briefModel.avatarSrc != '') {
-        ImageModel avatarUrl = await ref.watch(getImageProvider(src: briefModel.avatarSrc!).future);
-        if (avatarUrl.url != null && avatarUrl.url != '') {
-          briefModel = briefModel.copyWith(avatarSrc: avatarUrl.url);
-        }
-      }
-
-      if (briefModel.imgSrc != null && briefModel.imgSrc != '') {
-        ImageModel postImage = await ref.watch(getImageProvider(src: briefModel.imgSrc!).future);
-        if (postImage.url != null && postImage.url != '') {
-          briefModel = briefModel.copyWith(imgSrc: postImage.url);
-        }
-      }
-
-      return briefModel;
-    } catch (e) {
-      print('Error initializing image providers: $e');
-      return null;
-    }
-  }
-
-  Future<CommentModel?> _initializeCommentImageProviders(WidgetRef ref, CommentModel commentModel) async {
-    try {
-      if (commentModel.avatarSrc != null && commentModel.avatarSrc != '') {
-        ImageModel avatarUrl = await ref.watch(getImageProvider(src: commentModel.avatarSrc!).future);
-        if (avatarUrl.url != null && avatarUrl.url != '') {
-          commentModel = commentModel.copyWith(avatarSrc: avatarUrl.url);
-        }
-      }
-
-      // if (commentModel.imgSrc != null && commentModel.imgSrc != '') {
-      //   ImageModel postImage = await ref.watch(getImageProvider(src: commentModel.imgSrc!).future);
-      //   if (postImage.url != null && postImage.url != '') {
-      //     commentModel = commentModel.copyWith(imgSrc: postImage.url);
-      //   }
-      // }
-
-      return commentModel;
-    } catch (e) {
-      print('Error initializing image providers: $e');
-      return null;
-    }
-  }
-
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    var brief = ref.watch(getSingleBriefProvider(briefId: briefId));
+    var brief = ref.watch(BriefsProviders.getSingleBriefProvider(briefId));
 
     final userDetails = ref.watch(userDetailsProvider);
     final textFieldFocusNode = ref.watch(textFieldFocusNodeProvider);
@@ -138,66 +94,62 @@ class FeedScreen extends ConsumerWidget {
             ),
             child: brief.when(
               data: (brief) {
-                final getComments = ref.watch(getAllCommentsProvider(threadId: brief!.id));
+                final getComments = ref.watch(ReplyProvider.getAllCommentsProvider(brief!.id));
                 return Column(
                   children: [
-                    FutureBuilder(
-                      future: _initializeBriefImageProviders(ref, brief),
-                      builder: (context, snapshot) {
-                        if (snapshot.connectionState == ConnectionState.waiting) {
-                          return const SizedBox.shrink();
-                        } else if (snapshot.hasError) {
-                          return Center(child: Text('Error: ${snapshot.error}'));
-                        } else {
-                          return CustomBriefsCard(
-                            isUserTrue: (brief.userId == userDetails['user_id']) ? true : false,
-                            maxLine: 100,
-                            cardVisible: false,
-                            postImage: snapshot.data?.imgSrc,
-                            avatarName: snapshot.data?.avatarSrc,
-                            brief: brief,
-                            onCommentTap: (brief) {
-                              final focusNode = ref.read(textFieldFocusNodeProvider);
-                              focusNode.requestFocus();
-                            },
-                            onLikeTap: (brief) async {
-                              try {
-                                if (!brief!.isPostLiked) {
-                                  await ref.read(postLikeProvider(
-                                    threadId: brief.id,
-                                    type: userDetails['type'],
-                                    uName: userDetails['user_name'],
-                                    userId: userDetails['user_id'],
-                                    replyId: null,
-                                  ).future);
-                                  if (brief.userId != userDetails['user_id']) {
-                                    await ref.read(postNewNotificationProvider(
-                                      requestBody: {
-                                        "type": 'brief liked',
-                                        "sender_id": userDetails['user_id'],
-                                        "sender_name": userDetails['user_name'],
-                                        "receiver_id": brief.userId,
-                                        "notification": "${userDetails['user_name']} liked your brief.",
-                                        "thread_id": brief.id,
-                                      },
-                                    ).future);
-                                  }
-                                } else {
-                                  await ref.read(deleteLikeProvider(
-                                    likeId: brief.postLikeId,
-                                    threadId: brief.id,
-                                  ).future);
-                                }
-                                ref.invalidate(getAllBriefsProvider);
-                              } catch (e) {
-                                log(e.toString());
-                              }
-                            },
-                            onShareTap: (brief) {
-                              shareBrief(brief!);
-                            },
-                          );
+                    CustomBriefsCard(
+                      isUserTrue: (brief.userId == userDetails['user_id']) ? true : false,
+                      maxLine: 100,
+                      cardVisible: false,
+                      // postImage: snapshot.data?.imgSrc,
+                      // avatarName: snapshot.data?.avatarSrc,
+                      brief: brief,
+                      onCommentTap: (brief) {
+                        final focusNode = ref.read(textFieldFocusNodeProvider);
+                        focusNode.requestFocus();
+                      },
+                      onLikeTap: (brief) async {
+                        try {
+                          if (brief!.likeObj!.id == null) {
+                            await ref.read(LikesProvider.postLikeProvider(
+                              PostLikeParams(
+                                threadId: brief.userId,
+                                type: userDetails['type'],
+                                uName: userDetails['user_name'],
+                                userId: userDetails['user_id'],
+                                replyId: null,
+                              ),
+                            ).future);
+                            var requestBody = {
+                              "type": 'brief liked',
+                              "sender_id": userDetails['user_id'],
+                              "sender_name": userDetails['user_name'],
+                              "receiver_id": brief.userId,
+                              "notification": "${userDetails['user_name']} liked your brief.",
+                              "thread_id": brief.id,
+                            };
+                            if (brief.userId != userDetails['user_id']) {
+                              await ref.read(NotificationProvider.postNewNotificationProvider(
+                                PostNewNotificationParams(requestBody: requestBody),
+                              ).future);
+                            }
+                          } else if (brief.likeObj!.userId != null) {
+                            await ref.read(LikesProvider.deleteLikeProvider(
+                              DeleteLikeParams(
+                                likeId: brief.likeObj!.id,
+                                threadId: brief.id,
+                              ),
+                            ).future);
+                          }
+                          ref.invalidate(BriefsProviders.getAllBriefsProvider);
+                          ref.invalidate(BriefsProviders.getUserBriefsProvider);
+                          ref.invalidate(BriefsProviders.getSingleBriefProvider);
+                        } catch (e) {
+                          log(e.toString());
                         }
+                      },
+                      onShareTap: (brief) {
+                        shareBrief(brief!);
                       },
                     ),
                     Expanded(
@@ -207,84 +159,90 @@ class FeedScreen extends ConsumerWidget {
                             itemCount: comments.length,
                             itemBuilder: (context, index) {
                               print("${brief.userId}== ${userDetails['user_id']}");
-                              return FutureBuilder(
-                                future: _initializeCommentImageProviders(ref, comments[index]),
-                                builder: (context, snapshot) {
-                                  if (snapshot.connectionState == ConnectionState.waiting) {
-                                    return const SizedBox.shrink();
-                                  } else if (snapshot.hasError) {
-                                    return Center(child: Text('Error: ${snapshot.error}'));
-                                  } else {
-                                    return CustomCommentCard(
-                                      isUserTrue: (brief.userId == userDetails['user_id']) ? true : false,
-                                      avatarName: snapshot.data?.avatarSrc,
-                                      isReplies: false,
-                                      onCommentTap: (p0) {
-                                        ref.watch(isReplyStateProvider.notifier).state = true;
-                                        customReplyModalSheet(
-                                          context,
-                                          comments: comments[index],
-                                          replyCont: replyCont,
-                                          threadId: brief.id,
-                                          userDetails: userDetails,
-                                        );
-                                      },
-                                      onLikeTap: (p0) async {
-                                        try {
-                                          if (!comments[index].isCommentLiked) {
-                                            await ref.read(postLikeProvider(
-                                              threadId: comments[index].threadId,
-                                              type: userDetails['type'],
-                                              uName: userDetails['user_name'],
-                                              userId: userDetails['user_id'],
-                                              replyId: comments[index].id,
-                                            ).future);
-                                          } else {
-                                            await ref.read(deleteLikeProvider(
-                                              likeId: comments[index].commentLikeId,
-                                              threadId: comments[index].threadId,
-                                            ).future);
-                                          }
-                                          ref.invalidate(getAllCommentsProvider(threadId: brief.id));
-                                        } catch (e) {
-                                          log(e.toString());
-                                        }
-                                      },
-                                      onDMTap: (p0) async {
-                                        var isChatCreated = await ref.watch(
-                                          createNewChatProvider(
-                                            receiverId: comments[index].userId!,
-                                            senderId: userDetails['user_id']!,
-                                          ).future,
-                                        );
+                              return CustomCommentCard(
+                                isUserTrue: (brief.userId == userDetails['user_id']) ? true : false,
+                                isReplies: false,
+                                onCommentTap: (p0) {
+                                  ref.watch(isReplyStateProvider.notifier).state = true;
+                                  customReplyModalSheet(
+                                    context,
+                                    comments: comments[index],
+                                    replyCont: replyCont,
+                                    threadId: brief.id,
+                                    userDetails: userDetails,
+                                  );
+                                },
+                                onLikeTap: (p0) async {
+                                  try {
+                                    if (!comments[index].isCommentLiked) {
+                                      await ref.read(LikesProvider.postLikeProvider(
+                                        PostLikeParams(
+                                          threadId: comments[index].threadId,
+                                          type: userDetails['type'],
+                                          uName: userDetails['user_name'],
+                                          userId: userDetails['user_id'],
+                                          replyId: comments[index].id,
+                                        ),
+                                      ).future);
+                                    } else {
+                                      await ref.read(LikesProvider.deleteLikeProvider(
+                                        DeleteLikeParams(
+                                          likeId: comments[index].commentLikeId,
+                                          threadId: comments[index].threadId,
+                                        ),
+                                      ).future);
+                                    }
+                                    ref.invalidate(ReplyProvider.getAllCommentsProvider(brief.id));
+                                  } catch (e) {
+                                    log(e.toString());
+                                  }
+                                },
+                                onDMTap: (p0) async {
+                                  var isChatCreated = await ref.watch(
+                                    ChatProvider.createNewChatProvider(
+                                      CreateNewChatParams(
+                                        receiverId: comments[index].userId!,
+                                        senderId: userDetails['user_id']!,
+                                      ),
+                                    ).future,
+                                  );
 
-                                        if (isChatCreated == true) {
-                                          ChatUserModel chatUserModel = await ref.watch(
-                                            getDMUserProvider(
-                                              receiverId: comments[index].userId!,
-                                              senderId: userDetails['user_id']!,
-                                            ).future,
-                                          );
-                                          context.pushNamed(
-                                            ChatScreen.routeName,
-                                            extra: chatUserModel,
-                                          );
-                                        }
-                                      },
-                                      commentModel: comments[index],
-                                      loggedInUserId: userDetails['user_id'],
+                                  if (isChatCreated == true) {
+                                    ChatUserModel chatUserModel = await ref.watch(
+                                      ChatProvider.getDMUserProvider(
+                                        GetDMUserParams(
+                                          receiverId: comments[index].userId!,
+                                          senderId: userDetails['user_id']!,
+                                        ),
+                                      ).future,
+                                    );
+                                    context.pushNamed(
+                                      ChatScreen.routeName,
+                                      extra: chatUserModel,
                                     );
                                   }
                                 },
+                                commentModel: comments[index],
+                                loggedInUserId: userDetails['user_id'],
                               );
                             },
                           );
                         },
                         error: (error, stackTrace) {
-                          return Center(child: Text('Error: $error'));
+                          if (error is AppError) {
+                            return Center(
+                              child: Text(
+                                error.errorMessage.toString(),
+                                style: Theme.of(context).textTheme.bodyLarge!.copyWith(color: Colors.black),
+                              ),
+                            );
+                          }
+                          return Center(
+                            child: Text('ERROR : ${error.toString()}'),
+                          );
                         },
                         loading: () => const Center(
-                          child: CircularProgressIndicator.adaptive(),
+                          child: CircularProgressIndicator(),
                         ),
                       ),
                     ),
@@ -323,30 +281,33 @@ class FeedScreen extends ConsumerWidget {
                                 elevation: 0,
                               ),
                               onPressed: () async {
-                                var commentPosted = await ref.read(postReplyProvider(
-                                  commentText: commentCont.text,
-                                  threadId: brief.id,
-                                  userId: userDetails['user_id'],
+                                var commentPosted = await ref.read(ReplyProvider.postReplyProvider(
+                                  PostReplyParams(
+                                    commentText: commentCont.text,
+                                    threadId: brief.id,
+                                    userId: userDetails['user_id'],
+                                  ),
                                 ).future);
                                 if (commentPosted == true) {
                                   if (brief.userId != userDetails['user_id']) {
-                                    await ref.read(postNewNotificationProvider(
-                                      requestBody: {
-                                        "type": 'brief comment',
-                                        "sender_id": userDetails['user_id'],
-                                        "sender_name": userDetails['user_name'],
-                                        "receiver_id": brief.userId,
-                                        "notification": "${userDetails['user_name']} commented on your brief.",
-                                        "thread_id": brief.id,
-                                      },
+                                    var requestBody = {
+                                      "type": 'brief comment',
+                                      "sender_id": userDetails['user_id'],
+                                      "sender_name": userDetails['user_name'],
+                                      "receiver_id": brief.userId,
+                                      "notification": "${userDetails['user_name']} commented on your brief.",
+                                      "thread_id": brief.id,
+                                    };
+                                    await ref.read(NotificationProvider.postNewNotificationProvider(
+                                      PostNewNotificationParams(requestBody: requestBody),
                                     ).future);
                                   }
                                   commentCont.clear();
                                 }
-                                ref.invalidate(getAllCommentsProvider(threadId: brief.id));
-                                ref.invalidate(getAllBriefsProvider);
-                                ref.invalidate(getUserBriefsProvider);
-                                ref.invalidate(getSingleBriefProvider(briefId: brief.id));
+                                ref.invalidate(ReplyProvider.getAllCommentsProvider(brief.id));
+                                ref.invalidate(BriefsProviders.getAllBriefsProvider);
+                                ref.invalidate(BriefsProviders.getUserBriefsProvider);
+                                ref.invalidate(BriefsProviders.getSingleBriefProvider(brief.id));
                               },
                               child: Text(
                                 "Post",
@@ -365,10 +326,20 @@ class FeedScreen extends ConsumerWidget {
                 );
               },
               error: (error, stackTrace) {
-                return Center(child: Text('Error: $error'));
+                if (error is AppError) {
+                  return Center(
+                    child: Text(
+                      error.errorMessage.toString(),
+                      style: Theme.of(context).textTheme.bodyLarge!.copyWith(color: Colors.black),
+                    ),
+                  );
+                }
+                return Center(
+                  child: Text('ERROR : ${error.toString()}'),
+                );
               },
               loading: () => const Center(
-                child: CircularProgressIndicator.adaptive(),
+                child: CircularProgressIndicator(),
               ),
             ),
           ),
@@ -377,7 +348,7 @@ class FeedScreen extends ConsumerWidget {
     );
   }
 
-  void shareBrief(BriefsModel brief) {
+  void shareBrief(BriefsResult brief) {
     Share.share(
       'Check out this brief by: ${brief.name![0].toUpperCase()}${brief.name!.substring(1)} at\n ${ApiConstants.shareBrief}/${brief.id}',
       subject: 'Check out this brief!',

@@ -1,6 +1,7 @@
 import 'dart:developer';
 import 'dart:io';
 
+import 'package:briefsea/presentation/params/user_profile_params.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show rootBundle;
@@ -52,7 +53,7 @@ class VerifyProfileScreen extends ConsumerWidget {
       _debouncer.run(() async {
         if (_formKey.currentState!.validate()) {
           if (userNameCont.text.isNotEmpty) {
-            var doesUsernameExist = await ref.read(checkUserNameProvider(userName: userNameCont.text).future);
+            var doesUsernameExist = await ref.read(UserProfileProvider.checkUserNameProvider(userNameCont.text).future);
 
             if (!doesUsernameExist) {
               AppUtility(context).message("Username already exists.");
@@ -94,24 +95,26 @@ class VerifyProfileScreen extends ConsumerWidget {
               }
               if (phoneNumberCont.text.isNotEmpty && locationCont.text.isNotEmpty && countryCodeCont.text.isNotEmpty) {
                 var verifyMessage = await ref.read(
-                  verifyProfileProvider(
-                    userId: userDetails['user_id']!,
-                    uName: userDetails['user_name']!,
-                    countryCode: int.tryParse(countryCodeCont.text),
-                    contact: int.tryParse(phoneNumberCont.text),
-                    company: companyCont.text,
-                    jobTitle: jobTitleCont.text,
-                    industry: selectedIndustry,
-                    location: locationCont.text,
-                    avatarSrc: uploadedAvatarKey ?? '',
-                    bannerSrc: uploadedBannerKey ?? '',
-                    jwtToken: userDetails['jwtToken'],
-                    devExpertise: selectedDevExpertise,
-                    markExpertise: selectedMarkExpertise,
-                    postingAs: userDetails['type']!,
-                    gender: selectedGender,
-                    username: userNameCont.text,
-                    aboutMe: aboutCont.text,
+                  UserProfileProvider.verifyProfileProvider(
+                    VerifyProfileParams(
+                      userId: userDetails['user_id']!,
+                      uName: userDetails['user_name']!,
+                      countryCode: int.tryParse(countryCodeCont.text),
+                      contact: int.tryParse(phoneNumberCont.text),
+                      company: companyCont.text,
+                      jobTitle: jobTitleCont.text,
+                      industry: selectedIndustry,
+                      location: locationCont.text,
+                      avatarSrc: uploadedAvatarKey ?? '',
+                      bannerSrc: uploadedBannerKey ?? '',
+                      jwtToken: userDetails['jwtToken'],
+                      devExpertise: selectedDevExpertise,
+                      markExpertise: selectedMarkExpertise,
+                      postingAs: userDetails['type']!,
+                      gender: selectedGender,
+                      username: userNameCont.text,
+                      aboutMe: aboutCont.text,
+                    ),
                   ).future,
                 );
                 if (verifyMessage == "Profile added successfully") {
@@ -463,18 +466,22 @@ class VerifyProfileScreen extends ConsumerWidget {
     final filePath = file.path;
 
     var uploadedBanner = await ref!.read(
-      uploadBannerProvider(
-        fileName: "placeholderBanner.jpg",
-        fileType: lookupMimeType(filePath),
-        userId: userDetails!['user_id'],
-        userType: userDetails['type'],
+      UserProfileProvider.uploadBannerProvider(
+        UploadBannerParams(
+          fileName: "placeholderBanner.jpg",
+          fileType: lookupMimeType(filePath),
+          userId: userDetails!['user_id'],
+          userType: userDetails['type'],
+        ),
       ).future,
     );
-    ref.read(uploadToAWSProvider(
-      url: uploadedBanner.url,
-      fileName: "placeholderBanner.jpg",
-      file: file,
-      fileType: lookupMimeType(filePath),
+    ref.read(UserProfileProvider.uploadToAWSProvider(
+      UploadToAWSParams(
+        url: uploadedBanner.url,
+        fileName: "placeholderBanner.jpg",
+        file: file,
+        fileType: lookupMimeType(filePath),
+      ),
     ));
     // ref.read(uploadedBannerKeyProvider.notifier).state = uploadedBanner.key;
     return uploadedBanner.key;
@@ -504,18 +511,22 @@ class VerifyProfileScreen extends ConsumerWidget {
     final filePath = file.path;
 
     var uploadedAvatar = await ref.read(
-      uploadAvatarProvider(
-        fileName: "placeholderAvatar.png",
-        fileType: lookupMimeType(filePath),
-        userId: userDetails!['user_id'],
-        userType: userDetails['type'],
+      UserProfileProvider.uploadAvatarProvider(
+        UploadAvatarParams(
+          fileName: "placeholderAvatar.png",
+          fileType: lookupMimeType(filePath),
+          userId: userDetails!['user_id'],
+          userType: userDetails['type'],
+        ),
       ).future,
     );
-    ref.read(uploadToAWSProvider(
-      url: uploadedAvatar.url,
-      fileName: "placeholderAvatar.png",
-      file: file,
-      fileType: lookupMimeType(filePath),
+    ref.read(UserProfileProvider.uploadToAWSProvider(
+      UploadToAWSParams(
+        url: uploadedAvatar.url,
+        fileName: "placeholderAvatar.png",
+        file: file,
+        fileType: lookupMimeType(filePath),
+      ),
     ));
     return uploadedAvatar.key;
   }
@@ -544,17 +555,21 @@ class _AvatarWidget extends ConsumerWidget {
           onTap: () async {
             final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
             if (pickedFile != null) {
-              var uploadedAvatar = await ref.read(uploadAvatarProvider(
-                fileName: pickedFile.name,
-                fileType: lookupMimeType(pickedFile.path),
-                userId: userDetails['user_id'],
-                userType: userDetails['type'],
+              var uploadedAvatar = await ref.read(UserProfileProvider.uploadAvatarProvider(
+                UploadAvatarParams(
+                  fileName: pickedFile.name,
+                  fileType: lookupMimeType(pickedFile.path),
+                  userId: userDetails['user_id'],
+                  userType: userDetails['type'],
+                ),
               ).future);
-              await ref.read(uploadToAWSProvider(
-                url: uploadedAvatar.url,
-                fileName: pickedFile.name,
-                file: File(pickedFile.path),
-                fileType: lookupMimeType(pickedFile.path),
+              await ref.read(UserProfileProvider.uploadToAWSProvider(
+                UploadToAWSParams(
+                  url: uploadedAvatar.url,
+                  fileName: pickedFile.name,
+                  file: File(pickedFile.path),
+                  fileType: lookupMimeType(pickedFile.path),
+                ),
               ).future);
               ref.read(uploadedAvatarKeyProvider.notifier).state = uploadedAvatar.key;
 
@@ -644,17 +659,21 @@ class _BannerWidget extends ConsumerWidget {
                     onPressed: () async {
                       final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
                       if (pickedFile != null) {
-                        var uploadedBanner = await ref.read(uploadBannerProvider(
-                          fileName: pickedFile.name,
-                          fileType: lookupMimeType(pickedFile.path),
-                          userId: userDetails['user_id'],
-                          userType: userDetails['type'],
+                        var uploadedBanner = await ref.read(UserProfileProvider.uploadBannerProvider(
+                          UploadBannerParams(
+                            fileName: pickedFile.name,
+                            fileType: lookupMimeType(pickedFile.path),
+                            userId: userDetails['user_id'],
+                            userType: userDetails['type'],
+                          ),
                         ).future);
-                        ref.read(uploadToAWSProvider(
-                          url: uploadedBanner.url,
-                          fileName: pickedFile.name,
-                          file: File(pickedFile.path),
-                          fileType: lookupMimeType(pickedFile.path),
+                        ref.read(UserProfileProvider.uploadToAWSProvider(
+                          UploadToAWSParams(
+                            url: uploadedBanner.url,
+                            fileName: pickedFile.name,
+                            file: File(pickedFile.path),
+                            fileType: lookupMimeType(pickedFile.path),
+                          ),
                         ));
                         // Update the avatar URL provider
                         ref.read(uploadedBannerKeyProvider.notifier).state = uploadedBanner.key;
@@ -684,17 +703,21 @@ class _BannerWidget extends ConsumerWidget {
                     onPressed: () async {
                       final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
                       if (pickedFile != null) {
-                        var uploadedBanner = await ref.read(uploadBannerProvider(
-                          fileName: pickedFile.name,
-                          fileType: lookupMimeType(pickedFile.path),
-                          userId: userDetails['user_id'],
-                          userType: userDetails['type'],
+                        var uploadedBanner = await ref.read(UserProfileProvider.uploadBannerProvider(
+                          UploadBannerParams(
+                            fileName: pickedFile.name,
+                            fileType: lookupMimeType(pickedFile.path),
+                            userId: userDetails['user_id'],
+                            userType: userDetails['type'],
+                          ),
                         ).future);
-                        ref.read(uploadToAWSProvider(
-                          url: uploadedBanner.url,
-                          fileName: pickedFile.name,
-                          file: File(pickedFile.path),
-                          fileType: lookupMimeType(pickedFile.path),
+                        ref.read(UserProfileProvider.uploadToAWSProvider(
+                          UploadToAWSParams(
+                            url: uploadedBanner.url,
+                            fileName: pickedFile.name,
+                            file: File(pickedFile.path),
+                            fileType: lookupMimeType(pickedFile.path),
+                          ),
                         ));
                         ref.read(uploadedBannerKeyProvider.notifier).state = uploadedBanner.key;
 

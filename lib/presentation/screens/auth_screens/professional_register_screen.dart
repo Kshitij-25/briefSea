@@ -217,7 +217,9 @@ class ProfessionalRegisterScreen extends ConsumerWidget {
             Container(
               color: Colors.black54,
               child: const Center(
-                child: CircularProgressIndicator.adaptive(),
+                child: CircularProgressIndicator(
+                  backgroundColor: Colors.white,
+                ),
               ),
             ),
         ],

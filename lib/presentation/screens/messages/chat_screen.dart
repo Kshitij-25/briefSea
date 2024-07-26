@@ -1,3 +1,5 @@
+import 'package:briefsea/presentation/params/chat_params.dart';
+import 'package:briefsea/presentation/params/notification_params.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -100,7 +102,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                   if (chatMessageState.isLoading)
                     const Expanded(
                       child: Center(
-                        child: CircularProgressIndicator.adaptive(),
+                        child: CircularProgressIndicator(),
                       ),
                     ),
                   if (chatMessageState.error != null)
@@ -180,12 +182,14 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                                   formattedTime,
                                 );
                                 var isMessageSend = await ref.read(
-                                  sendChatMessagesProvider(
-                                    conversationId: widget.chatUser.conversationId!,
-                                    messageText: sendMessage.text,
-                                    receiverId: widget.chatUser.id!,
-                                    senderId: userData['user_id']!,
-                                    typedAt: formattedTime,
+                                  ChatProvider.sendChatMessagesProvider(
+                                    SendChatMessagesParams(
+                                      conversationId: widget.chatUser.conversationId!,
+                                      messageText: sendMessage.text,
+                                      receiverId: widget.chatUser.id!,
+                                      senderId: userData['user_id']!,
+                                      typedAt: formattedTime,
+                                    ),
                                   ).future,
                                 );
                                 if (isMessageSend == true) {
@@ -198,17 +202,18 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                                       senderId: userData['user_id']!,
                                     ));
                                     sendMessage.clear();
-                                    ref.invalidate(getChatUsersListProvider(userId: ref.read(userDetailsProvider)['user_id']!));
+                                    ref.invalidate(ChatProvider.getChatUsersListProvider(ref.read(userDetailsProvider)['user_id']!));
+                                    var requestBody = {
+                                      "type": 'message received',
+                                      "sender_id": userData['user_id'],
+                                      "sender_name": userData['user_name'],
+                                      "receiver_id": widget.chatUser.id,
+                                      "notification": "New message received from ${userData['user_name']}.",
+                                      "conversation_id": widget.chatUser.conversationId,
+                                    };
                                     await ref.read(
-                                      postNewNotificationProvider(
-                                        requestBody: {
-                                          "type": 'message received',
-                                          "sender_id": userData['user_id'],
-                                          "sender_name": userData['user_name'],
-                                          "receiver_id": widget.chatUser.id,
-                                          "notification": "New message received from ${userData['user_name']}.",
-                                          "conversation_id": widget.chatUser.conversationId,
-                                        },
+                                      NotificationProvider.postNewNotificationProvider(
+                                        PostNewNotificationParams(requestBody: requestBody),
                                       ).future,
                                     );
                                   }
