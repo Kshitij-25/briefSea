@@ -102,7 +102,7 @@ class MyFeedNavigator extends ConsumerWidget {
                           context,
                           selectedImage: selectedImage,
                           postTextCont: postTextCont,
-                          postingAs: userData['firstName'],
+                          postingAs: userData['firstName'] == "" ? userData['user_name'] : userData['firstName'],
                           onVisbileSelect: (List<String?> values) {
                             ref.read(selectedVisibleToProvider.notifier).state = values.whereType<String>().toList();
                           },

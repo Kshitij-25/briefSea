@@ -2,11 +2,13 @@ import 'dart:developer';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../common/app_utils/app_utility.dart';
 import '../../common/app_utils/screen_size.dart';
 import '../../common/others/assets.dart';
+import '../../common/others/strings.dart';
 import '../../main.dart';
 import '../providers/auth_provider.dart';
 import '../providers/socket_provider.dart';
@@ -119,7 +121,46 @@ class HomeScreen extends ConsumerWidget {
                 size: 20 * ScaleSize.textScaleFactor(context),
               ),
               onPressed: () async {
-                await AppUtility(context).handleLogout(context, prefs, ref, false);
+                await showAdaptiveDialog<bool>(
+                  context: context,
+                  builder: (context) {
+                    return AlertDialog.adaptive(
+                      content: Text(
+                        Strings.logoutContent,
+                        style: TextStyle(color: Colors.black),
+                      ),
+                      title: const Text(
+                        Strings.logoutWarning,
+                        style: TextStyle(color: Colors.black),
+                      ),
+                      actions: [
+                        TextButton(
+                          style: TextButton.styleFrom(
+                            enableFeedback: true,
+                          ),
+                          onPressed: () {
+                            context.pop(false);
+                          },
+                          child: const Text('Cancel'),
+                        ),
+                        TextButton(
+                          style: TextButton.styleFrom(
+                            enableFeedback: true,
+                          ),
+                          onPressed: () async {
+                            await AppUtility(context).handleLogout(context, prefs, ref, false);
+                          },
+                          child: Text(
+                            'Logout',
+                            style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                                  color: Colors.black,
+                                ),
+                          ),
+                        ),
+                      ],
+                    );
+                  },
+                );
               },
             )
         ],

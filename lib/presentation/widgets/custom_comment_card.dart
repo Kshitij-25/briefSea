@@ -1,5 +1,6 @@
 import 'dart:math' as math;
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -188,7 +189,7 @@ class NetworkCommentAvatar extends ConsumerWidget {
           final avatarName = snapshot.data?.avatarSrc;
           return CircleAvatar(
             backgroundColor: userColor,
-            backgroundImage: avatarName != null && avatarName != '' ? NetworkImage(avatarName) : null,
+            backgroundImage: avatarName != null && avatarName != '' ? CachedNetworkImageProvider(avatarName) : null,
             radius: 15 * ScaleSize.textScaleFactor(context),
             child: avatarName == null || avatarName == ''
                 ? Text(

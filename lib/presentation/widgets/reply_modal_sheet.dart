@@ -87,6 +87,7 @@ Future<void> customReplyModalSheet(
                                       decoration: const InputDecoration.collapsed(
                                         hintText: "Reply to this comment",
                                       ),
+                                      style: Theme.of(context).textTheme.bodyLarge!.copyWith(color: Colors.black),
                                     ),
                                   ),
                                 ),

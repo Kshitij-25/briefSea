@@ -88,7 +88,7 @@ Future<void> customPostBriefModalSheet(
                                         radius: 20 * ScaleSize.textScaleFactor(context),
                                         backgroundColor: Theme.of(context).colorScheme.secondary,
                                         child: Text(
-                                          postingAs?[0].toUpperCase() ?? '',
+                                          postingAs == '' ? "" : postingAs?[0].toUpperCase() ?? '',
                                           style: Theme.of(context).textTheme.titleMedium,
                                           textScaler: TextScaler.linear(ScaleSize.textScaleFactor(context)),
                                         ),

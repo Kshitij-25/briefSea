@@ -1,6 +1,8 @@
 import 'package:briefsea/presentation/providers/notification_provider.dart';
+import 'package:briefsea/presentation/screens/my_feed/feed_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../common/app_utils/screen_size.dart';
@@ -101,7 +103,7 @@ class NotificationScreen extends ConsumerWidget {
                             return CustomNotificationTile(
                               notificationModel: notification[index],
                               onTap: () async {
-                                print("object");
+                                print(notification[index].type.toString() + "object");
                                 if (notification[index].type == "message received") {
                                   ref.read(currentIndexProvider.notifier).state = 1;
                                   notificationPageController!.jumpToPage(1);
@@ -116,6 +118,16 @@ class NotificationScreen extends ConsumerWidget {
                                     NotificationProvider.deleteNotificationProvider(notification[index].notificationId).future,
                                   );
                                   ref.invalidate(NotificationProvider.getAllNotificationsProvider);
+                                } else if (notification[index].type == 'brief comment') {
+                                  context.pushNamed(
+                                    FeedScreen.routeName,
+                                    extra: {'briefId': notification[index].threadId},
+                                  );
+                                } else if (notification[index].type == 'brief liked') {
+                                  context.pushNamed(
+                                    FeedScreen.routeName,
+                                    extra: {'briefId': notification[index].threadId},
+                                  );
                                 }
                               },
                               confirmDismiss: () async {

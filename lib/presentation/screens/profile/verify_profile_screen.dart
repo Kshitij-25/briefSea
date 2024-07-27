@@ -93,7 +93,14 @@ class VerifyProfileScreen extends ConsumerWidget {
               if (uploadedAvatarKey == '' || uploadedAvatarKey == null) {
                 uploadedAvatarKey = await sendDefaultAvatar(ref: ref, userDetails: userDetails);
               }
-              if (phoneNumberCont.text.isNotEmpty && locationCont.text.isNotEmpty && countryCodeCont.text.isNotEmpty) {
+              if (phoneNumberCont.text.isNotEmpty &&
+                  locationCont.text.isNotEmpty &&
+                  countryCodeCont.text.isNotEmpty &&
+                  selectedGender != null &&
+                  selectedGender != '' &&
+                  selectedIndustry.isNotEmpty &&
+                  selectedDevExpertise.isNotEmpty &&
+                  selectedMarkExpertise.isNotEmpty) {
                 var verifyMessage = await ref.read(
                   UserProfileProvider.verifyProfileProvider(
                     VerifyProfileParams(

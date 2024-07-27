@@ -271,6 +271,7 @@ class FeedScreen extends ConsumerWidget {
                                   decoration: const InputDecoration.collapsed(
                                     hintText: "Reply to this brief",
                                   ),
+                                  style: Theme.of(context).textTheme.bodyLarge!.copyWith(color: Colors.black),
                                 ),
                               ),
                             ),

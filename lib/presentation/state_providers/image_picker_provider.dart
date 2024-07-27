@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-final selectedAvatarImageProvider = StateProvider<String?>((ref) => null);
+final selectedAvatarImageProvider = StateProvider.autoDispose<String?>((ref) => null);
 
 final verifyAvatarImageProvider = StateProvider<File?>((ref) => null);
 

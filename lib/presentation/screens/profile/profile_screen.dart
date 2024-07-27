@@ -6,7 +6,6 @@ import 'package:briefsea/common/app_utils/screen_size.dart';
 import 'package:briefsea/common/others/assets.dart';
 import 'package:briefsea/common/others/strings.dart';
 import 'package:briefsea/data/core/api_constants.dart';
-import 'package:briefsea/data/models/image_model.dart';
 import 'package:briefsea/data/models/user_profile_model.dart';
 import 'package:briefsea/main.dart';
 import 'package:briefsea/presentation/providers/auth_provider.dart';
@@ -21,6 +20,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
 import '../../../data/core/app_error.dart';
+import '../../../data/models/image_model.dart';
 import 'edit_profile_screen.dart';
 
 class ProfileScreen extends ConsumerWidget {
@@ -33,22 +33,6 @@ class ProfileScreen extends ConsumerWidget {
   static const routeName = '/profileScreen';
   final bool isOtherProfile;
   final String? otherUserId;
-
-  Future<void> _initializeImageProviders(WidgetRef ref, UserProfileModel userDetails) async {
-    var avatarUrl = userDetails.avatarSrc != null && userDetails.avatarSrc! != ''
-        ? await ref.watch(UserProfileProvider.getImageProvider(userDetails.avatarSrc!).future)
-        : ImageModel();
-    var bannerUrl = userDetails.bannerSrc != null && userDetails.bannerSrc != ''
-        ? await ref.watch(UserProfileProvider.getImageProvider(userDetails.bannerSrc!).future)
-        : ImageModel();
-
-    if (avatarUrl.url != null && avatarUrl.url != '') {
-      ref.read(selectedAvatarImageProvider.notifier).state = avatarUrl.url;
-    }
-    if (bannerUrl.url != null && bannerUrl.url != '') {
-      ref.read(selectedBannerImageProvider.notifier).state = bannerUrl.url;
-    }
-  }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -92,195 +76,147 @@ class ProfileScreen extends ConsumerWidget {
                 ),
                 child: userDetails.when(
                   data: (userDetails) {
-                    return FutureBuilder(
-                      future: _initializeImageProviders(ref, userDetails),
-                      builder: (context, snapshot) {
-                        if (snapshot.connectionState == ConnectionState.waiting) {
-                          return const Center(
-                            child: CircularProgressIndicator(),
-                          );
-                        } else if (snapshot.hasError) {
-                          return Center(
-                            child: Text('Error: ${snapshot.error}'),
-                          );
-                        } else {
-                          return Column(
-                            children: [
-                              Column(
-                                children: [
-                                  Stack(
-                                    children: [
-                                      _BannerWidget(
-                                        userDetails: userData,
-                                        userProfileData: userDetails,
-                                        isOtherProfile: isOtherProfile,
-                                      ),
-                                      _AvatarWidget(
-                                        userDetails: userData,
-                                        userProfileData: userDetails,
-                                        isOtherProfile: isOtherProfile,
-                                      ),
-                                    ],
-                                  ),
-                                  _UserInfoDetails(
-                                    userProfileData: userDetails,
-                                  ),
-
-                                  // if (isOtherProfile != true)
-                                  //   const SizedBox(
-                                  //     height: 20,
-                                  //   ),
-                                  // if (isOtherProfile != true)
-                                  //   CustomElevatedButton(
-                                  //     width: ScreenSize.width(context) * 0.7,
-                                  //     onPressed: () {
-                                  //       GoRouter.of(context).push(
-                                  //         EditProfileScreen.routeName,
-                                  //         extra: userDetails,
-                                  //       );
-                                  //     },
-                                  //     buttonLabel: 'Edit Profile',
-                                  //   ),
-                                  // if (isOtherProfile != true)
-                                  //   const SizedBox(
-                                  //     height: 10,
-                                  //   ),
-                                  // if (isOtherProfile != true)
-                                  //   Padding(
-                                  //     padding: const EdgeInsets.all(10),
-                                  //     child: Row(
-                                  //       mainAxisAlignment: MainAxisAlignment.center,
-                                  //       children: [
-                                  //         GestureDetector(
-                                  //           onTap: () async {
-                                  //             await handleLogout(context, prefs, ref, false);
-                                  //           },
-                                  //           child: const Text('Logout'),
-                                  //         ),
-                                  //       ],
-                                  //     ),
-                                  //   )
-                                  // else
-                                  //   const SizedBox(height: 20),
-                                ],
+                    return Column(
+                      children: [
+                        Column(
+                          children: [
+                            Stack(
+                              children: [
+                                _BannerWidget(
+                                  userDetails: userData,
+                                  userProfileData: userDetails,
+                                  isOtherProfile: isOtherProfile,
+                                ),
+                                _AvatarWidget(
+                                  userDetails: userData,
+                                  userProfileData: userDetails,
+                                  isOtherProfile: isOtherProfile,
+                                ),
+                              ],
+                            ),
+                            _UserInfoDetails(
+                              userProfileData: userDetails,
+                            ),
+                          ],
+                        ),
+                        if (userDetails.aboutMe?.isNotEmpty == true) _AboutCard(userProfileData: userDetails),
+                        if (userDetails.postingAs != 'freelancer') _CompanyCard(userDetails),
+                        _ExpertiseCard(userProfileData: userDetails),
+                        const SizedBox(height: 20),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            _socialMedia(
+                              context,
+                              Assets.INSTA_LOGO,
+                              () async {
+                                if (await launchUrlString(
+                                  ApiConstants.instaUrl,
+                                  mode: LaunchMode.externalApplication,
+                                )) {
+                                  await launchUrlString(
+                                    ApiConstants.instaUrl,
+                                    mode: LaunchMode.externalApplication,
+                                  );
+                                } else {
+                                  throw 'There was a problem to open the url: ${ApiConstants.instaUrl}';
+                                }
+                              },
+                            ),
+                            const SizedBox(width: 15),
+                            Padding(
+                              padding: const EdgeInsets.only(bottom: 5),
+                              child: _socialMedia(
+                                context,
+                                Assets.PROFILE_LINKEDIN,
+                                () async {
+                                  if (await launchUrlString(
+                                    ApiConstants.linkedInUrl,
+                                    mode: LaunchMode.externalApplication,
+                                  )) {
+                                    await launchUrlString(
+                                      ApiConstants.linkedInUrl,
+                                      mode: LaunchMode.externalApplication,
+                                    );
+                                  } else {
+                                    throw 'There was a problem to open the url: ${ApiConstants.linkedInUrl}';
+                                  }
+                                },
                               ),
-                              if (userDetails.aboutMe?.isNotEmpty == true) _AboutCard(userProfileData: userDetails),
-                              if (userDetails.postingAs != 'freelancer') _CompanyCard(userDetails),
-                              _ExpertiseCard(userProfileData: userDetails),
-                              const SizedBox(height: 20),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  _socialMedia(
-                                    context,
-                                    Assets.INSTA_LOGO,
-                                    () async {
-                                      if (await launchUrlString(
-                                        ApiConstants.instaUrl,
-                                        mode: LaunchMode.externalApplication,
-                                      )) {
-                                        await launchUrlString(
-                                          ApiConstants.instaUrl,
-                                          mode: LaunchMode.externalApplication,
-                                        );
-                                      } else {
-                                        throw 'There was a problem to open the url: ${ApiConstants.instaUrl}';
-                                      }
-                                    },
-                                  ),
-                                  const SizedBox(width: 15),
-                                  Padding(
-                                    padding: const EdgeInsets.only(bottom: 5),
-                                    child: _socialMedia(
-                                      context,
-                                      Assets.PROFILE_LINKEDIN,
-                                      () async {
-                                        if (await launchUrlString(
-                                          ApiConstants.linkedInUrl,
-                                          mode: LaunchMode.externalApplication,
-                                        )) {
-                                          await launchUrlString(
-                                            ApiConstants.linkedInUrl,
-                                            mode: LaunchMode.externalApplication,
-                                          );
-                                        } else {
-                                          throw 'There was a problem to open the url: ${ApiConstants.linkedInUrl}';
-                                        }
-                                      },
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 5),
+                        Text(
+                          Strings.copyrightText,
+                          style: Theme.of(context).textTheme.bodySmall!.copyWith(color: Colors.black),
+                          textScaler: TextScaler.linear(ScaleSize.textScaleFactor(context)),
+                        ),
+                        if (isOtherProfile != true)
+                          Padding(
+                            padding: const EdgeInsets.only(top: 10),
+                            child: GestureDetector(
+                              onTap: () async {
+                                final deleteResponse = await showAdaptiveDialog<bool>(
+                                  context: context,
+                                  builder: (context) {
+                                    return AlertDialog.adaptive(
+                                      content: const Text(
+                                        Strings.deleteContent,
+                                        style: TextStyle(color: Colors.black),
+                                      ),
+                                      title: const Text(
+                                        Strings.deleteWarning,
+                                        style: TextStyle(color: Colors.black),
+                                      ),
+                                      actions: [
+                                        TextButton(
+                                          style: TextButton.styleFrom(
+                                            enableFeedback: true,
+                                          ),
+                                          onPressed: () {
+                                            context.pop(false);
+                                          },
+                                          child: const Text('Cancel'),
+                                        ),
+                                        TextButton(
+                                          style: TextButton.styleFrom(
+                                            enableFeedback: true,
+                                          ),
+                                          onPressed: () async {
+                                            final isAccountDeleted =
+                                                await ref.read(UserProfileProvider.deleteAccountProvider(userDetails.userId!).future);
+                                            if (isAccountDeleted == true) {
+                                              context.pop(true);
+                                            }
+                                          },
+                                          child: Text(
+                                            'Delete',
+                                            style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                                                  color: Colors.black,
+                                                ),
+                                          ),
+                                        ),
+                                      ],
+                                    );
+                                  },
+                                );
+                                log(deleteResponse.toString());
+                                if (deleteResponse == true) {
+                                  await AppUtility(context).handleLogout(context, prefs, ref, true);
+                                }
+                              },
+                              child: Text(
+                                'Delete Account',
+                                style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                                      color: Colors.black,
+                                      fontSize: 10,
                                     ),
-                                  ),
-                                ],
-                              ),
-                              const SizedBox(height: 5),
-                              Text(
-                                Strings.copyrightText,
-                                style: Theme.of(context).textTheme.bodySmall!.copyWith(color: Colors.black),
                                 textScaler: TextScaler.linear(ScaleSize.textScaleFactor(context)),
                               ),
-                              if (isOtherProfile != true)
-                                Padding(
-                                  padding: const EdgeInsets.only(top: 10),
-                                  child: GestureDetector(
-                                    onTap: () async {
-                                      final deleteResponse = await showAdaptiveDialog<bool>(
-                                        context: context,
-                                        builder: (context) {
-                                          return AlertDialog.adaptive(
-                                            content: const Text(
-                                              Strings.deleteContent,
-                                            ),
-                                            title: const Text(Strings.deleteWarning),
-                                            actions: [
-                                              TextButton(
-                                                style: TextButton.styleFrom(
-                                                  enableFeedback: true,
-                                                ),
-                                                onPressed: () {
-                                                  context.pop(false);
-                                                },
-                                                child: const Text('Cancel'),
-                                              ),
-                                              TextButton(
-                                                style: TextButton.styleFrom(
-                                                  enableFeedback: true,
-                                                ),
-                                                onPressed: () async {
-                                                  final isAccountDeleted =
-                                                      await ref.read(UserProfileProvider.deleteAccountProvider(userDetails.userId!).future);
-                                                  if (isAccountDeleted == true) {
-                                                    context.pop(true);
-                                                  }
-                                                },
-                                                child: Text(
-                                                  'Delete',
-                                                  style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                                                        color: Colors.black,
-                                                      ),
-                                                ),
-                                              ),
-                                            ],
-                                          );
-                                        },
-                                      );
-                                      log(deleteResponse.toString());
-                                      if (deleteResponse == true) {
-                                        await AppUtility(context).handleLogout(context, prefs, ref, true);
-                                      }
-                                    },
-                                    child: Text(
-                                      'Delete Account',
-                                      style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                                            color: Colors.black,
-                                            fontSize: 10,
-                                          ),
-                                      textScaler: TextScaler.linear(ScaleSize.textScaleFactor(context)),
-                                    ),
-                                  ),
-                                ),
-                            ],
-                          );
-                        }
-                      },
+                            ),
+                          ),
+                      ],
                     );
                   },
                   error: (error, stackTrace) {
@@ -611,63 +547,78 @@ class _BannerWidget extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    Future<void> _initializeImageProviders(WidgetRef ref, UserProfileModel userDetails) async {
+      var bannerUrl = userDetails.bannerSrc != null && userDetails.bannerSrc != ''
+          ? await ref.watch(UserProfileProvider.getImageProvider(userDetails.bannerSrc!).future)
+          : ImageModel();
+
+      if (bannerUrl.url != null && bannerUrl.url != '') {
+        ref.read(selectedBannerImageProvider.notifier).state = bannerUrl.url;
+      }
+    }
+
     final selectedBanner = ref.watch(selectedBannerImageProvider);
-    return Container(
-      width: ScreenSize.width(context),
-      height: ScreenSize.height(context) * 0.15,
-      decoration: BoxDecoration(
-        color: Colors.pink[100],
-        borderRadius: const BorderRadius.only(
-          topLeft: Radius.circular(40),
-          topRight: Radius.circular(40),
-        ),
-      ),
-      child: selectedBanner != null && userProfileData?.bannerSrc != ''
-          ? Stack(
-              children: [
-                ClipRRect(
-                  borderRadius: const BorderRadius.only(
-                    topLeft: Radius.circular(40),
-                    topRight: Radius.circular(40),
-                  ),
-                  child: SizedBox(
-                    width: ScreenSize.width(context),
-                    child: CachedNetworkImage(
-                      imageUrl: selectedBanner,
-                      fit: BoxFit.cover,
-                      useOldImageOnUrlChange: true,
-                      placeholder: (context, url) => const Center(
-                        child: CircularProgressIndicator(),
-                      ),
-                      errorWidget: (context, url, error) => const Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Icon(Icons.error),
-                          Icon(Icons.error),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            )
-          : Stack(
-              children: [
-                ClipRRect(
-                  borderRadius: const BorderRadius.only(
-                    topLeft: Radius.circular(40),
-                    topRight: Radius.circular(40),
-                  ),
-                  child: Image.asset(
-                    Assets.BANNER,
-                    fit: BoxFit.cover,
-                    width: ScreenSize.width(context),
-                  ),
-                ),
-              ],
+
+    return FutureBuilder(
+        future: _initializeImageProviders(ref, userProfileData!),
+        builder: (context, snapshot) {
+          return Container(
+            width: ScreenSize.width(context),
+            height: ScreenSize.height(context) * 0.15,
+            decoration: BoxDecoration(
+              color: Colors.pink[100],
+              borderRadius: const BorderRadius.only(
+                topLeft: Radius.circular(40),
+                topRight: Radius.circular(40),
+              ),
             ),
-    );
+            child: selectedBanner != null && userProfileData?.bannerSrc != ''
+                ? Stack(
+                    children: [
+                      ClipRRect(
+                        borderRadius: const BorderRadius.only(
+                          topLeft: Radius.circular(40),
+                          topRight: Radius.circular(40),
+                        ),
+                        child: SizedBox(
+                          width: ScreenSize.width(context),
+                          child: CachedNetworkImage(
+                            imageUrl: selectedBanner,
+                            fit: BoxFit.cover,
+                            useOldImageOnUrlChange: true,
+                            placeholder: (context, url) => const Center(
+                              child: CircularProgressIndicator(),
+                            ),
+                            errorWidget: (context, url, error) => const Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Icon(Icons.error),
+                                Icon(Icons.error),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  )
+                : Stack(
+                    children: [
+                      ClipRRect(
+                        borderRadius: const BorderRadius.only(
+                          topLeft: Radius.circular(40),
+                          topRight: Radius.circular(40),
+                        ),
+                        child: Image.asset(
+                          Assets.BANNER,
+                          fit: BoxFit.cover,
+                          width: ScreenSize.width(context),
+                        ),
+                      ),
+                    ],
+                  ),
+          );
+        });
   }
 }
 
@@ -686,82 +637,150 @@ class _AvatarWidget extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final userColor = _generateUserColor(userProfileData);
+
+    Future<void> _initializeImageProviders(WidgetRef ref, UserProfileModel userDetails) async {
+      var avatarUrl = userDetails.avatarSrc != null && userDetails.avatarSrc! != ''
+          ? await ref.watch(UserProfileProvider.getImageProvider(userDetails.avatarSrc!).future)
+          : ImageModel();
+
+      if (avatarUrl.url != null && avatarUrl.url != '') {
+        ref.read(selectedAvatarImageProvider.notifier).state = avatarUrl.url;
+      }
+    }
+
     final selectedAvatar = ref.watch(selectedAvatarImageProvider);
 
-    final random = math.Random(userProfileData?.userId.hashCode);
-    final userColor = Color((random.nextDouble() * 0xFFFFFF).toInt()).withOpacity(1);
-
-    return Align(
-      alignment: Alignment.centerLeft,
-      child: Padding(
-        padding: EdgeInsets.only(top: 65 * ScaleSize.textScaleFactor(context), left: 20),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Container(
-              padding: const EdgeInsets.all(5),
-              decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.surfaceContainer,
-                borderRadius: BorderRadius.circular(120),
-              ),
-              child: CircleAvatar(
-                backgroundColor: userColor,
-                radius: 65 * ScaleSize.textScaleFactor(context),
-                backgroundImage: selectedAvatar != '' && selectedAvatar != null && userProfileData?.avatarSrc != ''
-                    ? CachedNetworkImageProvider(selectedAvatar)
-                    : userProfileData?.gender == 'Male'
-                        ? const AssetImage(Assets.MALE)
-                        : userProfileData?.gender == 'Female'
-                            ? const AssetImage(Assets.FEMALE)
-                            : userProfileData?.gender == 'Others'
-                                ? const AssetImage(Assets.OTHERS)
-                                : null,
-                child: selectedAvatar == null && userProfileData?.gender == null
-                    ? Text(
-                        userProfileData?.name?[0].toUpperCase() ?? '',
-                        style: const TextStyle(color: Colors.white),
-                        textScaler: TextScaler.linear(
-                          3 * ScaleSize.textScaleFactor(context),
-                        ),
-                      )
-                    : const SizedBox.shrink(),
+    return FutureBuilder(
+      future: _initializeImageProviders(ref, userProfileData!),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
+        } else if (snapshot.hasError) {
+          return Center(
+            child: Text('Error: ${snapshot.error}'),
+          );
+        } else {
+          return Align(
+            alignment: Alignment.centerLeft,
+            child: Padding(
+              padding: EdgeInsets.only(top: 65 * ScaleSize.textScaleFactor(context), left: 20),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  GestureDetector(
+                    onTap: () async {
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return Dialog(
+                            backgroundColor: Colors.transparent,
+                            child: Container(
+                              padding: const EdgeInsets.all(10),
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  CircleAvatar(
+                                    backgroundColor: userColor,
+                                    radius: 150, // Adjust size for preview
+                                    backgroundImage: selectedAvatar != '' && selectedAvatar != null && userProfileData?.avatarSrc != ''
+                                        ? CachedNetworkImageProvider(selectedAvatar)
+                                        : userProfileData?.gender == 'Male'
+                                            ? const AssetImage(Assets.MALE)
+                                            : userProfileData?.gender == 'Female'
+                                                ? const AssetImage(Assets.FEMALE)
+                                                : userProfileData?.gender == 'Others'
+                                                    ? const AssetImage(Assets.OTHERS)
+                                                    : null,
+                                    child: selectedAvatar != null && selectedAvatar.isEmpty && userProfileData?.gender == null
+                                        ? Text(
+                                            userProfileData?.name?[0].toUpperCase() ?? '',
+                                            style: const TextStyle(color: Colors.white, fontSize: 50),
+                                          )
+                                        : const SizedBox.shrink(),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          );
+                        },
+                      );
+                    },
+                    child: Container(
+                      padding: const EdgeInsets.all(5),
+                      decoration: BoxDecoration(
+                        color: Theme.of(context).colorScheme.surfaceContainer,
+                        borderRadius: BorderRadius.circular(120),
+                      ),
+                      child: CircleAvatar(
+                        backgroundColor: userColor,
+                        radius: 65 * ScaleSize.textScaleFactor(context),
+                        backgroundImage: selectedAvatar != '' && selectedAvatar != null && userProfileData?.avatarSrc != ''
+                            ? CachedNetworkImageProvider(selectedAvatar)
+                            : userProfileData?.gender == 'Male'
+                                ? const AssetImage(Assets.MALE)
+                                : userProfileData?.gender == 'Female'
+                                    ? const AssetImage(Assets.FEMALE)
+                                    : userProfileData?.gender == 'Others'
+                                        ? const AssetImage(Assets.OTHERS)
+                                        : null,
+                        child: selectedAvatar == null && userProfileData?.gender == null
+                            ? Text(
+                                userProfileData?.name?[0].toUpperCase() ?? '',
+                                style: const TextStyle(color: Colors.white),
+                                textScaler: TextScaler.linear(
+                                  3 * ScaleSize.textScaleFactor(context),
+                                ),
+                              )
+                            : const SizedBox.shrink(),
+                      ),
+                    ),
+                  ),
+                  if (isOtherProfile != true)
+                    Padding(
+                      padding: const EdgeInsets.only(right: 10.0),
+                      child: Column(
+                        children: [
+                          SizedBox(
+                            height: 90 * ScaleSize.textScaleFactor(context),
+                          ),
+                          ElevatedButton.icon(
+                            onPressed: () {
+                              GoRouter.of(context).push(
+                                EditProfileScreen.routeName,
+                                extra: userProfileData,
+                              );
+                            },
+                            icon: Icon(
+                              Icons.mode_edit,
+                            ),
+                            label: Text(
+                              'Edit Profile',
+                              textScaler: TextScaler.linear(ScaleSize.textScaleFactor(context)),
+                            ),
+                            style: ElevatedButton.styleFrom(
+                              enableFeedback: true,
+                              backgroundColor: Theme.of(context).colorScheme.surfaceContainer,
+                              foregroundColor: Theme.of(context).colorScheme.secondary,
+                              elevation: 0,
+                            ),
+                          ),
+                        ],
+                      ),
+                    )
+                ],
               ),
             ),
-            if (isOtherProfile != true)
-              Padding(
-                padding: const EdgeInsets.only(right: 10.0),
-                child: Column(
-                  children: [
-                    SizedBox(
-                      height: 90 * ScaleSize.textScaleFactor(context),
-                    ),
-                    ElevatedButton.icon(
-                      onPressed: () {
-                        GoRouter.of(context).push(
-                          EditProfileScreen.routeName,
-                          extra: userProfileData,
-                        );
-                      },
-                      icon: Icon(
-                        Icons.mode_edit,
-                      ),
-                      label: Text(
-                        'Edit Profile',
-                        textScaler: TextScaler.linear(ScaleSize.textScaleFactor(context)),
-                      ),
-                      style: ElevatedButton.styleFrom(
-                        enableFeedback: true,
-                        backgroundColor: Theme.of(context).colorScheme.surfaceContainer,
-                        foregroundColor: Theme.of(context).colorScheme.secondary,
-                        elevation: 0,
-                      ),
-                    ),
-                  ],
-                ),
-              )
-          ],
-        ),
-      ),
+          );
+        }
+      },
     );
+  }
+
+  Color _generateUserColor(UserProfileModel? userProfileData) {
+    final random = math.Random(userProfileData?.userId.hashCode);
+    return Color((random.nextDouble() * 0xFFFFFF).toInt()).withOpacity(1);
   }
 }

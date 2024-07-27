@@ -1,6 +1,7 @@
 import 'dart:math' as math hide log;
 
 import 'package:briefsea/presentation/screens/profile/profile_screen.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -209,7 +210,7 @@ class NetworkAvatarWidget extends ConsumerWidget {
           final avatarName = snapshot.data?.avatarSrc;
           return CircleAvatar(
             backgroundColor: userColor,
-            backgroundImage: avatarName != null && avatarName != '' ? NetworkImage(avatarName) : null,
+            backgroundImage: avatarName != null && avatarName != '' ? CachedNetworkImageProvider(avatarName) : null,
             radius: 25 * ScaleSize.textScaleFactor(context),
             child: avatarName == null || avatarName == ''
                 ? Text(

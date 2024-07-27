@@ -39,12 +39,9 @@ class CustomElevatedButton extends StatelessWidget {
         onPressed: onPressed,
         label: Text(
           buttonLabel!,
-          // style: GoogleFonts.raleway(
-          //   color: Colors.black,
-          //   fontWeight: FontWeight.bold,
-          // ),
           style: Theme.of(context).textTheme.titleMedium!.copyWith(
                 color: Colors.black,
+                fontSize: 14,
               ),
           textScaler: TextScaler.linear(
             ScaleSize.textScaleFactor(context),

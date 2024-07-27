@@ -52,7 +52,7 @@ class ProfessionalRegisterScreen extends ConsumerWidget {
                           SizedBox(height: ScreenSize.height(context) * .15),
                           Text(
                             "Briefsea for Working Professionals",
-                            style: Theme.of(context).textTheme.bodyLarge!.copyWith(fontSize: 20),
+                            style: Theme.of(context).textTheme.bodyLarge!.copyWith(fontSize: 16),
                             textAlign: TextAlign.center,
                             textScaler: TextScaler.linear(ScaleSize.textScaleFactor(context)),
                           ),
@@ -157,7 +157,7 @@ class ProfessionalRegisterScreen extends ConsumerWidget {
                           SizedBox(height: ScreenSize.height(context) * .05),
                           Text(
                             "Agency, Freelancer or Existing User?",
-                            style: Theme.of(context).textTheme.bodyLarge,
+                            style: Theme.of(context).textTheme.bodyLarge!.copyWith(fontSize: 14),
                             textScaler: TextScaler.linear(ScaleSize.textScaleFactor(context)),
                             textAlign: TextAlign.center,
                           ),
@@ -200,7 +200,7 @@ class ProfessionalRegisterScreen extends ConsumerWidget {
                           SizedBox(height: ScreenSize.height(context) * .05),
                           Text(
                             Strings.professionalFooter,
-                            style: Theme.of(context).textTheme.bodyMedium,
+                            style: Theme.of(context).textTheme.bodyMedium!.copyWith(fontSize: 11),
                             textScaler: TextScaler.linear(ScaleSize.textScaleFactor(context)),
                             textAlign: TextAlign.center,
                           ),

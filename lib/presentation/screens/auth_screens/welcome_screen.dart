@@ -64,14 +64,14 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                     ),
                     Text(
                       Strings.welcomeText,
-                      style: Theme.of(context).textTheme.titleLarge!.copyWith(fontSize: 20),
+                      style: Theme.of(context).textTheme.titleLarge!.copyWith(fontSize: 18),
                       textScaler: TextScaler.linear(ScaleSize.textScaleFactor(context)),
                       textAlign: TextAlign.center,
                     ),
                     SizedBox(height: ScreenSize.height(context) * .05),
                     Text(
                       Strings.privacyPolicy,
-                      style: Theme.of(context).textTheme.bodySmall,
+                      style: Theme.of(context).textTheme.bodySmall!.copyWith(fontSize: 12),
                       textScaler: TextScaler.linear(ScaleSize.textScaleFactor(context)),
                       textAlign: TextAlign.center,
                     ),
