@@ -2,6 +2,7 @@ import 'package:briefsea/presentation/params/chat_params.dart';
 import 'package:briefsea/presentation/params/notification_params.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:intl/intl.dart';
 
@@ -13,6 +14,7 @@ import '../../providers/chat_provider.dart';
 import '../../providers/messages_list_provider.dart';
 import '../../providers/notification_provider.dart';
 import '../../providers/socket_provider.dart';
+import '../profile/profile_screen.dart';
 
 class ChatScreen extends ConsumerStatefulWidget {
   const ChatScreen({
@@ -64,13 +66,24 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.secondary,
-        title: Text(
-          widget.chatUser.name ?? "",
-          style: const TextStyle(
-            fontWeight: FontWeight.bold,
-            color: Colors.white,
+        title: GestureDetector(
+          onTap: () {
+            context.push(
+              ProfileScreen.routeName,
+              extra: {
+                'isOtherProfile': true,
+                'otherUserId': widget.chatUser.id,
+              },
+            );
+          },
+          child: Text(
+            widget.chatUser.name ?? "",
+            style: const TextStyle(
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
+            ),
+            textScaler: TextScaler.linear(ScaleSize.textScaleFactor(context)),
           ),
-          textScaler: TextScaler.linear(ScaleSize.textScaleFactor(context)),
         ),
         centerTitle: true,
         elevation: 0,

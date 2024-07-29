@@ -3,6 +3,7 @@ import 'dart:math' as math;
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
@@ -10,6 +11,7 @@ import '../../common/app_utils/screen_size.dart';
 import '../../data/models/comment_model.dart';
 import '../../data/models/image_model.dart';
 import '../providers/user_profile_provider.dart';
+import '../screens/profile/profile_screen.dart';
 
 class CustomCommentCard extends StatelessWidget {
   const CustomCommentCard({
@@ -48,11 +50,24 @@ class CustomCommentCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               commentModel!.userId != loggedInUserId
-                  ? Padding(
-                      padding: const EdgeInsets.only(right: 0.0),
-                      child: NetworkCommentAvatar(
-                        userColor: userColor,
-                        commentModel: commentModel,
+                  ? GestureDetector(
+                      onTap: () {
+                        if (isUserTrue != true) {
+                          context.push(
+                            ProfileScreen.routeName,
+                            extra: {
+                              'isOtherProfile': true,
+                              'otherUserId': commentModel!.userId,
+                            },
+                          );
+                        }
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.only(right: 0.0),
+                        child: NetworkCommentAvatar(
+                          userColor: userColor,
+                          commentModel: commentModel,
+                        ),
                       ),
                     )
                   : const SizedBox.shrink(),

@@ -17,6 +17,7 @@ import '../../presentation/screens/notification_screen.dart';
 import '../../presentation/screens/profile/edit_profile_screen.dart';
 import '../../presentation/screens/profile/profile_screen.dart';
 import '../../presentation/screens/profile/verify_profile_screen.dart';
+import '../../presentation/screens/terms_and_privacy_view.dart';
 
 class AppRouter {
   AppRouter._();
@@ -104,6 +105,13 @@ class AppRouter {
         path: EditProfileScreen.routeName,
         builder: (context, state) => EditProfileScreen(
           userProfileModel: state.extra! as UserProfileModel,
+        ),
+      ),
+      GoRoute(
+        name: TermsAndPrivacyView.routeName,
+        path: TermsAndPrivacyView.routeName,
+        builder: (context, state) => TermsAndPrivacyView(
+          webviewUrl: state.extra! as String,
         ),
       ),
     ],

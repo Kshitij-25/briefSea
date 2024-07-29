@@ -5,7 +5,7 @@ class Strings {
   const Strings._();
 
   static const String welcomeText = 'Instantly connect with\nAgencies, Freelancers & Vendors\nin Tech and Marketing';
-  static const String privacyPolicy = 'By continuing you agree to\nTerms of Use and Privacy Policy';
+  static const String privacyPolicy = 'By continuing you agree to';
 
   static const String agencyFooter = 'Instantly Connect with top freelancers and vendors\nin Tech and Marketing to get work done.';
   static const String freelancerFooter = 'Instantly discover and grab hot freelancing opportunities in Tech and Marketing.';

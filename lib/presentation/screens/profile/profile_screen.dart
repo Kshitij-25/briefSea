@@ -694,10 +694,10 @@ class _AvatarWidget extends ConsumerWidget {
                                                 : userProfileData?.gender == 'Others'
                                                     ? const AssetImage(Assets.OTHERS)
                                                     : null,
-                                    child: selectedAvatar != null && selectedAvatar.isEmpty && userProfileData?.gender == null
+                                    child: (selectedAvatar == null || selectedAvatar == '') && userProfileData?.gender == null
                                         ? Text(
                                             userProfileData?.name?[0].toUpperCase() ?? '',
-                                            style: const TextStyle(color: Colors.white, fontSize: 50),
+                                            style: TextStyle(color: Colors.white, fontSize: 100 * ScaleSize.textScaleFactor(context)),
                                           )
                                         : const SizedBox.shrink(),
                                   ),
@@ -717,7 +717,7 @@ class _AvatarWidget extends ConsumerWidget {
                       child: CircleAvatar(
                         backgroundColor: userColor,
                         radius: 65 * ScaleSize.textScaleFactor(context),
-                        backgroundImage: selectedAvatar != '' && selectedAvatar != null && userProfileData?.avatarSrc != ''
+                        backgroundImage: selectedAvatar != null && selectedAvatar != '' && userProfileData?.avatarSrc != ''
                             ? CachedNetworkImageProvider(selectedAvatar)
                             : userProfileData?.gender == 'Male'
                                 ? const AssetImage(Assets.MALE)
@@ -726,7 +726,7 @@ class _AvatarWidget extends ConsumerWidget {
                                     : userProfileData?.gender == 'Others'
                                         ? const AssetImage(Assets.OTHERS)
                                         : null,
-                        child: selectedAvatar == null && userProfileData?.gender == null
+                        child: (selectedAvatar == null || selectedAvatar == '') && userProfileData?.gender == null
                             ? Text(
                                 userProfileData?.name?[0].toUpperCase() ?? '',
                                 style: const TextStyle(color: Colors.white),

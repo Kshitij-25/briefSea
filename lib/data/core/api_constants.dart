@@ -8,6 +8,10 @@ class ApiConstants {
   static const instaUrl = 'https://www.instagram.com/brief.sea/';
   static const linkedInUrl = 'https://www.linkedin.com/company/briefsea/';
 
+  // Terms and Policy Links
+  static const termsOfUse = 'https://www.briefsea.com/terms';
+  static const privacyPolicy = 'https://www.briefsea.com/privacy-policy';
+
   // Base URLs
   // static const BASE_URL = 'https://briefsea-backend.onrender.com'; //Test Url
   static const BASE_URL = 'https://www.api.briefsea.com'; //Prod Url
