@@ -23,7 +23,7 @@ class UserProfileProvider {
     return UserProfileRepository(userProfileRemoteDataSource);
   });
 
-  static final getUserProfileProvider = FutureProvider<UserProfileModel>((ref) async {
+  static final getUserProfileProvider = FutureProvider.autoDispose<UserProfileModel>((ref) async {
     final userProfileRepository = ref.watch(userProfileRepositoryProvider);
     final eitherUserProfileOrError = await userProfileRepository.getUserProfile();
     return eitherUserProfileOrError!.fold(

@@ -54,6 +54,7 @@ class AppUtility {
     try {
       if (prefs != null) {
         await prefs.setBool('isLogin', false);
+        await prefs.clear();
         await GoogleSignIn().signOut(); // Sign out from GoogleSignIn
         await FirebaseAuth.instance.signOut();
         context.pushReplacementNamed(WelcomeScreen.routeName);

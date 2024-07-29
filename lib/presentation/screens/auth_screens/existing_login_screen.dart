@@ -50,18 +50,18 @@ class ExistingLoginScreen extends ConsumerWidget {
                         children: [
                           SizedBox(height: ScreenSize.height(context) * .2),
                           GestureDetector(
-                            // onTap: () {
-                            //   emailCont.text = "kshitij@briefsea.com";
-                            //   passCont.text = 'Kshitij@2201';
-                            // },
-                            // onLongPress: () {
-                            //   emailCont.text = "xalonev795@devncie.com";
-                            //   passCont.text = 'Test@1234';
-                            // },
-                            // onDoubleTap: () {
-                            //   emailCont.text = "rahul@briefsea.com";
-                            //   passCont.text = "Abcd@1234#";
-                            // },
+                            onTap: () {
+                              emailCont.text = "kshitij@briefsea.com";
+                              passCont.text = 'Kshitij@2201';
+                            },
+                            onLongPress: () {
+                              emailCont.text = "xalonev795@devncie.com";
+                              passCont.text = 'Test@1234';
+                            },
+                            onDoubleTap: () {
+                              emailCont.text = "anmol.pandey@urpopular.com";
+                              passCont.text = "Anmol@123";
+                            },
                             child: Text(
                               "Login as Existing User",
                               style: Theme.of(context).textTheme.titleLarge!.copyWith(fontSize: 24),
