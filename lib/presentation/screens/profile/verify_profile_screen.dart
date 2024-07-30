@@ -1,5 +1,6 @@
 import 'dart:developer';
 import 'dart:io';
+import 'dart:math' hide log;
 
 import 'package:briefsea/presentation/params/user_profile_params.dart';
 import 'package:flutter/cupertino.dart';
@@ -498,14 +499,28 @@ class VerifyProfileScreen extends ConsumerWidget {
     final gender = ref!.watch(selectedGenderProvider).selectedGender;
     String assetPath;
 
+    String _getRandomAsset(List<String> assets, Random random) {
+      int index = random.nextInt(assets.length);
+      return assets[index];
+    }
+
+    String _getAssetByGender(String? gender) {
+      Random random = Random();
+      if (gender == null) {
+        return Assets.PERSON;
+      } else if (gender == "Male") {
+        return _getRandomAsset(Assets.MALE_ASSETS, random);
+      } else if (gender == "Female") {
+        return _getRandomAsset(Assets.FEMALE_ASSETS, random);
+      } else {
+        return Assets.OTHERS;
+      }
+    }
+
     if (gender == null) {
-      assetPath = Assets.PERSON;
-    } else if (gender == "Male") {
-      assetPath = Assets.MALE;
-    } else if (gender == "Female") {
-      assetPath = Assets.FEMALE;
+      assetPath = _getAssetByGender(gender);
     } else {
-      assetPath = Assets.OTHERS;
+      assetPath = _getAssetByGender(gender);
     }
 
     final byteData = await rootBundle.load(assetPath);
@@ -621,16 +636,22 @@ class _AvatarWidget extends ConsumerWidget {
     );
   }
 
-  _getImageByGender(String? gender) {
+  ImageProvider _getImageByGender(String? gender) {
+    Random random = Random();
     if (gender == null) {
       return const AssetImage(Assets.PERSON);
     } else if (gender == "Male") {
-      return const AssetImage(Assets.MALE);
+      return AssetImage(_getRandomAsset(Assets.MALE_ASSETS, random));
     } else if (gender == "Female") {
-      return const AssetImage(Assets.FEMALE);
+      return AssetImage(_getRandomAsset(Assets.FEMALE_ASSETS, random));
     } else {
       return const AssetImage(Assets.OTHERS);
     }
+  }
+
+  String _getRandomAsset(List<String> assets, Random random) {
+    int index = random.nextInt(assets.length);
+    return assets[index];
   }
 }
 

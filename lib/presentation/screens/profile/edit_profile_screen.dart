@@ -314,6 +314,12 @@ class EditProfileScreen extends ConsumerWidget {
                     initialValue: userProfileModel.industry?.whereType<String>().toList() ?? [],
                     onTap: (List<String?> values) {
                       ref.read(selectedIndustriesProvider.notifier).state = values.whereType<String>().toList();
+                      // if (values.whereType<String>().isNotEmpty) {
+                      //   final nonNullValues = values.whereType<String>().toList();
+                      //   if (!userProfileModel.industry!.contains(nonNullValues)) {
+                      //     userProfileModel.industry?.addAll(nonNullValues);
+                      //   }
+                      // }
 
                       ref.invalidate(selectedDevExpertiseProvider);
                       ref.invalidate(selectedMarkExpertiseProvider);

@@ -26,22 +26,24 @@ import '../../widgets/custom_comment_card.dart';
 import '../../widgets/reply_modal_sheet.dart';
 import '../messages/chat_screen.dart';
 
-class FeedScreen extends ConsumerWidget {
-  FeedScreen({
-    super.key,
-    this.briefId,
-  });
+class FeedScreen extends ConsumerStatefulWidget {
+  FeedScreen({super.key, this.briefId});
 
   static const routeName = '/feedScreen';
 
   final String? briefId;
 
+  @override
+  ConsumerState<ConsumerStatefulWidget> createState() => _FeedScreenState();
+}
+
+class _FeedScreenState extends ConsumerState<FeedScreen> {
   final TextEditingController commentCont = TextEditingController();
   final TextEditingController replyCont = TextEditingController();
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    var brief = ref.watch(BriefsProviders.getSingleBriefProvider(briefId));
+  Widget build(BuildContext context) {
+    var singleBrief = ref.watch(BriefsProviders.getSingleBriefProvider(widget.briefId));
 
     final userDetails = ref.watch(userDetailsProvider);
     final textFieldFocusNode = ref.watch(textFieldFocusNodeProvider);
@@ -92,9 +94,12 @@ class FeedScreen extends ConsumerWidget {
               ),
               color: Colors.white,
             ),
-            child: brief.when(
+            child: singleBrief.when(
               data: (brief) {
-                final getComments = ref.watch(ReplyProvider.getAllCommentsProvider(brief!.id));
+                if (brief == null) {
+                  return Container();
+                }
+                final getComments = ref.watch(ReplyProvider.getAllCommentsProvider(brief.id));
                 return Column(
                   children: [
                     CustomBriefsCard(
@@ -108,18 +113,30 @@ class FeedScreen extends ConsumerWidget {
                         final focusNode = ref.read(textFieldFocusNodeProvider);
                         focusNode.requestFocus();
                       },
-                      onLikeTap: (brief) async {
+                      onLikeTap: (_) async {
+                        // final tempBrief = brief;
+                        // if (brief!.likeObj!.userId == null) {
+                        //   final data = brief!.likeObj?.copyWith(userId: userDetails['user_id']);
+                        //   brief = brief!.copyWith(likeObj: data, likesCount: brief!.likesCount! + 1);
+                        //   setState(() {});
+                        // } else {
+                        //   final data = brief!.likeObj?.copyWith(userId: null);
+                        //   brief = brief!.copyWith(likeObj: data, likesCount: brief!.likesCount! - 1);
+                        //   setState(() {});
+                        // }
                         try {
-                          if (brief!.likeObj!.id == null) {
-                            await ref.read(LikesProvider.postLikeProvider(
-                              PostLikeParams(
-                                threadId: brief.userId,
-                                type: userDetails['type'],
-                                uName: userDetails['user_name'],
-                                userId: userDetails['user_id'],
-                                replyId: null,
-                              ),
-                            ).future);
+                          if (brief.likeObj!.userId == null) {
+                            await ref.read(
+                              LikesProvider.postLikeProvider(
+                                PostLikeParams(
+                                  threadId: brief.id,
+                                  type: userDetails['type'],
+                                  uName: userDetails['user_name'],
+                                  userId: userDetails['user_id'],
+                                  replyId: null,
+                                ),
+                              ).future,
+                            );
                             var requestBody = {
                               "type": 'brief liked',
                               "sender_id": userDetails['user_id'],
@@ -146,6 +163,17 @@ class FeedScreen extends ConsumerWidget {
                           ref.invalidate(BriefsProviders.getSingleBriefProvider);
                         } catch (e) {
                           log(e.toString());
+                          //   if (tempBrief!.likeObj!.userId != null) {
+                          //     setState(() {
+                          //       final data = tempBrief.likeObj?.copyWith(userId: userDetails['user_id']);
+                          //       brief = tempBrief.copyWith(likeObj: data, likesCount: tempBrief.likesCount! + 1);
+                          //     });
+                          //   } else {
+                          //     setState(() {
+                          //       final data = tempBrief.likeObj?.copyWith(userId: null);
+                          //       brief = tempBrief.copyWith(likeObj: data, likesCount: tempBrief.likesCount! - 1);
+                          //     });
+                          //   }
                         }
                       },
                       onShareTap: (brief) {
@@ -173,28 +201,73 @@ class FeedScreen extends ConsumerWidget {
                                   );
                                 },
                                 onLikeTap: (p0) async {
+                                  final tempComment = comments[index];
+                                  if (comments[index].likeObj!.userId == null) {
+                                    setState(() {
+                                      final data = comments[index].likeObj?.copyWith(userId: userDetails['user_id']);
+                                      comments[index] = comments[index].copyWith(likeObj: data, likesCount: comments[index].likesCount! + 1);
+                                    });
+                                  } else {
+                                    setState(() {
+                                      final data = comments[index].likeObj?.copyWith(userId: null);
+                                      comments[index] = comments[index].copyWith(likeObj: data, likesCount: comments[index].likesCount! - 1);
+                                    });
+                                  }
                                   try {
-                                    if (!comments[index].isCommentLiked) {
-                                      await ref.read(LikesProvider.postLikeProvider(
-                                        PostLikeParams(
-                                          threadId: comments[index].threadId,
-                                          type: userDetails['type'],
-                                          uName: userDetails['user_name'],
-                                          userId: userDetails['user_id'],
-                                          replyId: comments[index].id,
-                                        ),
-                                      ).future);
+                                    if (tempComment.likeObj?.userId == null) {
+                                      await Future.delayed(Duration(milliseconds: 200));
+                                      // throw Exception();
+                                      await ref.read(
+                                        LikesProvider.postLikeProvider(
+                                          PostLikeParams(
+                                            threadId: comments[index].threadId,
+                                            type: userDetails['type'],
+                                            uName: userDetails['user_name'],
+                                            userId: userDetails['user_id'],
+                                            replyId: comments[index].id,
+                                          ),
+                                        ).future,
+                                      );
+                                      var requestBody = {
+                                        "type": 'Comment liked',
+                                        "sender_id": userDetails['user_id'],
+                                        "sender_name": userDetails['user_name'],
+                                        "receiver_id": comments[index].userId,
+                                        "notification": "${userDetails['user_name']} liked your comment.",
+                                        "thread_id": brief.id,
+                                        "reply_id": comments[index].id,
+                                      };
+                                      if (comments[index].userId != userDetails['user_id']) {
+                                        await ref.read(
+                                          NotificationProvider.postNewNotificationProvider(
+                                            PostNewNotificationParams(requestBody: requestBody),
+                                          ).future,
+                                        );
+                                      }
                                     } else {
-                                      await ref.read(LikesProvider.deleteLikeProvider(
-                                        DeleteLikeParams(
-                                          likeId: comments[index].commentLikeId,
-                                          threadId: comments[index].threadId,
-                                        ),
-                                      ).future);
+                                      await ref.read(
+                                        LikesProvider.deleteLikeProvider(
+                                          DeleteLikeParams(
+                                            likeId: comments[index].likeObj?.id,
+                                            threadId: comments[index].threadId,
+                                          ),
+                                        ).future,
+                                      );
                                     }
-                                    ref.invalidate(ReplyProvider.getAllCommentsProvider(brief.id));
+                                    // ref.invalidate(ReplyProvider.getAllCommentsProvider);
                                   } catch (e) {
                                     log(e.toString());
+                                    if (tempComment.likeObj?.userId != null) {
+                                      setState(() {
+                                        final data = tempComment.likeObj?.copyWith(userId: userDetails['user_id']);
+                                        comments[index] = tempComment.copyWith(likeObj: data, likesCount: tempComment.likesCount);
+                                      });
+                                    } else {
+                                      setState(() {
+                                        final data = tempComment.likeObj?.copyWith(userId: null);
+                                        comments[index] = tempComment.copyWith(likeObj: data, likesCount: tempComment.likesCount);
+                                      });
+                                    }
                                   }
                                 },
                                 onDMTap: (p0) async {

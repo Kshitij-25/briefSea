@@ -36,6 +36,7 @@ class CustomChatCards extends StatelessWidget {
                 chatUserModel?.name?[0].toUpperCase() ?? "",
                 style: const TextStyle(
                   color: Colors.white,
+                  fontSize: 22,
                 ),
                 textScaler: TextScaler.linear(ScaleSize.textScaleFactor(context)),
               ),

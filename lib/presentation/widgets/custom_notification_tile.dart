@@ -58,6 +58,7 @@ class CustomNotificationTile extends StatelessWidget {
             notificationModel.senderName?[0] ?? '',
             style: const TextStyle(
               color: Colors.white,
+              fontSize: 22,
             ),
             textScaler: TextScaler.linear(ScaleSize.textScaleFactor(context)),
           ),

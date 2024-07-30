@@ -17,4 +17,27 @@ class Assets {
   static const BANNER = 'assets/logos/default-banner.jpg';
   static const COMPANY_ICON = 'assets/icons/company.svg';
   static const logoSmall = 'assets/logos/logo_small.png';
+
+  // List of assets for MALE and FEMALE
+  static const List<String> MALE_ASSETS = [
+    'assets/icons/boy.png',
+    'assets/icons/bussiness-man.png',
+    'assets/icons/man-2.png',
+    'assets/icons/man-3.png',
+    'assets/icons/man-4.png',
+    'assets/icons/man.png',
+    'assets/icons/write.png',
+    'assets/icons/writing.png',
+  ];
+
+  static const List<String> FEMALE_ASSETS = [
+    'assets/icons/female-user.png',
+    'assets/icons/woman-2.png',
+    'assets/icons/woman-3.png',
+    'assets/icons/woman-4.png',
+    'assets/icons/woman-5.png',
+    'assets/icons/woman-6.png',
+    'assets/icons/woman.png',
+    'assets/icons/worker.png',
+  ];
 }

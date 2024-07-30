@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:briefsea/presentation/params/chat_params.dart';
 import 'package:briefsea/presentation/params/notification_params.dart';
 import 'package:flutter/cupertino.dart';
@@ -140,11 +142,11 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                       itemBuilder: (context, index) {
                         if (chatMessageState.chatMessages?[index].senderId == userData['user_id']) {
                           return _SentMessage(
-                            message: chatMessageState.chatMessages?[index].messageText ?? "",
+                            chatMessageModel: chatMessageState.chatMessages?[index],
                           );
                         } else {
                           return _ReceivedMessage(
-                            message: chatMessageState.chatMessages?[index].messageText ?? "",
+                            chatMessageModel: chatMessageState.chatMessages?[index],
                           );
                         }
                       },
@@ -168,16 +170,22 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                           //   icon: const Icon(CupertinoIcons.photo),
                           // ),
                           Expanded(
-                            child: TextField(
-                              controller: sendMessage,
-                              textCapitalization: TextCapitalization.sentences,
-                              decoration: const InputDecoration.collapsed(
-                                hintText: "Send a message...",
-                                hintStyle: TextStyle(
-                                  color: Colors.black26,
+                            child: Padding(
+                              padding: const EdgeInsets.only(top: 5, left: 5, right: 5, bottom: 0),
+                              child: TextField(
+                                controller: sendMessage,
+                                textCapitalization: TextCapitalization.sentences,
+                                decoration: const InputDecoration.collapsed(
+                                  hintText: "Send a message...",
+                                  hintStyle: TextStyle(
+                                    color: Colors.black26,
+                                  ),
                                 ),
+                                maxLines: 5,
+                                minLines: 1,
+                                keyboardType: TextInputType.multiline,
+                                style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: Colors.black),
                               ),
-                              style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: Colors.black),
                             ),
                           ),
                           IconButton(
@@ -255,10 +263,10 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
 
 class _SentMessage extends StatelessWidget {
   const _SentMessage({
-    required this.message,
+    required this.chatMessageModel,
   });
 
-  final String message;
+  final ChatMessageModel? chatMessageModel;
 
   @override
   Widget build(BuildContext context) {
@@ -278,13 +286,39 @@ class _SentMessage extends StatelessWidget {
                   bottomRight: Radius.circular(18),
                 ),
               ),
-              child: Text(
-                message,
-                style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                      color: Colors.white,
-                      fontSize: 14 * ScaleSize.textScaleFactor(context),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  ConstrainedBox(
+                    constraints: BoxConstraints.fromViewConstraints(
+                      ViewConstraints(
+                        maxWidth: ScreenSize.width(context) * 0.65,
+                      ),
                     ),
-                textScaler: TextScaler.linear(ScaleSize.textScaleFactor(context)),
+                    child: Text(
+                      chatMessageModel?.messageText ?? "",
+                      style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                            color: Colors.white,
+                            fontSize: 14 * ScaleSize.textScaleFactor(context),
+                          ),
+                      textScaler: TextScaler.linear(ScaleSize.textScaleFactor(context)),
+                      maxLines: 1000,
+                      softWrap: true,
+                    ),
+                  ),
+                  SizedBox(
+                    width: 10 * ScaleSize.textScaleFactor(context),
+                  ),
+                  Text(
+                    DateFormat('HH:mm').format(DateFormat('M/d/yyyy, h:mm:ss a').parse(chatMessageModel?.typedAt ?? '')),
+                    style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                          color: Colors.white,
+                          fontSize: 8 * ScaleSize.textScaleFactor(context),
+                        ),
+                    textScaler: TextScaler.linear(ScaleSize.textScaleFactor(context)),
+                  ),
+                ],
               ),
             ),
           ),
@@ -307,10 +341,10 @@ class _SentMessage extends StatelessWidget {
 
 class _ReceivedMessage extends StatelessWidget {
   const _ReceivedMessage({
-    required this.message,
+    required this.chatMessageModel,
   });
 
-  final String message;
+  final ChatMessageModel? chatMessageModel;
 
   @override
   Widget build(BuildContext context) {
@@ -330,13 +364,39 @@ class _ReceivedMessage extends StatelessWidget {
                   bottomRight: Radius.circular(18),
                 ),
               ),
-              child: Text(
-                message,
-                style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                      color: Colors.black,
-                      fontSize: 14 * ScaleSize.textScaleFactor(context),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  ConstrainedBox(
+                    constraints: BoxConstraints.fromViewConstraints(
+                      ViewConstraints(
+                        maxWidth: ScreenSize.width(context) * 0.65,
+                      ),
                     ),
-                textScaler: TextScaler.linear(ScaleSize.textScaleFactor(context)),
+                    child: Text(
+                      chatMessageModel?.messageText ?? "",
+                      style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                            color: Colors.black,
+                            fontSize: 14 * ScaleSize.textScaleFactor(context),
+                          ),
+                      maxLines: 1000,
+                      softWrap: true,
+                      textScaler: TextScaler.linear(ScaleSize.textScaleFactor(context)),
+                    ),
+                  ),
+                  SizedBox(
+                    width: 10 * ScaleSize.textScaleFactor(context),
+                  ),
+                  Text(
+                    DateFormat('HH:mm').format(DateFormat('M/d/yyyy, h:mm:ss a').parse(chatMessageModel?.typedAt ?? '')),
+                    style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                          color: Colors.black,
+                          fontSize: 8 * ScaleSize.textScaleFactor(context),
+                        ),
+                    textScaler: TextScaler.linear(ScaleSize.textScaleFactor(context)),
+                  ),
+                ],
               ),
             ),
           ),

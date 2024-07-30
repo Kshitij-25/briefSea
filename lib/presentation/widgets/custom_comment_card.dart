@@ -3,10 +3,13 @@ import 'dart:math' as math;
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_linkify/flutter_linkify.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:timeago/timeago.dart' as timeago;
+import 'package:url_launcher/url_launcher.dart';
 
+import '../../common/app_utils/app_utility.dart';
 import '../../common/app_utils/screen_size.dart';
 import '../../data/models/comment_model.dart';
 import '../../data/models/image_model.dart';
@@ -125,13 +128,22 @@ class CustomCommentCard extends StatelessWidget {
                         width: ScreenSize.width(context) * 0.77,
                         child: Padding(
                           padding: const EdgeInsets.symmetric(vertical: 10.0),
-                          child: Text(
-                            commentModel?.commentText ?? "",
+                          child: Linkify(
+                            text: commentModel?.commentText ?? "",
                             style: const TextStyle(
                               color: Colors.black,
                             ),
                             overflow: TextOverflow.ellipsis,
                             maxLines: 5000,
+                            onOpen: (link) async {
+                              final url = link.url;
+                              if (await canLaunchUrl(Uri.parse(url))) {
+                                await launchUrl(Uri.parse(url));
+                              } else {
+                                print('Could not launch $url');
+                                AppUtility(context).message('Could not launch the URL.');
+                              }
+                            },
                           ),
                         ),
                       ),
@@ -155,7 +167,7 @@ class CustomCommentCard extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 _BriefLikeButton(
-                  isLiked: commentModel?.likeObj?.id != null ? true : false,
+                  isLiked: commentModel?.likeObj?.userId != null ? true : false,
                   iconLabel:
                       (commentModel?.likesCount != null) ? (commentModel!.likesCount == 0 ? 'Like' : "${commentModel!.likesCount} Likes") : '-',
                   onPressed: () => onLikeTap(commentModel),
@@ -197,9 +209,12 @@ class NetworkCommentAvatar extends ConsumerWidget {
       future: _initializeCommentImageProviders(ref, commentModel!),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return const SizedBox.shrink();
+          return CircleAvatar(
+            backgroundColor: userColor,
+            radius: 15 * ScaleSize.textScaleFactor(context),
+          );
         } else if (snapshot.hasError) {
-          return Center(child: Text('Error: ${snapshot.error}'));
+          return Center(child: Icon(Icons.error, color: Colors.red));
         } else {
           final avatarName = snapshot.data?.avatarSrc;
           return CircleAvatar(

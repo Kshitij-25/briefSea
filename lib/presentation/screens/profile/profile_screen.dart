@@ -655,8 +655,25 @@ class _AvatarWidget extends ConsumerWidget {
       future: _initializeImageProviders(ref, userProfileData!),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Center(
-            child: CircularProgressIndicator(),
+          return Align(
+            alignment: Alignment.centerLeft,
+            child: Padding(
+              padding: EdgeInsets.only(top: 65 * ScaleSize.textScaleFactor(context), left: 20),
+              child: Container(
+                padding: const EdgeInsets.all(5),
+                decoration: BoxDecoration(
+                  color: Theme.of(context).colorScheme.surfaceContainer,
+                  borderRadius: BorderRadius.circular(120),
+                ),
+                child: CircleAvatar(
+                  backgroundColor: userColor,
+                  radius: 65 * ScaleSize.textScaleFactor(context),
+                  child: Center(
+                    child: CircularProgressIndicator(),
+                  ),
+                ),
+              ),
+            ),
           );
         } else if (snapshot.hasError) {
           return Center(

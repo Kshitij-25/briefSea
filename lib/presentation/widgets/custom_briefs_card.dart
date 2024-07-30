@@ -4,10 +4,13 @@ import 'package:briefsea/presentation/screens/profile/profile_screen.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_linkify/flutter_linkify.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:timeago/timeago.dart' as timeago;
+import 'package:url_launcher/url_launcher.dart';
 
+import '../../common/app_utils/app_utility.dart';
 import '../../common/app_utils/screen_size.dart';
 import '../../data/models/briefs_result.dart';
 import '../../data/models/image_model.dart';
@@ -146,12 +149,31 @@ class CustomBriefsCard extends StatelessWidget {
               ),
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 10.0),
-                child: Text(
-                  brief?.postText ?? "",
+                child: Linkify(
+                  text: brief?.postText ?? "",
                   style: Theme.of(context).textTheme.bodySmall!.copyWith(color: Theme.of(context).colorScheme.onSurface),
                   maxLines: maxLine ?? 6,
-                  textScaler: TextScaler.linear(ScaleSize.textScaleFactor(context)),
+                  // textScaler: TextScaler.linear(ScaleSize.textScaleFactor(context)),
+                  // linkStyle: TextStyle(
+                  //   color: Theme.of(context).colorScheme.,
+                  //   decoration: TextDecoration.underline,
+                  // ),
                   overflow: TextOverflow.ellipsis,
+                  options: LinkifyOptions(
+                    removeWww: true,
+                    // humanize: true,
+                    // excludeLastPeriod: true,
+                    // looseUrl: true,
+                  ),
+                  onOpen: (link) async {
+                    final url = link.url;
+                    if (await canLaunchUrl(Uri.parse(url))) {
+                      await launchUrl(Uri.parse(url));
+                    } else {
+                      print('Could not launch $url');
+                      AppUtility(context).message('Could not launch the URL.');
+                    }
+                  },
                 ),
               ),
               if (cardVisible == false && brief?.imgSrc != null && (brief?.imgSrc != ""))
@@ -203,9 +225,12 @@ class NetworkAvatarWidget extends ConsumerWidget {
     return FutureBuilder(
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return const SizedBox.shrink();
+          return CircleAvatar(
+            backgroundColor: userColor,
+            radius: 25 * ScaleSize.textScaleFactor(context),
+          );
         } else if (snapshot.hasError) {
-          return Center(child: Text('Error: ${snapshot.error}'));
+          return Center(child: Icon(Icons.error, color: Colors.red));
         } else {
           final avatarName = snapshot.data?.avatarSrc;
           return CircleAvatar(
@@ -215,7 +240,9 @@ class NetworkAvatarWidget extends ConsumerWidget {
             child: avatarName == null || avatarName == ''
                 ? Text(
                     brief?.name?[0] ?? "",
-                    style: Theme.of(context).textTheme.titleMedium,
+                    style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                          fontSize: 22,
+                        ),
                     textScaler: TextScaler.linear(ScaleSize.textScaleFactor(context)),
                   )
                 : const SizedBox.shrink(),
