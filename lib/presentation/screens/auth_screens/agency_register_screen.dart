@@ -1,6 +1,7 @@
 // ignore_for_file: no_leading_underscores_for_local_identifiers
 
 import 'package:briefsea/common/others/strings.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
@@ -10,6 +11,7 @@ import '../../../common/app_utils/screen_size.dart';
 import '../../../common/app_utils/validation_utils.dart';
 import '../../../common/enums/enums.dart';
 import '../../providers/auth_provider.dart';
+import '../../state_providers/password_change_notifier.dart';
 import '../../widgets/custom_back_button.dart';
 import '../../widgets/custom_elevated_button.dart';
 import '../../widgets/custom_shape_widget.dart';
@@ -30,6 +32,7 @@ class AgencyRegisterScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final registerState = ref.watch(registerNotifierProvider);
+    final passNotifier = ref.watch(passwordNotifierProvider);
     return GestureDetector(
       onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
       child: Scaffold(
@@ -102,7 +105,19 @@ class AgencyRegisterScreen extends ConsumerWidget {
                             CustomTextFormField(
                               hintText: "Enter Password",
                               controller: agencyPass,
-                              obscureText: true,
+                              obscureText: passNotifier.obscureAgencyPassword,
+                              suffixIcon: IconButton(
+                                onPressed: () {
+                                  passNotifier.obscureAgencyPassword = !passNotifier.obscureAgencyPassword;
+                                },
+                                icon: Padding(
+                                  padding: const EdgeInsets.symmetric(horizontal: 10),
+                                  child: Icon(
+                                    !passNotifier.obscureAgencyPassword ? CupertinoIcons.eye_slash_fill : CupertinoIcons.eye_fill,
+                                    size: 20 * ScaleSize.textScaleFactor(context),
+                                  ),
+                                ),
+                              ),
                               textInputAction: TextInputAction.next,
                               maxLines: 1,
                               validator: (value) {
@@ -119,7 +134,19 @@ class AgencyRegisterScreen extends ConsumerWidget {
                             CustomTextFormField(
                               hintText: "Confirm Password",
                               controller: agencyConfirmPass,
-                              obscureText: true,
+                              obscureText: passNotifier.obscureAgencyConfirmPassword,
+                              suffixIcon: IconButton(
+                                onPressed: () {
+                                  passNotifier.obscureAgencyConfirmPassword = !passNotifier.obscureAgencyConfirmPassword;
+                                },
+                                icon: Padding(
+                                  padding: const EdgeInsets.symmetric(horizontal: 10),
+                                  child: Icon(
+                                    !passNotifier.obscureAgencyConfirmPassword ? CupertinoIcons.eye_slash_fill : CupertinoIcons.eye_fill,
+                                    size: 20 * ScaleSize.textScaleFactor(context),
+                                  ),
+                                ),
+                              ),
                               textInputAction: TextInputAction.done,
                               maxLines: 1,
                               validator: (value) {
@@ -187,10 +214,10 @@ class AgencyRegisterScreen extends ConsumerWidget {
                                   if (_formKey.currentState!.validate()) {
                                     // Proceed with registration if validation passes
                                     await ref.read(registerNotifierProvider.notifier).registerUser(
-                                          firstName: agencyFirstName.text,
-                                          lastName: agencyLastName.text,
-                                          email: agencyEmail.text,
-                                          password: agencyPass.text,
+                                          firstName: agencyFirstName.text.trim(),
+                                          lastName: agencyLastName.text.trim(),
+                                          email: agencyEmail.text.trim(),
+                                          password: agencyPass.text.trim(),
                                           type: "Agency",
                                           subType: "",
                                           ref: ref,

@@ -21,9 +21,8 @@ import '../../widgets/post_brief_modal_sheet.dart';
 import 'feed_screen.dart';
 
 class MyBriefsScreen extends ConsumerWidget {
-  MyBriefsScreen({super.key, this.pageController});
+  MyBriefsScreen({super.key});
 
-  final PageController? pageController;
   final TextEditingController postEditController = TextEditingController();
 
   @override
@@ -249,7 +248,7 @@ class MyBriefsScreen extends ConsumerWidget {
                                                       uname: filteredBriefs[index]!.name!,
                                                       type: filteredBriefs[index]!.type!,
                                                       category: selectedCategory,
-                                                      postText: postText,
+                                                      postText: postText.trim(),
                                                       imgSrc: filteredBriefs[index]!.imgSrc!,
                                                       avatarSrc: filteredBriefs[index]!.avatarSrc!,
                                                       createdAt: filteredBriefs[index]!.createdAt!,
@@ -275,10 +274,51 @@ class MyBriefsScreen extends ConsumerWidget {
                                           },
                                         );
                                       } else if (value == "delete") {
-                                        var isDeleted = await ref.watch(BriefsProviders.deleteBriefProvider(filteredBriefs[index]?.id).future);
-                                        if (isDeleted == true) {
-                                          ref.invalidate(BriefsProviders.getUserBriefsProvider);
-                                        }
+                                        await showAdaptiveDialog<bool>(
+                                          context: context,
+                                          builder: (context) {
+                                            return AlertDialog.adaptive(
+                                              content: const Text(
+                                                'Deleting this brief will permanently remove it from the system. This action cannot be undone.',
+                                                style: TextStyle(color: Colors.black),
+                                              ),
+                                              title: const Text(
+                                                'Are you sure you want to delete this brief?',
+                                                style: TextStyle(color: Colors.black),
+                                              ),
+                                              actions: [
+                                                TextButton(
+                                                  style: TextButton.styleFrom(
+                                                    enableFeedback: true,
+                                                  ),
+                                                  onPressed: () {
+                                                    context.pop(false);
+                                                  },
+                                                  child: const Text('Cancel'),
+                                                ),
+                                                TextButton(
+                                                  style: TextButton.styleFrom(
+                                                    enableFeedback: true,
+                                                  ),
+                                                  onPressed: () async {
+                                                    var isDeleted =
+                                                        await ref.watch(BriefsProviders.deleteBriefProvider(filteredBriefs[index]?.id).future);
+                                                    if (isDeleted == true) {
+                                                      ref.invalidate(BriefsProviders.getUserBriefsProvider);
+                                                      context.pop();
+                                                    }
+                                                  },
+                                                  child: Text(
+                                                    'Delete',
+                                                    style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                                                          color: Colors.black,
+                                                        ),
+                                                  ),
+                                                ),
+                                              ],
+                                            );
+                                          },
+                                        );
                                       } else if (value == "visible") {
                                         var isVisible = await ref.watch(
                                           BriefsProviders.editBriefProvider(

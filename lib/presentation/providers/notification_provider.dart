@@ -30,7 +30,7 @@ class NotificationProvider {
     );
   });
 
-  static final getAllNotificationsProvider = FutureProvider<List<NotificationModel>>((ref) async {
+  static final getAllNotificationsProvider = FutureProvider.autoDispose<List<NotificationModel>>((ref) async {
     final notificationRepository = ref.watch(notificationRepositoryProvider);
     final eitherAllNotificationsOrError = await notificationRepository.getAllNotifications();
     return eitherAllNotificationsOrError!.fold(

@@ -4,17 +4,15 @@ import 'package:briefsea/presentation/screens/profile/profile_screen.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_linkify/flutter_linkify.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:timeago/timeago.dart' as timeago;
-import 'package:url_launcher/url_launcher.dart';
 
-import '../../common/app_utils/app_utility.dart';
 import '../../common/app_utils/screen_size.dart';
 import '../../data/models/briefs_result.dart';
 import '../../data/models/image_model.dart';
 import '../providers/user_profile_provider.dart';
+import 'linkable_text.dart';
 
 class CustomBriefsCard extends StatelessWidget {
   const CustomBriefsCard({
@@ -45,7 +43,7 @@ class CustomBriefsCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     math.Random random = math.Random(brief?.userId.hashCode);
-    Color userColor = Color((random.nextDouble() * 0xFFFFFF).toInt()).withOpacity(1.0);
+    Color userColor = Color((random.nextDouble() * 0xFFFFFF).toInt()).withOpacity(0.7);
     if (brief == null) {
       return const SizedBox();
     }
@@ -82,12 +80,25 @@ class CustomBriefsCard extends StatelessWidget {
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        '${brief?.name?[0].toUpperCase()}${brief?.name?.substring(1) ?? ""}',
-                        style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                              color: Theme.of(context).colorScheme.onSurface,
-                            ),
-                        textScaler: TextScaler.linear(ScaleSize.textScaleFactor(context)),
+                      GestureDetector(
+                        onTap: () {
+                          if (isUserTrue != true) {
+                            context.push(
+                              ProfileScreen.routeName,
+                              extra: {
+                                'isOtherProfile': true,
+                                'otherUserId': brief!.userId,
+                              },
+                            );
+                          }
+                        },
+                        child: Text(
+                          '${brief?.name?[0].toUpperCase()}${brief?.name?.substring(1) ?? ""}',
+                          style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                                color: Theme.of(context).colorScheme.onSurface,
+                              ),
+                          textScaler: TextScaler.linear(ScaleSize.textScaleFactor(context)),
+                        ),
                       ),
                       Text(
                         "Posting as ${brief?.type?[0].toUpperCase()}${brief?.type?.substring(1) ?? ""}",
@@ -149,31 +160,15 @@ class CustomBriefsCard extends StatelessWidget {
               ),
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 10.0),
-                child: Linkify(
+                child: LinkableText(
                   text: brief?.postText ?? "",
-                  style: Theme.of(context).textTheme.bodySmall!.copyWith(color: Theme.of(context).colorScheme.onSurface),
                   maxLines: maxLine ?? 6,
-                  // textScaler: TextScaler.linear(ScaleSize.textScaleFactor(context)),
-                  // linkStyle: TextStyle(
-                  //   color: Theme.of(context).colorScheme.,
-                  //   decoration: TextDecoration.underline,
-                  // ),
-                  overflow: TextOverflow.ellipsis,
-                  options: LinkifyOptions(
-                    removeWww: true,
-                    // humanize: true,
-                    // excludeLastPeriod: true,
-                    // looseUrl: true,
-                  ),
-                  onOpen: (link) async {
-                    final url = link.url;
-                    if (await canLaunchUrl(Uri.parse(url))) {
-                      await launchUrl(Uri.parse(url));
-                    } else {
-                      print('Could not launch $url');
-                      AppUtility(context).message('Could not launch the URL.');
-                    }
-                  },
+                  style1: Theme.of(context).textTheme.bodySmall?.copyWith(
+                        color: Theme.of(context).colorScheme.onSurface,
+                      ),
+                  style2: Theme.of(context).textTheme.bodySmall?.copyWith(
+                        color: Theme.of(context).colorScheme.onSurface,
+                      ),
                 ),
               ),
               if (cardVisible == false && brief?.imgSrc != null && (brief?.imgSrc != ""))
@@ -235,7 +230,12 @@ class NetworkAvatarWidget extends ConsumerWidget {
           final avatarName = snapshot.data?.avatarSrc;
           return CircleAvatar(
             backgroundColor: userColor,
-            backgroundImage: avatarName != null && avatarName != '' ? CachedNetworkImageProvider(avatarName) : null,
+            backgroundImage: avatarName != null && avatarName != ''
+                ? CachedNetworkImageProvider(
+                    avatarName,
+                    cacheKey: avatarName,
+                  )
+                : null,
             radius: 25 * ScaleSize.textScaleFactor(context),
             child: avatarName == null || avatarName == ''
                 ? Text(

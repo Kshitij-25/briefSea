@@ -45,22 +45,8 @@ class UserProfileProvider {
     final userProfileRepository = ref.watch(userProfileRepositoryProvider);
     final eitherVerifyProfileOrError = await userProfileRepository.verifyProfile(
       userId: params.userId,
-      name: params.uName,
-      countryCode: params.countryCode,
-      contact: params.contact,
-      jobTitle: params.jobTitle,
-      company: params.company,
-      industry: params.industry,
-      devExpertise: params.devExpertise,
-      markExpertise: params.markExpertise,
-      location: params.location,
-      avatarSrc: params.avatarSrc,
-      bannerSrc: params.bannerSrc,
-      jwtToken: params.jwtToken,
-      postingAs: params.postingAs,
-      gender: params.gender,
-      username: params.username,
-      aboutMe: params.aboutMe,
+      specificFields: params.specificFields,
+      fullProfileData: params.fullProfileData,
     );
     return eitherVerifyProfileOrError!.fold(
       (error) => throw error,
@@ -75,25 +61,8 @@ class UserProfileProvider {
     final userProfileRepository = ref.watch(userProfileRepositoryProvider);
     final eitherEditProfileOrError = await userProfileRepository.editProfile(
       userId: params.userId,
-      name: params.uName,
-      countryCode: params.countryCode,
-      contact: params.contact,
-      jobTitle: params.jobTitle,
-      company: params.company,
-      industry: params.industry,
-      devExpertise: params.devExpertise,
-      markExpertise: params.markExpertise,
-      location: params.location,
-      avatarSrc: params.avatarSrc,
-      bannerSrc: params.bannerSrc,
-      jwtToken: params.jwtToken,
-      postingAs: params.postingAs,
-      gender: params.gender,
-      createdAt: params.createdAt,
-      updatedAt: params.updatedAt,
-      userName: params.userName,
-      viewAccess: params.viewAccess,
-      aboutMe: params.aboutMe,
+      specificFields: params.specificFields,
+      fullProfileData: params.fullProfileData,
     );
     return eitherEditProfileOrError!.fold(
       (error) => throw error,

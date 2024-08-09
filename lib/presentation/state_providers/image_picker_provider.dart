@@ -4,9 +4,13 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 final selectedAvatarImageProvider = StateProvider.autoDispose<String?>((ref) => null);
 
+final newAvatarUploadedProvider = StateProvider.autoDispose<bool?>((ref) => false);
+
+final newBannerUploadedProvider = StateProvider.autoDispose<bool?>((ref) => false);
+
 final verifyAvatarImageProvider = StateProvider<File?>((ref) => null);
 
-final selectedBannerImageProvider = StateProvider<String?>((ref) => null);
+final selectedBannerImageProvider = StateProvider.autoDispose<String?>((ref) => null);
 
 final verifyBannerImageProvider = StateProvider<File?>((ref) => null);
 

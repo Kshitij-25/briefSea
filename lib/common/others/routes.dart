@@ -114,6 +114,14 @@ class AppRouter {
           webviewUrl: state.extra! as String,
         ),
       ),
+      GoRoute(
+        name: 'SharedFeedScreen',
+        path: '/forum/discussion/thread/share/:briefId',
+        builder: (context, state) {
+          final briefId = state.pathParameters['briefId']!;
+          return FeedScreen(briefId: briefId);
+        },
+      ),
     ],
   );
 

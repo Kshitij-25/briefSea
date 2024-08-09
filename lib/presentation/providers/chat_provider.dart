@@ -18,7 +18,7 @@ class ChatProvider {
     return ChatRepository(chatRemoteDataSource);
   });
 
-  static final getChatUsersListProvider = FutureProvider.family<List<ChatUserModel>, String>((ref, userId) async {
+  static final getChatUsersListProvider = FutureProvider.family.autoDispose<List<ChatUserModel>, String>((ref, userId) async {
     final chatRepository = ref.watch(chatRepositoryProvider);
     final eitherChatListOrError = await chatRepository.getChatUsersList(userId);
     return eitherChatListOrError.fold(

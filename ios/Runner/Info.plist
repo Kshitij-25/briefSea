@@ -28,6 +28,8 @@
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>
 	<string>Main</string>
+	<key>FlutterDeepLinkingEnabled</key>
+	<true/>
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
@@ -68,7 +70,13 @@
 				<string>com.googleusercontent.apps.446689292363-t54ihuipku9s4o9djs90cpjmardfnhva</string>
 			</array>
 		</dict>
+		<!-- Add more URL schemes as needed -->
 	</array>
 	<!-- End of the Google Sign-in Section -->
+	<!-- Associated Domains -->
+	<key>com.apple.developer.associated-domains</key>
+	<array>
+		<string>applinks:www.briefsea.com</string>
+	</array>
 </dict>
 </plist>

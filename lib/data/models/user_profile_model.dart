@@ -1,5 +1,9 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 
+import 'clients_model.dart';
+import 'experience_model.dart';
+import 'testimonials_model.dart';
+
 part 'user_profile_model.freezed.dart';
 part 'user_profile_model.g.dart';
 
@@ -28,6 +32,13 @@ class UserProfileModel with _$UserProfileModel {
     @JsonKey(name: 'about') String? aboutMe,
     @JsonKey(name: 'devExpertise') List<String>? devExpertise,
     @JsonKey(name: 'markExpertise') List<String>? markExpertise,
+    @JsonKey(name: 'clients') List<ClientsModel>? clients,
+    @JsonKey(name: 'experience') List<ExperienceModel>? experience,
+    @JsonKey(name: 'linkedinLink') String? linkedinLink,
+    @JsonKey(name: 'portfolioLink') String? portfolioLink,
+    @JsonKey(name: 'services') List<String>? services,
+    @JsonKey(name: 'testimonials') List<TestimonialsModel>? testimonials,
+    @JsonKey(name: 'expDuration') String? expDuration,
   }) = _UserProfileModel;
 
   factory UserProfileModel.fromJson(Map<String, dynamic> json) => _$UserProfileModelFromJson(json);

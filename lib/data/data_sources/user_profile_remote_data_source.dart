@@ -18,45 +18,14 @@ abstract class UserProfileRemoteDataSource {
   Future<UserProfileModel?>? getUserProfile();
   Future<UserProfileModel?>? getOtherProfile(String? otherUserId);
   Future<String?>? verifyProfile({
-    String? userId,
-    String? name,
-    int? countryCode,
-    int? contact,
-    String? jobTitle,
-    String? company,
-    List<String>? industry,
-    List<String>? devExpertise,
-    List<String>? markExpertise,
-    String? location,
-    String? avatarSrc,
-    String? bannerSrc,
-    String? jwtToken,
-    String? postingAs,
-    String? gender,
-    String? username,
-    String? aboutMe,
+    required String userId,
+    Map<String, dynamic>? specificFields,
+    Map<String, dynamic>? fullProfileData,
   });
   Future<EditProfileModel?>? editProfile({
-    String? userId,
-    String? name,
-    int? countryCode,
-    int? contact,
-    String? jobTitle,
-    String? company,
-    List<String>? industry,
-    List<String>? devExpertise,
-    List<String>? markExpertise,
-    String? location,
-    String? avatarSrc,
-    String? bannerSrc,
-    String? jwtToken,
-    String? postingAs,
-    String? gender,
-    String? createdAt,
-    String? updatedAt,
-    String? userName,
-    bool? viewAccess,
-    String? aboutMe,
+    required String userId,
+    Map<String, dynamic>? specificFields,
+    Map<String, dynamic>? fullProfileData,
   });
   Future<AvatarModel?>? uploadAvatar(String? fileName, String? fileType, String? userId, String? userType);
   Future<BannerModel?>? uploadBanner(String? fileName, String? fileType, String? userId, String? userType);
@@ -132,45 +101,21 @@ class UserProfileRemoteDataSourceImpl implements UserProfileRemoteDataSource {
 
   @override
   Future<String?>? verifyProfile({
-    String? userId,
-    String? name,
-    int? countryCode,
-    int? contact,
-    String? jobTitle,
-    String? company,
-    List<String>? industry,
-    List<String>? devExpertise,
-    List<String>? markExpertise,
-    String? location,
-    String? avatarSrc,
-    String? bannerSrc,
-    String? jwtToken,
-    String? postingAs,
-    String? gender,
-    String? username,
-    String? aboutMe,
+    required String userId,
+    Map<String, dynamic>? specificFields,
+    Map<String, dynamic>? fullProfileData,
   }) async {
     var jwtToken = await getJwtToken();
     try {
-      var body = {
-        'isVerified': false,
-        'user_id': userId,
-        'name': name,
-        'countryCode': countryCode,
-        'contact': contact,
-        'post': jobTitle,
-        'worksAt': company,
-        'industry': industry,
-        'devExpertise': devExpertise,
-        'markExpertise': markExpertise,
-        'location': location,
-        'avatarSrc': avatarSrc,
-        'bannerSrc': bannerSrc,
-        "postingAs": postingAs,
-        'gender': gender,
-        "userName": username,
-        'about': aboutMe,
-      };
+      var body = <String, dynamic>{};
+
+      if (specificFields != null) {
+        body.addAll(specificFields);
+      }
+
+      if (fullProfileData != null) {
+        body.addAll(fullProfileData);
+      }
 
       Response? response = await _apiClient.postReq(
         url: ApiConstants.verifyProfile,
@@ -201,51 +146,21 @@ class UserProfileRemoteDataSourceImpl implements UserProfileRemoteDataSource {
 
   @override
   Future<EditProfileModel?>? editProfile({
-    String? userId,
-    String? name,
-    int? countryCode,
-    int? contact,
-    String? jobTitle,
-    String? company,
-    List<String>? industry,
-    List<String>? devExpertise,
-    List<String>? markExpertise,
-    String? location,
-    String? avatarSrc,
-    String? bannerSrc,
-    String? jwtToken,
-    String? postingAs,
-    String? gender,
-    String? createdAt,
-    String? updatedAt,
-    String? userName,
-    bool? viewAccess,
-    String? aboutMe,
+    required String userId,
+    Map<String, dynamic>? specificFields,
+    Map<String, dynamic>? fullProfileData,
   }) async {
     var jwtToken = await getJwtToken();
     try {
-      var body = {
-        'isVerified': false,
-        'user_id': userId,
-        'name': name,
-        'countryCode': countryCode,
-        'contact': contact,
-        'post': jobTitle,
-        'worksAt': company,
-        'industry': industry,
-        'devExpertise': devExpertise,
-        'markExpertise': markExpertise,
-        'location': location,
-        'avatarSrc': avatarSrc,
-        'bannerSrc': bannerSrc,
-        "postingAs": postingAs,
-        'gender': gender,
-        'createdAt': createdAt,
-        'updatedAt': updatedAt,
-        'userName': userName,
-        'viewAccess': viewAccess,
-        'about': aboutMe,
-      };
+      var body = <String, dynamic>{};
+
+      if (specificFields != null) {
+        body.addAll(specificFields);
+      }
+
+      if (fullProfileData != null) {
+        body.addAll(fullProfileData);
+      }
 
       Response? response = await _apiClient.patchReq(
         url: "${ApiConstants.editProfile}/$userId",

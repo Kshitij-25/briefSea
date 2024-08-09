@@ -84,10 +84,11 @@ Future<void> customReplyModalSheet(
                                       textCapitalization: TextCapitalization.sentences,
                                       minLines: 1,
                                       maxLines: 100,
-                                      decoration: const InputDecoration.collapsed(
+                                      decoration: InputDecoration.collapsed(
                                         hintText: "Reply to this comment",
+                                        hintStyle: Theme.of(context).textTheme.bodyLarge!.copyWith(color: Theme.of(context).hintColor),
                                       ),
-                                      style: Theme.of(context).textTheme.bodyLarge!.copyWith(color: Colors.black),
+                                      style: Theme.of(context).textTheme.bodyLarge!.copyWith(color: Theme.of(context).colorScheme.scrim),
                                     ),
                                   ),
                                 ),

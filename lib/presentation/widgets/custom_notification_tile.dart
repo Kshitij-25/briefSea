@@ -24,7 +24,7 @@ class CustomNotificationTile extends StatelessWidget {
   Widget build(BuildContext context) {
     DateTime dateTime = DateTime.parse(notificationModel.createdAt ?? "");
     math.Random random = math.Random(notificationModel.senderId?.hashCode);
-    Color userColor = Color((random.nextDouble() * 0xFFFFFF).toInt()).withOpacity(1.0);
+    Color userColor = Color((random.nextDouble() * 0xFFFFFF).toInt()).withOpacity(0.7);
     return Dismissible(
       direction: DismissDirection.endToStart,
       key: Key(notificationModel.createdAt ?? DateTime.now().toString()), // Ensure unique key for each item

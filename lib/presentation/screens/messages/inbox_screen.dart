@@ -46,7 +46,7 @@ class _InboxScreenState extends ConsumerState<InboxScreen> {
 
     searchController.addListener(() {
       setState(() {
-        searchQuery = searchController.text;
+        searchQuery = searchController.text.trim();
       });
     });
   }

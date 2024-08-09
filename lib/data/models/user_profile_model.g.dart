@@ -39,6 +39,21 @@ _$UserProfileModelImpl _$$UserProfileModelImplFromJson(
       markExpertise: (json['markExpertise'] as List<dynamic>?)
           ?.map((e) => e as String)
           .toList(),
+      clients: (json['clients'] as List<dynamic>?)
+          ?.map((e) => ClientsModel.fromJson(e as Map<String, dynamic>))
+          .toList(),
+      experience: (json['experience'] as List<dynamic>?)
+          ?.map((e) => ExperienceModel.fromJson(e as Map<String, dynamic>))
+          .toList(),
+      linkedinLink: json['linkedinLink'] as String?,
+      portfolioLink: json['portfolioLink'] as String?,
+      services: (json['services'] as List<dynamic>?)
+          ?.map((e) => e as String)
+          .toList(),
+      testimonials: (json['testimonials'] as List<dynamic>?)
+          ?.map((e) => TestimonialsModel.fromJson(e as Map<String, dynamic>))
+          .toList(),
+      expDuration: json['expDuration'] as String?,
     );
 
 Map<String, dynamic> _$$UserProfileModelImplToJson(
@@ -66,4 +81,11 @@ Map<String, dynamic> _$$UserProfileModelImplToJson(
       'about': instance.aboutMe,
       'devExpertise': instance.devExpertise,
       'markExpertise': instance.markExpertise,
+      'clients': instance.clients,
+      'experience': instance.experience,
+      'linkedinLink': instance.linkedinLink,
+      'portfolioLink': instance.portfolioLink,
+      'services': instance.services,
+      'testimonials': instance.testimonials,
+      'expDuration': instance.expDuration,
     };

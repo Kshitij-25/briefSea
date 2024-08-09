@@ -3,18 +3,16 @@ import 'dart:math' as math;
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_linkify/flutter_linkify.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:timeago/timeago.dart' as timeago;
-import 'package:url_launcher/url_launcher.dart';
 
-import '../../common/app_utils/app_utility.dart';
 import '../../common/app_utils/screen_size.dart';
 import '../../data/models/comment_model.dart';
 import '../../data/models/image_model.dart';
 import '../providers/user_profile_provider.dart';
 import '../screens/profile/profile_screen.dart';
+import 'linkable_text.dart';
 
 class CustomCommentCard extends StatelessWidget {
   const CustomCommentCard({
@@ -39,7 +37,7 @@ class CustomCommentCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     math.Random random = math.Random(commentModel?.userId.hashCode);
-    Color userColor = Color((random.nextDouble() * 0xFFFFFF).toInt()).withOpacity(1.0);
+    Color userColor = Color((random.nextDouble() * 0xFFFFFF).toInt()).withOpacity(0.7);
     if (commentModel == null) {
       return const SizedBox();
     }
@@ -55,15 +53,15 @@ class CustomCommentCard extends StatelessWidget {
               commentModel!.userId != loggedInUserId
                   ? GestureDetector(
                       onTap: () {
-                        if (isUserTrue != true) {
-                          context.push(
-                            ProfileScreen.routeName,
-                            extra: {
-                              'isOtherProfile': true,
-                              'otherUserId': commentModel!.userId,
-                            },
-                          );
-                        }
+                        // if (isUserTrue != true) {
+                        context.push(
+                          ProfileScreen.routeName,
+                          extra: {
+                            'isOtherProfile': true,
+                            'otherUserId': commentModel!.userId,
+                          },
+                        );
+                        // }
                       },
                       child: Padding(
                         padding: const EdgeInsets.only(right: 0.0),
@@ -89,13 +87,26 @@ class CustomCommentCard extends StatelessWidget {
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text(
-                                  commentModel?.name ?? "",
-                                  style: const TextStyle(
-                                    color: Colors.black,
-                                    fontWeight: FontWeight.bold,
+                                GestureDetector(
+                                  onTap: () {
+                                    if (isUserTrue != true) {
+                                      context.push(
+                                        ProfileScreen.routeName,
+                                        extra: {
+                                          'isOtherProfile': true,
+                                          'otherUserId': commentModel!.userId,
+                                        },
+                                      );
+                                    }
+                                  },
+                                  child: Text(
+                                    commentModel?.name ?? "",
+                                    style: const TextStyle(
+                                      color: Colors.black,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                    textScaler: TextScaler.linear(ScaleSize.textScaleFactor(context)),
                                   ),
-                                  textScaler: TextScaler.linear(ScaleSize.textScaleFactor(context)),
                                 ),
                                 Text(
                                   "Posting as ${commentModel?.type?[0].toUpperCase()}${commentModel?.type?.substring(1) ?? ""}",
@@ -128,22 +139,15 @@ class CustomCommentCard extends StatelessWidget {
                         width: ScreenSize.width(context) * 0.77,
                         child: Padding(
                           padding: const EdgeInsets.symmetric(vertical: 10.0),
-                          child: Linkify(
+                          child: LinkableText(
                             text: commentModel?.commentText ?? "",
-                            style: const TextStyle(
-                              color: Colors.black,
-                            ),
-                            overflow: TextOverflow.ellipsis,
                             maxLines: 5000,
-                            onOpen: (link) async {
-                              final url = link.url;
-                              if (await canLaunchUrl(Uri.parse(url))) {
-                                await launchUrl(Uri.parse(url));
-                              } else {
-                                print('Could not launch $url');
-                                AppUtility(context).message('Could not launch the URL.');
-                              }
-                            },
+                            style1: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                  color: Theme.of(context).colorScheme.onSurface,
+                                ),
+                            style2: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                  color: Theme.of(context).colorScheme.onSurface,
+                                ),
                           ),
                         ),
                       ),
@@ -219,7 +223,12 @@ class NetworkCommentAvatar extends ConsumerWidget {
           final avatarName = snapshot.data?.avatarSrc;
           return CircleAvatar(
             backgroundColor: userColor,
-            backgroundImage: avatarName != null && avatarName != '' ? CachedNetworkImageProvider(avatarName) : null,
+            backgroundImage: avatarName != null && avatarName != ''
+                ? CachedNetworkImageProvider(
+                    avatarName,
+                    cacheKey: avatarName,
+                  )
+                : null,
             radius: 15 * ScaleSize.textScaleFactor(context),
             child: avatarName == null || avatarName == ''
                 ? Text(

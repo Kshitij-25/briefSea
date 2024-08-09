@@ -72,10 +72,10 @@ class LoginNotifier extends StateNotifier<LoginState> {
         AppUtility(context).message("Verify your email first");
       } else if (loginModel.message == 'Login failed') {
         state = LoginState.error;
-        AppUtility(context).message("Incorrect username or password");
+        AppUtility(context).error("Incorrect username or password");
       } else if (loginModel.message == 'Invalid Email') {
         state = LoginState.error;
-        AppUtility(context).message("Invalid Email");
+        AppUtility(context).error("Invalid Email");
       } else {
         state = LoginState.error;
       }
@@ -194,7 +194,7 @@ class RegisterNotifier extends StateNotifier<RegisterState> {
         // Handle successful registration (e.g., navigate to a different screen)
       } else if (isRegistered.message == "User already exists") {
         state = RegisterState.error;
-        AppUtility(context).message("User already exists");
+        AppUtility(context).error("User already exists");
       }
     } catch (e) {
       state = RegisterState.error;

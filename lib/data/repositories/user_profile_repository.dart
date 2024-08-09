@@ -38,43 +38,15 @@ class UserProfileRepository {
   }
 
   Future<Either<AppError, String>>? verifyProfile({
-    String? userId,
-    String? name,
-    int? countryCode,
-    int? contact,
-    String? jobTitle,
-    String? company,
-    List<String>? industry,
-    List<String>? devExpertise,
-    List<String>? markExpertise,
-    String? location,
-    String? avatarSrc,
-    String? bannerSrc,
-    String? jwtToken,
-    String? postingAs,
-    String? gender,
-    String? username,
-    String? aboutMe,
+    required String userId,
+    Map<String, dynamic>? specificFields,
+    Map<String, dynamic>? fullProfileData,
   }) async {
     try {
       final verifyProfile = await _userProfileRemoteDataSource.verifyProfile(
         userId: userId,
-        name: name,
-        countryCode: countryCode,
-        contact: contact,
-        jobTitle: jobTitle,
-        company: company,
-        industry: industry,
-        devExpertise: devExpertise,
-        markExpertise: markExpertise,
-        location: location,
-        avatarSrc: avatarSrc,
-        bannerSrc: bannerSrc,
-        jwtToken: jwtToken,
-        postingAs: postingAs,
-        gender: gender,
-        username: username,
-        aboutMe: aboutMe,
+        specificFields: specificFields,
+        fullProfileData: fullProfileData,
       );
       return Right(verifyProfile!);
     } on AppError catch (e) {
@@ -85,51 +57,17 @@ class UserProfileRepository {
   }
 
   Future<Either<AppError, EditProfileModel>>? editProfile({
-    String? userId,
-    String? name,
-    int? countryCode,
-    int? contact,
-    String? jobTitle,
-    String? company,
-    List<String>? industry,
-    List<String>? devExpertise,
-    List<String>? markExpertise,
-    String? location,
-    String? avatarSrc,
-    String? bannerSrc,
-    String? jwtToken,
-    String? postingAs,
-    String? gender,
-    String? createdAt,
-    String? updatedAt,
-    String? userName,
-    bool? viewAccess,
-    String? aboutMe,
+    required String userId,
+    Map<String, dynamic>? specificFields,
+    Map<String, dynamic>? fullProfileData,
   }) async {
     try {
-      final verifyProfile = await _userProfileRemoteDataSource.editProfile(
+      final editProfileModel = await _userProfileRemoteDataSource.editProfile(
         userId: userId,
-        name: name,
-        countryCode: countryCode,
-        contact: contact,
-        jobTitle: jobTitle,
-        company: company,
-        industry: industry,
-        devExpertise: devExpertise,
-        markExpertise: markExpertise,
-        location: location,
-        avatarSrc: avatarSrc,
-        bannerSrc: bannerSrc,
-        jwtToken: jwtToken,
-        postingAs: postingAs,
-        gender: gender,
-        createdAt: createdAt,
-        updatedAt: updatedAt,
-        userName: userName,
-        viewAccess: viewAccess,
-        aboutMe: aboutMe,
+        specificFields: specificFields,
+        fullProfileData: fullProfileData,
       );
-      return Right(verifyProfile!);
+      return Right(editProfileModel!);
     } on AppError catch (e) {
       return Left(e);
     } on Exception catch (e) {

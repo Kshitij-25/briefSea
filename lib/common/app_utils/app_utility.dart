@@ -61,10 +61,10 @@ class AppUtility {
         AppUtility(context).message(!isDelete ? 'Logout Successful' : 'Account Deleted');
         ref.read(currentIndexProvider.notifier).state = 0;
       } else {
-        AppUtility(context).message('Error: Shared preferences not initialized');
+        AppUtility(context).error('Error: Shared preferences not initialized');
       }
     } catch (e) {
-      AppUtility(context).message('Error during logout: $e');
+      AppUtility(context).error('Error during logout: $e');
     }
   }
 }

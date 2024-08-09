@@ -28,6 +28,7 @@ dependencies:
   google_fonts: ^6.2.1
   google_sign_in: ^6.2.1
   hooks_riverpod: ^2.5.1
+  image_cropper: ^8.0.1
   image_picker: ^1.1.2
   infinite_scroll_pagination: ^4.0.0
   intl: ^0.19.0
@@ -41,6 +42,7 @@ dependencies:
   shared_preferences: ^2.2.3
   socket_io_client: ^2.0.3+1
   timeago: ^3.6.1
+  # uni_links2: ^0.6.0+2
   url_launcher: ^6.3.0
   very_good_analysis: ^6.0.0
   webview_flutter: ^4.8.0

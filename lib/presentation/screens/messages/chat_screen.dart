@@ -16,6 +16,7 @@ import '../../providers/chat_provider.dart';
 import '../../providers/messages_list_provider.dart';
 import '../../providers/notification_provider.dart';
 import '../../providers/socket_provider.dart';
+import '../../widgets/linkable_text.dart';
 import '../profile/profile_screen.dart';
 
 class ChatScreen extends ConsumerStatefulWidget {
@@ -65,197 +66,201 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
       }
     });
 
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.secondary,
-        title: GestureDetector(
-          onTap: () {
-            context.push(
-              ProfileScreen.routeName,
-              extra: {
-                'isOtherProfile': true,
-                'otherUserId': widget.chatUser.id,
-              },
-            );
-          },
-          child: Text(
-            widget.chatUser.name ?? "",
-            style: const TextStyle(
-              fontWeight: FontWeight.bold,
-              color: Colors.white,
-            ),
-            textScaler: TextScaler.linear(ScaleSize.textScaleFactor(context)),
-          ),
-        ),
-        centerTitle: true,
-        elevation: 0,
-        iconTheme: const IconThemeData(color: Colors.white),
-      ),
-      body: Stack(
-        children: [
-          Container(
-            width: double.infinity,
-            height: 70,
-            color: Theme.of(context).colorScheme.secondary,
-          ),
-          Container(
-            height: ScreenSize.height(context),
-            width: ScreenSize.width(context),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(40),
-                topRight: Radius.circular(40),
+    return GestureDetector(
+      onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
+      child: Scaffold(
+        appBar: AppBar(
+          backgroundColor: Theme.of(context).colorScheme.secondary,
+          title: GestureDetector(
+            onTap: () {
+              context.push(
+                ProfileScreen.routeName,
+                extra: {
+                  'isOtherProfile': true,
+                  'otherUserId': widget.chatUser.id,
+                },
+              );
+            },
+            child: Text(
+              widget.chatUser.name ?? "",
+              style: const TextStyle(
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
               ),
-              color: Theme.of(context).colorScheme.surfaceContainer,
+              textScaler: TextScaler.linear(ScaleSize.textScaleFactor(context)),
             ),
-            child: Padding(
-              padding: const EdgeInsets.only(top: 20.0),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  if (chatMessageState.isLoading)
-                    const Expanded(
-                      child: Center(
-                        child: CircularProgressIndicator(),
-                      ),
-                    ),
-                  if (chatMessageState.error != null)
-                    Center(
-                      child: Text(chatMessageState.error!),
-                    ),
-                  if (chatMessageState.chatMessages != null && chatMessageState.chatMessages!.isEmpty)
-                    Expanded(
-                      child: Center(
-                        child: Text(
-                          "Directly Chat and work with\ntop freelancers, vendors and working professionals.",
-                          textAlign: TextAlign.center,
-                          textScaler: TextScaler.linear(ScaleSize.textScaleFactor(context)),
+          ),
+          centerTitle: true,
+          elevation: 0,
+          iconTheme: const IconThemeData(color: Colors.white),
+        ),
+        body: Stack(
+          children: [
+            Container(
+              width: double.infinity,
+              height: 70,
+              color: Theme.of(context).colorScheme.secondary,
+            ),
+            Container(
+              height: ScreenSize.height(context),
+              width: ScreenSize.width(context),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(40),
+                  topRight: Radius.circular(40),
+                ),
+                color: Theme.of(context).colorScheme.surfaceContainer,
+              ),
+              child: Padding(
+                padding: const EdgeInsets.only(top: 20.0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    if (chatMessageState.isLoading)
+                      const Expanded(
+                        child: Center(
+                          child: CircularProgressIndicator(),
                         ),
                       ),
-                    ),
-                  Expanded(
-                    child: ListView.builder(
-                      controller: _scrollController,
-                      shrinkWrap: true,
-                      itemCount: chatMessageState.chatMessages?.length ?? 0,
-                      itemBuilder: (context, index) {
-                        if (chatMessageState.chatMessages?[index].senderId == userData['user_id']) {
-                          return _SentMessage(
-                            chatMessageModel: chatMessageState.chatMessages?[index],
-                          );
-                        } else {
-                          return _ReceivedMessage(
-                            chatMessageModel: chatMessageState.chatMessages?[index],
-                          );
-                        }
-                      },
-                    ),
-                  ),
-                  SafeArea(
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 8),
-                      height: 90,
-                      decoration: BoxDecoration(
-                        color: Theme.of(context).colorScheme.surfaceContainer,
-                        borderRadius: BorderRadius.only(topLeft: Radius.circular(20), topRight: Radius.circular(20)),
-                        border: Border(
-                          top: BorderSide(color: Colors.black26),
-                        ),
+                    if (chatMessageState.error != null)
+                      Center(
+                        child: Text(chatMessageState.error!),
                       ),
-                      child: Row(
-                        children: [
-                          // IconButton(
-                          //   onPressed: () {},
-                          //   icon: const Icon(CupertinoIcons.photo),
-                          // ),
-                          Expanded(
-                            child: Padding(
-                              padding: const EdgeInsets.only(top: 5, left: 5, right: 5, bottom: 0),
-                              child: TextField(
-                                controller: sendMessage,
-                                textCapitalization: TextCapitalization.sentences,
-                                decoration: const InputDecoration.collapsed(
-                                  hintText: "Send a message...",
-                                  hintStyle: TextStyle(
-                                    color: Colors.black26,
-                                  ),
+                    if (chatMessageState.chatMessages != null && chatMessageState.chatMessages!.isEmpty)
+                      Expanded(
+                        child: Center(
+                          child: Text(
+                            "Directly Chat and work with\ntop freelancers, vendors and working professionals.",
+                            style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                                  color: Colors.black,
                                 ),
-                                maxLines: 5,
-                                minLines: 1,
-                                keyboardType: TextInputType.multiline,
-                                style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: Colors.black),
+                            textAlign: TextAlign.center,
+                            textScaler: TextScaler.linear(ScaleSize.textScaleFactor(context)),
+                          ),
+                        ),
+                      ),
+                    Expanded(
+                      child: ListView.builder(
+                        controller: _scrollController,
+                        shrinkWrap: true,
+                        itemCount: chatMessageState.chatMessages?.length ?? 0,
+                        itemBuilder: (context, index) {
+                          if (chatMessageState.chatMessages?[index].senderId == userData['user_id']) {
+                            return _SentMessage(
+                              chatMessageModel: chatMessageState.chatMessages?[index],
+                            );
+                          } else {
+                            return _ReceivedMessage(
+                              chatMessageModel: chatMessageState.chatMessages?[index],
+                            );
+                          }
+                        },
+                      ),
+                    ),
+                    SafeArea(
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 8),
+                        height: 90,
+                        decoration: BoxDecoration(
+                          color: Theme.of(context).colorScheme.surfaceContainer,
+                          borderRadius: BorderRadius.only(topLeft: Radius.circular(20), topRight: Radius.circular(20)),
+                          border: Border(
+                            top: BorderSide(color: Colors.black26),
+                          ),
+                        ),
+                        child: Row(
+                          children: [
+                            // IconButton(
+                            //   onPressed: () {},
+                            //   icon: const Icon(CupertinoIcons.photo),
+                            // ),
+                            Expanded(
+                              child: Padding(
+                                padding: const EdgeInsets.only(top: 5, left: 5, right: 5, bottom: 0),
+                                child: TextField(
+                                  controller: sendMessage,
+                                  textCapitalization: TextCapitalization.sentences,
+                                  decoration: InputDecoration.collapsed(
+                                    hintText: "Send a message...",
+                                    hintStyle: Theme.of(context).textTheme.bodyLarge!.copyWith(color: Theme.of(context).hintColor),
+                                  ),
+                                  maxLines: 5,
+                                  minLines: 1,
+                                  keyboardType: TextInputType.multiline,
+                                  style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: Colors.black),
+                                ),
                               ),
                             ),
-                          ),
-                          IconButton(
-                            enableFeedback: true,
-                            onPressed: () async {
-                              DateTime now = DateTime.now();
-                              String formattedTime = DateFormat('MM/d/yyyy, hh:mm:ss a').format(now);
-                              final chatNotifier = ref.read(chatMessagesProvider(widget.chatUser.conversationId).notifier);
-                              if (sendMessage.text.isNotEmpty) {
-                                sendMsg(
-                                  widget.chatUser.conversationId!,
-                                  sendMessage.text,
-                                  widget.chatUser.id!,
-                                  userData['user_id']!,
-                                  formattedTime,
-                                );
-                                var isMessageSend = await ref.read(
-                                  ChatProvider.sendChatMessagesProvider(
-                                    SendChatMessagesParams(
-                                      conversationId: widget.chatUser.conversationId!,
-                                      messageText: sendMessage.text,
-                                      receiverId: widget.chatUser.id!,
-                                      senderId: userData['user_id']!,
-                                      typedAt: formattedTime,
-                                    ),
-                                  ).future,
-                                );
-                                if (isMessageSend == true) {
-                                  if (widget.chatUser.isUserOnline != true) {
-                                    chatNotifier.updateMessage(ChatMessageModel(
-                                      messageText: sendMessage.text,
-                                      conversationId: widget.chatUser.conversationId!,
-                                      receiverId: widget.chatUser.id!,
-                                      typedAt: formattedTime,
-                                      senderId: userData['user_id']!,
-                                    ));
-                                    sendMessage.clear();
-                                    ref.invalidate(ChatProvider.getChatUsersListProvider(ref.read(userDetailsProvider)['user_id']!));
-                                    var requestBody = {
-                                      "type": 'message received',
-                                      "sender_id": userData['user_id'],
-                                      "sender_name": userData['user_name'],
-                                      "receiver_id": widget.chatUser.id,
-                                      "notification": "New message received from ${userData['user_name']}.",
-                                      "conversation_id": widget.chatUser.conversationId,
-                                    };
-                                    await ref.read(
-                                      NotificationProvider.postNewNotificationProvider(
-                                        PostNewNotificationParams(requestBody: requestBody),
-                                      ).future,
-                                    );
+                            IconButton(
+                              enableFeedback: true,
+                              onPressed: () async {
+                                DateTime now = DateTime.now();
+                                String formattedTime = DateFormat('MM/d/yyyy, hh:mm:ss a').format(now);
+                                final chatNotifier = ref.read(chatMessagesProvider(widget.chatUser.conversationId).notifier);
+                                if (sendMessage.text.trim().isNotEmpty) {
+                                  sendMsg(
+                                    widget.chatUser.conversationId!,
+                                    sendMessage.text.trim(),
+                                    widget.chatUser.id!,
+                                    userData['user_id']!,
+                                    formattedTime,
+                                  );
+                                  var isMessageSend = await ref.read(
+                                    ChatProvider.sendChatMessagesProvider(
+                                      SendChatMessagesParams(
+                                        conversationId: widget.chatUser.conversationId!,
+                                        messageText: sendMessage.text.trim(),
+                                        receiverId: widget.chatUser.id!,
+                                        senderId: userData['user_id']!,
+                                        typedAt: formattedTime,
+                                      ),
+                                    ).future,
+                                  );
+                                  if (isMessageSend == true) {
+                                    if (widget.chatUser.isUserOnline != true) {
+                                      chatNotifier.updateMessage(ChatMessageModel(
+                                        messageText: sendMessage.text.trim(),
+                                        conversationId: widget.chatUser.conversationId!,
+                                        receiverId: widget.chatUser.id!,
+                                        typedAt: formattedTime,
+                                        senderId: userData['user_id']!,
+                                      ));
+                                      sendMessage.clear();
+                                      ref.invalidate(ChatProvider.getChatUsersListProvider(ref.read(userDetailsProvider)['user_id']!));
+                                      var requestBody = {
+                                        "type": 'message received',
+                                        "sender_id": userData['user_id'],
+                                        "sender_name": userData['user_name'],
+                                        "receiver_id": widget.chatUser.id,
+                                        "notification": "New message received from ${userData['user_name']}.",
+                                        "conversation_id": widget.chatUser.conversationId,
+                                      };
+                                      await ref.read(
+                                        NotificationProvider.postNewNotificationProvider(
+                                          PostNewNotificationParams(requestBody: requestBody),
+                                        ).future,
+                                      );
+                                    }
                                   }
                                 }
-                              }
-                            },
-                            icon: Icon(
-                              CupertinoIcons.arrow_up_circle_fill,
-                              size: 30 * ScaleSize.textScaleFactor(context),
-                              color: Color(0xFF212121),
+                              },
+                              icon: Icon(
+                                CupertinoIcons.arrow_up_circle_fill,
+                                size: 30 * ScaleSize.textScaleFactor(context),
+                                color: Color(0xFF212121),
+                              ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
-                    ),
-                  )
-                ],
+                    )
+                  ],
+                ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -296,15 +301,19 @@ class _SentMessage extends StatelessWidget {
                         maxWidth: ScreenSize.width(context) * 0.65,
                       ),
                     ),
-                    child: Text(
-                      chatMessageModel?.messageText ?? "",
-                      style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                    child: LinkableText(
+                      text: chatMessageModel?.messageText ?? "",
+                      style1: Theme.of(context).textTheme.bodyMedium!.copyWith(
                             color: Colors.white,
                             fontSize: 14 * ScaleSize.textScaleFactor(context),
                           ),
-                      textScaler: TextScaler.linear(ScaleSize.textScaleFactor(context)),
+                      style2: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                            color: Colors.white,
+                            fontSize: 14 * ScaleSize.textScaleFactor(context),
+                          ),
+                      // textScaler: TextScaler.linear(ScaleSize.textScaleFactor(context)),
                       maxLines: 1000,
-                      softWrap: true,
+                      // softWrap: true,
                     ),
                   ),
                   SizedBox(
@@ -374,15 +383,19 @@ class _ReceivedMessage extends StatelessWidget {
                         maxWidth: ScreenSize.width(context) * 0.65,
                       ),
                     ),
-                    child: Text(
-                      chatMessageModel?.messageText ?? "",
-                      style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                    child: LinkableText(
+                      text: chatMessageModel?.messageText ?? "",
+                      style1: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                            color: Colors.black,
+                            fontSize: 14 * ScaleSize.textScaleFactor(context),
+                          ),
+                      style2: Theme.of(context).textTheme.bodyMedium!.copyWith(
                             color: Colors.black,
                             fontSize: 14 * ScaleSize.textScaleFactor(context),
                           ),
                       maxLines: 1000,
-                      softWrap: true,
-                      textScaler: TextScaler.linear(ScaleSize.textScaleFactor(context)),
+                      // softWrap: true,
+                      // textScaler: TextScaler.linear(ScaleSize.textScaleFactor(context)),
                     ),
                   ),
                   SizedBox(

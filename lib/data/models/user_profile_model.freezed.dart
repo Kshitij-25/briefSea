@@ -64,6 +64,21 @@ mixin _$UserProfileModel {
   List<String>? get devExpertise => throw _privateConstructorUsedError;
   @JsonKey(name: 'markExpertise')
   List<String>? get markExpertise => throw _privateConstructorUsedError;
+  @JsonKey(name: 'clients')
+  List<ClientsModel>? get clients => throw _privateConstructorUsedError;
+  @JsonKey(name: 'experience')
+  List<ExperienceModel>? get experience => throw _privateConstructorUsedError;
+  @JsonKey(name: 'linkedinLink')
+  String? get linkedinLink => throw _privateConstructorUsedError;
+  @JsonKey(name: 'portfolioLink')
+  String? get portfolioLink => throw _privateConstructorUsedError;
+  @JsonKey(name: 'services')
+  List<String>? get services => throw _privateConstructorUsedError;
+  @JsonKey(name: 'testimonials')
+  List<TestimonialsModel>? get testimonials =>
+      throw _privateConstructorUsedError;
+  @JsonKey(name: 'expDuration')
+  String? get expDuration => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -99,7 +114,14 @@ abstract class $UserProfileModelCopyWith<$Res> {
       @JsonKey(name: 'userName') String? userName,
       @JsonKey(name: 'about') String? aboutMe,
       @JsonKey(name: 'devExpertise') List<String>? devExpertise,
-      @JsonKey(name: 'markExpertise') List<String>? markExpertise});
+      @JsonKey(name: 'markExpertise') List<String>? markExpertise,
+      @JsonKey(name: 'clients') List<ClientsModel>? clients,
+      @JsonKey(name: 'experience') List<ExperienceModel>? experience,
+      @JsonKey(name: 'linkedinLink') String? linkedinLink,
+      @JsonKey(name: 'portfolioLink') String? portfolioLink,
+      @JsonKey(name: 'services') List<String>? services,
+      @JsonKey(name: 'testimonials') List<TestimonialsModel>? testimonials,
+      @JsonKey(name: 'expDuration') String? expDuration});
 }
 
 /// @nodoc
@@ -137,6 +159,13 @@ class _$UserProfileModelCopyWithImpl<$Res, $Val extends UserProfileModel>
     Object? aboutMe = freezed,
     Object? devExpertise = freezed,
     Object? markExpertise = freezed,
+    Object? clients = freezed,
+    Object? experience = freezed,
+    Object? linkedinLink = freezed,
+    Object? portfolioLink = freezed,
+    Object? services = freezed,
+    Object? testimonials = freezed,
+    Object? expDuration = freezed,
   }) {
     return _then(_value.copyWith(
       id: freezed == id
@@ -227,6 +256,34 @@ class _$UserProfileModelCopyWithImpl<$Res, $Val extends UserProfileModel>
           ? _value.markExpertise
           : markExpertise // ignore: cast_nullable_to_non_nullable
               as List<String>?,
+      clients: freezed == clients
+          ? _value.clients
+          : clients // ignore: cast_nullable_to_non_nullable
+              as List<ClientsModel>?,
+      experience: freezed == experience
+          ? _value.experience
+          : experience // ignore: cast_nullable_to_non_nullable
+              as List<ExperienceModel>?,
+      linkedinLink: freezed == linkedinLink
+          ? _value.linkedinLink
+          : linkedinLink // ignore: cast_nullable_to_non_nullable
+              as String?,
+      portfolioLink: freezed == portfolioLink
+          ? _value.portfolioLink
+          : portfolioLink // ignore: cast_nullable_to_non_nullable
+              as String?,
+      services: freezed == services
+          ? _value.services
+          : services // ignore: cast_nullable_to_non_nullable
+              as List<String>?,
+      testimonials: freezed == testimonials
+          ? _value.testimonials
+          : testimonials // ignore: cast_nullable_to_non_nullable
+              as List<TestimonialsModel>?,
+      expDuration: freezed == expDuration
+          ? _value.expDuration
+          : expDuration // ignore: cast_nullable_to_non_nullable
+              as String?,
     ) as $Val);
   }
 }
@@ -261,7 +318,14 @@ abstract class _$$UserProfileModelImplCopyWith<$Res>
       @JsonKey(name: 'userName') String? userName,
       @JsonKey(name: 'about') String? aboutMe,
       @JsonKey(name: 'devExpertise') List<String>? devExpertise,
-      @JsonKey(name: 'markExpertise') List<String>? markExpertise});
+      @JsonKey(name: 'markExpertise') List<String>? markExpertise,
+      @JsonKey(name: 'clients') List<ClientsModel>? clients,
+      @JsonKey(name: 'experience') List<ExperienceModel>? experience,
+      @JsonKey(name: 'linkedinLink') String? linkedinLink,
+      @JsonKey(name: 'portfolioLink') String? portfolioLink,
+      @JsonKey(name: 'services') List<String>? services,
+      @JsonKey(name: 'testimonials') List<TestimonialsModel>? testimonials,
+      @JsonKey(name: 'expDuration') String? expDuration});
 }
 
 /// @nodoc
@@ -297,6 +361,13 @@ class __$$UserProfileModelImplCopyWithImpl<$Res>
     Object? aboutMe = freezed,
     Object? devExpertise = freezed,
     Object? markExpertise = freezed,
+    Object? clients = freezed,
+    Object? experience = freezed,
+    Object? linkedinLink = freezed,
+    Object? portfolioLink = freezed,
+    Object? services = freezed,
+    Object? testimonials = freezed,
+    Object? expDuration = freezed,
   }) {
     return _then(_$UserProfileModelImpl(
       id: freezed == id
@@ -387,6 +458,34 @@ class __$$UserProfileModelImplCopyWithImpl<$Res>
           ? _value._markExpertise
           : markExpertise // ignore: cast_nullable_to_non_nullable
               as List<String>?,
+      clients: freezed == clients
+          ? _value._clients
+          : clients // ignore: cast_nullable_to_non_nullable
+              as List<ClientsModel>?,
+      experience: freezed == experience
+          ? _value._experience
+          : experience // ignore: cast_nullable_to_non_nullable
+              as List<ExperienceModel>?,
+      linkedinLink: freezed == linkedinLink
+          ? _value.linkedinLink
+          : linkedinLink // ignore: cast_nullable_to_non_nullable
+              as String?,
+      portfolioLink: freezed == portfolioLink
+          ? _value.portfolioLink
+          : portfolioLink // ignore: cast_nullable_to_non_nullable
+              as String?,
+      services: freezed == services
+          ? _value._services
+          : services // ignore: cast_nullable_to_non_nullable
+              as List<String>?,
+      testimonials: freezed == testimonials
+          ? _value._testimonials
+          : testimonials // ignore: cast_nullable_to_non_nullable
+              as List<TestimonialsModel>?,
+      expDuration: freezed == expDuration
+          ? _value.expDuration
+          : expDuration // ignore: cast_nullable_to_non_nullable
+              as String?,
     ));
   }
 }
@@ -416,11 +515,23 @@ class _$UserProfileModelImpl implements _UserProfileModel {
       @JsonKey(name: 'userName') this.userName,
       @JsonKey(name: 'about') this.aboutMe,
       @JsonKey(name: 'devExpertise') final List<String>? devExpertise,
-      @JsonKey(name: 'markExpertise') final List<String>? markExpertise})
+      @JsonKey(name: 'markExpertise') final List<String>? markExpertise,
+      @JsonKey(name: 'clients') final List<ClientsModel>? clients,
+      @JsonKey(name: 'experience') final List<ExperienceModel>? experience,
+      @JsonKey(name: 'linkedinLink') this.linkedinLink,
+      @JsonKey(name: 'portfolioLink') this.portfolioLink,
+      @JsonKey(name: 'services') final List<String>? services,
+      @JsonKey(name: 'testimonials')
+      final List<TestimonialsModel>? testimonials,
+      @JsonKey(name: 'expDuration') this.expDuration})
       : _industry = industry,
         _expertise = expertise,
         _devExpertise = devExpertise,
-        _markExpertise = markExpertise;
+        _markExpertise = markExpertise,
+        _clients = clients,
+        _experience = experience,
+        _services = services,
+        _testimonials = testimonials;
 
   factory _$UserProfileModelImpl.fromJson(Map<String, dynamic> json) =>
       _$$UserProfileModelImplFromJson(json);
@@ -523,9 +634,63 @@ class _$UserProfileModelImpl implements _UserProfileModel {
     return EqualUnmodifiableListView(value);
   }
 
+  final List<ClientsModel>? _clients;
+  @override
+  @JsonKey(name: 'clients')
+  List<ClientsModel>? get clients {
+    final value = _clients;
+    if (value == null) return null;
+    if (_clients is EqualUnmodifiableListView) return _clients;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(value);
+  }
+
+  final List<ExperienceModel>? _experience;
+  @override
+  @JsonKey(name: 'experience')
+  List<ExperienceModel>? get experience {
+    final value = _experience;
+    if (value == null) return null;
+    if (_experience is EqualUnmodifiableListView) return _experience;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(value);
+  }
+
+  @override
+  @JsonKey(name: 'linkedinLink')
+  final String? linkedinLink;
+  @override
+  @JsonKey(name: 'portfolioLink')
+  final String? portfolioLink;
+  final List<String>? _services;
+  @override
+  @JsonKey(name: 'services')
+  List<String>? get services {
+    final value = _services;
+    if (value == null) return null;
+    if (_services is EqualUnmodifiableListView) return _services;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(value);
+  }
+
+  final List<TestimonialsModel>? _testimonials;
+  @override
+  @JsonKey(name: 'testimonials')
+  List<TestimonialsModel>? get testimonials {
+    final value = _testimonials;
+    if (value == null) return null;
+    if (_testimonials is EqualUnmodifiableListView) return _testimonials;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(value);
+  }
+
+  @override
+  @JsonKey(name: 'expDuration')
+  final String? expDuration;
+
   @override
   String toString() {
-    return 'UserProfileModel(id: $id, isVerified: $isVerified, userId: $userId, name: $name, countryCode: $countryCode, contact: $contact, post: $post, worksAt: $worksAt, industry: $industry, expertise: $expertise, location: $location, avatarSrc: $avatarSrc, bannerSrc: $bannerSrc, createdAt: $createdAt, updatedAt: $updatedAt, postingAs: $postingAs, gender: $gender, viewAccess: $viewAccess, userName: $userName, aboutMe: $aboutMe, devExpertise: $devExpertise, markExpertise: $markExpertise)';
+    return 'UserProfileModel(id: $id, isVerified: $isVerified, userId: $userId, name: $name, countryCode: $countryCode, contact: $contact, post: $post, worksAt: $worksAt, industry: $industry, expertise: $expertise, location: $location, avatarSrc: $avatarSrc, bannerSrc: $bannerSrc, createdAt: $createdAt, updatedAt: $updatedAt, postingAs: $postingAs, gender: $gender, viewAccess: $viewAccess, userName: $userName, aboutMe: $aboutMe, devExpertise: $devExpertise, markExpertise: $markExpertise, clients: $clients, experience: $experience, linkedinLink: $linkedinLink, portfolioLink: $portfolioLink, services: $services, testimonials: $testimonials, expDuration: $expDuration)';
   }
 
   @override
@@ -567,7 +732,19 @@ class _$UserProfileModelImpl implements _UserProfileModel {
             const DeepCollectionEquality()
                 .equals(other._devExpertise, _devExpertise) &&
             const DeepCollectionEquality()
-                .equals(other._markExpertise, _markExpertise));
+                .equals(other._markExpertise, _markExpertise) &&
+            const DeepCollectionEquality().equals(other._clients, _clients) &&
+            const DeepCollectionEquality()
+                .equals(other._experience, _experience) &&
+            (identical(other.linkedinLink, linkedinLink) ||
+                other.linkedinLink == linkedinLink) &&
+            (identical(other.portfolioLink, portfolioLink) ||
+                other.portfolioLink == portfolioLink) &&
+            const DeepCollectionEquality().equals(other._services, _services) &&
+            const DeepCollectionEquality()
+                .equals(other._testimonials, _testimonials) &&
+            (identical(other.expDuration, expDuration) ||
+                other.expDuration == expDuration));
   }
 
   @JsonKey(ignore: true)
@@ -595,7 +772,14 @@ class _$UserProfileModelImpl implements _UserProfileModel {
         userName,
         aboutMe,
         const DeepCollectionEquality().hash(_devExpertise),
-        const DeepCollectionEquality().hash(_markExpertise)
+        const DeepCollectionEquality().hash(_markExpertise),
+        const DeepCollectionEquality().hash(_clients),
+        const DeepCollectionEquality().hash(_experience),
+        linkedinLink,
+        portfolioLink,
+        const DeepCollectionEquality().hash(_services),
+        const DeepCollectionEquality().hash(_testimonials),
+        expDuration
       ]);
 
   @JsonKey(ignore: true)
@@ -636,7 +820,15 @@ abstract class _UserProfileModel implements UserProfileModel {
           @JsonKey(name: 'userName') final String? userName,
           @JsonKey(name: 'about') final String? aboutMe,
           @JsonKey(name: 'devExpertise') final List<String>? devExpertise,
-          @JsonKey(name: 'markExpertise') final List<String>? markExpertise}) =
+          @JsonKey(name: 'markExpertise') final List<String>? markExpertise,
+          @JsonKey(name: 'clients') final List<ClientsModel>? clients,
+          @JsonKey(name: 'experience') final List<ExperienceModel>? experience,
+          @JsonKey(name: 'linkedinLink') final String? linkedinLink,
+          @JsonKey(name: 'portfolioLink') final String? portfolioLink,
+          @JsonKey(name: 'services') final List<String>? services,
+          @JsonKey(name: 'testimonials')
+          final List<TestimonialsModel>? testimonials,
+          @JsonKey(name: 'expDuration') final String? expDuration}) =
       _$UserProfileModelImpl;
 
   factory _UserProfileModel.fromJson(Map<String, dynamic> json) =
@@ -708,6 +900,27 @@ abstract class _UserProfileModel implements UserProfileModel {
   @override
   @JsonKey(name: 'markExpertise')
   List<String>? get markExpertise;
+  @override
+  @JsonKey(name: 'clients')
+  List<ClientsModel>? get clients;
+  @override
+  @JsonKey(name: 'experience')
+  List<ExperienceModel>? get experience;
+  @override
+  @JsonKey(name: 'linkedinLink')
+  String? get linkedinLink;
+  @override
+  @JsonKey(name: 'portfolioLink')
+  String? get portfolioLink;
+  @override
+  @JsonKey(name: 'services')
+  List<String>? get services;
+  @override
+  @JsonKey(name: 'testimonials')
+  List<TestimonialsModel>? get testimonials;
+  @override
+  @JsonKey(name: 'expDuration')
+  String? get expDuration;
   @override
   @JsonKey(ignore: true)
   _$$UserProfileModelImplCopyWith<_$UserProfileModelImpl> get copyWith =>

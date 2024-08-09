@@ -1,88 +1,26 @@
 import 'dart:io';
 
 class VerifyProfileParams {
-  final String? userId;
-  final String? uName;
-  final int? countryCode;
-  final int? contact;
-  final String? jobTitle;
-  final String? company;
-  final List<String>? industry;
-  final List<String>? devExpertise;
-  final List<String>? markExpertise;
-  final String? location;
-  final String? avatarSrc;
-  final String? bannerSrc;
-  final String? jwtToken;
-  final String? postingAs;
-  final String? gender;
-  final String? username;
-  final String? aboutMe;
+  final String userId;
+  final Map<String, dynamic>? specificFields;
+  final Map<String, dynamic>? fullProfileData;
 
   VerifyProfileParams({
     required this.userId,
-    required this.uName,
-    required this.countryCode,
-    required this.contact,
-    required this.jobTitle,
-    required this.company,
-    required this.industry,
-    required this.devExpertise,
-    required this.markExpertise,
-    required this.location,
-    required this.avatarSrc,
-    required this.bannerSrc,
-    required this.jwtToken,
-    required this.postingAs,
-    required this.gender,
-    required this.username,
-    required this.aboutMe,
+    this.specificFields,
+    this.fullProfileData,
   });
 }
 
 class EditProfileParams {
-  final String? userId;
-  final String? uName;
-  final int? countryCode;
-  final int? contact;
-  final String? jobTitle;
-  final String? company;
-  final List<String>? industry;
-  final List<String>? devExpertise;
-  final List<String>? markExpertise;
-  final String? location;
-  final String? avatarSrc;
-  final String? bannerSrc;
-  final String? jwtToken;
-  final String? postingAs;
-  final String? gender;
-  final String? createdAt;
-  final String? updatedAt;
-  final String? userName;
-  final bool? viewAccess;
-  final String? aboutMe;
+  final String userId;
+  final Map<String, dynamic>? specificFields;
+  final Map<String, dynamic>? fullProfileData;
 
   EditProfileParams({
     required this.userId,
-    required this.uName,
-    required this.countryCode,
-    required this.contact,
-    required this.jobTitle,
-    required this.company,
-    required this.industry,
-    required this.devExpertise,
-    required this.markExpertise,
-    required this.location,
-    required this.avatarSrc,
-    required this.bannerSrc,
-    required this.jwtToken,
-    required this.postingAs,
-    required this.gender,
-    required this.createdAt,
-    required this.updatedAt,
-    required this.userName,
-    required this.viewAccess,
-    required this.aboutMe,
+    this.specificFields,
+    this.fullProfileData,
   });
 }
 

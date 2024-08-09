@@ -22,7 +22,7 @@ class CustomChatCards extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     math.Random random = math.Random(chatUserModel?.id?.hashCode);
-    Color userColor = Color((random.nextDouble() * 0xFFFFFF).toInt()).withOpacity(1.0);
+    Color userColor = Color((random.nextDouble() * 0xFFFFFF).toInt()).withOpacity(0.7);
     return Card(
       color: Theme.of(context).colorScheme.surfaceContainerLowest,
       child: ListTile(
@@ -61,7 +61,7 @@ class CustomChatCards extends StatelessWidget {
         ),
         title: Text(
           chatUserModel?.name ?? '',
-          style: Theme.of(context).textTheme.titleLarge!.copyWith(
+          style: Theme.of(context).textTheme.titleMedium!.copyWith(
                 color: Colors.black,
                 fontWeight: FontWeight.w500,
               ),
@@ -69,6 +69,7 @@ class CustomChatCards extends StatelessWidget {
         ),
         subtitle: Text(
           chatUserModel?.lastMsg ?? '...',
+          maxLines: 2,
           overflow: TextOverflow.ellipsis,
           style: Theme.of(context).textTheme.bodySmall!.copyWith(color: Colors.black),
           textScaler: TextScaler.linear(ScaleSize.textScaleFactor(context)),

@@ -5,12 +5,16 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
+// import 'package:uni_links2/uni_links.dart';
+
 import '../../common/app_utils/app_utility.dart';
 import '../../common/app_utils/screen_size.dart';
 import '../../common/others/assets.dart';
 import '../../common/others/strings.dart';
 import '../../main.dart';
 import '../providers/auth_provider.dart';
+import '../providers/chat_provider.dart';
+import '../providers/notification_provider.dart';
 import '../providers/socket_provider.dart';
 import '../state_providers/bottom_nav_bar_state_provider.dart';
 import 'messages/messages_screen_navigator.dart';
@@ -18,17 +22,26 @@ import 'my_feed/my_feed_navigator.dart';
 import 'notification_screen.dart';
 import 'profile/profile_screen.dart';
 
-class HomeScreen extends ConsumerWidget {
+class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
-
   static const routeName = "/homeScreen";
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final currentIndex = ref.watch(currentIndexProvider);
-    final pageController = PageController(initialPage: currentIndex);
+  ConsumerState<ConsumerStatefulWidget> createState() => _HomeScreenState();
+}
 
-    final userData = ref.watch(userDetailsProvider);
+class _HomeScreenState extends ConsumerState<HomeScreen> {
+  late PageController _pageController;
+  // late StreamSubscription _sub;
+
+  @override
+  void initState() {
+    super.initState();
+
+    final currentIndex = ref.read(currentIndexProvider);
+    _pageController = PageController(initialPage: currentIndex);
+
+    // _setupUniLinks();
 
     final socketService = ref.read(socketServiceProvider);
     socketService.connectSocket();
@@ -39,17 +52,59 @@ class HomeScreen extends ConsumerWidget {
       log("SOCKET SERVICE WELCOME $data");
       String? roomId = data['room_id'];
       log("WELCOME ===> $roomId");
+      final userData = ref.read(userDetailsProvider);
       socketService.socket.emit('add-user', {'user_id': userData['user_id'], 'room_id': roomId});
     });
+  }
 
-    void onPageChanged(int index) {
-      ref.read(currentIndexProvider.notifier).state = index;
-    }
+  @override
+  void dispose() {
+    _pageController.dispose();
+    // _sub.cancel();
+    super.dispose();
+  }
 
-    void onTabTapped(int index) {
-      pageController.jumpToPage(index);
-      ref.read(currentIndexProvider.notifier).state = index;
+  // void _setupUniLinks() {
+  //   _sub = uriLinkStream.listen((Uri? uri) {
+  //     if (uri != null) {
+  //       // Handle the deep link. For example, navigate to a specific screen.
+  //       log('Received link: $uri');
+  //       _handleIncomingLink(uri);
+  //     }
+  //   }, onError: (err) {
+  //     log('Failed to receive link: $err');
+  //   });
+  // }
+
+  void _handleIncomingLink(Uri uri) {
+    // Example parsing logic, adjust based on your URL structure.
+    if (uri.pathSegments.contains('discussion') && uri.pathSegments.contains('thread')) {
+      // Navigate to a specific screen within your app
+      final threadId = uri.pathSegments.last;
+      // Navigate to the screen corresponding to the threadId
+      // For example: Navigator.pushNamed(context, '/discussion/thread', arguments: threadId);
+      log('Navigating to thread: $threadId');
     }
+    // Add other cases as necessary
+  }
+
+  void onPageChanged(int index) {
+    ref.read(currentIndexProvider.notifier).state = index;
+  }
+
+  void onTabTapped(int index) {
+    _pageController.jumpToPage(index);
+    ref.read(currentIndexProvider.notifier).state = index;
+    if (index == 1) {
+      ref.invalidate(ChatProvider.getChatUsersListProvider);
+    } else if (index == 2) {
+      ref.invalidate(NotificationProvider.getAllNotificationsProvider);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final currentIndex = ref.watch(currentIndexProvider);
 
     return Scaffold(
       appBar: AppBar(
@@ -166,14 +221,14 @@ class HomeScreen extends ConsumerWidget {
         ],
       ),
       body: PageView(
-        controller: pageController,
+        controller: _pageController,
         onPageChanged: onPageChanged,
         physics: const NeverScrollableScrollPhysics(),
         children: [
-          MyFeedNavigator(homePageController: pageController),
+          MyFeedNavigator(homePageController: _pageController),
           const MessagesScreenNavigator(),
-          NotificationScreen(notificationPageController: pageController),
-          const ProfileScreen(),
+          NotificationScreen(notificationPageController: _pageController),
+          ProfileScreen(),
         ],
       ),
       bottomNavigationBar: BottomNavigationBar(
