@@ -19,7 +19,7 @@ class DeleteLikeParams {
   final String? likeId;
 
   DeleteLikeParams({
-    required this.threadId,
-    required this.likeId,
+    this.threadId,
+    this.likeId,
   });
 }

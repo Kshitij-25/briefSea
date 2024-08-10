@@ -10,6 +10,38 @@ import '../../data/models/thread_image_model.dart';
 import '../../data/repositories/breifs_repository.dart';
 import '../params/briefs_params.dart';
 
+class BriefsNotifier extends StateNotifier<AsyncValue<List<BriefsResult>>> {
+  final Ref ref;
+  List<BriefsResult> _briefs = [];
+
+  BriefsNotifier(this.ref) : super(const AsyncValue.loading());
+
+  Future<List<BriefsResult>> fetchBriefs({required int page}) async {
+    try {
+      // state = const AsyncValue.loading();
+      print("API FIRST");
+      final briefsResponse = await ref.read(BriefsProviders.getAllBriefsProvider(page).future);
+
+      if (briefsResponse?.briefResult?.isNotEmpty ?? false) {
+        _briefs.addAll(briefsResponse!.briefResult!);
+        print("API Second");
+        state = AsyncValue.data(_briefs);
+        return briefsResponse.briefResult!;
+      } else {
+        state = AsyncValue.data(_briefs);
+        return [];
+      }
+    } catch (e) {
+      // state = AsyncValue.error(e);
+      return [];
+    }
+  }
+}
+
+final briefsNotifierProvider = StateNotifierProvider.autoDispose<BriefsNotifier, AsyncValue<List<BriefsResult>>>((ref) {
+  return BriefsNotifier(ref);
+});
+
 class BriefsProviders {
   static final briefsRemoteDataSourceProvider = Provider<BriefsRemoteDataSource>((ref) {
     final apiClient = getItInstance<ApiClient>();
@@ -21,7 +53,7 @@ class BriefsProviders {
     return BreifsRepository(briefsRemoteDataSource);
   });
 
-  static final getAllBriefsProvider = FutureProvider.family<BriefModel?, int?>((ref, pageNumber) async {
+  static final getAllBriefsProvider = FutureProvider.autoDispose.family<BriefModel?, int?>((ref, pageNumber) async {
     final briefsRepository = ref.watch(briefsRepositoryProvider);
     final eitherBriefsOrError = await briefsRepository.getAllBriefs(pageNumber);
     return eitherBriefsOrError!.fold(

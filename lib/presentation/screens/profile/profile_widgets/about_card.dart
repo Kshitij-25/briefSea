@@ -37,7 +37,7 @@ class AboutCard extends StatelessWidget {
                 textScaler: TextScaler.linear(ScaleSize.textScaleFactor(context)),
               ),
               Text(
-                ' ${userProfileData?.expDuration ?? 'NA'}',
+                ' ${userProfileData?.expDuration ?? '< 6 Months'}',
                 style: const TextStyle(
                   color: Colors.black,
                 ),

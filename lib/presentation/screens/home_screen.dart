@@ -13,6 +13,7 @@ import '../../common/others/assets.dart';
 import '../../common/others/strings.dart';
 import '../../main.dart';
 import '../providers/auth_provider.dart';
+import '../providers/breifs_provider.dart';
 import '../providers/chat_provider.dart';
 import '../providers/notification_provider.dart';
 import '../providers/socket_provider.dart';
@@ -95,7 +96,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   void onTabTapped(int index) {
     _pageController.jumpToPage(index);
     ref.read(currentIndexProvider.notifier).state = index;
-    if (index == 1) {
+    if (index == 0) {
+      ref.invalidate(briefsNotifierProvider);
+      ref.read(briefsNotifierProvider.notifier).fetchBriefs(page: 1);
+    } else if (index == 1) {
       ref.invalidate(ChatProvider.getChatUsersListProvider);
     } else if (index == 2) {
       ref.invalidate(NotificationProvider.getAllNotificationsProvider);

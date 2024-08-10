@@ -190,8 +190,8 @@ Future<void> customPostBriefModalSheet(
                             showHeader: false,
                             decoration: BoxDecoration(),
                             textStyle: TextStyle(fontSize: 14 * ScaleSize.textScaleFactor(context)),
-                            // selectedChipColor: const Color(0xFF4C27FF),
-                            // selectedTextStyle: TextStyle(color: Colors.white),
+                            selectedChipColor: const Color(0xFF4C27FF),
+                            selectedTextStyle: TextStyle(color: Colors.white),
                           ),
                           Padding(
                             padding: const EdgeInsets.only(left: 15, right: 15, bottom: 5),

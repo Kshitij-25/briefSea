@@ -160,7 +160,8 @@ class _FeedScreenState extends ConsumerState<FeedScreen> {
                                 ),
                               ).future);
                             }
-                            ref.invalidate(BriefsProviders.getAllBriefsProvider);
+                            ref.invalidate(briefsNotifierProvider);
+                            ref.read(briefsNotifierProvider.notifier).fetchBriefs(page: 1);
                             ref.invalidate(BriefsProviders.getUserBriefsProvider);
                             ref.invalidate(BriefsProviders.getSingleBriefProvider);
                           } catch (e) {
@@ -382,7 +383,8 @@ class _FeedScreenState extends ConsumerState<FeedScreen> {
                                     commentCont.clear();
                                   }
                                   ref.invalidate(ReplyProvider.getAllCommentsProvider(brief.id));
-                                  ref.invalidate(BriefsProviders.getAllBriefsProvider);
+                                  ref.invalidate(briefsNotifierProvider);
+                                  ref.read(briefsNotifierProvider.notifier).fetchBriefs(page: 1);
                                   ref.invalidate(BriefsProviders.getUserBriefsProvider);
                                   ref.invalidate(BriefsProviders.getSingleBriefProvider(brief.id));
                                 },

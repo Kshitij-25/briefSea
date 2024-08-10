@@ -10,6 +10,9 @@ class ServicesCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Get the services list or default to an empty list if null
+    final services = userProfileData?.services ?? [];
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 15),
       child: Column(
@@ -27,23 +30,25 @@ class ServicesCard extends StatelessWidget {
           Wrap(
             spacing: 5,
             alignment: WrapAlignment.start,
-            children: userProfileData!.services!
-                .map(
-                  (services) => Chip(
-                    visualDensity: VisualDensity.compact,
-                    label: Text(
-                      services,
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 10,
+            children: services.isNotEmpty
+                ? services
+                    .map(
+                      (service) => Chip(
+                        visualDensity: VisualDensity.compact,
+                        label: Text(
+                          service,
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 10,
+                          ),
+                          textScaler: TextScaler.linear(ScaleSize.textScaleFactor(context)),
+                        ),
+                        backgroundColor: Theme.of(context).colorScheme.secondary,
+                        padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
                       ),
-                      textScaler: TextScaler.linear(ScaleSize.textScaleFactor(context)),
-                    ),
-                    backgroundColor: Theme.of(context).colorScheme.secondary,
-                    padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
-                  ),
-                )
-                .toList(),
+                    )
+                    .toList()
+                : [Text('No services available', style: const TextStyle(color: Colors.grey))],
           ),
         ],
       ),

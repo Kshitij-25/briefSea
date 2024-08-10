@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../data/core/api_client.dart';
@@ -43,6 +45,8 @@ class LikesProvider {
   });
 
   static final deleteLikeProvider = FutureProvider.family<bool, DeleteLikeParams>((ref, params) async {
+    log(params.likeId.toString());
+    log(params.threadId.toString());
     final likeRepository = ref.watch(likeRepositoryProvider);
     final eitherLikeOrError = await likeRepository.deleteLike(params.threadId, params.likeId);
     return eitherLikeOrError!.fold(

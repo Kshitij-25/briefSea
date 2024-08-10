@@ -14,4 +14,4 @@ final selectedBriefsFilter = StateNotifierProvider<SelectedBriefsFilter, String>
   return SelectedBriefsFilter();
 });
 
-final selectedVisibleToProvider = StateProvider<List<String>>((ref) => []);
+final selectedVisibleToProvider = StateProvider.autoDispose<List<String>>((ref) => []);

@@ -241,7 +241,9 @@ class ProfileScreen extends ConsumerWidget {
                             },
                           ),
                         ExpertiseCard(userProfileData: userDetails),
-                        ServicesCard(userProfileData: userDetails),
+                        userDetails.services != null && userDetails.services?.isEmpty != true
+                            ? ServicesCard(userProfileData: userDetails)
+                            : SizedBox.shrink(),
                         const SizedBox(height: 20),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,

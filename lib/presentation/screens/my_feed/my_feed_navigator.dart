@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:briefsea/common/app_utils/app_utility.dart';
@@ -36,6 +37,8 @@ class MyFeedNavigator extends ConsumerWidget {
     final userData = ref.watch(userDetailsProvider);
 
     final selectedVisibleTo = ref.watch(selectedVisibleToProvider.notifier).state;
+
+    log(selectedVisibleTo.toString());
 
     final TextEditingController postTextCont = TextEditingController();
 
@@ -104,7 +107,13 @@ class MyFeedNavigator extends ConsumerWidget {
                           postTextCont: postTextCont,
                           postingAs: userData['firstName'] == "" ? userData['user_name'] : userData['firstName'],
                           onVisbileSelect: (List<String?> values) {
-                            ref.read(selectedVisibleToProvider.notifier).state = values.whereType<String>().toList();
+                            // Update the state provider with the selected values
+                            log(values.toString() + "after");
+                            var state = ref.read(selectedVisibleToProvider.notifier).state;
+                            // Filter out null values from the incoming list
+                            final nonNullValues = values.where((value) => value != null).cast<String>().toList();
+                            // Add the non-null values to the state
+                            state = [...state, ...nonNullValues];
                           },
                           selectedVisibleTo: selectedVisibleTo,
                           photoOnTap: () async {
@@ -151,9 +160,12 @@ class MyFeedNavigator extends ConsumerWidget {
                                 if (status == true) {
                                   postTextCont.clear();
                                   GoRouter.of(context).pop();
+                                  ref.invalidate(briefsNotifierProvider);
+                                  ref.read(briefsNotifierProvider.notifier).fetchBriefs(page: 1);
+                                  ref.invalidate(BriefsProviders.getUserBriefsProvider);
+                                } else {
+                                  AppUtility(context).error('Error posting brief.');
                                 }
-                                ref.invalidate(BriefsProviders.getAllBriefsProvider);
-                                ref.invalidate(BriefsProviders.getUserBriefsProvider);
                               } else {
                                 AppUtility(context).error('Choose a category first.');
                               }
