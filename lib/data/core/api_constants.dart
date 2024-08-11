@@ -13,8 +13,8 @@ class ApiConstants {
   static const privacyPolicy = 'https://www.briefsea.com/privacy-policy';
 
   // Base URLs
-  // static const BASE_URL = 'https://briefsea-backend.onrender.com'; //Test Url
-  static const BASE_URL = 'https://www.api.briefsea.com'; //Prod Url
+  static const BASE_URL = 'https://briefsea-backend.onrender.com'; //Test Url
+  // static const BASE_URL = 'https://www.api.briefsea.com'; //Prod Url
 
   // User authentication
   static const loginUrl = '$BASE_URL/forum/discussion/login/one';
@@ -30,6 +30,7 @@ class ApiConstants {
   static const uploadBanner = '$BASE_URL/forum/discussion/uploads/profile/put/banner';
   static const deleteAccount = "$BASE_URL/forum/discussion/login/remove";
   static const checkUsername = "$BASE_URL/forum/discussion/profile/check?username=";
+  static const getUserAvatar = "$BASE_URL/forum/discussion/profile/avatar";
 
   // Threads and briefs
   // static const getAllBriefs = '$BASE_URL/forum/discussion/threads/pagination/limit?count=';

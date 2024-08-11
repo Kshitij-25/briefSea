@@ -30,9 +30,9 @@ class AppRouter {
         builder: (context, state) => const WelcomeScreen(),
       ),
       GoRoute(
-        name: AgencyRegisterScreen.routeName,
-        path: AgencyRegisterScreen.routeName,
-        builder: (context, state) => AgencyRegisterScreen(),
+        name: AgencyRegistrationScreen.routeName,
+        path: AgencyRegistrationScreen.routeName,
+        builder: (context, state) => AgencyRegistrationScreen(),
       ),
       GoRoute(
         name: FreelancerRegisterScreen.routeName,

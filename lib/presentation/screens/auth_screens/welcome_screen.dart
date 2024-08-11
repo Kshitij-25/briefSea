@@ -78,50 +78,12 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                       textScaler: TextScaler.linear(ScaleSize.textScaleFactor(context)),
                       textAlign: TextAlign.center,
                     ),
-                    // GoRouter.of(context).push(TermsAndPrivacyView.routeName),
-                    RichText(
-                      text: TextSpan(
-                        children: [
-                          TextSpan(
-                            text: 'Terms of Use',
-                            style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                                  color: Theme.of(context).colorScheme.tertiaryContainer,
-                                  fontSize: 12 * ScaleSize.textScaleFactor(context),
-                                ),
-                            recognizer: TapGestureRecognizer()
-                              ..onTap = () {
-                                GoRouter.of(context).push(
-                                  TermsAndPrivacyView.routeName,
-                                  extra: ApiConstants.termsOfUse,
-                                );
-                              },
-                          ),
-                          TextSpan(
-                            text: ' and ',
-                            style: Theme.of(context).textTheme.bodySmall!,
-                          ),
-                          TextSpan(
-                            text: 'Privacy Policy',
-                            style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                                  color: Theme.of(context).colorScheme.tertiaryContainer,
-                                  fontSize: 12 * ScaleSize.textScaleFactor(context),
-                                ),
-                            recognizer: TapGestureRecognizer()
-                              ..onTap = () {
-                                GoRouter.of(context).push(
-                                  TermsAndPrivacyView.routeName,
-                                  extra: ApiConstants.privacyPolicy,
-                                );
-                              },
-                          ),
-                        ],
-                      ),
-                    ),
+                    _buildTermsAndPrivacyText(context),
                     const SizedBox(height: 20),
                     CustomElevatedButton(
                       buttonLabel: "Join as an Agency",
                       onPressed: () {
-                        GoRouter.of(context).push(AgencyRegisterScreen.routeName);
+                        GoRouter.of(context).push(AgencyRegistrationScreen.routeName);
                       },
                     ),
                     const SizedBox(height: 20),
@@ -152,6 +114,40 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildTermsAndPrivacyText(BuildContext context) {
+    return RichText(
+      text: TextSpan(
+        children: [
+          _buildClickableText(context, 'Terms of Use', ApiConstants.termsOfUse),
+          const TextSpan(
+            text: ' and ',
+            style: TextStyle(
+              fontSize: 12,
+            ),
+          ),
+          _buildClickableText(context, 'Privacy Policy', ApiConstants.privacyPolicy),
+        ],
+      ),
+    );
+  }
+
+  TextSpan _buildClickableText(BuildContext context, String text, String route) {
+    return TextSpan(
+      text: text,
+      style: Theme.of(context).textTheme.bodySmall!.copyWith(
+            color: Theme.of(context).colorScheme.tertiaryContainer,
+            fontSize: 12 * ScaleSize.textScaleFactor(context),
+          ),
+      recognizer: TapGestureRecognizer()
+        ..onTap = () {
+          GoRouter.of(context).push(
+            TermsAndPrivacyView.routeName,
+            extra: route,
+          );
+        },
     );
   }
 }

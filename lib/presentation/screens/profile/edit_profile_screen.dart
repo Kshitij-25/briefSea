@@ -276,6 +276,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                     ).future,
                   );
                   if (profileEdited.acknowledged == true) {
+                    ref.read(userAvatarNotifierProvider.notifier).loadUserAvatar();
                     ref.invalidate(UserProfileProvider.getUserProfileProvider);
                     AppUtility(context).message('Profile updated successfully');
                     GoRouter.of(context).pop();

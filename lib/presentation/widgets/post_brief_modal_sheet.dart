@@ -15,6 +15,7 @@ Future<void> customPostBriefModalSheet(
   TextEditingController? postTextCont,
   File? selectedImage,
   String? postingAs,
+  String? userAvatar,
   // Function()? influencerOnTap,
   // Function()? technologyOnTap,
   required Function()? photoOnTap,
@@ -84,15 +85,23 @@ Future<void> customPostBriefModalSheet(
                                   padding: const EdgeInsets.symmetric(horizontal: 15),
                                   child: Row(
                                     children: [
-                                      CircleAvatar(
-                                        radius: 20 * ScaleSize.textScaleFactor(context),
-                                        backgroundColor: Theme.of(context).colorScheme.secondary,
-                                        child: Text(
-                                          postingAs == '' ? "" : postingAs?[0].toUpperCase() ?? '',
-                                          style: Theme.of(context).textTheme.titleMedium,
-                                          textScaler: TextScaler.linear(ScaleSize.textScaleFactor(context)),
-                                        ),
-                                      ),
+                                      userAvatar != null
+                                          ? CircleAvatar(
+                                              radius: 20 * ScaleSize.textScaleFactor(context),
+                                              backgroundImage: Image.file(
+                                                File(userAvatar),
+                                                fit: BoxFit.cover,
+                                              ).image,
+                                            )
+                                          : CircleAvatar(
+                                              radius: 20 * ScaleSize.textScaleFactor(context),
+                                              backgroundColor: Theme.of(context).colorScheme.secondary,
+                                              child: Text(
+                                                postingAs == '' ? "" : postingAs?[0].toUpperCase() ?? '',
+                                                style: Theme.of(context).textTheme.titleMedium,
+                                                textScaler: TextScaler.linear(ScaleSize.textScaleFactor(context)),
+                                              ),
+                                            ),
                                       GestureDetector(
                                         onTap: () {
                                           setState(() {
@@ -109,7 +118,7 @@ Future<void> customPostBriefModalSheet(
                                               ),
                                             ),
                                             child: Padding(
-                                              padding: EdgeInsets.symmetric(vertical: 2.0, horizontal: 10),
+                                              padding: EdgeInsets.symmetric(vertical: 3.0, horizontal: 10),
                                               child: Text(
                                                 // "Posting as a ${postingAs!}",
                                                 "Choose a category",

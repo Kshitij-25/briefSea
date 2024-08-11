@@ -22,9 +22,9 @@ class ExistingLoginScreen extends ConsumerWidget {
 
   static const routeName = "/existingLoginScreen";
 
-  final TextEditingController emailCont = TextEditingController();
-  final TextEditingController passCont = TextEditingController();
-  final TextEditingController forgotEmail = TextEditingController();
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+  final TextEditingController forgotEmailController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
   final _formKey2 = GlobalKey<FormState>();
 
@@ -56,20 +56,20 @@ class ExistingLoginScreen extends ConsumerWidget {
                             SizedBox(height: ScreenSize.height(context) * .2),
                             GestureDetector(
                               onTap: () {
-                                emailCont.text = "kshitij@briefsea.com";
-                                passCont.text = 'Kshitij@2201';
+                                emailController.text = "kshitij@briefsea.com";
+                                passwordController.text = 'Kshitij@2201';
                               },
                               onLongPress: () {
-                                emailCont.text = "xalonev795@devncie.com";
-                                passCont.text = 'Test@1234';
+                                emailController.text = "xalonev795@devncie.com";
+                                passwordController.text = 'Test@1234';
                               },
                               onDoubleTap: () {
-                                emailCont.text = "lofeti1583@luvnish.com";
-                                passCont.text = "lofeti1583@luvnish.com";
+                                emailController.text = "lofeti1583@luvnish.com";
+                                passwordController.text = "lofeti1583@luvnish.com";
                               },
                               // onDoubleTap: () {
-                              //   emailCont.text = "anmol.pandey@urpopular.com";
-                              //   passCont.text = "Anmol@123";
+                              //   emailController.text = "anmol.pandey@urpopular.com";
+                              //   passwordController.text = "Anmol@123";
                               // },
                               child: Text(
                                 "Login as Existing User",
@@ -81,7 +81,7 @@ class ExistingLoginScreen extends ConsumerWidget {
                             SizedBox(height: ScreenSize.height(context) * .1),
                             CustomTextFormField(
                               hintText: "Enter your Email",
-                              controller: emailCont,
+                              controller: emailController,
                               textInputAction: TextInputAction.next,
                               keyboardType: TextInputType.emailAddress,
                               validator: (value) {
@@ -97,7 +97,7 @@ class ExistingLoginScreen extends ConsumerWidget {
                             const SizedBox(height: 10),
                             CustomTextFormField(
                               hintText: "Enter Password",
-                              controller: passCont,
+                              controller: passwordController,
                               textInputAction: TextInputAction.done,
                               obscureText: passNotifier.obscureExistingPassword,
                               suffixIcon: IconButton(
@@ -152,7 +152,7 @@ class ExistingLoginScreen extends ConsumerWidget {
                                                 const SizedBox(height: 10),
                                                 CustomTextFormField(
                                                   hintText: "Enter Email",
-                                                  controller: forgotEmail,
+                                                  controller: forgotEmailController,
                                                   validator: (value) {
                                                     if (!ValidationUtils.isNotEmpty(value!)) {
                                                       return 'Email is required';
@@ -169,7 +169,7 @@ class ExistingLoginScreen extends ConsumerWidget {
                                                   buttonLabel: "Submit",
                                                   onPressed: () async {
                                                     if (_formKey2.currentState!.validate()) {
-                                                      await ref.read(ForgetPasswordProvider(email: forgotEmail.text).future);
+                                                      await ref.read(ForgetPasswordProvider(email: forgotEmailController.text).future);
                                                       context.pop();
                                                       AppUtility(context).message("Check email to reset password.");
                                                     }
@@ -245,8 +245,8 @@ class ExistingLoginScreen extends ConsumerWidget {
                                 onPressed: () async {
                                   if (_formKey.currentState!.validate()) {
                                     await ref.read(loginNotifierProvider.notifier).loginUser(
-                                          emailCont.text.trim(),
-                                          passCont.text.trim(),
+                                          emailController.text.trim(),
+                                          passwordController.text.trim(),
                                           ref,
                                           context,
                                         );

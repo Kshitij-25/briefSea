@@ -150,4 +150,15 @@ class UserProfileRepository {
       return Left(AppError(errorMessage: e.toString()));
     }
   }
+
+  Future<Either<AppError, String>> getUserAvatar() async {
+    try {
+      final userAvatar = await _userProfileRemoteDataSource.getUserAvatar();
+      return Right(userAvatar);
+    } on AppError catch (e) {
+      return Left(e);
+    } on Exception catch (e) {
+      return Left(AppError(errorMessage: e.toString()));
+    }
+  }
 }

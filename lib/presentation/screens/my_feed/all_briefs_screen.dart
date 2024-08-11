@@ -17,6 +17,7 @@ import '../../providers/auth_provider.dart';
 import '../../providers/breifs_provider.dart';
 import '../../providers/likes_provider.dart';
 import '../../providers/notification_provider.dart';
+import '../../providers/user_profile_provider.dart';
 import '../../state_providers/image_picker_provider.dart';
 import '../../widgets/custom_briefs_card.dart';
 import '../../widgets/post_brief_modal_sheet.dart';
@@ -155,6 +156,7 @@ class _AllBriefsScreenState extends ConsumerState<AllBriefsScreen> {
     await customPostBriefModalSheet(
       context,
       selectedImage: ref.watch(selectedPostImageProvider),
+      userAvatar: ref.watch(userAvatarNotifierProvider),
       postTextCont: postEditController,
       postingAs: brief.name,
       onVisbileSelect: (List<String?> values) {

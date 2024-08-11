@@ -33,6 +33,7 @@ abstract class UserProfileRemoteDataSource {
   Future<ImageModel> getImage(String? src);
   Future<bool> deleteAccount(String? userId);
   Future<bool> checkUserName(String? userName);
+  Future<String> getUserAvatar();
 }
 
 class UserProfileRemoteDataSourceImpl implements UserProfileRemoteDataSource {
@@ -356,6 +357,33 @@ class UserProfileRemoteDataSourceImpl implements UserProfileRemoteDataSource {
       }
     } catch (e) {
       log("checkUserName Error", error: e);
+      throw AppError(errorMessage: e.toString());
+    }
+  }
+
+  @override
+  Future<String> getUserAvatar() async {
+    var jwtToken = await getJwtToken();
+
+    try {
+      Response? response = await _apiClient.getReq(
+        url: ApiConstants.getUserAvatar,
+        jwtToken: jwtToken,
+      );
+
+      if (response?.data != null && response?.statusCode != null) {
+        if (response!.statusCode == 200) {
+          var responseJson = response.data;
+          log(responseJson.toString());
+          return responseJson['url'];
+        } else {
+          throw AppError(statusCode: response.statusCode);
+        }
+      } else {
+        throw AppError();
+      }
+    } catch (e) {
+      log("getUserAvatar Error", error: e);
       throw AppError(errorMessage: e.toString());
     }
   }

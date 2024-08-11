@@ -104,6 +104,7 @@ class MyFeedNavigator extends ConsumerWidget {
                         customPostBriefModalSheet(
                           context,
                           selectedImage: selectedImage,
+                          userAvatar: ref.watch(userAvatarNotifierProvider),
                           postTextCont: postTextCont,
                           postingAs: userData['firstName'] == "" ? userData['user_name'] : userData['firstName'],
                           onVisbileSelect: (List<String?> values) {

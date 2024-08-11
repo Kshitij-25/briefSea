@@ -14,6 +14,7 @@ import '../../params/briefs_params.dart';
 import '../../providers/auth_provider.dart';
 import '../../providers/breifs_provider.dart';
 import '../../providers/likes_provider.dart';
+import '../../providers/user_profile_provider.dart';
 import '../../state_providers/briefs_state_provider.dart';
 import '../../state_providers/image_picker_provider.dart';
 import '../../widgets/custom_briefs_card.dart';
@@ -30,6 +31,8 @@ class MyBriefsScreen extends ConsumerWidget {
     final userDetails = ref.watch(userDetailsProvider);
     final selectedFilter = ref.watch(selectedBriefsFilter);
     final selectedImage = ref.watch(selectedPostImageProvider);
+
+    final filters = ['All', 'Public', 'Private'];
 
     return ref.watch(BriefsProviders.getUserBriefsProvider).when(
           data: (briefs) {
@@ -71,62 +74,27 @@ class MyBriefsScreen extends ConsumerWidget {
             }).toList();
             return Column(
               children: [
-                Row(
-                  children: [
-                    const SizedBox(width: 5),
-                    ElevatedButton(
-                      style: ButtonStyle(
-                        enableFeedback: true,
-                        backgroundColor: WidgetStateProperty.all<Color>(
-                          Theme.of(context).colorScheme.secondary,
-                        ),
-                      ),
-                      onPressed: () {
-                        ref.read(selectedBriefsFilter.notifier).setFilter('All');
-                        ref.invalidate(BriefsProviders.getUserBriefsProvider);
-                      },
-                      child: Text(
-                        'All',
-                        style: TextStyle(color: Colors.white),
-                        textScaler: TextScaler.linear(ScaleSize.textScaleFactor(context)),
-                      ),
-                    ),
-                    const SizedBox(width: 5),
-                    ElevatedButton(
-                      style: ButtonStyle(
-                          enableFeedback: true,
-                          backgroundColor: WidgetStateProperty.all<Color>(
-                            Theme.of(context).colorScheme.secondary,
-                          )),
-                      onPressed: () {
-                        ref.read(selectedBriefsFilter.notifier).setFilter('Public');
-                        ref.invalidate(BriefsProviders.getUserBriefsProvider);
-                      },
-                      child: Text(
-                        'Public',
-                        style: TextStyle(color: Colors.white),
-                        textScaler: TextScaler.linear(ScaleSize.textScaleFactor(context)),
-                      ),
-                    ),
-                    const SizedBox(width: 5),
-                    ElevatedButton(
-                      style: ButtonStyle(
-                          enableFeedback: true,
-                          backgroundColor: WidgetStateProperty.all<Color>(
-                            Theme.of(context).colorScheme.secondary,
-                          )),
-                      onPressed: () {
-                        ref.read(selectedBriefsFilter.notifier).setFilter('Private');
-                        ref.invalidate(BriefsProviders.getUserBriefsProvider);
-                      },
-                      child: Text(
-                        'Private',
-                        style: TextStyle(color: Colors.white),
-                        textScaler: TextScaler.linear(ScaleSize.textScaleFactor(context)),
-                      ),
-                    ),
-                  ],
+                SizedBox(
+                  height: 35, // Adjust height based on your design
+                  child: ListView.builder(
+                    scrollDirection: Axis.horizontal,
+                    itemCount: filters.length,
+                    itemBuilder: (context, index) {
+                      final filter = filters[index];
+                      final isSelected = selectedFilter == filter;
+
+                      return _FilterButton(
+                        filterName: filter,
+                        isSelected: isSelected,
+                        onPressed: () {
+                          ref.read(selectedBriefsFilter.notifier).setFilter(filter);
+                          ref.invalidate(BriefsProviders.getUserBriefsProvider);
+                        },
+                      );
+                    },
+                  ),
                 ),
+                SizedBox(height: 10),
                 Expanded(
                   child: filteredBriefs.isEmpty && selectedFilter == "Private"
                       ? Center(
@@ -198,6 +166,7 @@ class MyBriefsScreen extends ConsumerWidget {
                                         customPostBriefModalSheet(
                                           context,
                                           selectedImage: selectedImage,
+                                          userAvatar: ref.watch(userAvatarNotifierProvider),
                                           postTextCont: postEditController,
                                           postingAs: filteredBriefs[index]?.name,
                                           onVisbileSelect: (List<String?> values) {
@@ -409,5 +378,39 @@ class MyBriefsScreen extends ConsumerWidget {
             child: CircularProgressIndicator(),
           ),
         );
+  }
+}
+
+class _FilterButton extends ConsumerWidget {
+  const _FilterButton({
+    Key? key,
+    required this.filterName,
+    required this.isSelected,
+    required this.onPressed,
+  }) : super(key: key);
+
+  final String filterName;
+  final bool isSelected;
+  final VoidCallback onPressed;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 5),
+      child: ElevatedButton(
+        style: ElevatedButton.styleFrom(
+          enableFeedback: true,
+          backgroundColor: isSelected ? Theme.of(context).colorScheme.secondary : Colors.white,
+        ),
+        onPressed: onPressed,
+        child: Text(
+          filterName,
+          style: TextStyle(
+            color: isSelected ? Colors.white : Theme.of(context).colorScheme.secondary,
+          ),
+          textScaler: TextScaler.linear(ScaleSize.textScaleFactor(context)),
+        ),
+      ),
+    );
   }
 }

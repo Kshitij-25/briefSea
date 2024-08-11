@@ -7,6 +7,7 @@ environment:
   sdk: '>=3.4.0 <4.0.0'
 
 dependencies:
+  app_links: ^6.2.0
   auto_size_text: ^3.0.0
   cached_network_image: ^3.3.1
   crypto: ^3.0.3
@@ -42,7 +43,6 @@ dependencies:
   shared_preferences: ^2.2.3
   socket_io_client: ^2.0.3+1
   timeago: ^3.6.1
-  # uni_links2: ^0.6.0+2
   url_launcher: ^6.3.0
   very_good_analysis: ^6.0.0
   webview_flutter: ^4.8.0

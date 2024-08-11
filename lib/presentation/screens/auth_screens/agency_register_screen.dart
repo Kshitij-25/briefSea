@@ -3,7 +3,6 @@
 import 'package:briefsea/common/others/strings.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
@@ -17,22 +16,22 @@ import '../../widgets/custom_elevated_button.dart';
 import '../../widgets/custom_shape_widget.dart';
 import '../../widgets/custom_text_form_field.dart';
 
-class AgencyRegisterScreen extends ConsumerWidget {
-  AgencyRegisterScreen({super.key});
+class AgencyRegistrationScreen extends ConsumerWidget {
+  AgencyRegistrationScreen({super.key});
 
-  static const routeName = "/agencyRegisterScreen";
+  static const String routeName = "/agencyRegisterScreen";
 
-  final TextEditingController agencyFirstName = TextEditingController();
-  final TextEditingController agencyLastName = TextEditingController();
-  final TextEditingController agencyEmail = TextEditingController();
-  final TextEditingController agencyPass = TextEditingController();
-  final TextEditingController agencyConfirmPass = TextEditingController();
-  final _formKey = GlobalKey<FormState>();
+  final TextEditingController _firstNameController = TextEditingController();
+  final TextEditingController _lastNameController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _confirmPasswordController = TextEditingController();
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final registerState = ref.watch(registerNotifierProvider);
-    final passNotifier = ref.watch(passwordNotifierProvider);
+    final passwordNotifier = ref.watch(passwordNotifierProvider);
     return GestureDetector(
       onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
       child: Scaffold(
@@ -64,7 +63,7 @@ class AgencyRegisterScreen extends ConsumerWidget {
                             SizedBox(height: ScreenSize.height(context) * .05),
                             CustomTextFormField(
                               hintText: "Enter your First Name",
-                              controller: agencyFirstName,
+                              controller: _firstNameController,
                               textInputAction: TextInputAction.next,
                               validator: (value) {
                                 if (!ValidationUtils.isNotEmpty(value!)) {
@@ -76,7 +75,7 @@ class AgencyRegisterScreen extends ConsumerWidget {
                             const SizedBox(height: 10),
                             CustomTextFormField(
                               hintText: "Enter your Last Name",
-                              controller: agencyLastName,
+                              controller: _lastNameController,
                               textInputAction: TextInputAction.next,
                               validator: (value) {
                                 if (!ValidationUtils.isNotEmpty(value!)) {
@@ -88,7 +87,7 @@ class AgencyRegisterScreen extends ConsumerWidget {
                             const SizedBox(height: 10),
                             CustomTextFormField(
                               hintText: "Enter your Email",
-                              controller: agencyEmail,
+                              controller: _emailController,
                               textInputAction: TextInputAction.next,
                               keyboardType: TextInputType.emailAddress,
                               validator: (value) {
@@ -104,16 +103,16 @@ class AgencyRegisterScreen extends ConsumerWidget {
                             const SizedBox(height: 10),
                             CustomTextFormField(
                               hintText: "Enter Password",
-                              controller: agencyPass,
-                              obscureText: passNotifier.obscureAgencyPassword,
+                              controller: _passwordController,
+                              obscureText: passwordNotifier.obscureAgencyPassword,
                               suffixIcon: IconButton(
                                 onPressed: () {
-                                  passNotifier.obscureAgencyPassword = !passNotifier.obscureAgencyPassword;
+                                  passwordNotifier.obscureAgencyPassword = !passwordNotifier.obscureAgencyPassword;
                                 },
                                 icon: Padding(
                                   padding: const EdgeInsets.symmetric(horizontal: 10),
                                   child: Icon(
-                                    !passNotifier.obscureAgencyPassword ? CupertinoIcons.eye_slash_fill : CupertinoIcons.eye_fill,
+                                    !passwordNotifier.obscureAgencyPassword ? CupertinoIcons.eye_slash_fill : CupertinoIcons.eye_fill,
                                     size: 20 * ScaleSize.textScaleFactor(context),
                                   ),
                                 ),
@@ -133,16 +132,16 @@ class AgencyRegisterScreen extends ConsumerWidget {
                             const SizedBox(height: 10),
                             CustomTextFormField(
                               hintText: "Confirm Password",
-                              controller: agencyConfirmPass,
-                              obscureText: passNotifier.obscureAgencyConfirmPassword,
+                              controller: _confirmPasswordController,
+                              obscureText: passwordNotifier.obscureAgencyConfirmPassword,
                               suffixIcon: IconButton(
                                 onPressed: () {
-                                  passNotifier.obscureAgencyConfirmPassword = !passNotifier.obscureAgencyConfirmPassword;
+                                  passwordNotifier.obscureAgencyConfirmPassword = !passwordNotifier.obscureAgencyConfirmPassword;
                                 },
                                 icon: Padding(
                                   padding: const EdgeInsets.symmetric(horizontal: 10),
                                   child: Icon(
-                                    !passNotifier.obscureAgencyConfirmPassword ? CupertinoIcons.eye_slash_fill : CupertinoIcons.eye_fill,
+                                    !passwordNotifier.obscureAgencyConfirmPassword ? CupertinoIcons.eye_slash_fill : CupertinoIcons.eye_fill,
                                     size: 20 * ScaleSize.textScaleFactor(context),
                                   ),
                                 ),
@@ -153,12 +152,13 @@ class AgencyRegisterScreen extends ConsumerWidget {
                                 if (!ValidationUtils.isNotEmpty(value!)) {
                                   return 'Please confirm your password';
                                 }
-                                if (value != agencyPass.text) {
+                                if (value != _passwordController.text) {
                                   return 'Passwords do not match';
                                 }
                                 return null;
                               },
                             ),
+                            SizedBox(height: ScreenSize.height(context) * .05),
                             // SizedBox(height: ScreenSize.height(context) * .05),
                             // const Text(
                             //   "Or sign up using an option:",
@@ -183,7 +183,6 @@ class AgencyRegisterScreen extends ConsumerWidget {
                             //     ),
                             //   ],
                             // ),
-                            SizedBox(height: ScreenSize.height(context) * .05),
                             Text(
                               "Freelancer, Working professional or\nExisting User?",
                               style: Theme.of(context).textTheme.bodyLarge!.copyWith(fontSize: 14),
@@ -214,10 +213,10 @@ class AgencyRegisterScreen extends ConsumerWidget {
                                   if (_formKey.currentState!.validate()) {
                                     // Proceed with registration if validation passes
                                     await ref.read(registerNotifierProvider.notifier).registerUser(
-                                          firstName: agencyFirstName.text.trim(),
-                                          lastName: agencyLastName.text.trim(),
-                                          email: agencyEmail.text.trim(),
-                                          password: agencyPass.text.trim(),
+                                          firstName: _firstNameController.text.trim(),
+                                          lastName: _lastNameController.text.trim(),
+                                          email: _emailController.text.trim(),
+                                          password: _passwordController.text.trim(),
                                           type: "Agency",
                                           subType: "",
                                           ref: ref,
@@ -258,21 +257,21 @@ class AgencyRegisterScreen extends ConsumerWidget {
     );
   }
 
-  _signUpOptions(context, imagePath, onTap) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        height: 70,
-        width: 70,
-        decoration: BoxDecoration(
-          color: Colors.grey[200],
-          borderRadius: BorderRadius.circular(5),
-        ),
-        child: SvgPicture.asset(
-          imagePath,
-          fit: BoxFit.scaleDown,
-        ),
-      ),
-    );
-  }
+// _signUpOptions(context, imagePath, onTap) {
+//     return GestureDetector(
+//       onTap: onTap,
+//       child: Container(
+//         height: 70,
+//         width: 70,
+//         decoration: BoxDecoration(
+//           color: Colors.grey[200],
+//           borderRadius: BorderRadius.circular(5),
+//         ),
+//         child: SvgPicture.asset(
+//           imagePath,
+//           fit: BoxFit.scaleDown,
+//         ),
+//       ),
+//     );
+//   }
 }

@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -17,6 +18,7 @@ import '../providers/breifs_provider.dart';
 import '../providers/chat_provider.dart';
 import '../providers/notification_provider.dart';
 import '../providers/socket_provider.dart';
+import '../providers/user_profile_provider.dart';
 import '../state_providers/bottom_nav_bar_state_provider.dart';
 import 'messages/messages_screen_navigator.dart';
 import 'my_feed/my_feed_navigator.dart';
@@ -38,6 +40,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   @override
   void initState() {
     super.initState();
+
+    ref.read(userAvatarNotifierProvider.notifier).loadUserAvatar();
 
     final currentIndex = ref.read(currentIndexProvider);
     _pageController = PageController(initialPage: currentIndex);
@@ -109,6 +113,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     final currentIndex = ref.watch(currentIndexProvider);
+    final avatarPath = ref.watch(userAvatarNotifierProvider);
 
     return Scaffold(
       appBar: AppBar(
@@ -250,7 +255,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         iconSize: 20 * ScaleSize.textScaleFactor(context),
         selectedFontSize: 12 * ScaleSize.textScaleFactor(context),
         unselectedFontSize: 12 * ScaleSize.textScaleFactor(context),
-        items: const [
+        items: [
           BottomNavigationBarItem(
             icon: Icon(CupertinoIcons.square_list_fill),
             label: "My Feed",
@@ -272,7 +277,17 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             label: "Notifications",
           ),
           BottomNavigationBarItem(
-            icon: Icon(CupertinoIcons.person_alt_circle),
+            icon: avatarPath != null
+                ? CircleAvatar(
+                    radius: 12 * ScaleSize.textScaleFactor(context),
+                    backgroundImage: Image.file(
+                      File(avatarPath),
+                      fit: BoxFit.cover,
+                    ).image,
+                  )
+                : CircleAvatar(
+                    radius: 12 * ScaleSize.textScaleFactor(context),
+                  ),
             label: "Me",
           ),
         ],

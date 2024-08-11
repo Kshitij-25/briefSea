@@ -336,7 +336,7 @@ class TestimonialCards extends StatelessWidget {
                         color: Theme.of(context).colorScheme.tertiary,
                       ),
                       child: Padding(
-                        padding: const EdgeInsets.all(10),
+                        padding: const EdgeInsets.all(8),
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.start,
                           crossAxisAlignment: CrossAxisAlignment.start,

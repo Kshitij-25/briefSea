@@ -1,4 +1,8 @@
-import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'dart:io';
+
+import 'package:dio/dio.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:path_provider/path_provider.dart';
 
 import '../../common/app_utils/shared_prefs_helper.dart';
 import '../../data/core/api_client.dart';
@@ -138,4 +142,69 @@ class UserProfileProvider {
       (userNameExists) => userNameExists,
     );
   });
+
+  static final getUserAvatarProvider = FutureProvider<String>((ref) async {
+    final userProfileRepository = ref.watch(userProfileRepositoryProvider);
+    final eitherUserAvatarOrError = await userProfileRepository.getUserAvatar();
+    return eitherUserAvatarOrError.fold(
+      (error) => throw error,
+      (userAvatar) => userAvatar,
+    );
+  });
 }
+
+class UserAvatarNotifier extends StateNotifier<String?> {
+  UserAvatarNotifier(this._userProfileRepository) : super(null);
+
+  final UserProfileRepository _userProfileRepository;
+  final Dio _dio = Dio();
+
+  Future<void> loadUserAvatar() async {
+    try {
+      // Fetch the avatar URL from the API
+      final eitherUserAvatarOrError = await _userProfileRepository.getUserAvatar();
+      final userAvatarUrl = eitherUserAvatarOrError.fold(
+        (error) => throw error,
+        (userAvatar) => userAvatar,
+      );
+
+      if (userAvatarUrl.isEmpty) {
+        // Handle the case where the user has no avatar
+        state = null;
+        return;
+      }
+
+      final fileName = extractFileName(userAvatarUrl);
+      final directory = await getApplicationDocumentsDirectory();
+      final filePath = '${directory.path}/$fileName';
+
+      // Check if the image already exists locally
+      if (File(filePath).existsSync()) {
+        state = filePath;
+      } else {
+        // Download and save the image locally
+        final response = await _dio.download(userAvatarUrl, filePath);
+
+        if (response.statusCode == 200) {
+          state = filePath; // Update the state with the local file path
+        } else {
+          throw Exception('Failed to download image: ${response.statusCode}');
+        }
+      }
+    } catch (e) {
+      print('Error loading avatar: $e');
+      state = null;
+    }
+  }
+
+  String extractFileName(String imageUrl) {
+    final uri = Uri.parse(imageUrl);
+    final fileName = uri.pathSegments.last;
+    return fileName;
+  }
+}
+
+final userAvatarNotifierProvider = StateNotifierProvider<UserAvatarNotifier, String?>((ref) {
+  final userProfileRepository = ref.watch(UserProfileProvider.userProfileRepositoryProvider);
+  return UserAvatarNotifier(userProfileRepository);
+});
