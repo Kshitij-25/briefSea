@@ -8,16 +8,16 @@ final newAvatarUploadedProvider = StateProvider.autoDispose<bool?>((ref) => fals
 
 final newBannerUploadedProvider = StateProvider.autoDispose<bool?>((ref) => false);
 
-final verifyAvatarImageProvider = StateProvider<File?>((ref) => null);
+final verifyAvatarImageProvider = StateProvider.autoDispose<File?>((ref) => null);
 
 final selectedBannerImageProvider = StateProvider.autoDispose<String?>((ref) => null);
 
-final verifyBannerImageProvider = StateProvider<File?>((ref) => null);
+final verifyBannerImageProvider = StateProvider.autoDispose<File?>((ref) => null);
 
-final selectedPostImageProvider = StateProvider<File?>((ref) => null);
+final selectedPostImageProvider = StateProvider.autoDispose<File?>((ref) => null);
 
-final uploadedAvatarKeyProvider = StateProvider<String?>((ref) => null);
+final uploadedAvatarKeyProvider = StateProvider.autoDispose<String?>((ref) => null);
 
-final uploadedBannerKeyProvider = StateProvider<String?>((ref) => null);
+final uploadedBannerKeyProvider = StateProvider.autoDispose<String?>((ref) => null);
 
-final uploadedThreadImageKeyProvider = StateProvider<String?>((ref) => null);
+final uploadedThreadImageKeyProvider = StateProvider.autoDispose<String?>((ref) => null);

@@ -1,6 +1,7 @@
 import 'dart:developer';
 import 'dart:io';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -113,7 +114,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     final currentIndex = ref.watch(currentIndexProvider);
-    final avatarPath = ref.watch(userAvatarNotifierProvider);
+    var avatarPath = ref.watch(userAvatarNotifierProvider);
+    if (avatarPath == null) {
+      final avatarUrl = prefs!.getString('avatarUrl') ?? '';
+      avatarPath = avatarUrl;
+    }
 
     return Scaffold(
       appBar: AppBar(
@@ -261,7 +266,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             label: "My Feed",
           ),
           BottomNavigationBarItem(
-            icon: Icon(CupertinoIcons.envelope_open_fill),
+            icon: Icon(CupertinoIcons.chat_bubble_fill),
             label: "Chat",
           ),
           // BottomNavigationBarItem(
@@ -273,21 +278,46 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           //   label: "My Company",
           // ),
           BottomNavigationBarItem(
-            icon: Icon(CupertinoIcons.bell),
+            icon: Icon(CupertinoIcons.bell_fill),
             label: "Notifications",
           ),
           BottomNavigationBarItem(
             icon: avatarPath != null
                 ? CircleAvatar(
                     radius: 12 * ScaleSize.textScaleFactor(context),
-                    backgroundImage: Image.file(
-                      File(avatarPath),
-                      fit: BoxFit.cover,
-                    ).image,
+                    backgroundImage: avatarPath.startsWith('https://')
+                        ? CachedNetworkImageProvider(avatarPath)
+                        : Image.file(
+                            File(avatarPath),
+                            fit: BoxFit.cover,
+                          ).image,
+                    backgroundColor: Colors.white,
                   )
                 : CircleAvatar(
                     radius: 12 * ScaleSize.textScaleFactor(context),
+                    backgroundImage: null, // We will use a child instead
+                    backgroundColor: currentIndex == 3 ? Color(0xFF4B26FD) : Colors.white,
+                    child: ColorFiltered(
+                      colorFilter: ColorFilter.mode(
+                        currentIndex == 3 ? Colors.white : Colors.black,
+                        BlendMode.srcIn,
+                      ),
+                      child: Image.asset(
+                        Assets.PERSON,
+                        fit: BoxFit.scaleDown,
+                      ),
+                    ),
                   ),
+            // : CircleAvatar(
+            //     radius: 12 * ScaleSize.textScaleFactor(context),
+            //     backgroundImage: Image.asset(
+            //       Assets.PERSON,
+            //       fit: BoxFit.cover,
+            //       colorBlendMode: BlendMode.color,
+            //       color: currentIndex == 3 ? Colors.white : Colors.black,
+            //     ).image,
+            //     backgroundColor: currentIndex == 3 ? Color(0xFF4B26FD) : Colors.white,
+            //   ),
             label: "Me",
           ),
         ],

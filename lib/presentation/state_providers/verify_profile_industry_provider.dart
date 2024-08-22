@@ -50,3 +50,16 @@ class SelectedGender extends ChangeNotifier {
     notifyListeners();
   }
 }
+
+final selectAccountTypeProvider = ChangeNotifierProvider((ref) => SelectAccountType());
+
+class SelectAccountType extends ChangeNotifier {
+  String? selectedType;
+
+  final List<String> accountType = ["Agency", "Freelancer", "Working Professional"];
+
+  void setAccountType(String type) {
+    selectedType = type;
+    notifyListeners();
+  }
+}

@@ -4,6 +4,7 @@ import 'dart:io';
 
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -30,15 +31,15 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
-  FirebaseAnalytics analytics = FirebaseAnalytics.instance;
-
   FirebaseAnalytics.instance.setAnalyticsCollectionEnabled(true);
   // set observer
   FirebaseAnalyticsObserver(analytics: FirebaseAnalytics.instance);
 
   prefs = await SharedPreferences.getInstance();
 
-  HttpOverrides.global = MyHttpOverrides();
+  if (kDebugMode) {
+    HttpOverrides.global = MyHttpOverrides();
+  }
 
   runApp(const ProviderScope(child: MainApp()));
 }

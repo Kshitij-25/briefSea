@@ -13,11 +13,12 @@ class ApiConstants {
   static const privacyPolicy = 'https://www.briefsea.com/privacy-policy';
 
   // Base URLs
-  static const BASE_URL = 'https://briefsea-backend.onrender.com'; //Test Url
-  // static const BASE_URL = 'https://www.api.briefsea.com'; //Prod Url
+  // static const BASE_URL = 'https://briefsea-backend.onrender.com'; //Test Url
+  static const BASE_URL = 'https://www.api.briefsea.com'; //Prod Url
 
   // User authentication
   static const loginUrl = '$BASE_URL/forum/discussion/login/one';
+  static const googleAuth = '$BASE_URL/auth/google/callback';
   static const registerUrl = '$BASE_URL/forum/discussion/register/new';
   static const forgetPassword = "$BASE_URL/forum/discussion/forget/password";
 

@@ -5,6 +5,7 @@ import 'dart:math' hide log;
 import 'package:briefsea/presentation/params/user_profile_params.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show rootBundle;
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
@@ -27,37 +28,41 @@ import '../home_screen.dart';
 import 'verify_profile_widgets/avatar_widget.dart';
 import 'verify_profile_widgets/banner_widget.dart';
 
-class VerifyProfileScreen extends ConsumerWidget {
+class VerifyProfileScreen extends HookConsumerWidget {
   VerifyProfileScreen({super.key});
 
   static const routeName = "/verifyProfileScreen";
 
   final ImagePicker _picker = ImagePicker();
 
-  final TextEditingController nameCont = TextEditingController();
-  final TextEditingController postingAsCont = TextEditingController();
-  final TextEditingController userNameCont = TextEditingController();
-  final TextEditingController countryCodeCont = TextEditingController();
-  final TextEditingController phoneNumberCont = TextEditingController();
-  final TextEditingController companyCont = TextEditingController();
-  final TextEditingController jobTitleCont = TextEditingController();
-  final TextEditingController industryCont = TextEditingController();
-  final TextEditingController locationCont = TextEditingController();
-  final TextEditingController aboutCont = TextEditingController();
-  final TextEditingController editDevExpertise = TextEditingController();
-  final TextEditingController editMarkExpertise = TextEditingController();
-  final TextEditingController linkedInCont = TextEditingController();
-  final TextEditingController portfolioCont = TextEditingController();
-  final TextEditingController experienceCont = TextEditingController();
   final _formKey = GlobalKey<FormState>();
+  final _userNameKey = GlobalKey<FormState>();
 
   final Debouncer _debouncer = Debouncer(milliseconds: 500);
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final nameCont = useTextEditingController();
+    final postingAsCont = useTextEditingController();
+    final userNameCont = useTextEditingController();
+    final countryCodeCont = useTextEditingController();
+    final phoneNumberCont = useTextEditingController();
+    final companyCont = useTextEditingController();
+    final jobTitleCont = useTextEditingController();
+    final industryCont = useTextEditingController();
+    final locationCont = useTextEditingController();
+    final aboutCont = useTextEditingController();
+    final devExpertiseCont = useTextEditingController();
+    final markExpertiseCont = useTextEditingController();
+    final linkedInCont = useTextEditingController();
+    final portfolioCont = useTextEditingController();
+    final experienceCont = useTextEditingController();
+
+    final valueChanged = useState(false);
+
     userNameCont.addListener(() {
       _debouncer.run(() async {
-        if (_formKey.currentState!.validate()) {
+        if (_userNameKey.currentState!.validate()) {
           if (userNameCont.text.isNotEmpty) {
             var doesUsernameExist = await ref.read(UserProfileProvider.checkUserNameProvider(userNameCont.text).future);
 
@@ -81,8 +86,34 @@ class VerifyProfileScreen extends ConsumerWidget {
     final markExpertiseItems = ref.watch(markExpertiseItemsProvider.notifier).state;
     final servicesItems = ref.watch(servicesItemsProvider.notifier).state;
 
-    nameCont.text = "${userDetails['user_name']?[0].toUpperCase()}${userDetails['user_name']?.substring(1)}";
-    postingAsCont.text = "${userDetails['type']?[0].toUpperCase()}${userDetails['type']?.substring(1)}";
+    nameCont.text =
+        "${userDetails['user_name']?.isNotEmpty == true ? userDetails['user_name']![0].toUpperCase() + userDetails['user_name']!.substring(1) : ''}";
+    postingAsCont.text =
+        "${userDetails['type']?.isNotEmpty == true ? userDetails['type']![0].toUpperCase() + userDetails['type']!.substring(1) : ''}";
+
+    // Add listeners to all text controllers
+    List<TextEditingController> allControllers = [
+      userNameCont,
+      countryCodeCont,
+      phoneNumberCont,
+      companyCont,
+      jobTitleCont,
+      industryCont,
+      locationCont,
+      aboutCont,
+      devExpertiseCont,
+      markExpertiseCont,
+      linkedInCont,
+      portfolioCont,
+      experienceCont,
+    ];
+
+    for (final controller in allControllers) {
+      controller.addListener(() {
+        // Update valueChanged based on any controller's value
+        valueChanged.value = controller.text.isNotEmpty;
+      });
+    }
 
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.surfaceContainer,
@@ -96,88 +127,102 @@ class VerifyProfileScreen extends ConsumerWidget {
           textScaler: TextScaler.linear(ScaleSize.textScaleFactor(context)),
         ),
         actions: [
-          TextButton(
-            style: TextButton.styleFrom(
-              enableFeedback: true,
-            ),
-            onPressed: () async {
-              if (_formKey.currentState!.validate()) {
-                var uploadedAvatarKey = ref.watch(uploadedAvatarKeyProvider.notifier).state;
-                var uploadedBannerKey = ref.watch(uploadedBannerKeyProvider.notifier).state;
-                final selectedIndustry = ref.watch(selectedIndustriesProvider.notifier).state;
-                final selectedDevExpertise = ref.watch(selectedDevExpertiseProvider.notifier).state;
-                final selectedMarkExpertise = ref.watch(selectedMarkExpertiseProvider.notifier).state;
-                final selectedServices = ref.watch(selectedServicesProvider.notifier).state;
-                final selectedGender = ref.watch(selectedGenderProvider).selectedGender;
-                if (selectedIndustry.isEmpty) {
-                  AppUtility(context).error("Please select an industry.");
-                  return;
-                } else if (selectedDevExpertise.isEmpty && selectedMarkExpertise.length < 3) {
-                  AppUtility(context).error("Please select a developer expertise.");
-                  return;
-                } else if (selectedDevExpertise.length < 3) {
-                  AppUtility(context).error("Please select a marketing expertise.");
-                  return;
-                } else if (selectedServices.isEmpty) {
-                  AppUtility(context).error("Please select a service.");
-                  return;
-                }
-                if (uploadedBannerKey == '' || uploadedBannerKey == null) {
-                  uploadedBannerKey = await sendDefaultBanner(ref: ref, userDetails: userDetails);
-                }
-                if (uploadedAvatarKey == '' || uploadedAvatarKey == null) {
-                  uploadedAvatarKey = await sendDefaultAvatar(ref: ref, userDetails: userDetails);
-                }
-                if (selectedGender != null && selectedGender != '') {
-                  var fullProfileData = {
-                    'user_id': userDetails['user_id']!,
-                    'name': userDetails['user_name']!,
-                    'postingAs': userDetails['type']!,
-                    'industry': selectedIndustry,
-                    'devExpertise': selectedDevExpertise,
-                    'markExpertise': selectedMarkExpertise,
-                    'clients': [],
-                    'services': selectedServices,
-                    'testimonials': [],
-                    'userName': userNameCont.text.trim(),
-                    'countryCode': int.tryParse(countryCodeCont.text.trim()),
-                    'contact': int.tryParse(phoneNumberCont.text.trim()),
-                    'gender': selectedGender,
-                    'post': jobTitleCont.text.trim(),
-                    'worksAt': companyCont.text.trim(),
-                    'location': locationCont.text.trim(),
-                    'aboutMe': aboutCont.text.trim(),
-                    'avatarSrc': uploadedAvatarKey ?? '',
-                    'bannerSrc': uploadedBannerKey ?? '',
-                    'experience': [],
-                    'linkedinLink': linkedInCont.text.trim(),
-                    'portfolioLink': portfolioCont.text.trim(),
-                    'expDuration': experienceCont.text.trim(),
-                  };
+          ValueListenableBuilder(
+              valueListenable: valueChanged,
+              builder: (context, value, child) {
+                return TextButton(
+                  style: TextButton.styleFrom(
+                    enableFeedback: true,
+                  ),
+                  onPressed: () async {
+                    if (value == false) {
+                      context.go(HomeScreen.routeName);
+                    }
+                    if (_formKey.currentState!.validate()) {
+                      var uploadedAvatarKey = ref.watch(uploadedAvatarKeyProvider.notifier).state;
+                      var uploadedBannerKey = ref.watch(uploadedBannerKeyProvider.notifier).state;
+                      final selectedIndustry = ref.watch(selectedIndustriesProvider.notifier).state;
+                      final selectedDevExpertise = ref.watch(selectedDevExpertiseProvider.notifier).state;
+                      final selectedMarkExpertise = ref.watch(selectedMarkExpertiseProvider.notifier).state;
+                      final selectedServices = ref.watch(selectedServicesProvider.notifier).state;
+                      final selectedGender = ref.watch(selectedGenderProvider).selectedGender;
+                      if (selectedIndustry.isEmpty) {
+                        AppUtility(context).error("Please select an industry.");
+                        return;
+                      } else if (selectedIndustry.contains('Development & Product') && selectedDevExpertise.isEmpty) {
+                        AppUtility(context).error("Developer Expertise cannot be empty.");
+                        return;
+                      } else if (selectedIndustry.contains('Development & Product') && selectedDevExpertise.length < 3) {
+                        AppUtility(context).error("Please select atleast 3 developer expertise.");
+                        return;
+                      } else if (selectedIndustry.contains('Advertising & Marketing') && selectedMarkExpertise.isEmpty) {
+                        AppUtility(context).error("Marketing Expertise cannot be empty.");
+                        return;
+                      } else if (selectedIndustry.contains('Advertising & Marketing') && selectedMarkExpertise.length < 3) {
+                        AppUtility(context).error("Please select atleast 3 marketing expertise.");
+                        return;
+                      } else if (selectedServices.isEmpty) {
+                        AppUtility(context).error("Please select a service.");
+                        return;
+                      }
+                      if (uploadedBannerKey == '' || uploadedBannerKey == null) {
+                        uploadedBannerKey = await sendDefaultBanner(ref: ref, userDetails: userDetails);
+                      }
+                      if (uploadedAvatarKey == '' || uploadedAvatarKey == null) {
+                        uploadedAvatarKey = await sendDefaultAvatar(ref: ref, userDetails: userDetails);
+                      }
+                      if (selectedGender != null && selectedGender != '') {
+                        var fullProfileData = {
+                          'user_id': userDetails['user_id']!,
+                          'name': userDetails['user_name']!,
+                          'postingAs': userDetails['type']!,
+                          'industry': selectedIndustry,
+                          'devExpertise': selectedDevExpertise,
+                          'markExpertise': selectedMarkExpertise,
+                          'clients': [],
+                          'services': selectedServices,
+                          'testimonials': [],
+                          'userName': userNameCont.text.trim(),
+                          'countryCode': int.tryParse(countryCodeCont.text.trim()),
+                          'contact': int.tryParse(phoneNumberCont.text.trim()),
+                          'gender': selectedGender,
+                          'post': jobTitleCont.text.trim(),
+                          'worksAt': companyCont.text.trim(),
+                          'location': locationCont.text.trim(),
+                          'about': aboutCont.text.trim(),
+                          'avatarSrc': uploadedAvatarKey ?? '',
+                          'bannerSrc': uploadedBannerKey ?? '',
+                          'experience': [],
+                          'linkedinLink': linkedInCont.text.trim(),
+                          'portfolioLink': portfolioCont.text.trim(),
+                          'expDuration': experienceCont.text.trim(),
+                        };
 
-                  var verifyMessage = await ref.read(
-                    UserProfileProvider.verifyProfileProvider(
-                      VerifyProfileParams(
-                        userId: userDetails['user_id']!,
-                        fullProfileData: fullProfileData,
-                      ),
-                    ).future,
-                  );
-                  if (verifyMessage == "Profile added successfully") {
-                    AppUtility(context).message(verifyMessage);
-                    context.go(HomeScreen.routeName);
-                  }
-                } else {
-                  AppUtility(context).error("Please complete the profile first.");
-                }
-              }
-            },
-            child: Text(
-              "Done",
-              style: Theme.of(context).textTheme.titleMedium!.copyWith(color: Colors.white),
-              textScaler: TextScaler.linear(ScaleSize.textScaleFactor(context)),
-            ),
-          ),
+                        var verifyMessage = await ref.read(
+                          UserProfileProvider.verifyProfileProvider(
+                            VerifyProfileParams(
+                              userId: userDetails['user_id']!,
+                              fullProfileData: fullProfileData,
+                            ),
+                          ).future,
+                        );
+                        ref.invalidate(UserProfileProvider.getUserProfileProvider);
+                        if (verifyMessage == "Profile added successfully") {
+                          AppUtility(context).message(verifyMessage);
+                          context.go(HomeScreen.routeName);
+                        }
+                      } else {
+                        AppUtility(context).error("Please complete the profile first.");
+                      }
+                    }
+                  },
+                  child: Text(
+                    value ? "Done" : "Skip",
+                    style: Theme.of(context).textTheme.titleMedium!.copyWith(color: Colors.white),
+                    textScaler: TextScaler.linear(ScaleSize.textScaleFactor(context)),
+                  ),
+                );
+              }),
         ],
       ),
       body: GestureDetector(
@@ -229,26 +274,29 @@ class VerifyProfileScreen extends ConsumerWidget {
                           readOnly: true,
                           controller: postingAsCont,
                           hintColor: Colors.black,
-                          labelText: 'Name',
+                          labelText: 'Posting as',
                           border: const OutlineInputBorder(),
                         ),
                         SizedBox(height: 10),
-                        CustomTextFormField(
-                          controller: userNameCont,
-                          textInputAction: TextInputAction.next,
-                          hintText: "Enter your username",
-                          labelText: 'Username',
-                          border: const OutlineInputBorder(),
-                          suffixIcon: Icon(Icons.edit),
-                          validator: (value) {
-                            if (!ValidationUtils.isNotEmpty(value!)) {
-                              return 'Username is required';
-                            }
-                            if (!ValidationUtils.isValidUsername(value)) {
-                              return 'Username can only contain lowercase letters, numbers, and dots';
-                            }
-                            return null;
-                          },
+                        Form(
+                          key: _userNameKey,
+                          child: CustomTextFormField(
+                            controller: userNameCont,
+                            textInputAction: TextInputAction.next,
+                            hintText: "Enter your username",
+                            labelText: 'Username',
+                            border: const OutlineInputBorder(),
+                            suffixIcon: Icon(Icons.edit),
+                            validator: (value) {
+                              if (!ValidationUtils.isNotEmpty(value!)) {
+                                return 'Username is required';
+                              }
+                              if (!ValidationUtils.isValidUsername(value)) {
+                                return 'Username can only contain lowercase letters, numbers, and dots';
+                              }
+                              return null;
+                            },
+                          ),
                         ),
                         SizedBox(height: 10),
                         CustomTextFormField(
@@ -394,14 +442,14 @@ class VerifyProfileScreen extends ConsumerWidget {
                                 textStyle: TextStyle(fontSize: 14 * ScaleSize.textScaleFactor(context)),
                               ),
                               CustomTextFormField(
-                                controller: editDevExpertise,
+                                controller: devExpertiseCont,
                                 hintText: 'Add more expertise',
                                 labelText: 'Add more expertise',
                                 border: OutlineInputBorder(),
                                 keyboardType: TextInputType.text,
                                 textInputAction: TextInputAction.done,
                                 onEditingComplete: () {
-                                  final newItem = editDevExpertise.text;
+                                  final newItem = devExpertiseCont.text;
                                   if (newItem.isNotEmpty) {
                                     ref.read(devExpertiseItemsProvider.notifier).state = [
                                       ...devExpertiseItems,
@@ -411,7 +459,7 @@ class VerifyProfileScreen extends ConsumerWidget {
                                     final updatedSelectedDevExpertise = List<String>.from(selectedDevExpertise)..add(newItem);
                                     ref.watch(selectedDevExpertiseProvider.notifier).state = updatedSelectedDevExpertise;
                                     ref.invalidate(selectedDevExpertiseProvider);
-                                    editDevExpertise.clear();
+                                    devExpertiseCont.clear();
                                   }
                                 },
                               ),
@@ -438,14 +486,14 @@ class VerifyProfileScreen extends ConsumerWidget {
                                 textStyle: TextStyle(fontSize: 14 * ScaleSize.textScaleFactor(context)),
                               ),
                               CustomTextFormField(
-                                controller: editMarkExpertise,
+                                controller: markExpertiseCont,
                                 hintText: 'Add more expertise',
                                 labelText: 'Add more expertise',
                                 border: OutlineInputBorder(),
                                 keyboardType: TextInputType.text,
                                 textInputAction: TextInputAction.done,
                                 onEditingComplete: () {
-                                  final newItem = editMarkExpertise.text;
+                                  final newItem = markExpertiseCont.text;
                                   if (newItem.isNotEmpty) {
                                     ref.read(markExpertiseItemsProvider.notifier).state = [
                                       ...markExpertiseItems,
@@ -455,7 +503,7 @@ class VerifyProfileScreen extends ConsumerWidget {
                                     final updatedSelectedMarkExpertise = List<String>.from(selectedMarkExpertise)..add(newItem);
                                     ref.watch(selectedMarkExpertiseProvider.notifier).state = updatedSelectedMarkExpertise;
                                     ref.invalidate(selectedDevExpertiseProvider);
-                                    editMarkExpertise.clear();
+                                    markExpertiseCont.clear();
                                   }
                                 },
                               )

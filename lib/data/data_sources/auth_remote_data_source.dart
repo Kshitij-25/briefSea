@@ -12,9 +12,10 @@ import '../models/register_model.dart';
 
 abstract class AuthRemoteDataSource {
   Future<LoginModel?> loginUser(String? email, String? password);
-  Future<String?> signInWithGoogle();
+  Future<GoogleSignInAccount?> signInWithGoogle();
   Future<RegisterModel> registerUser(String? firstName, String? lastName, String? email, String? password, String? type, String? subType);
   Future<bool> forgetPassword(String? email);
+  Future<LoginModel?> googleAuth({String? email, String? firstName, String? displayName, String? lastName, String? type, String? avatarUrl});
 }
 
 class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
@@ -61,8 +62,11 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   }
 
   @override
-  Future<String?> signInWithGoogle() async {
-    final GoogleSignIn googleSignIn = GoogleSignIn(scopes: ['email']);
+  Future<GoogleSignInAccount?> signInWithGoogle() async {
+    final GoogleSignIn googleSignIn = GoogleSignIn(scopes: [
+      'email',
+      'profile',
+    ]);
     GoogleSignInAccount? signInAccount;
 
     try {
@@ -70,12 +74,11 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       if (signInAccount == null) {
         return null; // The user canceled the sign-in
       }
+      return signInAccount;
     } catch (error) {
       log('Google Sign-In Error: $error');
       rethrow; // Rethrow the error for higher-level error handling
     }
-
-    return signInAccount.email;
   }
 
   @override
@@ -120,6 +123,57 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       }
     } catch (e) {
       log('forgetPassword Error', error: e);
+      throw AppError(errorMessage: e.toString());
+    }
+  }
+
+  @override
+  Future<LoginModel?> googleAuth({String? email, String? firstName, String? displayName, String? lastName, String? type, String? avatarUrl}) async {
+    try {
+      final body = {
+        "firstName": firstName,
+        "user_name": displayName,
+        "email": email,
+        "type": type,
+        "lastName": lastName,
+        "avatarSrc": avatarUrl,
+        "subtype": "",
+      };
+
+      final response = await _apiClient.postReq(
+        url: ApiConstants.googleAuth,
+        body: body,
+      );
+
+      if (response?.statusCode == 200) {
+        final responseJson = response?.data;
+        final loginMessage = responseJson['message'] ?? responseJson['msg'];
+        final jwtToken = responseJson['token'];
+
+        if (loginMessage == 'Login sucessfull' && jwtToken != null) {
+          final accessTokenPayload = JwtDecoder.decode(jwtToken);
+
+          // Save the payload to shared preferences
+          SharedPreferencesHelper.saveString('jwtToken', jwtToken);
+          SharedPreferencesHelper.saveString('user_id', accessTokenPayload['user_detail']['user_id']);
+          SharedPreferencesHelper.saveString('userName', accessTokenPayload['user_detail']['userName']);
+          SharedPreferencesHelper.saveString('firstName', accessTokenPayload['user_detail']['firstName']);
+          SharedPreferencesHelper.saveString('user_name', accessTokenPayload['user_detail']['user_name']);
+          SharedPreferencesHelper.saveString('lastName', accessTokenPayload['user_detail']['lastName']);
+          SharedPreferencesHelper.saveString('email', accessTokenPayload['user_detail']['email']);
+          SharedPreferencesHelper.saveString('type', accessTokenPayload['user_detail']['type']);
+
+          return LoginModel.fromJson(responseJson);
+        } else if (loginMessage == 'Email sent' || loginMessage == 'Login failed' || loginMessage == 'Invalid Email') {
+          return LoginModel(message: loginMessage);
+        } else {
+          throw AppError(errorMessage: loginMessage);
+        }
+      } else {
+        throw AppError(statusCode: response?.statusCode);
+      }
+    } catch (e) {
+      log('Register User Error', error: e);
       throw AppError(errorMessage: e.toString());
     }
   }

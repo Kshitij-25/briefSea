@@ -7,6 +7,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:share_plus/share_plus.dart';
 
 import '../../../common/app_utils/app_utility.dart';
+import '../../../common/app_utils/screen_size.dart';
 import '../../../data/core/api_constants.dart';
 import '../../../data/core/app_error.dart';
 import '../../../data/models/briefs_result.dart';
@@ -89,12 +90,37 @@ class _AllBriefsScreenState extends ConsumerState<AllBriefsScreen> {
     final briefsState = ref.watch(briefsNotifierProvider);
     final userDetails = ref.watch(userDetailsProvider);
 
-    return RefreshIndicator.adaptive(
+    return RefreshIndicator(
       onRefresh: _refreshBriefs,
+      backgroundColor: Theme.of(context).colorScheme.surface,
+      color: Theme.of(context).colorScheme.primary,
       child: briefsState.when(
         data: (briefs) {
           if (briefs.isEmpty) {
-            return const Center(child: Text('No briefs available.'));
+            return Center(
+              child: Container(
+                decoration: BoxDecoration(
+                  gradient: const LinearGradient(
+                    begin: Alignment(-0.73, 0.68),
+                    end: Alignment(0.73, -0.68),
+                    colors: [Color(0xFF4A26FE), Color(0xFF222CFF)],
+                  ),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(15.0),
+                  child: Text(
+                    'No briefs available.',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.w500,
+                      letterSpacing: 0.42,
+                    ),
+                    textScaler: TextScaler.linear(ScaleSize.textScaleFactor(context)),
+                  ),
+                ),
+              ),
+            );
           }
 
           return ListView.builder(

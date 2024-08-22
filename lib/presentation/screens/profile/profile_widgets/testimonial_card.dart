@@ -11,6 +11,7 @@ import '../../../../common/app_utils/app_utility.dart';
 import '../../../../common/app_utils/screen_size.dart';
 import '../../../../common/others/assets.dart';
 import '../../../../data/models/user_profile_model.dart';
+import '../../../../main.dart';
 import '../../../widgets/custom_text_form_field.dart';
 import '../../../widgets/linkable_text.dart';
 
@@ -55,6 +56,10 @@ class TestimonialCards extends StatelessWidget {
                 if (isOtherProfile != true)
                   IconButton(
                     onPressed: () {
+                      if (prefs!.getBool('profile') == false) {
+                        AppUtility(context).error('Complete the Profile first.');
+                        return;
+                      }
                       showModalBottomSheet(
                         context: context,
                         useSafeArea: true,
@@ -296,6 +301,9 @@ class TestimonialCards extends StatelessWidget {
                                       GestureDetector(
                                         onTap: () async {
                                           String? linkedInUrl = userProfileData?.testimonials?[index].linkedinLink?.trim() ?? '';
+                                          if (linkedInUrl.isNotEmpty && !linkedInUrl.startsWith(RegExp(r'https?://'))) {
+                                            linkedInUrl = 'https://$linkedInUrl';
+                                          }
                                           if (await canLaunchUrl(Uri.parse(linkedInUrl))) {
                                             await launchUrl(Uri.parse(linkedInUrl));
                                           } else {
@@ -369,6 +377,9 @@ class TestimonialCards extends StatelessWidget {
                                 GestureDetector(
                                   onTap: () async {
                                     String? linkedInUrl = userProfileData?.testimonials?[index].linkedinLink?.trim() ?? '';
+                                    if (linkedInUrl.isNotEmpty && !linkedInUrl.startsWith(RegExp(r'https?://'))) {
+                                      linkedInUrl = 'https://$linkedInUrl';
+                                    }
                                     if (await canLaunchUrl(Uri.parse(linkedInUrl))) {
                                       await launchUrl(Uri.parse(linkedInUrl));
                                     } else {

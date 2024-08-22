@@ -2,8 +2,10 @@ import 'dart:convert';
 
 import 'package:briefsea/common/app_utils/shared_prefs_helper.dart';
 import 'package:briefsea/presentation/params/notification_params.dart';
-import 'package:crypto/crypto.dart';
+import 'package:briefsea/presentation/state_providers/verify_profile_industry_provider.dart';
+import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -15,6 +17,7 @@ import '../../data/di/get_it.dart';
 import '../../data/models/login_model.dart';
 import '../../data/models/register_model.dart';
 import '../../data/repositories/auth_repository.dart';
+import '../screens/auth_screens/choose_account_type.dart';
 import '../screens/home_screen.dart';
 import '../screens/profile/verify_profile_screen.dart';
 import 'notification_provider.dart';
@@ -84,35 +87,116 @@ class LoginNotifier extends StateNotifier<LoginState> {
     }
   }
 
-  Future<void> loginWithGoogle(context, WidgetRef ref) async {
+  Future<void> loginWithGoogle({required BuildContext context, required WidgetRef ref, bool? isLogin}) async {
     state = LoginState.loading;
     try {
-      final authRepository = await ref.read(authRepositoryProvider);
-      final eitherUserEmailOrError = await authRepository.signInWithGoogle();
+      // JWT parsing function
+      Map<String, dynamic>? parseJwt(String token) {
+        final List<String> parts = token.split('.');
+        if (parts.length != 3) return null;
 
-      final userEmail = eitherUserEmailOrError!.fold(
+        final String payload = parts[1];
+        final String normalized = base64Url.normalize(payload);
+        final String resp = utf8.decode(base64Url.decode(normalized));
+
+        final payloadMap = json.decode(resp);
+        if (payloadMap is! Map<String, dynamic>) return null;
+
+        return payloadMap;
+      }
+
+      final authRepository = await ref.read(authRepositoryProvider);
+      final eitherSignInAccountOrError = await authRepository.signInWithGoogle();
+
+      final signInAccount = eitherSignInAccountOrError!.fold(
         (error) {
           throw error;
         },
-        (userEmail) => userEmail,
+        (signInAccount) => signInAccount,
       );
 
-      if (userEmail == null) {
+      if (signInAccount == null) {
         state = LoginState.error;
         return;
       }
 
-      final password = generateHashedPassword(userEmail);
+      final GoogleSignInAuthentication googleSignInAuthentication = await signInAccount.authentication;
 
-      loginUser(userEmail, password, ref, context);
+      // Parse JWT token
+      Map<String, dynamic>? idMap = parseJwt(googleSignInAuthentication.idToken!);
+
+      if (idMap == null) {
+        state = LoginState.error;
+        AppUtility(context).error("Failed to parse JWT token");
+        return;
+      }
+
+      await SharedPreferencesHelper.saveString('displayName', signInAccount.displayName ?? '');
+      await SharedPreferencesHelper.saveString('firstName', idMap["given_name"] ?? '');
+      await SharedPreferencesHelper.saveString('lastName', idMap["family_name"] ?? '');
+      await SharedPreferencesHelper.saveString('email', signInAccount.email);
+      await SharedPreferencesHelper.saveString('avatarUrl', signInAccount.photoUrl ?? '');
+
+      if (isLogin != true) {
+        GoRouter.of(context).pushNamed(ChooseAccountType.routeName);
+      } else {
+        await chooseAccountType(context: context, ref: ref);
+      }
+      state = LoginState.success;
     } catch (e) {
       state = LoginState.error;
     }
   }
 
-  String generateHashedPassword(String email) {
-    var bytes = utf8.encode(email);
-    return sha256.convert(bytes).toString();
+  Future<void> chooseAccountType({required BuildContext context, required WidgetRef ref}) async {
+    state = LoginState.loading;
+    try {
+      final accountType = ref.watch(selectAccountTypeProvider).selectedType;
+
+      final displayName = await SharedPreferencesHelper.getString('displayName');
+      final firstName = await SharedPreferencesHelper.getString('firstName');
+      final lastName = await SharedPreferencesHelper.getString('lastName');
+      final email = await SharedPreferencesHelper.getString('email');
+      final avatarUrl = await SharedPreferencesHelper.getString('avatarUrl');
+      await SharedPreferencesHelper.saveString('accountType', accountType ?? '');
+
+      final authRepository = await ref.read(authRepositoryProvider);
+
+      final eitherSignInAccountOrError = await authRepository.googleAuth(
+        displayName: displayName!,
+        firstName: firstName!,
+        lastName: lastName!,
+        email: email!,
+        avatarUrl: avatarUrl!,
+        type: accountType,
+      );
+
+      final loginModel = eitherSignInAccountOrError!.fold(
+        (error) => throw error,
+        (loginModel) => loginModel,
+      );
+
+      if (loginModel!.message == 'Login sucessfull') {
+        await SharedPreferencesHelper.saveBoolean('isLogin', true);
+        await SharedPreferencesHelper.saveBoolean('profile', loginModel.profile!);
+        GoRouter.of(context).goNamed(HomeScreen.routeName);
+        state = LoginState.success;
+      } else if (loginModel.message == 'Email sent') {
+        state = LoginState.error;
+        AppUtility(context).message("Verify your email first");
+      } else if (loginModel.message == 'Login failed') {
+        state = LoginState.error;
+        AppUtility(context).error("Incorrect username or password");
+      } else if (loginModel.message == 'Invalid Email') {
+        state = LoginState.error;
+        AppUtility(context).error("Invalid Email");
+      } else {
+        state = LoginState.error;
+      }
+      state = LoginState.success;
+    } catch (e) {
+      state = LoginState.error;
+    }
   }
 }
 

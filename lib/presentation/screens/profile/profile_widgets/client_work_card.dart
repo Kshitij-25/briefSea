@@ -6,8 +6,10 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
+import '../../../../common/app_utils/app_utility.dart';
 import '../../../../common/app_utils/screen_size.dart';
 import '../../../../data/models/user_profile_model.dart';
+import '../../../../main.dart';
 import '../../../widgets/custom_text_form_field.dart';
 
 class ClientWorkCard extends StatelessWidget {
@@ -56,6 +58,10 @@ class ClientWorkCard extends StatelessWidget {
                 if (isOtherProfile != true)
                   IconButton(
                     onPressed: () {
+                      if (prefs!.getBool('profile') == false) {
+                        AppUtility(context).error('Complete the Profile first.');
+                        return;
+                      }
                       showModalBottomSheet(
                         context: context,
                         useSafeArea: true,

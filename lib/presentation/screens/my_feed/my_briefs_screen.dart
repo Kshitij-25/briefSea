@@ -146,10 +146,12 @@ class MyBriefsScreen extends ConsumerWidget {
                                 ),
                               ),
                             )
-                          : RefreshIndicator.adaptive(
+                          : RefreshIndicator(
                               onRefresh: () async {
                                 ref.invalidate(BriefsProviders.getUserBriefsProvider);
                               },
+                              backgroundColor: Theme.of(context).colorScheme.surface,
+                              color: Theme.of(context).colorScheme.primary,
                               child: ListView.builder(
                                 shrinkWrap: true,
                                 itemCount: filteredBriefs.length,

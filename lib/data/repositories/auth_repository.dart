@@ -1,4 +1,5 @@
 import 'package:dartz/dartz.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 import '../core/app_error.dart';
 import '../data_sources/auth_remote_data_source.dart';
@@ -22,9 +23,22 @@ class AuthRepository {
   }
 
   Future<Either<AppError, RegisterModel>>? registerUser(
-      String? firstName, String? lastName, String? email, String? password, String? type, String? subType) async {
+    String? firstName,
+    String? lastName,
+    String? email,
+    String? password,
+    String? type,
+    String? subType,
+  ) async {
     try {
-      final isUserRegistered = await _authRemoteDataSource.registerUser(firstName, lastName, email, password, type, subType);
+      final isUserRegistered = await _authRemoteDataSource.registerUser(
+        firstName,
+        lastName,
+        email,
+        password,
+        type,
+        subType,
+      );
       return Right(isUserRegistered);
     } on AppError catch (e) {
       return Left(e);
@@ -44,10 +58,35 @@ class AuthRepository {
     }
   }
 
-  Future<Either<AppError, String?>>? signInWithGoogle() async {
+  Future<Either<AppError, GoogleSignInAccount?>>? signInWithGoogle() async {
     try {
       final signInWithGoogle = await _authRemoteDataSource.signInWithGoogle();
       return Right(signInWithGoogle);
+    } on AppError catch (e) {
+      return Left(e);
+    } on Exception catch (e) {
+      return Left(AppError(errorMessage: e.toString()));
+    }
+  }
+
+  Future<Either<AppError, LoginModel?>>? googleAuth({
+    String? email,
+    String? firstName,
+    String? displayName,
+    String? lastName,
+    String? type,
+    String? avatarUrl,
+  }) async {
+    try {
+      final loginModel = await _authRemoteDataSource.googleAuth(
+        email: email,
+        firstName: firstName,
+        displayName: displayName,
+        lastName: lastName,
+        type: type,
+        avatarUrl: avatarUrl,
+      );
+      return Right(loginModel);
     } on AppError catch (e) {
       return Left(e);
     } on Exception catch (e) {

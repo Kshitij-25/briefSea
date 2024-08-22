@@ -7,6 +7,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../../../common/app_utils/screen_size.dart';
 import '../../../common/app_utils/validation_utils.dart';
 import '../../../common/enums/enums.dart';
+import '../../../common/others/assets.dart';
 import '../../../common/others/strings.dart';
 import '../../providers/auth_provider.dart';
 import '../../state_providers/password_change_notifier.dart';
@@ -159,31 +160,31 @@ class ProfessionalRegisterScreen extends ConsumerWidget {
                                 return null;
                               },
                             ),
-                            // SizedBox(height: ScreenSize.height(context) * .05),
-                            // const Text(
-                            //   "Or sign up using an option:",
-                            //   style: TextStyle(color: Colors.white),
-                            //   textScaler: TextScaler.linear(1),
-                            //   textAlign: TextAlign.center,
-                            // ),
-                            // const SizedBox(height: 10),
-                            // Row(
-                            //   mainAxisAlignment: MainAxisAlignment.center,
-                            //   children: [
-                            //     _signUpOptions(
-                            //       context,
-                            //       'assets/logos/google-icon.svg',
-                            //       () {},
-                            //     ),
-                            //     const SizedBox(width: 20),
-                            //     _signUpOptions(
-                            //       context,
-                            //       'assets/logos/linkedin-icon.svg',
-                            //       () {},
-                            //     ),
-                            //   ],
-                            // ),
-                            SizedBox(height: ScreenSize.height(context) * .05),
+                            SizedBox(height: ScreenSize.height(context) * .02),
+                            const Text(
+                              "Or Log In using an option:",
+                              style: TextStyle(color: Colors.white),
+                              textScaler: TextScaler.linear(1),
+                              textAlign: TextAlign.center,
+                            ),
+                            const SizedBox(height: 10),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                _signUpOptions(
+                                  context,
+                                  Assets.GOOGLE_LOGO,
+                                  () {},
+                                ),
+                                // const SizedBox(width: 20),
+                                // _signUpOptions(
+                                //   context,
+                                //   'assets/logos/linkedin-icon.svg',
+                                //   () {},
+                                // ),
+                              ],
+                            ),
+                            SizedBox(height: ScreenSize.height(context) * .02),
                             Text(
                               "Agency, Freelancer or Existing User?",
                               style: Theme.of(context).textTheme.bodyLarge!.copyWith(fontSize: 14),
@@ -226,7 +227,7 @@ class ProfessionalRegisterScreen extends ConsumerWidget {
                                 },
                               ),
                             ),
-                            SizedBox(height: ScreenSize.height(context) * .05),
+                            SizedBox(height: ScreenSize.height(context) * .02),
                             Text(
                               Strings.professionalFooter,
                               style: Theme.of(context).textTheme.bodyMedium!.copyWith(fontSize: 11),
@@ -261,8 +262,8 @@ class ProfessionalRegisterScreen extends ConsumerWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        height: 70,
-        width: 70,
+        height: 60,
+        width: 60,
         decoration: BoxDecoration(
           color: Colors.grey[200],
           borderRadius: BorderRadius.circular(5),

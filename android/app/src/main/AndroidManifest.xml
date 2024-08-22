@@ -1,4 +1,8 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.briefsea.briefsea"
+    tools:ignore="Instantiatable">
+
     <application
         android:label="Briefsea"
         android:name="${applicationName}"
@@ -70,10 +74,10 @@
         </intent>
     </queries>
 
-    <!-- Add the AD_ID permission -->
-    <uses-permission android:name="com.google.android.gms.permission.AD_ID"/>
-    <!-- Add these permissions inside the <manifest> tag -->
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <!-- Add the AD_ID permission -->
+    <uses-permission android:name="com.google.android.gms.permission.AD_ID" tools:node="remove"/>
+    <!-- Add these permissions inside the <manifest> tag -->
 
 </manifest>

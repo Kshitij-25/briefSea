@@ -13,8 +13,6 @@ import '../../widgets/custom_shape_widget.dart';
 import '../terms_and_privacy_view.dart';
 import 'agency_register_screen.dart';
 import 'existing_login_screen.dart';
-import 'freelancer_register_screen.dart';
-import 'professional_register_screen.dart';
 
 class WelcomeScreen extends StatefulWidget {
   const WelcomeScreen({super.key});
@@ -55,59 +53,52 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
             const CustomShapeWidget(),
             Container(
               width: ScreenSize.width(context),
+              height: ScreenSize.height(context),
               padding: const EdgeInsets.symmetric(horizontal: 50),
               child: SingleChildScrollView(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    SizedBox(
-                      height: getDeviceType(context) == DeviceType.Tablet ? ScreenSize.height(context) * .4 : null,
-                      child: logoImage!,
+                child: SizedBox(
+                  width: ScreenSize.width(context),
+                  height: ScreenSize.height(context),
+                  child: SafeArea(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        SizedBox(
+                          height: getDeviceType(context) == DeviceType.Tablet ? ScreenSize.height(context) * .4 : null,
+                          child: logoImage!,
+                        ),
+                        SizedBox(height: ScreenSize.height(context) * .05),
+                        Text(
+                          Strings.welcomeText,
+                          style: Theme.of(context).textTheme.titleLarge!.copyWith(fontSize: 18),
+                          textScaler: TextScaler.linear(ScaleSize.textScaleFactor(context)),
+                          textAlign: TextAlign.center,
+                        ),
+                        SizedBox(height: ScreenSize.height(context) * .1),
+                        CustomElevatedButton(
+                          buttonLabel: "Login",
+                          onPressed: () {
+                            GoRouter.of(context).push(ExistingLoginScreen.routeName);
+                          },
+                        ),
+                        const SizedBox(height: 10),
+                        CustomElevatedButton(
+                          buttonLabel: "Sign Up",
+                          onPressed: () {
+                            GoRouter.of(context).push(AgencyRegistrationScreen.routeName);
+                          },
+                        ),
+                        Spacer(),
+                        Text(
+                          Strings.privacyPolicy,
+                          style: Theme.of(context).textTheme.bodySmall!.copyWith(fontSize: 12 * ScaleSize.textScaleFactor(context)),
+                          textScaler: TextScaler.linear(ScaleSize.textScaleFactor(context)),
+                          textAlign: TextAlign.center,
+                        ),
+                        _buildTermsAndPrivacyText(context),
+                      ],
                     ),
-                    Text(
-                      Strings.welcomeText,
-                      style: Theme.of(context).textTheme.titleLarge!.copyWith(fontSize: 18),
-                      textScaler: TextScaler.linear(ScaleSize.textScaleFactor(context)),
-                      textAlign: TextAlign.center,
-                    ),
-                    SizedBox(height: ScreenSize.height(context) * .05),
-                    Text(
-                      Strings.privacyPolicy,
-                      style: Theme.of(context).textTheme.bodySmall!.copyWith(fontSize: 12 * ScaleSize.textScaleFactor(context)),
-                      textScaler: TextScaler.linear(ScaleSize.textScaleFactor(context)),
-                      textAlign: TextAlign.center,
-                    ),
-                    _buildTermsAndPrivacyText(context),
-                    const SizedBox(height: 20),
-                    CustomElevatedButton(
-                      buttonLabel: "Join as an Agency",
-                      onPressed: () {
-                        GoRouter.of(context).push(AgencyRegistrationScreen.routeName);
-                      },
-                    ),
-                    const SizedBox(height: 20),
-                    CustomElevatedButton(
-                      buttonLabel: "Join as a Freelancer",
-                      onPressed: () {
-                        GoRouter.of(context).push(FreelancerRegisterScreen.routeName);
-                      },
-                    ),
-                    const SizedBox(height: 20),
-                    CustomElevatedButton(
-                      buttonLabel: "Join as a Working Professional",
-                      onPressed: () {
-                        GoRouter.of(context).push(ProfessionalRegisterScreen.routeName);
-                      },
-                    ),
-                    const SizedBox(height: 20),
-                    CustomElevatedButton(
-                      buttonLabel: "Sign in as an Existing User",
-                      onPressed: () {
-                        GoRouter.of(context).push(ExistingLoginScreen.routeName);
-                      },
-                    ),
-                  ],
+                  ),
                 ),
               ),
             ),
@@ -122,10 +113,10 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
       text: TextSpan(
         children: [
           _buildClickableText(context, 'Terms of Use', ApiConstants.termsOfUse),
-          const TextSpan(
+          TextSpan(
             text: ' and ',
             style: TextStyle(
-              fontSize: 12,
+              fontSize: 12 * ScaleSize.textScaleFactor(context),
             ),
           ),
           _buildClickableText(context, 'Privacy Policy', ApiConstants.privacyPolicy),

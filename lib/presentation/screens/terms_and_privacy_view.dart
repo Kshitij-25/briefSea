@@ -31,27 +31,6 @@ class _TermsAndPrivacyViewState extends State<TermsAndPrivacyView> {
 
     webViewCont = WebViewController()
       ..setJavaScriptMode(JavaScriptMode.unrestricted)
-      ..setNavigationDelegate(
-        NavigationDelegate(
-            // onProgress: (int progress) {
-            //   print(progress);
-            //   // if (progress < 99) {
-            //   //   if (mounted) {
-            //   //     setState(() {
-            //   //       _isLoading = true;
-            //   //     });
-            //   //   }
-            //   // }
-            // },
-            // onPageFinished: (String url) {
-            //   if (mounted) {
-            //     setState(() {
-            //       _isLoading = false;
-            //     });
-            //   }
-            // },
-            ),
-      )
       ..setBackgroundColor(Colors.white);
 
     if (WebViewPlatform.instance is WebKitWebViewPlatform) {
@@ -64,7 +43,7 @@ class _TermsAndPrivacyViewState extends State<TermsAndPrivacyView> {
     }
 
     final WebViewController controller = WebViewController.fromPlatformCreationParams(webViewParams!);
-// ···
+
     if (controller.platform is AndroidWebViewController) {
       AndroidWebViewController.enableDebugging(true);
       (controller.platform as AndroidWebViewController).setMediaPlaybackRequiresUserGesture(false);
@@ -92,7 +71,6 @@ class _TermsAndPrivacyViewState extends State<TermsAndPrivacyView> {
           WebViewWidget(
             controller: webViewCont!
               ..loadRequest(
-                // Uri.parse(ApiConstants.privacyPolicy),
                 Uri.parse(widget.webviewUrl!),
               ),
           ),

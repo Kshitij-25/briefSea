@@ -32,7 +32,7 @@ class CustomElevatedButton extends StatelessWidget {
           backgroundColor: WidgetStateProperty.all<Color>(Colors.grey[200]!),
           shape: WidgetStateProperty.all<OutlinedBorder>(
             RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(30),
+              borderRadius: BorderRadius.circular(10),
             ),
           ),
         ),

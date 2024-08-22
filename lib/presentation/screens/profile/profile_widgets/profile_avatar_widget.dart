@@ -9,9 +9,11 @@ import '../../../../common/app_utils/screen_size.dart';
 import '../../../../common/others/assets.dart';
 import '../../../../data/models/image_model.dart';
 import '../../../../data/models/user_profile_model.dart';
+import '../../../../main.dart';
 import '../../../providers/user_profile_provider.dart';
 import '../../../state_providers/image_picker_provider.dart';
 import '../edit_profile_screen.dart';
+import '../verify_profile_screen.dart';
 
 class ProfileAvatarWidget extends ConsumerWidget {
   ProfileAvatarWidget({
@@ -39,7 +41,13 @@ class ProfileAvatarWidget extends ConsumerWidget {
       }
     }
 
-    final selectedAvatar = ref.watch(selectedAvatarImageProvider);
+    var selectedAvatar = ref.watch(selectedAvatarImageProvider);
+
+    if (selectedAvatar == null) {
+      final avatarUrl = prefs!.getString('avatarUrl') ?? '';
+      selectedAvatar = avatarUrl;
+    }
+    final profile = prefs!.getBool('profile');
 
     return FutureBuilder(
       future: _initializeImageProviders(ref, userProfileData!),
@@ -92,7 +100,8 @@ class ProfileAvatarWidget extends ConsumerWidget {
                                   CircleAvatar(
                                     backgroundColor: userColor,
                                     radius: 165 * ScaleSize.textScaleFactor(context),
-                                    backgroundImage: selectedAvatar != '' && selectedAvatar != null && userProfileData?.avatarSrc != ''
+                                    backgroundImage: (selectedAvatar != null && selectedAvatar != '' && userProfileData?.avatarSrc != '') ||
+                                            (selectedAvatar != null && selectedAvatar != '')
                                         ? CachedNetworkImageProvider(
                                             selectedAvatar,
                                             cacheKey: selectedAvatar,
@@ -127,7 +136,8 @@ class ProfileAvatarWidget extends ConsumerWidget {
                       child: CircleAvatar(
                         backgroundColor: userColor,
                         radius: 65 * ScaleSize.textScaleFactor(context),
-                        backgroundImage: selectedAvatar != null && selectedAvatar != '' && userProfileData?.avatarSrc != ''
+                        backgroundImage: (selectedAvatar != null && selectedAvatar != '' && userProfileData?.avatarSrc != '') ||
+                                (selectedAvatar != null && selectedAvatar != '')
                             ? CachedNetworkImageProvider(
                                 selectedAvatar,
                                 cacheKey: selectedAvatar,
@@ -159,18 +169,31 @@ class ProfileAvatarWidget extends ConsumerWidget {
                           SizedBox(
                             height: 90 * ScaleSize.textScaleFactor(context),
                           ),
-                          IconButton(
-                            onPressed: () {
-                              GoRouter.of(context).push(
-                                EditProfileScreen.routeName,
-                                extra: userProfileData,
-                              );
-                            },
-                            icon: Icon(
-                              Icons.mode_edit,
-                              color: Theme.of(context).colorScheme.secondary,
-                            ),
-                          ),
+                          !profile!
+                              ? TextButton.icon(
+                                  onPressed: () {
+                                    GoRouter.of(context).push(
+                                      VerifyProfileScreen.routeName,
+                                    );
+                                  },
+                                  label: Text('Complete Profile'),
+                                  icon: Icon(
+                                    Icons.mode_edit,
+                                    color: Theme.of(context).colorScheme.secondary,
+                                  ),
+                                )
+                              : IconButton(
+                                  onPressed: () {
+                                    GoRouter.of(context).push(
+                                      EditProfileScreen.routeName,
+                                      extra: userProfileData,
+                                    );
+                                  },
+                                  icon: Icon(
+                                    Icons.mode_edit,
+                                    color: Theme.of(context).colorScheme.secondary,
+                                  ),
+                                ),
                         ],
                       ),
                     )

@@ -15,11 +15,11 @@ class NotificationScreen extends ConsumerWidget {
 
   final PageController? notificationPageController;
 
-  static const routeName = "/notificationScreen";
+  static const String routeName = "/notificationScreen";
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final allNotifications = ref.watch(NotificationProvider.getAllNotificationsProvider);
+    final notifications = ref.watch(NotificationProvider.getAllNotificationsProvider);
     return Scaffold(
       body: Stack(
         children: [
@@ -28,15 +28,17 @@ class NotificationScreen extends ConsumerWidget {
             height: 70,
             color: Theme.of(context).colorScheme.secondary,
           ),
-          RefreshIndicator.adaptive(
+          RefreshIndicator(
             onRefresh: () async {
               ref.invalidate(NotificationProvider.getAllNotificationsProvider);
             },
+            backgroundColor: Theme.of(context).colorScheme.surface,
+            color: Theme.of(context).colorScheme.primary,
             child: Container(
               height: ScreenSize.height(context),
               width: ScreenSize.width(context),
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.only(
+                borderRadius: const BorderRadius.only(
                   topLeft: Radius.circular(40),
                   topRight: Radius.circular(40),
                 ),
@@ -44,29 +46,27 @@ class NotificationScreen extends ConsumerWidget {
               ),
               child: Padding(
                 padding: const EdgeInsets.only(top: 15),
-                child: allNotifications.when(
-                  data: (notification) {
-                    if (notification.isEmpty) {
-                      return Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(
-                            CupertinoIcons.bell_solid,
-                            size: 30 * ScaleSize.textScaleFactor(context),
-                          ),
-                          SizedBox(
-                            height: 20 * ScaleSize.textScaleFactor(context),
-                          ),
-                          Container(
-                            decoration: BoxDecoration(
-                              gradient: const LinearGradient(
-                                begin: Alignment(-0.73, 0.68),
-                                end: Alignment(0.73, -0.68),
-                                colors: [Color(0xFF4A26FE), Color(0xFF222CFF)],
-                              ),
-                              borderRadius: BorderRadius.circular(10),
+                child: notifications.when(
+                  data: (notifications) {
+                    if (notifications.isEmpty) {
+                      return Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(
+                              CupertinoIcons.bell_solid,
+                              size: 30 * ScaleSize.textScaleFactor(context),
                             ),
-                            child: Padding(
+                            const SizedBox(height: 20),
+                            Container(
+                              decoration: BoxDecoration(
+                                gradient: const LinearGradient(
+                                  begin: Alignment(-0.73, 0.68),
+                                  end: Alignment(0.73, -0.68),
+                                  colors: [Color(0xFF4A26FE), Color(0xFF222CFF)],
+                                ),
+                                borderRadius: BorderRadius.circular(10),
+                              ),
                               padding: const EdgeInsets.all(15.0),
                               child: Text(
                                 'No New Notifications',
@@ -78,77 +78,22 @@ class NotificationScreen extends ConsumerWidget {
                                 textScaler: TextScaler.linear(ScaleSize.textScaleFactor(context)),
                               ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       );
                     }
                     return Column(
                       children: [
-                        // Row(
-                        //   mainAxisAlignment: MainAxisAlignment.end,
-                        //   children: [
-                        //     TextButton(
-                        //       style: const ButtonStyle(
-                        //         overlayColor: WidgetStateColor.transparent,
-                        //       ),
-                        //       onPressed: () async {
-                        //         await ref.read(deleteAllNotificationsProvider.future);
-                        //         ref.invalidate(getAllNotificationsProvider);
-                        //       },
-                        //       child: const Text("Clear All"),
-                        //     ),
-                        //   ],
-                        // ),
                         Expanded(
                           child: ListView.builder(
                             shrinkWrap: true,
-                            itemCount: notification.length,
+                            itemCount: notifications.length,
                             itemBuilder: (context, index) {
+                              final notification = notifications[index];
                               return CustomNotificationTile(
-                                notificationModel: notification[index],
-                                onTap: () async {
-                                  print(notification[index].type.toString() + "object");
-                                  if (notification[index].type == "message received") {
-                                    ref.read(currentIndexProvider.notifier).state = 1;
-                                    notificationPageController!.jumpToPage(1);
-                                    await ref.read(
-                                      NotificationProvider.deleteMessageNotificationProvider(notification[index].conversationId).future,
-                                    );
-                                    ref.invalidate(NotificationProvider.getAllNotificationsProvider);
-                                  } else if (notification[index].type == "user account") {
-                                    ref.read(currentIndexProvider.notifier).state = 0;
-                                    notificationPageController!.jumpToPage(0);
-                                    await ref.read(
-                                      NotificationProvider.deleteNotificationProvider(notification[index].notificationId).future,
-                                    );
-                                    ref.invalidate(NotificationProvider.getAllNotificationsProvider);
-                                  } else if (notification[index].type == 'brief comment') {
-                                    context.pushNamed(
-                                      FeedScreen.routeName,
-                                      extra: {'briefId': notification[index].threadId},
-                                    );
-                                  } else if (notification[index].type == 'brief liked') {
-                                    context.pushNamed(
-                                      FeedScreen.routeName,
-                                      extra: {'briefId': notification[index].threadId},
-                                    );
-                                  }
-                                },
-                                confirmDismiss: () async {
-                                  if (notification[index].type == "message received") {
-                                    var isDeleted = await ref.read(
-                                      NotificationProvider.deleteMessageNotificationProvider(notification[index].conversationId).future,
-                                    );
-                                    ref.invalidate(NotificationProvider.getAllNotificationsProvider);
-                                    return isDeleted;
-                                  } else {
-                                    var isDeleted = ref.read(
-                                      NotificationProvider.deleteNotificationProvider(notification[index].notificationId).future,
-                                    );
-                                    ref.invalidate(NotificationProvider.getAllNotificationsProvider);
-                                    return isDeleted;
-                                  }
-                                },
+                                notificationModel: notification,
+                                onTap: () => _handleNotificationTap(context, ref, notification),
+                                confirmDismiss: () => _handleConfirmDismiss(ref, notification),
                                 onDismissed: () => ref.invalidate(NotificationProvider.getAllNotificationsProvider),
                               );
                             },
@@ -180,5 +125,43 @@ class NotificationScreen extends ConsumerWidget {
         ],
       ),
     );
+  }
+
+  Future<bool> _handleConfirmDismiss(WidgetRef ref, notification) async {
+    if (notification.type == "message received") {
+      final isDeleted = await ref.read(
+        NotificationProvider.deleteMessageNotificationProvider(notification.conversationId).future,
+      );
+      ref.invalidate(NotificationProvider.getAllNotificationsProvider);
+      return isDeleted;
+    } else {
+      final isDeleted = ref.read(
+        NotificationProvider.deleteNotificationProvider(notification.notificationId).future,
+      );
+      ref.invalidate(NotificationProvider.getAllNotificationsProvider);
+      return isDeleted;
+    }
+  }
+
+  void _handleNotificationTap(BuildContext context, WidgetRef ref, notification) {
+    if (notification.type == "message received") {
+      ref.read(currentIndexProvider.notifier).state = 1;
+      notificationPageController!.jumpToPage(1);
+      _deleteNotification(ref, notification.conversationId);
+    } else if (notification.type == "user account") {
+      ref.read(currentIndexProvider.notifier).state = 0;
+      notificationPageController!.jumpToPage(0);
+      _deleteNotification(ref, notification.notificationId);
+    } else if (notification.type == 'brief comment' || notification.type == 'brief liked') {
+      context.pushNamed(
+        FeedScreen.routeName,
+        extra: {'briefId': notification.threadId},
+      );
+    }
+  }
+
+  void _deleteNotification(WidgetRef ref, String notificationId) {
+    ref.read(NotificationProvider.deleteNotificationProvider(notificationId).future);
+    ref.invalidate(NotificationProvider.getAllNotificationsProvider);
   }
 }

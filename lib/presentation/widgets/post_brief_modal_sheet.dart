@@ -2,6 +2,7 @@ import 'dart:io';
 import 'dart:ui';
 
 import 'package:briefsea/common/static_data/posting_for_data.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -9,6 +10,7 @@ import 'package:multi_select_flutter/multi_select_flutter.dart';
 
 import '../../common/app_utils/screen_size.dart';
 import '../../common/static_data/industry_data.dart';
+import '../../main.dart';
 
 Future<void> customPostBriefModalSheet(
   BuildContext context, {
@@ -24,6 +26,11 @@ Future<void> customPostBriefModalSheet(
   required final List<String>? selectedVisibleTo,
 }) {
   final FocusNode textFieldFocusNode = FocusNode();
+
+  if (userAvatar == null) {
+    final avatarUrl = prefs!.getString('avatarUrl') ?? '';
+    userAvatar = avatarUrl;
+  }
 
   return showModalBottomSheet(
     backgroundColor: Theme.of(context).colorScheme.surfaceContainer,
@@ -88,10 +95,12 @@ Future<void> customPostBriefModalSheet(
                                       userAvatar != null
                                           ? CircleAvatar(
                                               radius: 20 * ScaleSize.textScaleFactor(context),
-                                              backgroundImage: Image.file(
-                                                File(userAvatar),
-                                                fit: BoxFit.cover,
-                                              ).image,
+                                              backgroundImage: userAvatar.startsWith('https://')
+                                                  ? CachedNetworkImageProvider(userAvatar)
+                                                  : Image.file(
+                                                      File(userAvatar),
+                                                      fit: BoxFit.cover,
+                                                    ).image,
                                             )
                                           : CircleAvatar(
                                               radius: 20 * ScaleSize.textScaleFactor(context),

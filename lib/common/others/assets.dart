@@ -17,6 +17,7 @@ class Assets {
   static const BANNER = 'assets/logos/default-banner.jpg';
   static const COMPANY_ICON = 'assets/icons/company.svg';
   static const logoSmall = 'assets/logos/logo_small.png';
+  static const phoneIcon = 'assets/icons/phone.svg';
 
   // List of assets for MALE and FEMALE
   static const List<String> MALE_ASSETS = [

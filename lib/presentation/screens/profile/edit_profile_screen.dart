@@ -14,6 +14,7 @@ import '../../../common/app_utils/validation_utils.dart';
 import '../../../common/static_data/expertise_data.dart';
 import '../../../common/static_data/industry_data.dart';
 import '../../../data/models/user_profile_model.dart';
+import '../../../main.dart';
 import '../../providers/auth_provider.dart';
 import '../../providers/user_profile_provider.dart';
 import '../../state_providers/image_picker_provider.dart';
@@ -48,7 +49,9 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
   final TextEditingController editMarkExpertise = TextEditingController();
   final TextEditingController editLocationCont = TextEditingController();
   final TextEditingController editAboutCont = TextEditingController();
+
   final _formKey = GlobalKey<FormState>();
+  final _userNameKey = GlobalKey<FormState>();
 
   final Debouncer _debouncer = Debouncer(milliseconds: 500);
 
@@ -80,14 +83,14 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
         ref.read(devExpertiseItemsProvider.notifier).state = devExpertiseItems;
         ref.read(markExpertiseItemsProvider.notifier).state = markExpertiseItems;
 
-        initialName = widget.userProfileModel.name ?? '';
-        initialPostingAs = widget.userProfileModel.postingAs ?? '';
+        initialName = widget.userProfileModel.name ?? prefs!.getString('user_name') ?? '';
+        initialPostingAs = widget.userProfileModel.postingAs ?? prefs!.getString('type') ?? '';
         initialUserName = widget.userProfileModel.userName ?? '';
         initialLinkedIn = widget.userProfileModel.linkedinLink ?? '';
         initialPortfolio = widget.userProfileModel.portfolioLink ?? '';
         initialExperience = widget.userProfileModel.expDuration ?? '';
-        initialCountryCode = widget.userProfileModel.countryCode.toString();
-        initialPhoneNumber = widget.userProfileModel.contact.toString();
+        initialCountryCode = widget.userProfileModel.countryCode?.toString().isNotEmpty == true ? widget.userProfileModel.countryCode.toString() : '';
+        initialPhoneNumber = widget.userProfileModel.contact?.toString().isNotEmpty == true ? widget.userProfileModel.contact.toString() : '';
         initialCompany = widget.userProfileModel.worksAt ?? '';
         initialJobTitle = widget.userProfileModel.post ?? '';
         initialLocation = widget.userProfileModel.location ?? '';
@@ -113,7 +116,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
   Widget build(BuildContext context) {
     editUserNameCont.addListener(() {
       _debouncer.run(() async {
-        if (_formKey.currentState!.validate()) {
+        if (_userNameKey.currentState!.validate()) {
           if (editUserNameCont.text.isNotEmpty) {
             var doesUsernameExist = await ref.read(UserProfileProvider.checkUserNameProvider(editUserNameCont.text).future);
 
@@ -126,9 +129,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
     });
 
     bool _hasChanges() {
-      return editNameCont.text != initialName ||
-          editPostingAsCont.text != initialPostingAs ||
-          editUserNameCont.text != initialUserName ||
+      return editUserNameCont.text != initialUserName ||
           editLinkedInCont.text != initialLinkedIn ||
           editPortfolioCont.text != initialPortfolio ||
           editExperienceCont.text != initialExperience ||
@@ -240,7 +241,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                   var fullProfileData = {
                     'isVerified': widget.userProfileModel.isVerified,
                     'user_id': widget.userProfileModel.userId,
-                    'name': editUserNameCont.text.trim(),
+                    'name': editNameCont.text.trim(),
                     'postingAs': userData['type'],
                     'industry': selectedIndustry,
                     'devExpertise': selectedDevExpertise,
@@ -256,7 +257,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                     'post': widget.userProfileModel.post,
                     'worksAt': widget.userProfileModel.worksAt,
                     'location': editLocationCont.text.trim(),
-                    'aboutMe': editAboutCont.text.trim(),
+                    'about': editAboutCont.text.trim(),
                     'avatarSrc': uploadedAvatarKey ?? '',
                     'bannerSrc': uploadedBannerKey ?? '',
                     'createdAt': widget.userProfileModel.createdAt,
@@ -341,22 +342,25 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                             border: const OutlineInputBorder(),
                           ),
                           SizedBox(height: 10),
-                          CustomTextFormField(
-                            controller: editUserNameCont,
-                            textInputAction: TextInputAction.next,
-                            hintText: "Enter your username",
-                            labelText: 'Username',
-                            border: const OutlineInputBorder(),
-                            suffixIcon: Icon(Icons.edit),
-                            validator: (value) {
-                              if (!ValidationUtils.isNotEmpty(value!)) {
-                                return 'Username is required';
-                              }
-                              if (!ValidationUtils.isValidUsername(value)) {
-                                return 'Username can only contain lowercase letters, numbers, and dots';
-                              }
-                              return null;
-                            },
+                          Form(
+                            key: _userNameKey,
+                            child: CustomTextFormField(
+                              controller: editUserNameCont,
+                              textInputAction: TextInputAction.next,
+                              hintText: "Enter your username",
+                              labelText: 'Username',
+                              border: const OutlineInputBorder(),
+                              suffixIcon: Icon(Icons.edit),
+                              validator: (value) {
+                                if (!ValidationUtils.isNotEmpty(value!)) {
+                                  return 'Username is required';
+                                }
+                                if (!ValidationUtils.isValidUsername(value)) {
+                                  return 'Username can only contain lowercase letters, numbers, and dots';
+                                }
+                                return null;
+                              },
+                            ),
                           ),
                           SizedBox(height: 10),
                           CustomTextFormField(

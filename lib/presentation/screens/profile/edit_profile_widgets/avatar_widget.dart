@@ -14,6 +14,7 @@ import '../../../../common/app_utils/app_utility.dart';
 import '../../../../common/app_utils/screen_size.dart';
 import '../../../../common/others/assets.dart';
 import '../../../../data/models/user_profile_model.dart';
+import '../../../../main.dart';
 import '../../../providers/image_provider.dart';
 import '../../../state_providers/image_picker_provider.dart';
 
@@ -30,12 +31,17 @@ class AvatarWidget extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final selectedAvatar = ref.watch(selectedAvatarImageProvider);
+    var selectedAvatar = ref.watch(selectedAvatarImageProvider);
     final newAvatarUploaded = ref.watch(newAvatarUploadedProvider);
     final newAvatar = ref.watch(verifyAvatarImageProvider);
 
     math.Random random = math.Random(userProfileData?.userId.hashCode);
     Color userColor = Color((random.nextDouble() * 0xFFFFFF).toInt()).withOpacity(0.7);
+
+    if (selectedAvatar == null) {
+      final avatarUrl = prefs!.getString('avatarUrl') ?? '';
+      selectedAvatar = avatarUrl;
+    }
 
     return Align(
       alignment: Alignment.center,
@@ -46,7 +52,8 @@ class AvatarWidget extends ConsumerWidget {
             CircleAvatar(
               backgroundColor: userColor,
               radius: 70 * ScaleSize.textScaleFactor(context),
-              backgroundImage: newAvatarUploaded != true && selectedAvatar != "" && selectedAvatar != null && userProfileData?.avatarSrc != ""
+              backgroundImage: (newAvatarUploaded != true && selectedAvatar != "" && userProfileData?.avatarSrc != "") ||
+                      (newAvatarUploaded != true && selectedAvatar != "")
                   ? CachedNetworkImageProvider(
                       selectedAvatar,
                       cacheKey: selectedAvatar,

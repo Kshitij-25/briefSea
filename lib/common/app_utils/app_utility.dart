@@ -54,7 +54,14 @@ class AppUtility {
     try {
       if (prefs != null) {
         await prefs.setBool('isLogin', false);
-        await prefs.clear();
+        await prefs.remove('jwtToken');
+        await prefs.remove('user_id');
+        await prefs.remove('userName');
+        await prefs.remove('firstName');
+        await prefs.remove('user_name');
+        await prefs.remove('lastName');
+        await prefs.remove('email');
+        await prefs.remove('type');
         await GoogleSignIn().signOut(); // Sign out from GoogleSignIn
         await FirebaseAuth.instance.signOut();
         context.pushReplacementNamed(WelcomeScreen.routeName);

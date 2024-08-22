@@ -2,6 +2,7 @@ import 'dart:developer';
 import 'dart:io';
 import 'dart:math' hide log;
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -12,6 +13,7 @@ import 'package:mime/mime.dart';
 import '../../../../common/app_utils/app_utility.dart';
 import '../../../../common/app_utils/screen_size.dart';
 import '../../../../common/others/assets.dart';
+import '../../../../main.dart';
 import '../../../params/user_profile_params.dart';
 import '../../../providers/user_profile_provider.dart';
 import '../../../state_providers/image_picker_provider.dart';
@@ -31,6 +33,11 @@ class AvatarWidget extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    var googleAvatar;
+    if (verifyAvatar == null) {
+      final avatarUrl = prefs!.getString('avatarUrl') ?? '';
+      googleAvatar = avatarUrl;
+    }
     return Align(
       alignment: Alignment.center,
       child: Padding(
@@ -112,8 +119,14 @@ class AvatarWidget extends ConsumerWidget {
                   color: const Color(0xFF1B0C6B),
                   image: DecorationImage(
                     fit: gender == null ? BoxFit.scaleDown : BoxFit.cover,
-                    image: verifyAvatar != null ? FileImage(verifyAvatar!) : _getImageByGender(gender),
-                    colorFilter: gender == null ? const ColorFilter.mode(Colors.white, BlendMode.srcIn) : null,
+                    image: verifyAvatar != null
+                        ? FileImage(verifyAvatar!)
+                        : googleAvatar != null
+                            ? CachedNetworkImageProvider(googleAvatar)
+                            : _getImageByGender(gender),
+                    colorFilter: (gender == null && googleAvatar == null && verifyAvatar == null)
+                        ? const ColorFilter.mode(Colors.white, BlendMode.srcIn)
+                        : null,
                   ),
                 ),
               ),

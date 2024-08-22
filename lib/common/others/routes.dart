@@ -4,6 +4,7 @@ import '../../data/models/chat_user_model.dart';
 import '../../data/models/user_profile_model.dart';
 import '../../main.dart';
 import '../../presentation/screens/auth_screens/agency_register_screen.dart';
+import '../../presentation/screens/auth_screens/choose_account_type.dart';
 import '../../presentation/screens/auth_screens/existing_login_screen.dart';
 import '../../presentation/screens/auth_screens/freelancer_register_screen.dart';
 import '../../presentation/screens/auth_screens/otp_screen.dart';
@@ -38,6 +39,11 @@ class AppRouter {
         name: FreelancerRegisterScreen.routeName,
         path: FreelancerRegisterScreen.routeName,
         builder: (context, state) => FreelancerRegisterScreen(),
+      ),
+      GoRoute(
+        name: ChooseAccountType.routeName,
+        path: ChooseAccountType.routeName,
+        builder: (context, state) => ChooseAccountType(),
       ),
       GoRoute(
         name: ProfessionalRegisterScreen.routeName,
@@ -129,10 +135,10 @@ class AppRouter {
     final isLogin = prefs!.getBool('isLogin') ?? false;
     final profile = prefs!.getBool('profile') ?? false;
 
-    if (!isLogin) {
+    if (isLogin == false) {
       return WelcomeScreen.routeName;
     } else if (!profile) {
-      return WelcomeScreen.routeName;
+      return VerifyProfileScreen.routeName;
     } else {
       return HomeScreen.routeName;
     }
