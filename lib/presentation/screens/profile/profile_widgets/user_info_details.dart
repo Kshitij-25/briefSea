@@ -44,9 +44,7 @@ class UserInfoDetails extends StatelessWidget {
             Row(
               children: [
                 Text(
-                  userProfileData?.userName?.isNotEmpty == true
-                      ? userProfileData!.userName![0].toUpperCase() + userProfileData!.userName!.substring(1)
-                      : '',
+                  userProfileData?.name?.isNotEmpty == true ? userProfileData!.name![0].toUpperCase() + userProfileData!.name!.substring(1) : '',
                   style: const TextStyle(
                     fontWeight: FontWeight.bold,
                     color: Colors.black,

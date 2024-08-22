@@ -179,7 +179,7 @@ class AgencyRegistrationScreen extends HookConsumerWidget {
                               const SizedBox(height: 10),
                               DropdownButtonFormField<String>(
                                 decoration: InputDecoration(
-                                  hintText: 'Select Account Type',
+                                  hintText: 'Using Briefsea as',
                                   hintStyle: Theme.of(context).textTheme.labelLarge?.copyWith(color: Colors.black),
                                   isDense: true,
                                   enabled: true,
@@ -225,7 +225,7 @@ class AgencyRegistrationScreen extends HookConsumerWidget {
                                           lastName: _lastNameController.text.trim(),
                                           email: _emailController.text.trim(),
                                           password: _passwordController.text.trim(),
-                                          type: "Agency",
+                                          type: ref.read(selectAccountTypeProvider).selectedType,
                                           subType: "",
                                           ref: ref,
                                           context: context,

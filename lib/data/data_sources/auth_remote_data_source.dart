@@ -38,13 +38,13 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
 
           // Save the payload to shared preferences
           SharedPreferencesHelper.saveString('jwtToken', jwtToken);
-          SharedPreferencesHelper.saveString('user_id', accessTokenPayload['user_detail']['user_id']);
-          SharedPreferencesHelper.saveString('userName', accessTokenPayload['user_detail']['userName']);
-          SharedPreferencesHelper.saveString('firstName', accessTokenPayload['user_detail']['firstName']);
-          SharedPreferencesHelper.saveString('user_name', accessTokenPayload['user_detail']['user_name']);
-          SharedPreferencesHelper.saveString('lastName', accessTokenPayload['user_detail']['lastName']);
-          SharedPreferencesHelper.saveString('email', accessTokenPayload['user_detail']['email']);
-          SharedPreferencesHelper.saveString('type', accessTokenPayload['user_detail']['type']);
+          SharedPreferencesHelper.saveString('user_id', accessTokenPayload['user_detail']['user_id'] ?? '');
+          SharedPreferencesHelper.saveString('userName', accessTokenPayload['user_detail']['userName'] ?? '');
+          SharedPreferencesHelper.saveString('firstName', accessTokenPayload['user_detail']['firstName'] ?? '');
+          SharedPreferencesHelper.saveString('user_name', accessTokenPayload['user_detail']['user_name'] ?? '');
+          SharedPreferencesHelper.saveString('lastName', accessTokenPayload['user_detail']['lastName'] ?? '');
+          SharedPreferencesHelper.saveString('email', accessTokenPayload['user_detail']['email'] ?? '');
+          SharedPreferencesHelper.saveString('type', accessTokenPayload['user_detail']['type'] ?? '');
 
           return LoginModel.fromJson(responseJson);
         } else if (loginMessage == 'Email sent' || loginMessage == 'Login failed' || loginMessage == 'Invalid Email') {
@@ -155,13 +155,13 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
 
           // Save the payload to shared preferences
           SharedPreferencesHelper.saveString('jwtToken', jwtToken);
-          SharedPreferencesHelper.saveString('user_id', accessTokenPayload['user_detail']['user_id']);
-          SharedPreferencesHelper.saveString('userName', accessTokenPayload['user_detail']['userName']);
-          SharedPreferencesHelper.saveString('firstName', accessTokenPayload['user_detail']['firstName']);
-          SharedPreferencesHelper.saveString('user_name', accessTokenPayload['user_detail']['user_name']);
-          SharedPreferencesHelper.saveString('lastName', accessTokenPayload['user_detail']['lastName']);
-          SharedPreferencesHelper.saveString('email', accessTokenPayload['user_detail']['email']);
-          SharedPreferencesHelper.saveString('type', accessTokenPayload['user_detail']['type']);
+          SharedPreferencesHelper.saveString('user_id', accessTokenPayload['user_detail']['user_id'] ?? '');
+          SharedPreferencesHelper.saveString('userName', accessTokenPayload['user_detail']['userName'] ?? '');
+          SharedPreferencesHelper.saveString('firstName', accessTokenPayload['user_detail']['firstName'] ?? '');
+          SharedPreferencesHelper.saveString('user_name', accessTokenPayload['user_detail']['user_name'] ?? '');
+          SharedPreferencesHelper.saveString('lastName', accessTokenPayload['user_detail']['lastName'] ?? '');
+          SharedPreferencesHelper.saveString('email', accessTokenPayload['user_detail']['email'] ?? '');
+          SharedPreferencesHelper.saveString('type', accessTokenPayload['user_detail']['type'] ?? '');
 
           return LoginModel.fromJson(responseJson);
         } else if (loginMessage == 'Email sent' || loginMessage == 'Login failed' || loginMessage == 'Invalid Email') {

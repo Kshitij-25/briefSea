@@ -72,18 +72,18 @@ class ExistingLoginScreen extends ConsumerWidget {
                                     passwordController.text = 'Test@1234';
                                   }
                                 },
-                                onDoubleTap: () {
-                                  if (kDebugMode) {
-                                    emailController.text = "lofeti1583@luvnish.com";
-                                    passwordController.text = "lofeti1583@luvnish.com";
-                                  }
-                                },
                                 // onDoubleTap: () {
                                 //   if (kDebugMode) {
-                                //     _emailController.text = "anmol.pandey@urpopular.com";
-                                //     _passwordController.text = "Anmol@123";
+                                //     emailController.text = "lofeti1583@luvnish.com";
+                                //     passwordController.text = "lofeti1583@luvnish.com";
                                 //   }
                                 // },
+                                onDoubleTap: () {
+                                  if (kDebugMode) {
+                                    emailController.text = "anmol.pandey@urpopular.com";
+                                    passwordController.text = "Anmol@123";
+                                  }
+                                },
                                 child: Text(
                                   'Welcome,',
                                   style: Theme.of(context).textTheme.titleLarge!.copyWith(fontSize: 30, fontWeight: FontWeight.bold),
