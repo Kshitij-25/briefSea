@@ -25,11 +25,17 @@ mixin _$ChatUserModel {
   String? get type => throw _privateConstructorUsedError;
   @JsonKey(name: "conversation_id")
   String? get conversationId => throw _privateConstructorUsedError;
-  bool get isUserOnline => throw _privateConstructorUsedError;
   String? get lastMsg => throw _privateConstructorUsedError;
+  String? get avatar => throw _privateConstructorUsedError;
+  String? get updatedAt => throw _privateConstructorUsedError;
+  bool get isUserOnline => throw _privateConstructorUsedError;
 
+  /// Serializes this ChatUserModel to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-  @JsonKey(ignore: true)
+
+  /// Create a copy of ChatUserModel
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   $ChatUserModelCopyWith<ChatUserModel> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -45,8 +51,10 @@ abstract class $ChatUserModelCopyWith<$Res> {
       String? name,
       String? type,
       @JsonKey(name: "conversation_id") String? conversationId,
-      bool isUserOnline,
-      String? lastMsg});
+      String? lastMsg,
+      String? avatar,
+      String? updatedAt,
+      bool isUserOnline});
 }
 
 /// @nodoc
@@ -59,6 +67,8 @@ class _$ChatUserModelCopyWithImpl<$Res, $Val extends ChatUserModel>
   // ignore: unused_field
   final $Res Function($Val) _then;
 
+  /// Create a copy of ChatUserModel
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -66,8 +76,10 @@ class _$ChatUserModelCopyWithImpl<$Res, $Val extends ChatUserModel>
     Object? name = freezed,
     Object? type = freezed,
     Object? conversationId = freezed,
-    Object? isUserOnline = null,
     Object? lastMsg = freezed,
+    Object? avatar = freezed,
+    Object? updatedAt = freezed,
+    Object? isUserOnline = null,
   }) {
     return _then(_value.copyWith(
       id: freezed == id
@@ -86,14 +98,22 @@ class _$ChatUserModelCopyWithImpl<$Res, $Val extends ChatUserModel>
           ? _value.conversationId
           : conversationId // ignore: cast_nullable_to_non_nullable
               as String?,
-      isUserOnline: null == isUserOnline
-          ? _value.isUserOnline
-          : isUserOnline // ignore: cast_nullable_to_non_nullable
-              as bool,
       lastMsg: freezed == lastMsg
           ? _value.lastMsg
           : lastMsg // ignore: cast_nullable_to_non_nullable
               as String?,
+      avatar: freezed == avatar
+          ? _value.avatar
+          : avatar // ignore: cast_nullable_to_non_nullable
+              as String?,
+      updatedAt: freezed == updatedAt
+          ? _value.updatedAt
+          : updatedAt // ignore: cast_nullable_to_non_nullable
+              as String?,
+      isUserOnline: null == isUserOnline
+          ? _value.isUserOnline
+          : isUserOnline // ignore: cast_nullable_to_non_nullable
+              as bool,
     ) as $Val);
   }
 }
@@ -111,8 +131,10 @@ abstract class _$$ChatUserModelImplCopyWith<$Res>
       String? name,
       String? type,
       @JsonKey(name: "conversation_id") String? conversationId,
-      bool isUserOnline,
-      String? lastMsg});
+      String? lastMsg,
+      String? avatar,
+      String? updatedAt,
+      bool isUserOnline});
 }
 
 /// @nodoc
@@ -123,6 +145,8 @@ class __$$ChatUserModelImplCopyWithImpl<$Res>
       _$ChatUserModelImpl _value, $Res Function(_$ChatUserModelImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of ChatUserModel
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -130,8 +154,10 @@ class __$$ChatUserModelImplCopyWithImpl<$Res>
     Object? name = freezed,
     Object? type = freezed,
     Object? conversationId = freezed,
-    Object? isUserOnline = null,
     Object? lastMsg = freezed,
+    Object? avatar = freezed,
+    Object? updatedAt = freezed,
+    Object? isUserOnline = null,
   }) {
     return _then(_$ChatUserModelImpl(
       id: freezed == id
@@ -150,14 +176,22 @@ class __$$ChatUserModelImplCopyWithImpl<$Res>
           ? _value.conversationId
           : conversationId // ignore: cast_nullable_to_non_nullable
               as String?,
-      isUserOnline: null == isUserOnline
-          ? _value.isUserOnline
-          : isUserOnline // ignore: cast_nullable_to_non_nullable
-              as bool,
       lastMsg: freezed == lastMsg
           ? _value.lastMsg
           : lastMsg // ignore: cast_nullable_to_non_nullable
               as String?,
+      avatar: freezed == avatar
+          ? _value.avatar
+          : avatar // ignore: cast_nullable_to_non_nullable
+              as String?,
+      updatedAt: freezed == updatedAt
+          ? _value.updatedAt
+          : updatedAt // ignore: cast_nullable_to_non_nullable
+              as String?,
+      isUserOnline: null == isUserOnline
+          ? _value.isUserOnline
+          : isUserOnline // ignore: cast_nullable_to_non_nullable
+              as bool,
     ));
   }
 }
@@ -170,8 +204,10 @@ class _$ChatUserModelImpl implements _ChatUserModel {
       this.name,
       this.type,
       @JsonKey(name: "conversation_id") this.conversationId,
-      this.isUserOnline = false,
-      this.lastMsg});
+      this.lastMsg,
+      this.avatar,
+      this.updatedAt,
+      this.isUserOnline = false});
 
   factory _$ChatUserModelImpl.fromJson(Map<String, dynamic> json) =>
       _$$ChatUserModelImplFromJson(json);
@@ -186,14 +222,18 @@ class _$ChatUserModelImpl implements _ChatUserModel {
   @JsonKey(name: "conversation_id")
   final String? conversationId;
   @override
+  final String? lastMsg;
+  @override
+  final String? avatar;
+  @override
+  final String? updatedAt;
+  @override
   @JsonKey()
   final bool isUserOnline;
-  @override
-  final String? lastMsg;
 
   @override
   String toString() {
-    return 'ChatUserModel(id: $id, name: $name, type: $type, conversationId: $conversationId, isUserOnline: $isUserOnline, lastMsg: $lastMsg)';
+    return 'ChatUserModel(id: $id, name: $name, type: $type, conversationId: $conversationId, lastMsg: $lastMsg, avatar: $avatar, updatedAt: $updatedAt, isUserOnline: $isUserOnline)';
   }
 
   @override
@@ -206,17 +246,22 @@ class _$ChatUserModelImpl implements _ChatUserModel {
             (identical(other.type, type) || other.type == type) &&
             (identical(other.conversationId, conversationId) ||
                 other.conversationId == conversationId) &&
+            (identical(other.lastMsg, lastMsg) || other.lastMsg == lastMsg) &&
+            (identical(other.avatar, avatar) || other.avatar == avatar) &&
+            (identical(other.updatedAt, updatedAt) ||
+                other.updatedAt == updatedAt) &&
             (identical(other.isUserOnline, isUserOnline) ||
-                other.isUserOnline == isUserOnline) &&
-            (identical(other.lastMsg, lastMsg) || other.lastMsg == lastMsg));
+                other.isUserOnline == isUserOnline));
   }
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(
-      runtimeType, id, name, type, conversationId, isUserOnline, lastMsg);
+  int get hashCode => Object.hash(runtimeType, id, name, type, conversationId,
+      lastMsg, avatar, updatedAt, isUserOnline);
 
-  @JsonKey(ignore: true)
+  /// Create a copy of ChatUserModel
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$ChatUserModelImplCopyWith<_$ChatUserModelImpl> get copyWith =>
@@ -236,8 +281,10 @@ abstract class _ChatUserModel implements ChatUserModel {
       final String? name,
       final String? type,
       @JsonKey(name: "conversation_id") final String? conversationId,
-      final bool isUserOnline,
-      final String? lastMsg}) = _$ChatUserModelImpl;
+      final String? lastMsg,
+      final String? avatar,
+      final String? updatedAt,
+      final bool isUserOnline}) = _$ChatUserModelImpl;
 
   factory _ChatUserModel.fromJson(Map<String, dynamic> json) =
       _$ChatUserModelImpl.fromJson;
@@ -252,11 +299,18 @@ abstract class _ChatUserModel implements ChatUserModel {
   @JsonKey(name: "conversation_id")
   String? get conversationId;
   @override
-  bool get isUserOnline;
-  @override
   String? get lastMsg;
   @override
-  @JsonKey(ignore: true)
+  String? get avatar;
+  @override
+  String? get updatedAt;
+  @override
+  bool get isUserOnline;
+
+  /// Create a copy of ChatUserModel
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$ChatUserModelImplCopyWith<_$ChatUserModelImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

@@ -1,6 +1,8 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 import '../../common/app_utils/screen_size.dart';
 
@@ -11,7 +13,9 @@ class CustomBackButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       enableFeedback: true,
-      onTap: () {
+      onTap: () async {
+        await GoogleSignIn().signOut(); // Sign out from GoogleSignIn
+        await FirebaseAuth.instance.signOut();
         GoRouter.of(context).pop();
       },
       child: Container(

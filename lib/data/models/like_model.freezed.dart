@@ -33,8 +33,12 @@ mixin _$LikeModel {
   String? get createdAt => throw _privateConstructorUsedError;
   String? get updatedAt => throw _privateConstructorUsedError;
 
+  /// Serializes this LikeModel to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-  @JsonKey(ignore: true)
+
+  /// Create a copy of LikeModel
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   $LikeModelCopyWith<LikeModel> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -65,6 +69,8 @@ class _$LikeModelCopyWithImpl<$Res, $Val extends LikeModel>
   // ignore: unused_field
   final $Res Function($Val) _then;
 
+  /// Create a copy of LikeModel
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -141,6 +147,8 @@ class __$$LikeModelImplCopyWithImpl<$Res>
       _$LikeModelImpl _value, $Res Function(_$LikeModelImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of LikeModel
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -250,12 +258,14 @@ class _$LikeModelImpl implements _LikeModel {
                 other.updatedAt == updatedAt));
   }
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(runtimeType, likeId, userId, name, type,
       threadId, replyId, createdAt, updatedAt);
 
-  @JsonKey(ignore: true)
+  /// Create a copy of LikeModel
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$LikeModelImplCopyWith<_$LikeModelImpl> get copyWith =>
@@ -303,8 +313,11 @@ abstract class _LikeModel implements LikeModel {
   String? get createdAt;
   @override
   String? get updatedAt;
+
+  /// Create a copy of LikeModel
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$LikeModelImplCopyWith<_$LikeModelImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

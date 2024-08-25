@@ -11,7 +11,6 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../../../common/app_utils/screen_size.dart';
 import '../../../common/app_utils/validation_utils.dart';
 import '../../../common/enums/enums.dart';
-import '../../../common/others/assets.dart';
 import '../../providers/auth_provider.dart';
 import '../../state_providers/password_change_notifier.dart';
 import '../../state_providers/verify_profile_industry_provider.dart';
@@ -49,9 +48,9 @@ class AgencyRegistrationScreen extends HookConsumerWidget {
               child: Stack(
                 children: [
                   const CustomShapeWidget(),
-                  Container(
-                    width: ScreenSize.width(context),
-                    height: ScreenSize.height(context),
+                  Padding(
+                    // width: ScreenSize.width(context),
+                    // height: ScreenSize.height(context),
                     padding: const EdgeInsets.symmetric(horizontal: 30),
                     child: SingleChildScrollView(
                       child: ConstrainedBox(
@@ -179,8 +178,9 @@ class AgencyRegistrationScreen extends HookConsumerWidget {
                               const SizedBox(height: 10),
                               DropdownButtonFormField<String>(
                                 decoration: InputDecoration(
-                                  hintText: 'Using Briefsea as',
-                                  hintStyle: Theme.of(context).textTheme.labelLarge?.copyWith(color: Colors.black),
+                                  labelText: 'Using Briefsea as',
+                                  labelStyle: TextStyle(color: Theme.of(context).hintColor, fontSize: 14 * ScaleSize.textScaleFactor(context)),
+                                  floatingLabelBehavior: FloatingLabelBehavior.never,
                                   isDense: true,
                                   enabled: true,
                                   border: OutlineInputBorder(
@@ -216,7 +216,7 @@ class AgencyRegistrationScreen extends HookConsumerWidget {
                               ),
                               SizedBox(height: ScreenSize.height(context) * .03),
                               CustomElevatedButton(
-                                buttonLabel: "Next",
+                                buttonLabel: "Create Account",
                                 onPressed: () async {
                                   if (_formKey.currentState!.validate()) {
                                     // Proceed with registration if validation passes
@@ -233,48 +233,48 @@ class AgencyRegistrationScreen extends HookConsumerWidget {
                                   }
                                 },
                               ),
-                              SizedBox(height: ScreenSize.height(context) * .02),
-                              Row(
-                                children: [
-                                  Expanded(
-                                    child: Divider(
-                                      thickness: 2,
-                                      color: Theme.of(context).colorScheme.onInverseSurface,
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.symmetric(horizontal: 10),
-                                    child: Text(
-                                      "Or Sign up with",
-                                      style: Theme.of(context).textTheme.bodyMedium,
-                                      textScaler: TextScaler.linear(ScaleSize.textScaleFactor(context)),
-                                    ),
-                                  ),
-                                  Expanded(
-                                    child: Divider(
-                                      thickness: 2,
-                                      color: Theme.of(context).colorScheme.onInverseSurface,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              SizedBox(height: ScreenSize.height(context) * .02),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  _signUpOptions(
-                                    context: context,
-                                    imagePath: Assets.GOOGLE_LOGO,
-                                    onTap: () async {
-                                      await ref.read(loginNotifierProvider.notifier).loginWithGoogle(
-                                            context: context,
-                                            ref: ref,
-                                            isLogin: false,
-                                          );
-                                    },
-                                  ),
-                                ],
-                              ),
+                              // SizedBox(height: ScreenSize.height(context) * .02),
+                              // Row(
+                              //   children: [
+                              //     Expanded(
+                              //       child: Divider(
+                              //         thickness: 2,
+                              //         color: Theme.of(context).colorScheme.onInverseSurface,
+                              //       ),
+                              //     ),
+                              //     Padding(
+                              //       padding: const EdgeInsets.symmetric(horizontal: 10),
+                              //       child: Text(
+                              //         "Or Sign up with",
+                              //         style: Theme.of(context).textTheme.bodyMedium,
+                              //         textScaler: TextScaler.linear(ScaleSize.textScaleFactor(context)),
+                              //       ),
+                              //     ),
+                              //     Expanded(
+                              //       child: Divider(
+                              //         thickness: 2,
+                              //         color: Theme.of(context).colorScheme.onInverseSurface,
+                              //       ),
+                              //     ),
+                              //   ],
+                              // ),
+                              // SizedBox(height: ScreenSize.height(context) * .02),
+                              // Row(
+                              //   mainAxisAlignment: MainAxisAlignment.center,
+                              //   children: [
+                              //     _signUpOptions(
+                              //       context: context,
+                              //       imagePath: Assets.GOOGLE_LOGO,
+                              //       onTap: () async {
+                              //         await ref.read(loginNotifierProvider.notifier).loginWithGoogle(
+                              //               context: context,
+                              //               ref: ref,
+                              //               isLogin: false,
+                              //             );
+                              //       },
+                              //     ),
+                              //   ],
+                              // ),
                               // SizedBox(height: ScreenSize.height(context) * .01),
                               Spacer(),
                               Row(

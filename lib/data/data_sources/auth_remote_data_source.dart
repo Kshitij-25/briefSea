@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
 
@@ -13,9 +14,24 @@ import '../models/register_model.dart';
 abstract class AuthRemoteDataSource {
   Future<LoginModel?> loginUser(String? email, String? password);
   Future<GoogleSignInAccount?> signInWithGoogle();
-  Future<RegisterModel> registerUser(String? firstName, String? lastName, String? email, String? password, String? type, String? subType);
+  Future<RegisterModel> registerUser(
+    String? firstName,
+    String? lastName,
+    String? email,
+    String? password,
+    String? type,
+    String? subType,
+  );
   Future<bool> forgetPassword(String? email);
-  Future<LoginModel?> googleAuth({String? email, String? firstName, String? displayName, String? lastName, String? type, String? avatarUrl});
+  Future<LoginModel?> googleAuth({
+    String? email,
+    String? firstName,
+    String? displayName,
+    String? lastName,
+    String? type,
+    String? avatarUrl,
+  });
+  Future<bool?> isUserRegistered(String? email);
 }
 
 class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
@@ -63,21 +79,27 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
 
   @override
   Future<GoogleSignInAccount?> signInWithGoogle() async {
-    final GoogleSignIn googleSignIn = GoogleSignIn(scopes: [
-      'email',
-      'profile',
-    ]);
+    final GoogleSignIn googleSignIn = GoogleSignIn(scopes: ['email', 'profile']);
     GoogleSignInAccount? signInAccount;
 
+    signInAccount = await googleSignIn.signIn();
+    if (signInAccount == null) {
+      return null;
+    }
+
+    final googleAuth = await signInAccount.authentication;
+
+    // Create OAuth credentials using the access token and ID token
+    final oAuthCredential = GoogleAuthProvider.credential(
+      accessToken: googleAuth.accessToken,
+      idToken: googleAuth.idToken,
+    );
+
     try {
-      signInAccount = await googleSignIn.signIn();
-      if (signInAccount == null) {
-        return null; // The user canceled the sign-in
-      }
+      await FirebaseAuth.instance.signInWithCredential(oAuthCredential);
       return signInAccount;
-    } catch (error) {
-      log('Google Sign-In Error: $error');
-      rethrow; // Rethrow the error for higher-level error handling
+    } catch (e) {
+      return null;
     }
   }
 
@@ -174,6 +196,29 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       }
     } catch (e) {
       log('Register User Error', error: e);
+      throw AppError(errorMessage: e.toString());
+    }
+  }
+
+  @override
+  Future<bool?> isUserRegistered(String? email) async {
+    try {
+      final body = {'email': email};
+      final response = await _apiClient.postReq(
+        url: ApiConstants.isUserRegistered,
+        body: body,
+      );
+
+      if (response?.statusCode == 200) {
+        final responseJson = response?.data;
+        log(responseJson.toString());
+        final isRegistered = responseJson['exists'];
+        return isRegistered;
+      } else {
+        throw AppError(statusCode: response?.statusCode);
+      }
+    } catch (e) {
+      log('forgetPassword Error', error: e);
       throw AppError(errorMessage: e.toString());
     }
   }

@@ -99,7 +99,7 @@ class ProfileAvatarWidget extends ConsumerWidget {
                                 children: [
                                   CircleAvatar(
                                     backgroundColor: userColor,
-                                    radius: 165 * ScaleSize.textScaleFactor(context),
+                                    radius: 135 * ScaleSize.textScaleFactor(context),
                                     backgroundImage: (selectedAvatar != null && selectedAvatar != '' && userProfileData?.avatarSrc != '') ||
                                             (selectedAvatar != null && selectedAvatar != '')
                                         ? CachedNetworkImageProvider(

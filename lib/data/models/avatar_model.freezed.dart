@@ -23,8 +23,12 @@ mixin _$AvatarModel {
   String? get key => throw _privateConstructorUsedError;
   String? get url => throw _privateConstructorUsedError;
 
+  /// Serializes this AvatarModel to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-  @JsonKey(ignore: true)
+
+  /// Create a copy of AvatarModel
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   $AvatarModelCopyWith<AvatarModel> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -48,6 +52,8 @@ class _$AvatarModelCopyWithImpl<$Res, $Val extends AvatarModel>
   // ignore: unused_field
   final $Res Function($Val) _then;
 
+  /// Create a copy of AvatarModel
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -86,6 +92,8 @@ class __$$AvatarModelImplCopyWithImpl<$Res>
       _$AvatarModelImpl _value, $Res Function(_$AvatarModelImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of AvatarModel
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -132,11 +140,13 @@ class _$AvatarModelImpl implements _AvatarModel {
             (identical(other.url, url) || other.url == url));
   }
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(runtimeType, key, url);
 
-  @JsonKey(ignore: true)
+  /// Create a copy of AvatarModel
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$AvatarModelImplCopyWith<_$AvatarModelImpl> get copyWith =>
@@ -161,8 +171,11 @@ abstract class _AvatarModel implements AvatarModel {
   String? get key;
   @override
   String? get url;
+
+  /// Create a copy of AvatarModel
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$AvatarModelImplCopyWith<_$AvatarModelImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

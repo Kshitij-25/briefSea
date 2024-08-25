@@ -1,7 +1,9 @@
 import 'dart:math' as math;
 
 import 'package:briefsea/common/app_utils/screen_size.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 import '../../data/models/chat_user_model.dart';
 
@@ -32,14 +34,22 @@ class CustomChatCards extends StatelessWidget {
             CircleAvatar(
               radius: 25 * ScaleSize.textScaleFactor(context),
               backgroundColor: userColor,
-              child: Text(
-                chatUserModel?.name?[0].toUpperCase() ?? "",
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 22,
-                ),
-                textScaler: TextScaler.linear(ScaleSize.textScaleFactor(context)),
-              ),
+              backgroundImage: chatUserModel!.avatar != null && chatUserModel!.avatar != ''
+                  ? CachedNetworkImageProvider(
+                      chatUserModel!.avatar!,
+                      cacheKey: chatUserModel!.avatar!,
+                    )
+                  : null,
+              child: chatUserModel!.avatar == null || chatUserModel!.avatar == ''
+                  ? Text(
+                      chatUserModel?.name?[0].toUpperCase() ?? "",
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 22,
+                      ),
+                      textScaler: TextScaler.linear(ScaleSize.textScaleFactor(context)),
+                    )
+                  : SizedBox.shrink(),
             ),
             Positioned(
               right: 0,
@@ -73,6 +83,9 @@ class CustomChatCards extends StatelessWidget {
           overflow: TextOverflow.ellipsis,
           style: Theme.of(context).textTheme.bodySmall!.copyWith(color: Colors.black),
           textScaler: TextScaler.linear(ScaleSize.textScaleFactor(context)),
+        ),
+        trailing: Text(
+          DateFormat('HH:mm').format(DateTime.parse(chatUserModel?.updatedAt ?? '')),
         ),
       ),
     );

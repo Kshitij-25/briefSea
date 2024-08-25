@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:briefsea/common/app_utils/shared_prefs_helper.dart';
 import 'package:briefsea/presentation/params/notification_params.dart';
+import 'package:briefsea/presentation/screens/auth_screens/existing_login_screen.dart';
 import 'package:briefsea/presentation/state_providers/verify_profile_industry_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -17,6 +18,7 @@ import '../../data/di/get_it.dart';
 import '../../data/models/login_model.dart';
 import '../../data/models/register_model.dart';
 import '../../data/repositories/auth_repository.dart';
+import '../../main.dart';
 import '../screens/auth_screens/choose_account_type.dart';
 import '../screens/home_screen.dart';
 import '../screens/profile/verify_profile_screen.dart';
@@ -137,10 +139,8 @@ class LoginNotifier extends StateNotifier<LoginState> {
       await SharedPreferencesHelper.saveString('email', signInAccount.email);
       await SharedPreferencesHelper.saveString('avatarUrl', signInAccount.photoUrl ?? '');
 
-      if (isLogin != true) {
-        GoRouter.of(context).pushNamed(ChooseAccountType.routeName);
-      } else {
-        await chooseAccountType(context: context, ref: ref);
+      if (isLogin == true) {
+        await isUserRegistered(email: signInAccount.email, ref: ref, context: context);
       }
       state = LoginState.success;
     } catch (e) {
@@ -148,7 +148,38 @@ class LoginNotifier extends StateNotifier<LoginState> {
     }
   }
 
-  Future<void> chooseAccountType({required BuildContext context, required WidgetRef ref}) async {
+  Future<void> isUserRegistered({String? email, WidgetRef? ref, BuildContext? context}) async {
+    state = LoginState.loading;
+    try {
+      final authRepository = await ref!.read(authRepositoryProvider);
+      final eitherIsUserRegisteredOrError = await authRepository.isUserRegistered(email);
+
+      final isUserRegistered = eitherIsUserRegisteredOrError.fold(
+        (error) => throw error,
+        (isUserRegistered) => isUserRegistered,
+      );
+
+      if (isUserRegistered != true) {
+        state = LoginState.success;
+        GoRouter.of(context!).pushNamed(ChooseAccountType.routeName);
+      } else {
+        await chooseAccountType(
+          context: context!,
+          ref: ref,
+          isUserRegistered: true,
+        );
+        state = LoginState.success;
+      }
+    } catch (e) {
+      state = LoginState.error;
+    }
+  }
+
+  Future<void> chooseAccountType({
+    required BuildContext context,
+    required WidgetRef ref,
+    bool? isUserRegistered,
+  }) async {
     state = LoginState.loading;
     try {
       final accountType = ref.watch(selectAccountTypeProvider).selectedType;
@@ -179,6 +210,20 @@ class LoginNotifier extends StateNotifier<LoginState> {
       if (loginModel!.message == 'Login sucessfull') {
         await SharedPreferencesHelper.saveBoolean('isLogin', true);
         await SharedPreferencesHelper.saveBoolean('profile', loginModel.profile!);
+        if (isUserRegistered == false) {
+          var requestBody = {
+            "type": 'user account',
+            "sender_id": 'briefseaAdmin9712',
+            "sender_name": 'Briefsea',
+            "receiver_id": prefs!.getString('user_id'),
+            "notification": "Welcome to Briefsea.Hire the best freelancers, vendors and professionals for your tech and marketing projects."
+          };
+          await ref.read(
+            NotificationProvider.postNewNotificationProvider(
+              PostNewNotificationParams(requestBody: requestBody),
+            ).future,
+          );
+        }
         GoRouter.of(context).goNamed(HomeScreen.routeName);
         state = LoginState.success;
       } else if (loginModel.message == 'Email sent') {
@@ -272,7 +317,7 @@ class RegisterNotifier extends StateNotifier<RegisterState> {
             PostNewNotificationParams(requestBody: requestBody),
           ).future,
         );
-        GoRouter.of(context).pop();
+        GoRouter.of(context).pushReplacementNamed(ExistingLoginScreen.routeName);
 
         state = RegisterState.success;
         // Handle successful registration (e.g., navigate to a different screen)

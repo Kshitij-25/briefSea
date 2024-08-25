@@ -42,8 +42,12 @@ mixin _$CommentModel {
   @JsonKey(name: 'likeObj')
   LikeObj? get likeObj => throw _privateConstructorUsedError;
 
+  /// Serializes this CommentModel to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-  @JsonKey(ignore: true)
+
+  /// Create a copy of CommentModel
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   $CommentModelCopyWith<CommentModel> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -85,6 +89,8 @@ class _$CommentModelCopyWithImpl<$Res, $Val extends CommentModel>
   // ignore: unused_field
   final $Res Function($Val) _then;
 
+  /// Create a copy of CommentModel
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -173,6 +179,8 @@ class _$CommentModelCopyWithImpl<$Res, $Val extends CommentModel>
     ) as $Val);
   }
 
+  /// Create a copy of CommentModel
+  /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
   $LikeObjCopyWith<$Res>? get likeObj {
@@ -224,6 +232,8 @@ class __$$CommentModelImplCopyWithImpl<$Res>
       _$CommentModelImpl _value, $Res Function(_$CommentModelImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of CommentModel
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -415,7 +425,7 @@ class _$CommentModelImpl implements _CommentModel {
             (identical(other.likeObj, likeObj) || other.likeObj == likeObj));
   }
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(
       runtimeType,
@@ -436,7 +446,9 @@ class _$CommentModelImpl implements _CommentModel {
       avatarSrc,
       likeObj);
 
-  @JsonKey(ignore: true)
+  /// Create a copy of CommentModel
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$CommentModelImplCopyWith<_$CommentModelImpl> get copyWith =>
@@ -509,8 +521,11 @@ abstract class _CommentModel implements CommentModel {
   @override
   @JsonKey(name: 'likeObj')
   LikeObj? get likeObj;
+
+  /// Create a copy of CommentModel
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$CommentModelImplCopyWith<_$CommentModelImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

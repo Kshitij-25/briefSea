@@ -1,5 +1,6 @@
 import 'dart:math' as math;
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
@@ -54,14 +55,22 @@ class CustomNotificationTile extends StatelessWidget {
         leading: CircleAvatar(
           radius: 25 * ScaleSize.textScaleFactor(context),
           backgroundColor: userColor,
-          child: Text(
-            notificationModel.senderName?[0] ?? '',
-            style: const TextStyle(
-              color: Colors.white,
-              fontSize: 22,
-            ),
-            textScaler: TextScaler.linear(ScaleSize.textScaleFactor(context)),
-          ),
+          backgroundImage: notificationModel.avatar != null && notificationModel.avatar != ''
+              ? CachedNetworkImageProvider(
+                  notificationModel.avatar!,
+                  cacheKey: notificationModel.avatar!,
+                )
+              : null,
+          child: notificationModel.avatar == null || notificationModel.avatar == ''
+              ? Text(
+                  notificationModel.senderName?[0] ?? '',
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 22,
+                  ),
+                  textScaler: TextScaler.linear(ScaleSize.textScaleFactor(context)),
+                )
+              : SizedBox.shrink(),
         ),
         title: Text(
           notificationModel.senderName ?? '',
@@ -76,6 +85,12 @@ class CustomNotificationTile extends StatelessWidget {
           timeago.format(dateTime, locale: 'en_short'),
           textScaler: TextScaler.linear(ScaleSize.textScaleFactor(context)),
         ),
+        // trailing: Text(
+        //   DateFormat('HH:mm').format(DateTime.fromMillisecondsSinceEpoch(notificationModel.notifiedAt ?? 0)),
+        //   style: Theme.of(context).textTheme.bodySmall!.copyWith(
+        //         color: Theme.of(context).colorScheme.onSurface,
+        //       ),
+        // ),
       ),
     );
   }

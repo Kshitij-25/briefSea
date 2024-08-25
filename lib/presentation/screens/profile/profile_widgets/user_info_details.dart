@@ -55,23 +55,6 @@ class UserInfoDetails extends StatelessWidget {
                 const SizedBox(
                   width: 15,
                 ),
-                // if (userProfileData?.linkedinLink != null && userProfileData?.linkedinLink != '')
-                //   GestureDetector(
-                //     onTap: () async {
-                //       String? linkedInUrl = userProfileData?.linkedinLink?.trim() ?? '';
-                //       if (await canLaunchUrl(Uri.parse(linkedInUrl))) {
-                //         await launchUrl(Uri.parse(linkedInUrl));
-                //       } else {
-                //         print('Could not launch ${linkedInUrl}');
-                //         AppUtility(context).error('Could not launch the URL.');
-                //       }
-                //     },
-                //     child: SvgPicture.asset(
-                //       Assets.LINKEDIN_LOGO,
-                //       height: 20 * ScaleSize.textScaleFactor(context),
-                //       width: 20 * ScaleSize.textScaleFactor(context),
-                //     ),
-                //   ),
               ],
             ),
             Row(

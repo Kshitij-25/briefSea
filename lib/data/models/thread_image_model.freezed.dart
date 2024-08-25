@@ -23,8 +23,12 @@ mixin _$ThreadImageModel {
   String? get key => throw _privateConstructorUsedError;
   String? get url => throw _privateConstructorUsedError;
 
+  /// Serializes this ThreadImageModel to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-  @JsonKey(ignore: true)
+
+  /// Create a copy of ThreadImageModel
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   $ThreadImageModelCopyWith<ThreadImageModel> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -48,6 +52,8 @@ class _$ThreadImageModelCopyWithImpl<$Res, $Val extends ThreadImageModel>
   // ignore: unused_field
   final $Res Function($Val) _then;
 
+  /// Create a copy of ThreadImageModel
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -86,6 +92,8 @@ class __$$ThreadImageModelImplCopyWithImpl<$Res>
       $Res Function(_$ThreadImageModelImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of ThreadImageModel
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -132,11 +140,13 @@ class _$ThreadImageModelImpl implements _ThreadImageModel {
             (identical(other.url, url) || other.url == url));
   }
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(runtimeType, key, url);
 
-  @JsonKey(ignore: true)
+  /// Create a copy of ThreadImageModel
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$ThreadImageModelImplCopyWith<_$ThreadImageModelImpl> get copyWith =>
@@ -162,8 +172,11 @@ abstract class _ThreadImageModel implements ThreadImageModel {
   String? get key;
   @override
   String? get url;
+
+  /// Create a copy of ThreadImageModel
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$ThreadImageModelImplCopyWith<_$ThreadImageModelImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

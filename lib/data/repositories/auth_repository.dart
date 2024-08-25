@@ -93,4 +93,15 @@ class AuthRepository {
       return Left(AppError(errorMessage: e.toString()));
     }
   }
+
+  Future<Either<AppError, bool?>> isUserRegistered(String? email) async {
+    try {
+      final isUserRegistered = await _authRemoteDataSource.isUserRegistered(email);
+      return Right(isUserRegistered!);
+    } on AppError catch (e) {
+      return Left(e);
+    } on Exception catch (e) {
+      return Left(AppError(errorMessage: e.toString()));
+    }
+  }
 }

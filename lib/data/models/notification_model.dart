@@ -11,11 +11,13 @@ class NotificationModel with _$NotificationModel {
     @JsonKey(name: "sender_id") String? senderId,
     @JsonKey(name: "sender_name") String? senderName,
     @JsonKey(name: "receiver_id") String? receiverId,
+    String? notification,
     @JsonKey(name: "thread_id") String? threadId,
     @JsonKey(name: "conversation_id") String? conversationId,
-    String? notification,
+    int? notifiedAt,
     String? createdAt,
     String? updatedAt,
+    String? avatar,
   }) = _NotificationModel;
 
   factory NotificationModel.fromJson(Map<String, dynamic> json) => _$NotificationModelFromJson(json);

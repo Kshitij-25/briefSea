@@ -48,8 +48,9 @@ class ChooseAccountType extends HookConsumerWidget {
                             SizedBox(height: ScreenSize.height(context) * .03),
                             DropdownButtonFormField<String>(
                               decoration: InputDecoration(
-                                hintText: 'Select Account Type',
-                                hintStyle: Theme.of(context).textTheme.labelLarge?.copyWith(color: Colors.black),
+                                labelText: 'Using Briefsea as',
+                                labelStyle: TextStyle(color: Theme.of(context).hintColor, fontSize: 14 * ScaleSize.textScaleFactor(context)),
+                                floatingLabelBehavior: FloatingLabelBehavior.never,
                                 // isDense: true,
                                 enabled: true,
                                 border: OutlineInputBorder(
@@ -88,6 +89,7 @@ class ChooseAccountType extends HookConsumerWidget {
                                   await ref.read(loginNotifierProvider.notifier).chooseAccountType(
                                         ref: ref,
                                         context: context,
+                                        isUserRegistered: false,
                                       );
                                 },
                               ),

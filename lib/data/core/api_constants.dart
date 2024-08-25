@@ -19,6 +19,7 @@ class ApiConstants {
   // User authentication
   static const loginUrl = '$BASE_URL/forum/discussion/login/one';
   static const googleAuth = '$BASE_URL/auth/google/callback';
+  static const isUserRegistered = '$BASE_URL/forum/verify/email/check';
   static const registerUrl = '$BASE_URL/forum/discussion/register/new';
   static const forgetPassword = "$BASE_URL/forum/discussion/forget/password";
 

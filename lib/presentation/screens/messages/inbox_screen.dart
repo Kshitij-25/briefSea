@@ -103,6 +103,12 @@ class _InboxScreenState extends ConsumerState<InboxScreen> {
               final searchLower = searchQuery.toLowerCase();
               return userName.contains(searchLower);
             }).toList();
+
+            filteredChatUsers.sort((a, b) {
+              DateTime dateA = DateTime.parse(a.updatedAt!);
+              DateTime dateB = DateTime.parse(b.updatedAt!);
+              return dateB.compareTo(dateA); // For descending order
+            });
             return Column(
               children: [
                 Padding(
