@@ -1,0 +1,176 @@
+import 'dart:developer';
+
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
+
+import '../../../common/app_utils/screen_size.dart';
+import '../../../data/core/app_error.dart';
+import '../../providers/auth_provider.dart';
+import '../../providers/chat_provider.dart';
+import '../../providers/socket_provider.dart';
+import '../../screens/messages/chat_screen.dart';
+import '../../widgets/custom_chat_cards.dart';
+
+class InboxScreen extends ConsumerStatefulWidget {
+  const InboxScreen({super.key});
+
+  @override
+  _InboxScreenState createState() => _InboxScreenState();
+}
+
+class _InboxScreenState extends ConsumerState<InboxScreen> {
+  Set<String> onlineIds = {};
+
+  TextEditingController searchController = TextEditingController();
+  String searchQuery = '';
+
+  @override
+  void initState() {
+    super.initState();
+    onlineIds.clear();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final socketService = ref.read(socketServiceProvider);
+
+      socketService.socket.on('add-user', (data) {
+        log("SOCKET SERVICE ADD-USER $data");
+        // _updateUserOnlineStatus(data);
+      });
+
+      socketService.socket.on('active-user', (data) {
+        log("SOCKET SERVICE ACTIVE-USER $data");
+        _updateUserOnlineStatus(data);
+      });
+    });
+
+    searchController.addListener(() {
+      setState(() {
+        searchQuery = searchController.text.trim();
+      });
+    });
+  }
+
+  void _updateUserOnlineStatus(List usersData) {
+    if (!mounted) return; // Check if the widget is still mounted
+    onlineIds.clear();
+    final userIds = usersData.map((data) => data['user_id'] as String).toSet();
+
+    setState(() {
+      onlineIds.addAll(userIds);
+    });
+  }
+
+  @override
+  void dispose() {
+    // final socketService = ref.read(socketServiceProvider);
+    // socketService.socket.off('add-user');
+    // socketService.socket.off('active-user');
+
+    searchController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return ref.watch(ChatProvider.getChatUsersListProvider(ref.read(userDetailsProvider)['user_id']!)).when(
+          data: (chatUsers) {
+            if (chatUsers.isEmpty) {
+              return Center(
+                child: Container(
+                  decoration: BoxDecoration(
+                    gradient: const LinearGradient(
+                      begin: Alignment(-0.73, 0.68),
+                      end: Alignment(0.73, -0.68),
+                      colors: [Color(0xFF4A26FE), Color(0xFF222CFF)],
+                    ),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(15.0),
+                    child: Text(
+                      'No Chats',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.w500,
+                        letterSpacing: 0.42,
+                      ),
+                      textScaler: TextScaler.linear(ScaleSize.textScaleFactor(context)),
+                    ),
+                  ),
+                ),
+              );
+            }
+            // Filter chat users based on search query
+            final filteredChatUsers = chatUsers.where((user) {
+              final userName = user.name?.toLowerCase() ?? '';
+              final searchLower = searchQuery.toLowerCase();
+              return userName.contains(searchLower);
+            }).toList();
+
+            filteredChatUsers.sort((a, b) {
+              DateTime dateA = DateTime.parse(a.updatedAt!);
+              DateTime dateB = DateTime.parse(b.updatedAt!);
+              return dateB.compareTo(dateA); // For descending order
+            });
+            return Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(25.0),
+                  child: SearchBar(
+                    controller: searchController,
+                    backgroundColor: WidgetStateProperty.all<Color>(Colors.white),
+                    leading: const Icon(
+                      CupertinoIcons.search,
+                      color: Colors.black,
+                    ),
+                    hintText: "Search...",
+                  ),
+                ),
+                Expanded(
+                  child: ListView.builder(
+                    shrinkWrap: true,
+                    itemCount: filteredChatUsers.length,
+                    itemBuilder: (context, index) {
+                      final isOnline = onlineIds.contains(filteredChatUsers[index].id);
+                      if (isOnline) {
+                        //   final data = brief!.likeObj?.copyWith(userId: userDetails['user_id']);
+                        //   brief = brief!.copyWith(likeObj: data, likesCount: brief!.likesCount! + 1);
+                        final updatedChatUser = filteredChatUsers[index].copyWith(isUserOnline: true);
+                        filteredChatUsers[index] = updatedChatUser;
+                      }
+                      return CustomChatCards(
+                        onTap: () {
+                          context.pushNamed(
+                            ChatScreen.routeName,
+                            extra: filteredChatUsers[index],
+                          );
+                        },
+                        chatUserModel: filteredChatUsers[index],
+                        isUserOnline: isOnline,
+                      );
+                    },
+                  ),
+                ),
+              ],
+            );
+          },
+          error: (error, stackTrace) {
+            if (error is AppError) {
+              return Center(
+                child: Text(
+                  error.errorMessage.toString(),
+                  style: Theme.of(context).textTheme.bodyLarge!.copyWith(color: Colors.black),
+                ),
+              );
+            }
+            return Center(
+              child: Text('ERROR : ${error.toString()}'),
+            );
+          },
+          loading: () => const Center(
+            child: CircularProgressIndicator(),
+          ),
+        );
+  }
+}

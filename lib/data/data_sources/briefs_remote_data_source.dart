@@ -1,0 +1,317 @@
+import 'dart:developer';
+
+import 'package:briefsea/data/models/brief_model.dart';
+import 'package:dio/dio.dart';
+import 'package:http_parser/http_parser.dart';
+
+import '../../common/app_utils/shared_prefs_helper.dart';
+import '../core/api_client.dart';
+import '../core/api_constants.dart';
+import '../core/app_error.dart';
+import '../models/briefs_result.dart';
+import '../models/thread_image_model.dart';
+
+abstract class BriefsRemoteDataSource {
+  Future<BriefModel?> getAllBriefs(int? count);
+  Future<List<BriefsResult?>?> getUserBriefs();
+  Future<BriefsResult> getSingleBrief(String? briefId);
+  Future<bool> postBrief({
+    String? userId,
+    String? name,
+    String? type,
+    String? category,
+    String? postText,
+    String? imgSrc,
+    List<String>? isVisibleTo,
+  });
+  Future<ThreadImageModel?>? uploadThreadImage(
+    String? fileName,
+    MediaType fileType,
+    String? userId,
+    String? userType,
+  );
+  Future<bool> deleteBrief({String? briefId});
+  Future<bool> editBrief({
+    String? briefId,
+    bool? isVisible,
+    String? userId,
+    String? name,
+    String? type,
+    String? category,
+    String? postText,
+    String? imgSrc,
+    String? avatarSrc,
+    String? createdAt,
+    String? updatedAt,
+    int? likesCount,
+    int? replyCount,
+    int? postedAt,
+    List<String>? isVisibleTo,
+  });
+}
+
+class BriefsRemoteDataSourceImpl implements BriefsRemoteDataSource {
+  final ApiClient _apiClient;
+
+  BriefsRemoteDataSourceImpl(this._apiClient);
+
+  Future<String> getJwtToken() async {
+    String? jwtToken = await SharedPreferencesHelper.getString('jwtToken');
+    return jwtToken ?? "";
+  }
+
+  @override
+  Future<BriefModel?> getAllBriefs(int? count) async {
+    var jwtToken = await getJwtToken();
+
+    try {
+      Response? response = await _apiClient.getReq(
+        url: "${ApiConstants.getAllBriefs}$count",
+        // url: "${ApiConstants.getAllBriefs}",
+        jwtToken: jwtToken,
+      );
+
+      if (response?.data != null && response?.statusCode != null) {
+        if (response!.statusCode == 200) {
+          final responseJson = response.data ?? [];
+          log(responseJson.toString());
+          return BriefModel.fromJson(responseJson);
+        } else {
+          throw AppError(statusCode: response.statusCode);
+        }
+      } else {
+        throw AppError();
+      }
+    } catch (e) {
+      log("getAllBriefs Error", error: e);
+      throw AppError(errorMessage: e.toString());
+    }
+  }
+
+  @override
+  Future<List<BriefsResult?>?> getUserBriefs() async {
+    var jwtToken = await getJwtToken();
+
+    try {
+      Response? response = await _apiClient.getReq(
+        url: ApiConstants.getUserBriefs,
+        jwtToken: jwtToken,
+      );
+
+      if (response?.data != null && response?.statusCode != null) {
+        if (response!.statusCode == 200) {
+          final responseJson = response.data ?? [];
+          log(responseJson.toString());
+          return (responseJson as List).map((json) => BriefsResult.fromJson(json)).toList();
+        } else {
+          throw AppError(statusCode: response.statusCode);
+        }
+      } else {
+        throw AppError();
+      }
+    } catch (e) {
+      log("getUserBriefs Error", error: e);
+      throw AppError(errorMessage: e.toString());
+    }
+  }
+
+  @override
+  Future<BriefsResult> getSingleBrief(String? briefId) async {
+    var jwtToken = await getJwtToken();
+
+    try {
+      Response? response = await _apiClient.getReq(
+        url: "${ApiConstants.getSingleBrief}/$briefId",
+        jwtToken: jwtToken,
+      );
+
+      if (response?.data != null && response?.statusCode != null) {
+        if (response!.statusCode == 200) {
+          final responseJson = response.data ?? [];
+          log(responseJson.toString());
+          return BriefsResult.fromJson(responseJson);
+        } else {
+          throw AppError(statusCode: response.statusCode);
+        }
+      } else {
+        throw AppError();
+      }
+    } catch (e) {
+      log("getUserBriefs Error", error: e);
+      throw AppError(errorMessage: e.toString());
+    }
+  }
+
+  @override
+  Future<bool> postBrief({
+    String? userId,
+    String? name,
+    String? type,
+    String? category,
+    String? postText,
+    String? imgSrc,
+    List<String>? isVisibleTo,
+  }) async {
+    var jwtToken = await getJwtToken();
+
+    try {
+      var body = {
+        "user_id": userId,
+        "name": name,
+        "type": type,
+        "category": category,
+        "postText": postText,
+        "imgSrc": imgSrc ?? "",
+        'isVisibleTo': isVisibleTo,
+      };
+      Response? response = await _apiClient.postReq(
+        url: ApiConstants.postBrief,
+        body: body,
+        jwtToken: jwtToken,
+      );
+
+      if (response?.data != null && response?.statusCode != null) {
+        if (response!.statusCode == 201) {
+          var responseJson = response.data;
+          log(responseJson.toString());
+          return true;
+        } else {
+          throw AppError(statusCode: response.statusCode);
+        }
+      } else {
+        throw AppError();
+      }
+    } catch (e) {
+      log("postBrief Error", error: e);
+      throw AppError(errorMessage: e.toString());
+    }
+  }
+
+  @override
+  Future<ThreadImageModel?>? uploadThreadImage(
+    String? fileName,
+    MediaType fileType,
+    String? userId,
+    String? userType,
+  ) async {
+    var jwtToken = await getJwtToken();
+    try {
+      var body = {
+        'name': fileName,
+        'type': fileType.subtype,
+        'id': userId,
+        'utype': userType,
+      };
+
+      Response? response = await _apiClient.putReq(
+        url: ApiConstants.uploadThreadImage,
+        body: body,
+        jwtToken: jwtToken,
+      );
+
+      if (response?.data != null && response?.statusCode != null) {
+        if (response!.statusCode == 200) {
+          var responseJson = response.data;
+          log(responseJson.toString());
+          return ThreadImageModel.fromJson(responseJson);
+        } else {
+          throw AppError(statusCode: response.statusCode);
+        }
+      } else {
+        throw AppError();
+      }
+    } catch (e) {
+      log("uploadThreadImage Error", error: e);
+      throw AppError(errorMessage: e.toString());
+    }
+  }
+
+  @override
+  Future<bool> deleteBrief({String? briefId}) async {
+    var jwtToken = await getJwtToken();
+
+    try {
+      Response? response = await _apiClient.deleteReq(
+        url: "${ApiConstants.deleteBrief}/$briefId",
+        jwtToken: jwtToken,
+      );
+
+      if (response?.data != null && response?.statusCode != null) {
+        if (response!.statusCode == 200) {
+          var responseJson = response.data;
+          log(responseJson.toString());
+          return true;
+        } else {
+          throw AppError(statusCode: response.statusCode);
+        }
+      } else {
+        throw AppError();
+      }
+    } catch (e) {
+      log("deleteBrief Error", error: e);
+      throw AppError(errorMessage: e.toString());
+    }
+  }
+
+  @override
+  Future<bool> editBrief({
+    String? briefId,
+    bool? isVisible,
+    String? userId,
+    String? name,
+    String? type,
+    String? category,
+    String? postText,
+    String? imgSrc,
+    String? avatarSrc,
+    String? createdAt,
+    String? updatedAt,
+    int? likesCount,
+    int? replyCount,
+    int? postedAt,
+    List<String>? isVisibleTo,
+  }) async {
+    var jwtToken = await getJwtToken();
+    try {
+      var body = {
+        'isVisible': isVisible,
+        'avatarSrc': avatarSrc,
+        'category': category,
+        'createdAt': createdAt,
+        'imgSrc': imgSrc,
+        'likesCount': likesCount,
+        'name': name,
+        'postText': postText,
+        'postedAt': postedAt,
+        'replyCount': replyCount,
+        'type': type,
+        'updatedAt': updatedAt,
+        'user_id': userId,
+        '_id': briefId,
+        '__v': 0,
+        'isVisibleTo': isVisibleTo,
+      };
+
+      Response? response = await _apiClient.patchReq(
+        url: "${ApiConstants.editBrief}/$briefId",
+        body: body,
+        jwtToken: jwtToken,
+      );
+
+      if (response?.data != null && response?.statusCode != null) {
+        if (response!.statusCode == 200) {
+          var responseJson = response.data;
+          log(responseJson.toString());
+          return true;
+        } else {
+          throw AppError(statusCode: response.statusCode);
+        }
+      } else {
+        throw AppError();
+      }
+    } catch (e) {
+      log("editBrief Error", error: e);
+      throw AppError(errorMessage: e.toString());
+    }
+  }
+}

@@ -1,0 +1,278 @@
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
+import 'package:go_router/go_router.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
+
+import '../../../common/app_utils/screen_size.dart';
+import '../../../common/app_utils/validation_utils.dart';
+import '../../../common/enums/enums.dart';
+import '../../../common/others/assets.dart';
+import '../../../common/others/strings.dart';
+import '../../providers/auth_provider.dart';
+import '../../state_providers/password_change_notifier.dart';
+import '../../widgets/custom_back_button.dart';
+import '../../widgets/custom_elevated_button.dart';
+import '../../widgets/custom_shape_widget.dart';
+import '../../widgets/custom_text_form_field.dart';
+
+class ProfessionalRegisterScreen extends ConsumerWidget {
+  ProfessionalRegisterScreen({super.key});
+
+  static const routeName = "/professionalRegisterScreen";
+
+  final TextEditingController professionalFirstName = TextEditingController();
+  final TextEditingController professionalLastName = TextEditingController();
+  final TextEditingController professionalEmail = TextEditingController();
+  final TextEditingController professionalPass = TextEditingController();
+  final TextEditingController professionalConfirmPass = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
+
+  final dropDownItems = ['Owner', 'Working'];
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final registerState = ref.watch(registerNotifierProvider);
+    final passNotifier = ref.watch(passwordNotifierProvider);
+    return GestureDetector(
+      onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
+      child: Scaffold(
+        backgroundColor: Theme.of(context).colorScheme.secondary,
+        body: Stack(
+          children: [
+            Form(
+              key: _formKey,
+              child: SizedBox(
+                height: ScreenSize.height(context),
+                child: Stack(
+                  children: [
+                    const CustomShapeWidget(),
+                    Container(
+                      width: ScreenSize.width(context),
+                      padding: const EdgeInsets.symmetric(horizontal: 50),
+                      child: SingleChildScrollView(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            SizedBox(height: ScreenSize.height(context) * .15),
+                            Text(
+                              "Briefsea for Working Professionals",
+                              style: Theme.of(context).textTheme.bodyLarge!.copyWith(fontSize: 16),
+                              textAlign: TextAlign.center,
+                              textScaler: TextScaler.linear(ScaleSize.textScaleFactor(context)),
+                            ),
+                            SizedBox(height: ScreenSize.height(context) * .05),
+                            CustomTextFormField(
+                              hintText: "Enter your First Name",
+                              controller: professionalFirstName,
+                              textInputAction: TextInputAction.next,
+                              validator: (value) {
+                                if (!ValidationUtils.isNotEmpty(value!)) {
+                                  return 'First Name is required';
+                                }
+                                return null;
+                              },
+                            ),
+                            const SizedBox(height: 10),
+                            CustomTextFormField(
+                              hintText: "Enter your Last Name",
+                              controller: professionalLastName,
+                              textInputAction: TextInputAction.next,
+                              validator: (value) {
+                                if (!ValidationUtils.isNotEmpty(value!)) {
+                                  return 'Last Name is required';
+                                }
+                                return null;
+                              },
+                            ),
+                            const SizedBox(height: 10),
+                            CustomTextFormField(
+                              hintText: "Enter your Email",
+                              controller: professionalEmail,
+                              textInputAction: TextInputAction.next,
+                              keyboardType: TextInputType.emailAddress,
+                              validator: (value) {
+                                if (!ValidationUtils.isNotEmpty(value!)) {
+                                  return 'Email is required';
+                                }
+                                if (!ValidationUtils.isValidEmail(value)) {
+                                  return 'Enter a valid email';
+                                }
+                                return null;
+                              },
+                            ),
+                            const SizedBox(height: 10),
+                            CustomTextFormField(
+                              hintText: "Enter Password",
+                              controller: professionalPass,
+                              textInputAction: TextInputAction.next,
+                              obscureText: passNotifier.obscureWPPassword,
+                              suffixIcon: IconButton(
+                                onPressed: () {
+                                  passNotifier.obscureWPPassword = !passNotifier.obscureWPPassword;
+                                },
+                                icon: Padding(
+                                  padding: const EdgeInsets.symmetric(horizontal: 10),
+                                  child: Icon(
+                                    !passNotifier.obscureWPPassword ? CupertinoIcons.eye_slash_fill : CupertinoIcons.eye_fill,
+                                    size: 20 * ScaleSize.textScaleFactor(context),
+                                  ),
+                                ),
+                              ),
+                              maxLines: 1,
+                              validator: (value) {
+                                if (!ValidationUtils.isNotEmpty(value!)) {
+                                  return 'Password is required';
+                                }
+                                if (!ValidationUtils.isValidPassword(value)) {
+                                  return 'Password should be at least 8 characters, contain at least one letter, one number, and one special character';
+                                }
+                                return null;
+                              },
+                            ),
+                            const SizedBox(height: 10),
+                            CustomTextFormField(
+                              hintText: "Confirm Password",
+                              controller: professionalConfirmPass,
+                              textInputAction: TextInputAction.done,
+                              obscureText: passNotifier.obscureWPConfirmPassword,
+                              suffixIcon: IconButton(
+                                onPressed: () {
+                                  passNotifier.obscureWPConfirmPassword = !passNotifier.obscureWPConfirmPassword;
+                                },
+                                icon: Padding(
+                                  padding: const EdgeInsets.symmetric(horizontal: 10),
+                                  child: Icon(
+                                    !passNotifier.obscureWPConfirmPassword ? CupertinoIcons.eye_slash_fill : CupertinoIcons.eye_fill,
+                                    size: 20 * ScaleSize.textScaleFactor(context),
+                                  ),
+                                ),
+                              ),
+                              maxLines: 1,
+                              validator: (value) {
+                                if (!ValidationUtils.isNotEmpty(value!)) {
+                                  return 'Please confirm your password';
+                                }
+                                if (value != professionalPass.text) {
+                                  return 'Passwords do not match';
+                                }
+                                return null;
+                              },
+                            ),
+                            SizedBox(height: ScreenSize.height(context) * .02),
+                            const Text(
+                              "Or Log In using an option:",
+                              style: TextStyle(color: Colors.white),
+                              textScaler: TextScaler.linear(1),
+                              textAlign: TextAlign.center,
+                            ),
+                            const SizedBox(height: 10),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                _signUpOptions(
+                                  context,
+                                  Assets.GOOGLE_LOGO,
+                                  () {},
+                                ),
+                                // const SizedBox(width: 20),
+                                // _signUpOptions(
+                                //   context,
+                                //   'assets/logos/linkedin-icon.svg',
+                                //   () {},
+                                // ),
+                              ],
+                            ),
+                            SizedBox(height: ScreenSize.height(context) * .02),
+                            Text(
+                              "Agency, Freelancer or Existing User?",
+                              style: Theme.of(context).textTheme.bodyLarge!.copyWith(fontSize: 14),
+                              textScaler: TextScaler.linear(ScaleSize.textScaleFactor(context)),
+                              textAlign: TextAlign.center,
+                            ),
+                            TextButton(
+                              onPressed: () {
+                                GoRouter.of(context).pop();
+                              },
+                              style: const ButtonStyle(
+                                overlayColor: WidgetStateColor.transparent,
+                                enableFeedback: true,
+                              ),
+                              child: Text(
+                                "Go back",
+                                style: TextStyle(
+                                  color: Theme.of(context).colorScheme.tertiaryContainer,
+                                ),
+                                textScaler: TextScaler.linear(ScaleSize.textScaleFactor(context)),
+                              ),
+                            ),
+                            Center(
+                              child: CustomElevatedButton(
+                                width: ScreenSize.width(context) * 0.5,
+                                buttonLabel: "Next",
+                                onPressed: () async {
+                                  if (_formKey.currentState!.validate()) {
+                                    await ref.read(registerNotifierProvider.notifier).registerUser(
+                                          firstName: professionalFirstName.text.trim(),
+                                          lastName: professionalLastName.text.trim(),
+                                          email: professionalEmail.text.trim(),
+                                          password: professionalPass.text.trim(),
+                                          type: "Working Professional",
+                                          subType: "",
+                                          ref: ref,
+                                          context: context,
+                                        );
+                                  }
+                                },
+                              ),
+                            ),
+                            SizedBox(height: ScreenSize.height(context) * .02),
+                            Text(
+                              Strings.professionalFooter,
+                              style: Theme.of(context).textTheme.bodyMedium!.copyWith(fontSize: 11),
+                              textScaler: TextScaler.linear(ScaleSize.textScaleFactor(context)),
+                              textAlign: TextAlign.center,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    const Positioned(top: 40, left: 0, child: CustomBackButton()),
+                  ],
+                ),
+              ),
+            ),
+            if (registerState == RegisterState.loading)
+              Container(
+                color: Colors.black54,
+                child: const Center(
+                  child: CircularProgressIndicator(
+                    backgroundColor: Colors.white,
+                  ),
+                ),
+              ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  _signUpOptions(context, imagePath, onTap) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        height: 60,
+        width: 60,
+        decoration: BoxDecoration(
+          color: Colors.grey[200],
+          borderRadius: BorderRadius.circular(5),
+        ),
+        child: SvgPicture.asset(
+          imagePath,
+          fit: BoxFit.scaleDown,
+        ),
+      ),
+    );
+  }
+}
